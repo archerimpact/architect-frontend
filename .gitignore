@@ -1,4 +1,8 @@
 
+# Caches
 *.DS_Store
 *.pyc
 __pycache__
+
+# Node Modules - run npm install locally instead
+frontend/node_modules
