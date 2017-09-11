@@ -14,6 +14,6 @@
 ### Adding packages to the frontend
 
 1. Start the servers by running `docker-compose up` from the project directory.
-2. Open up a new shell, and again from the project directory run `docker-compose exec frontend yarn install --save <package>`.
+2. Open up a new shell, and again from the project directory run `docker-compose exec frontend yarn add <package>`.
 3. Make sure your teammates run `docker-compose build` whenever they eventually get your code changes, so that their frontend containers rebuild with the new package.
 
