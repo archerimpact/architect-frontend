@@ -2,13 +2,13 @@
 
 ### Setup with Docker
 
-1. Install Docker
-2. Clone this repo
+1. Install Docker.
+2. Clone this repo.
 3. Run `docker-compose up` from the project directory. The frontend (react) should now be visible on localhost:3000, and the backend (django) should now be visible on localhost:8000.
 
 ### Adding dependencies to the backend
 
-1. Add a line to `backend/requirements.txt`
+1. Add a line to `backend/requirements.txt`.
 2. Run `docker-compose build` to rebuild with the new requirement.
 
 ### Adding packages to the frontend
