@@ -11,3 +11,14 @@ services:
       - "8000:8000"
     depends_on:
       - db
+  frontend:
+    build: frontend/dashboard-client
+    restart: always
+    command: yarn start
+    volumes:
+      - ./frontend/dashboard-client:/code
+      - /code/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
