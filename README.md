@@ -14,9 +14,11 @@
 ### Migrations in PostrgreSQL
 
 With Docker, all of your containers are basically running on a virtual linux machine. So, you must run migration commands within the container. 
+
 While `docker-compose up` is running, 
-1. makemigrations - `docker-compose exec backend python3 manage.py makemigrations`
-2. migrate - `docker-compose exec backend python3 manage.py migrate`
+
+1. to makemigrations: `docker-compose exec backend python3 manage.py makemigrations`
+2. to migrate: `docker-compose exec backend python3 manage.py migrate`
 
 ### Adding packages to the frontend
 
