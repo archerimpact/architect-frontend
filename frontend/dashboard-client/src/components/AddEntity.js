@@ -19,19 +19,21 @@ class AddEntity extends Component {
 			nameFieldValue: '',
 			typeFieldValue: '',
 			linkFieldValue: '',
+			tagFieldValue: '',
 		};
 
 	};
 
 	handleTap = (e) => {
 		e.preventDefault();
-		this.props.dispatch(actions.addEntity({name: this.state.nameFieldValue, type: this.state.typeFieldValue, link:this.state.linkFieldValue}))
+		this.props.dispatch(actions.addEntity({name: this.state.nameFieldValue, type: this.state.typeFieldValue, link:this.state.linkFieldValue, chips: [this.state.tagFieldValue]}))
 		this.setState({
 			open: true,
 			anchorEl: e.currentTarget,
 			nameFieldValue: '',
 			typeFieldValue: '',
 			linkFieldValue: '',
+			tagFieldValue: '',
 		});
 
 	}
@@ -49,13 +51,19 @@ class AddEntity extends Component {
 	}
 	handleTypeFieldChange = (e) => {
 		this.setState({
-			typeFieldValue: e.value
+			typeFieldValue: e
 		});
 	}
 
 	handleLinkFieldChange = (e) => {
 		this.setState({
 			linkFieldValue: e.target.value
+		});
+	}
+
+	handleTagFieldChange = (e) => {
+		this.setState({
+			tagFieldValue: e.target.value
 		});
 	}
 
@@ -71,11 +79,16 @@ class AddEntity extends Component {
 			    <AutoComplete
 					floatingLabelText="Type"
 					hintText="e.g. Person"
-      				value={this.state.typeFieldValue}
       				dataSource={this.props.entityTypes}
       				onUpdateInput={this.handleTypeFieldChange}
       				style={{width: 250, marginRight: 20}}
     			/>
+    			<TextField 
+					value={this.state.tagFieldValue} 
+      				floatingLabelText="Tag"
+      				hintText="e.g. Alice Ma"
+					onChange={this.handleTagFieldChange}
+					style = {{width: 250, marginRight: 20}}/>
 
 				<TextField 
 					value={this.state.linkFieldValue} 					

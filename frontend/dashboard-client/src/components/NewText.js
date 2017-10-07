@@ -12,7 +12,7 @@ class NewText extends Component{
 		return (
 			<div id="summary">
 				
-				<h1 id="hello"> My Project </h1>
+				<h1 id="hello"> Document #1 </h1>
 			</div>
 		)
 	}

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
+import Chip from 'material-ui/Chip';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -7,8 +8,8 @@ import * as actions from '../actions/';
 
 
 const style = {
-	width: "80%",
-	marginLeft: 20,
+	width: "100%",
+	padding: 20,
 	textAlign: 'center',
 	display: 'inline-block',
 };
@@ -32,6 +33,10 @@ class EntityBox extends Component {
 			type: props.type,
 			tags: ["Alice Ma"]
 		}
+	};
+
+	handleRequestDelete() {
+		return
 	}
 
 	render() {
@@ -45,6 +50,11 @@ class EntityBox extends Component {
 						<b> {this.props.name} </b>
 						<i> {this.props.type} </i>
 						<a href={this.props.link} target="_blank">{this.props.link}</a>
+						{this.props.chips.map((chip) => {
+							return (
+								<Chip onRequestDelete={this.handleRequestDelete}> {chip} </Chip>
+								)
+						})}
 					</div>
 					</div>
 				</Paper>

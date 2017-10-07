@@ -61,12 +61,17 @@
   flex-direction: row;
 }
 .left-column{
-  width: 50%;
+  width: 30%;
+  margin-right: 20px;
+}
+
+.middle-column{
+  width:35%;
   padding: 20px;
+
 }
 .right-column{
-  width: 50%;
-  padding: 20px;
+  width: 30%;
 }
 
 .avatar{
