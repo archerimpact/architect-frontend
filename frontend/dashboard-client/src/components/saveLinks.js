@@ -24,7 +24,6 @@ class SaveLinks extends Component {
         })
     }
     handleLabelInputChange(event) {
-        debugger
         this.setState({
             link: {
                 ...this.state.link,

@@ -1,10 +1,17 @@
-import { ADD_LINK, USER_LOGOUT} from '../constants/actionTypes';
+import { ADD_LINK, USER_LOGOUT, ADD_ENTITY} from '../constants/actionTypes';
 
 
 export function addLink(link) {
 	return {
 		type: ADD_LINK,
 		payload: link
+	}
+}
+
+export function addEntity(entity) {
+	return {
+		type: ADD_ENTITY,
+		payload: entity
 	}
 }
 

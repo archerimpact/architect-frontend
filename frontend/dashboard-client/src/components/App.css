@@ -32,3 +32,44 @@
   display:inline;
   margin: 10px;
 }
+
+#hello{
+  
+}
+#summary{
+  text-align:center;
+}
+
+#banner{
+  width:90%;
+}
+
+.body{
+  width:100%;
+}
+.addentity{
+  text-align:center;
+}
+
+.centered{
+  text-align:center;
+  padding: 10px;
+}
+
+.document-entities, .entity-box{
+  display: flex;
+  flex-direction: row;
+}
+.left-column{
+  width: 50%;
+  padding: 20px;
+}
+.right-column{
+  width: 50%;
+  padding: 20px;
+}
+
+.avatar{
+  width:20px;
+  height:20px;
+}
