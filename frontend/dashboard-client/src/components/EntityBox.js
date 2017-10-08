@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
 import Chip from 'material-ui/Chip';
+import AutoComplete from 'material-ui/AutoComplete';
+import RaisedButton from 'material-ui/RaisedButton';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -31,7 +33,8 @@ class EntityBox extends Component {
 		this.state = {
 			name: props.name,
 			type: props.type,
-			tags: ["Alice Ma"]
+			tags: ["Alice Ma"],
+			tagFieldValue: ''
 		}
 	};
 
@@ -39,23 +42,49 @@ class EntityBox extends Component {
 		return
 	}
 
+	handleTagFieldChange = (value) => {
+		this.setState({
+			tagFieldValue: value
+		});
+	}
+
+	handleSubmit = (e) => {	
+		e.preventDefault();
+		console.log(this.props.chips.concat(this.state.tagFieldValue))
+		debugger
+		this.props.dispatch(actions.addTag({name1: this.props.name, chips: this.props.chips.concat(this.state.tagFieldValue)}))
+		this.setState({
+			tagFieldValue: ''
+		})
+	}
+
 	render() {
 		return (
 			<div>
 				<Paper style={style}>
 					<div className=	"entity-box">
-					<Paper style={circle_style} circle={true}>
-					</Paper>
-					<div className="right-column">
-						<b> {this.props.name} </b>
-						<i> {this.props.type} </i>
-						<a href={this.props.link} target="_blank">{this.props.link}</a>
-						{this.props.chips.map((chip) => {
-							return (
-								<Chip onRequestDelete={this.handleRequestDelete}> {chip} </Chip>
-								)
-						})}
-					</div>
+						<Paper style={circle_style} circle={true}>
+						</Paper>
+						<div className="right-column">
+							<b> {this.props.name} </b>
+							<i> {this.props.type} </i>
+							<a href={this.props.link} target="_blank">{this.props.link}</a>
+							<div className="chips">
+								{this.props.chips.map((chip) => {
+									return (
+										<Chip onRequestDelete={this.handleRequestDelete}> {chip} </Chip>
+										)
+								})}
+							</div>
+						    <AutoComplete
+								floatingLabelText="Add Tags"
+								hintText="e.g. Daryus"
+			      				dataSource={this.props.entityNames}
+			      				onUpdateInput={this.handleTagFieldChange}
+			      				style={{width: 100, marginRight: 20}}
+			    			/>
+			    			<RaisedButton label="Add Tag" onClick={this.handleSubmit} />
+						</div>
 					</div>
 				</Paper>
 			</div>
@@ -75,6 +104,7 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
     return {
         savedEntities: state.data.savedEntities,
+        entityNames: state.data.entityNames
     };
 }
 

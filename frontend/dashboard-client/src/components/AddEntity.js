@@ -90,12 +90,13 @@ class AddEntity extends Component {
 					onChange={this.handleTagFieldChange}
 					style = {{width: 250, marginRight: 20}}/>
 
-				<TextField 
+				/* <TextField 
 					value={this.state.linkFieldValue} 					
 					floatingLabelText="Link"
 					hintText="e.g. https://archerimpact.com"
 					onChange={this.handleLinkFieldChange} 
-					style = {{width: 250, marginRight: 20}}/>
+					style = {{width: 250, marginRight: 20}}/> 
+					*/
 				<RaisedButton label="Add an Entity" onClick = {this.handleTap} />
 
 			</div>

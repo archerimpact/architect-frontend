@@ -8,8 +8,7 @@ import NavBar from './NavBar.js'
 import AddEntity from './AddEntity.js'
 import EntityBox from './EntityBox.js'
 import EntityList from './EntityList.js'
-import NodeGraph from './NodeGraph.js'
-import Paper from 'material-ui/Paper';
+import GraphContainer from './GraphContainer.js'
 
 import DocumentDisplay from './DocumentDisplay.js'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -39,9 +38,8 @@ class App extends Component {
             </div>
 
             <div className="right-column">
-              <Paper>
-                <NodeGraph />
-              </Paper>
+              <GraphContainer />
+
             </div>
 
           </div>

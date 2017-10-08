@@ -2,32 +2,11 @@ import React, { Component } from 'react';
 import './App.css';
 import * as d3 from 'd3'
 
-
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as actions from '../actions/';
-
 class NodeGraph extends Component {
 
 	constructor(props){
 		super(props);
-		this.state = {
-			linkNodes: this.entitiesToLinks(this.props.savedEntities.entities),
-			dataNodes: this.entitiesToNodes(this.props.savedEntities.entities)
-		}
-	}
-
-	chipsToLinks(entity) {
-
-		return entity.chips.map((chip) => {
-			return {"source": entity.name, "target": chip}
-		})
-	}
-
-	entitiesToLinks(entities) {
-		return [].concat.apply([], entities.map((entity) => {
-			return this.chipsToLinks(entity);
-		}))
+		
 	}
 
 	entitiesToNodes(entities) {
@@ -37,24 +16,35 @@ class NodeGraph extends Component {
 		});
 	}
 
-	componentWillReceiveProps(nextProps) {
-		this.setState({
-			linkNodes: this.entitiesToLinks(nextProps.savedEntities.entities), 
-			dataNodes: this.entitiesToNodes(nextProps.savedEntities.entities)
+	tagsToLinks(entity) {
+		return entity.chips.map((chip) => {
+			return {"source": entity.name, "target": chip}
 		})
-		debugger
-
 	}
 
-	componentDidMount = () => {
-		const dataNodes = this.state.dataNodes
+	entitiesToLinks(entities) {
+		return [].concat.apply([], entities.map((entity) => {
+			return this.tagsToLinks(entity);
+		}))
+	}
+
+	getNodeColor(node) {
+		if (node.type === "Person") {
+			return "#FF0000"
+		}
+		if (node.type === "Company") {
+			return "#add8e6" 
+		}
+	}
+
+	generateNetworkCanvas(entities) {
+		const dataNodes = this.entitiesToNodes(entities)
 
 
 		console.log(dataNodes)
-		const linkNodes = this.state.linkNodes
+		const linkNodes = this.entitiesToLinks(entities)
 		console.log(linkNodes)
-		let height = document.body.clientHeight;
-		let width = document.body.clientWidth;
+
 
 		const data = {
 			"nodes": dataNodes,
@@ -62,26 +52,26 @@ class NodeGraph extends Component {
 		};
 
 
-		function getNodeColor(node) {
-			if (node.type === "Person") {
-				return "#FF0000"
-			}
-			if (node.type === "Company") {
-				return "#add8e6" 
-			}
-		}
+
+
+		const width = 500;
+		const height = 500;
 
 		const simulation = d3.forceSimulation(data.nodes)
-			.force("center", d3.forceCenter(100, 300))
-    		.force("charge", d3.forceManyBody())
+			.force("center", d3.forceCenter(width/3, height/2))
+    		.force("charge", d3.forceManyBody().strength(-400))
     		.force("link", d3.forceLink().id(function(d) { return d.id; }));
+
+
+
 
 		const svg = d3.select(this.refs.mountPoint)
 			.append('svg')
-			.attr('width', "800px")
-			.attr('height', "500px")
+			.attr('width', width)
+			.attr('height', height)
 			.attr('display', "block")
-			.attr('margin', "auto");
+			.attr('margin', "auto")
+			.attr('id', 'svg1');
 
 		const linkElements = svg.selectAll('line')
 			.data(data.links)
@@ -103,7 +93,7 @@ class NodeGraph extends Component {
 			.attr('r',10)
 			.style('stroke', '#999999')
 			.style('stroke-width', 1.5)
-			.style('fill', (d) => getNodeColor(d));
+			.style('fill', (d) => this.getNodeColor(d));
 
 		nodeElements.append('text')
 			.style("font-size", "12px")
@@ -143,29 +133,35 @@ class NodeGraph extends Component {
 			})
 		nodeElements.call(dragDrop)
 	}
+	
+
+	componentWillReceiveProps(nextProps) {
+		
+		const mountPoint = d3.select('#svgdiv')
+		mountPoint.selectAll("svg").remove()
+
+		this.generateNetworkCanvas(nextProps.entities)
+		
+	}
+
+
+
+	componentDidMount = () => {
+
+		this.generateNetworkCanvas(this.props.entities)
+	}
 
 	render() {
 		return (
 			<div>
-				<div ref="mountPoint" />
+				<div id="svgdiv" ref="mountPoint" />
 			</div>
 
 			)
 	}
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        actions: bindActionCreators(actions, dispatch),
-        dispatch: dispatch,
-    };
-}
 
-function mapStateToProps(state) {
-    return {
-        savedEntities: state.data.savedEntities,
-        entityTypes: state.data.entityTypes,
-    };
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(NodeGraph)
+
+export default NodeGraph
