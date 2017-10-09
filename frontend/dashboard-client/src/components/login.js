@@ -11,43 +11,43 @@ class SaveLinks extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            link: {url: '', label: ''},
+            link: {username: '', password: ''},
         }
     }
 
-    handleLinkInputChange(event) {
+    handleUsernameInputChange(event) {
         this.setState({
             link: {
                 ...this.state.link,
-                url: event.target.value,
+                username: event.target.value,
             }
         })
     }
 
-    handleLabelInputChange(event) {
+    handlePasswordInputChange(event) {
         this.setState({
             link: {
                 ...this.state.link,
-                label: event.target.value,
+                password: event.target.value,
             }
         })
     }
 
-    addLink() {
+    logIn() {
         this.props.dispatch(actions.addLink(this.state.link))
         this.setState({
             link: {
-                url: '',
-                label: '',
+                username: '',
+                password: '',
             }
         })
     }
 
     render() {
         return (
-            <div className='rows'>
+            <div>
                 <p>
-                    A container component connected to the Redux store with synchronous dispatches of links users provide.
+                    Log in!
                 </p>
                 <TextField
                   hintText="e.g. https://www.google.com/"
@@ -55,7 +55,7 @@ class SaveLinks extends Component {
                   fullWidth={false}
                   value={this.state.link.url}
                   style = {{width: 500, marginRight: 20}}
-                  onChange={this.handleLinkInputChange.bind(this)}
+                  onChange={this.handleUsernameInputChange.bind(this)}
                 />
                 { ' ' }
                 <TextField
@@ -64,23 +64,14 @@ class SaveLinks extends Component {
                   fullWidth={false}
                   value={this.state.link.label}
                   style = {{width: 300}}
-                  onChange={this.handleLabelInputChange.bind(this)}
+                  onChange={this.handlePasswordInputChange.bind(this)}
                 />
                 <RaisedButton
                   style={{margin: 12} }
                   primary
-                  onClick={this.addLink.bind(this)}
+                  onClick={this.logIn.bind(this)}
                   label="Add" />
                 { ' ' }
-                <p> Your Saved Links </p>
-                {this.props.savedLinks.links.slice(0).reverse().map((link, id) => {
-                    return (
-                        <div id={id}>
-                            <a href={link.url} target="_blank">{link.url}</a>
-                            <p className='p'>Notes: {link.label != null ? link.label:''}</p>
-                        </div>
-                    );
-                })}
           </div>
         );
     }
@@ -99,4 +90,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SaveLinks);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

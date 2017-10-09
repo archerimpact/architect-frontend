@@ -3,11 +3,18 @@ import ReactDOM from 'react-dom';
 import configureStore from './store/configureStore';
 import Root from './containers/';
 import registerServiceWorker from './registerServiceWorker';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 const store = configureStore();
 registerServiceWorker();
 
+const Index = () => (
+  <MuiThemeProvider>
+    <Root store={store} />
+  </MuiThemeProvider>
+)
+
 ReactDOM.render(
-	<Root store={store} />,
+	<Index />,
  	document.getElementById('root')
 );

@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import logo from '../assets/logo.svg';
 import './App.css';
-import SaveLinks from './saveLinks';
+import {
+  Link
+} from 'react-router-dom';
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <h2>Welcome to React</h2>
+        <div className="App">
+          <div className="App-header">
+            <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}><h1>Breadthyme</h1></Link>
+          </div>
         </div>
-        <SaveLinks />
-      </div>
     );
   }
 }
-
+ 
 export default App;
