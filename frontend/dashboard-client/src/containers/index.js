@@ -15,8 +15,8 @@ export default class Root extends Component {
 			<Provider store={this.props.store}>
 			    <Router>
 			    	<div>
-			    		<App/>
-			    			<Route exact path="/" component={Home} />
+			    		<App data={data}/>
+			    		<Route exact path="/" component={Home} />
 			    		<div className="App">
 							<Route path="/links" component={SaveLinks}/>
 						</div>
