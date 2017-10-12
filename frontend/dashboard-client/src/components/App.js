@@ -26,6 +26,7 @@ class App extends Component {
           <div className="centered">
               <NewText />
               <AddEntity className="addentity"/>
+
           </div>
           <div className="document-entities">
             <div className="left-column">

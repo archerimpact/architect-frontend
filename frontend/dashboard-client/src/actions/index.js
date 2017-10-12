@@ -15,10 +15,14 @@ export function addEntity(entity) {
 	}
 }
 
-export function addTag(tag) {
+export function addTag(entities, name, tag) {
+	let entity = entities.find(x => x.name === name)
+	const index = entities.indexOf(entity)
+	entities[index] = Object.assign({}, entities[index])
+	entities[index].chips = entities[index].chips.concat([tag])	
 	return {
 		type: ADD_TAG,
-		payload: tag
+		payload: entities
 	}
 }
 
@@ -46,3 +50,9 @@ export function logOutUser() {
 		type: USER_LOGOUT,
 	}
 }
+
+export function apiCall(string) {
+	var apiResponse = /* MAKE API CALL*/
+	console.log(apiResponse)
+	// make sure you're getting what you want. You should have an issue with promises..
+} 

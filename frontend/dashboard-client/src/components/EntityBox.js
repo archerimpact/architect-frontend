@@ -33,29 +33,35 @@ class EntityBox extends Component {
 		this.state = {
 			name: props.name,
 			type: props.type,
-			tags: ["Alice Ma"],
-			tagFieldValue: ''
+			tagFieldValue: '',
+			chips: props.chips
 		}
 	};
 
-	handleRequestDelete() {
-		return
-	}
-
 	handleTagFieldChange = (value) => {
+		console.log(value)
 		this.setState({
 			tagFieldValue: value
 		});
 	}
 
-	handleSubmit = (e) => {	
-		e.preventDefault();
-		console.log(this.props.chips.concat(this.state.tagFieldValue))
-		debugger
-		this.props.dispatch(actions.addTag({name1: this.props.name, chips: this.props.chips.concat(this.state.tagFieldValue)}))
+	handleTagSubmit = (e) => {	
+		let entities = this.props.savedEntities.entities.slice();
+		//let entity = entities.find(x => x.name === this.props.name)
+		//const index = entities.indexOf(entity)
+		//let newChip = this.state.tagFieldValue
+		//entities[index] = Object.assign({}, entities[index])
+		//entities[index].chips = entities[index].chips.concat([newChip])
+		//console.log("new entity chips: " + newEntities[index].chips.map((entity) => {return entity}))
+
+		this.props.dispatch(actions.addTag(entities, this.props.name, this.state.tagFieldValue))
 		this.setState({
 			tagFieldValue: ''
 		})
+	}
+
+	handleRequestDelete() {
+		return
 	}
 
 	render() {
@@ -83,7 +89,7 @@ class EntityBox extends Component {
 			      				onUpdateInput={this.handleTagFieldChange}
 			      				style={{width: 100, marginRight: 20}}
 			    			/>
-			    			<RaisedButton label="Add Tag" onClick={this.handleSubmit} />
+			    			<RaisedButton label="Add Tag" onClick={this.handleTagSubmit} />
 						</div>
 					</div>
 				</Paper>

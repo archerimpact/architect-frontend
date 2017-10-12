@@ -39,20 +39,14 @@ class NodeGraph extends Component {
 
 	generateNetworkCanvas(entities) {
 		const dataNodes = this.entitiesToNodes(entities)
-
-
 		console.log(dataNodes)
 		const linkNodes = this.entitiesToLinks(entities)
 		console.log(linkNodes)
-
 
 		const data = {
 			"nodes": dataNodes,
 			"links": linkNodes
 		};
-
-
-
 
 		const width = 500;
 		const height = 500;
@@ -61,9 +55,6 @@ class NodeGraph extends Component {
 			.force("center", d3.forceCenter(width/3, height/2))
     		.force("charge", d3.forceManyBody().strength(-400))
     		.force("link", d3.forceLink().id(function(d) { return d.id; }));
-
-
-
 
 		const svg = d3.select(this.refs.mountPoint)
 			.append('svg')
@@ -97,9 +88,7 @@ class NodeGraph extends Component {
 
 		nodeElements.append('text')
 			.style("font-size", "12px")
-			.text((d) => d.name + ": " + d.type);
-
-		
+			.text((d) => d.name + ": " + d.type);	
 
 		simulation.on('tick', () => {
 			var movement = 400;

@@ -10,9 +10,7 @@ class EntityList extends Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {
-			number: 6,
-		}
+
 	}
 
 	render() {

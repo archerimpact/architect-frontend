@@ -24,25 +24,13 @@ export default function (state = initialState, action) {
 				entityNames: state.entityNames.concat(action.payload.name)
 			}
 		case ADD_TAG:
-			debugger
-			console.log(state)
-			const oldEntity = state.savedEntities.entities.find(x => x.name === action.payload.name1)
-			console.log(state)
-			const newEntity = Object.assign({}, oldEntity)
-			newEntity.chips = action.payload.chips
-
-			console.log(state)
-
-			const newEntities = state.savedEntities.entities
-			const index = newEntities.indexOf(oldEntity)
-
 			return {
 				...state,
 				savedEntities: {
 					...state.savedEntities,
 					status: 'isLoaded',
-					entities: newEntities.splice(index).concat(newEntity)
-				}
+					entities: action.payload
+				},
 			}
 		default:
 			return state;
