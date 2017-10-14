@@ -1,0 +1,557 @@
+define(function(require, exports, module) {
+/*
+  * NOTE:-
+  *       Before executing any extend script, JSON is injected into global context.
+  *       Color Object Format ( to be passed/returned while intraction to Kuler)
+  *       Each function in scripts will be executed in either CEP context or application  context.
+  *       To differentiate those functions, a signature ("_CEP") must be appended to the function name to execute it in CEP context else it will run in default application context.
+  * Definitions:-
+  *  1:-   colorObject : {
+  *            colorValues : {
+          *         "rgb"    : {
+          *                       "red" : (0,255),
+          *                       "green" : (0,255),
+          *                       "blue" : (0,255),
+          *                     },
+          *         "hsb"    : {
+          *                       "hue" : (0,360),
+          *                       "saturation" : (0,100),
+          *                       "brightness" : (0,100)
+          *                     },
+          *         "lab"     : {
+          *                     "l"  : (0,100),
+          *                     "a" : (-128,127),
+          *                     "b" : (-128,127)
+          *                     },
+          *         "cmyk"  : {
+          *                     "cyan" : (0,100),
+          *                     "magenta" : (0,100),
+          *                     "yellow" : (0,100),
+          *                     "black" : (0,100),
+          *                     }
+          *       }
+          *    },
+          *    colorMode : "can be any of 'rgb','hsb','lab,'cmyk'  "
+  *       };
+  *  2:-   Primary color :-  It  can be active color i.e. Forground in case of PS, stoke/fill color in case of ID. Foreground/background color in case of AI
+ */
+
+module.exports.settings = {
+  /*
+  Each setting variable can have 3 values
+  true - feature enabled
+  false - feature disabled.
+  function - this function returns true or false on basis of some condition ( for e.g. PP version specifc feature)
+  This function will be executed in context of Product by using csInterface.evalscript.
+   */
+ liveColorWheel : false,
+
+ /*
+  Enabling managedColor will allow the extension to use PP color conversion utilities.
+  For this to work, colorutil must be implemented.
+ */
+ managedColor: true,
+
+ /**
+ * [syncSecondaryColor  Enabling this feature allows to set background color from Kuler Panel to PP
+ * SecondayColor can be background color in PS, fill color in Id etc.
+ * ]
+ * @type {[boolean]}
+ */
+ syncSecondaryColor : false,
+
+ addThemeToSwatches: true,
+
+ syncPrimaryColor: true,
+
+ disableLogin: false
+
+};
+
+ /**
+   * Events which panel should listen for specific activities
+   *
+   */
+module.exports.events = {
+  /**
+   * PrimaryColorChanged event returns the primary color of application in JSON stringified format whenever it is changed from outisde of Kuler Panel.
+   *
+   * looseFocus event will be sent by extension to application. This event
+   */
+};
+
+/**
+ * Set of utilities which can be used in any script should be put here
+ * e.g. PP specific color conversion utilty can be put in pre for being used in all functions
+ * @return none
+ */
+module.exports.pre = function() {
+  if(typeof(sendCEPEvent) != 'function'){
+    sendCEPEvent = function(eventName){
+      var externalObjectName = "PlugPlugExternalObject";
+      var mylib = new ExternalObject( "lib:" + externalObjectName );
+
+      var eventObj = new CSXSEvent();
+      eventObj.type = "KulerPanel";
+      eventObj.extensionId = "KLR";
+      eventObj.data = eventName;
+      eventObj.dispatch();
+    };
+  }
+
+  if(typeof(setColorInner) != 'function'){
+    setColorInner = function(objSwatch, fill){
+      var colorAdded = objSwatch.swatch;
+      var colorsOwner = app;
+      if(app.documents.length)
+        colorsOwner = app.activeDocument;
+
+      if (colorAdded == null)
+      {
+        if (objSwatch.ColorSpace == "rgb")
+        {
+          colorAdded = colorsOwner.colors.add( {name:objSwatch.swatchName ,model:objSwatch.ColorModel, space:ColorSpace.rgb, colorValue:[objSwatch.c1, objSwatch.c2, objSwatch.c3]} ) ;
+        }
+        else if (objSwatch.ColorSpace == "cmyk")
+        {
+          colorAdded = colorsOwner.colors.add( {name:objSwatch.swatchName ,model:objSwatch.ColorModel, space:ColorSpace.cmyk, colorValue:[objSwatch.c1, objSwatch.c2, objSwatch.c3, objSwatch.c4]} ) ;
+        }
+        else if (objSwatch.ColorSpace == "lab")
+        {
+          colorAdded = colorsOwner.colors.add( {name:objSwatch.swatchName ,model:objSwatch.ColorModel, space:ColorSpace.lab, colorValue:[objSwatch.c1, objSwatch.c2, objSwatch.c3]} ) ;
+        }
+      }
+
+      if (fill)
+      {
+        app.strokeFillProxySettings.fillColor = colorAdded;
+      }
+      else
+      {
+        app.strokeFillProxySettings.strokeColor = colorAdded;
+      }
+    };
+  }
+
+  if(typeof(setColor) != 'function'){
+    setColor = function(colorArr, inputColorMode, fill){
+      var c1 = colorArr[0], c2 = colorArr[1], c3 = colorArr[2], c4 = colorArr[3];
+      if (c4 === undefined)
+        c4 = 0;
+
+      var colorMode = inputColorMode;
+      if (inputColorMode == "hsb")
+      {
+        colorMode = "rgb"; //Treat it as rgb
+        var  rgb = kulerHSV2RGB(parseFloat(c1),parseFloat(c2),parseFloat(c3));
+        c1 = rgb.red; c2 = rgb.green; c3 = rgb.blue;
+      }
+      var origSwatchName;
+      var colorsOwner = app;
+      if(app.documents.length)
+        colorsOwner = app.activeDocument;
+
+      if (colorMode == "rgb")
+      {
+        origSwatchName = "R="+Math.floor(c1 + 0.5) +" G="+Math.floor(c2 + 0.5) +" B="+Math.floor(c3 + 0.5) ;
+      }
+      else if (colorMode == "cmyk")
+      {
+        origSwatchName = "C="+Math.floor(c1 + 0.5) +" M="+Math.floor(c2 + 0.5) +" Y="+Math.floor(c3 + 0.5) +" K="+Math.floor(c4 + 0.5);
+      }
+      else if (colorMode == "lab")
+      {
+        origSwatchName = "L="+Math.floor(c1 + 0.5) +" a="+Math.floor(c2 + 0.5) +" b="+Math.floor(c3 + 0.5) ;
+      }
+
+      var colorToAdd = colorsOwner.colors.item(origSwatchName);
+      var swatchName = origSwatchName ;
+
+      var iCount = 0;
+      var found = false;
+      while(found == false && ('undefined' != typeof colorToAdd) && (null != colorToAdd))
+      {
+        var diffColors = ((colorToAdd.space == ColorSpace.rgb && colorMode == "rgb") || (colorToAdd.space == ColorSpace.cmyk && colorMode == "cmyk") || (colorToAdd.space == ColorSpace.lab && colorMode == "lab")) == false;
+        if (diffColors == false)
+        {
+          var colorValues = colorToAdd.colorValue;
+          if (colorValues.length == 3 || colorValues.length == 4)
+          {
+            var compColorValues = [c1, c2, c3, c4];
+            for (var i=0; i<colorValues.length; ++i)
+            {
+              if (Math.abs(compColorValues[i] - colorValues[i]) > 0.005)
+              {
+                diffColors = true;
+                break;
+              }
+            }
+          }
+          else
+            diffColors = true;
+        }
+        if (diffColors == false)
+          found = true;
+
+        if (found == false)
+        {
+          ++iCount;
+          swatchName = origSwatchName +" "+ iCount;
+          colorToAdd = colorsOwner.colors.item(swatchName);
+        }
+      }
+
+      var objSwatch = {
+              swatchName: swatchName,
+              ColorModel: ColorModel.process,
+              ColorSpace: colorMode,
+              c1: c1,
+              c2: c2,
+              c3: c3,
+              c4: c4,
+              swatch: colorToAdd
+            };
+
+      app.doScript ("setColorInner(objSwatch, fill);", undefined, undefined, UndoModes.entireScript, "");
+    };
+     }
+
+   if(typeof(kulerHSV2RGB) != 'function'){
+    kulerHSV2RGB = function(h1, s1, v1){
+      h1 /= 360.0;
+      s1 /= 100.0;
+      v1 /= 100.0;
+
+      var h = h1 * 6;
+      var s = s1;
+      var v = v1;
+      var r;
+      var g;
+      var b;
+      if (s == 0)
+      {
+        r = v;
+        g = v;
+        b = v;
+      }
+      else
+      {
+        if (h >= 6)
+          h -= 6;
+
+        var i = parseInt(h);
+        var f = h - i;
+        var p= v * (1 - s);
+        var q = v * (1 - (s * f));
+        var t = v * (1 - (s * (1 - f)));
+        switch (i)
+        {
+        case 0:
+          r = v;  g = t;  b = p;
+          break;
+        case 1:
+          r = q;  g = v;  b = p;
+          break;
+        case 2:
+          r = p;  g = v;  b = t;
+          break;
+        case 3:
+          r = p;  g = q;  b = v;
+          break;
+        case 4:
+          r = t;  g = p;  b = v;
+          break;
+        case 5:
+          r = v;  g = p;  b = q;
+          break;
+        }
+      }
+      var rgb = {red:r*255.0 , green:g*255.0, blue:b*255.0};
+      return rgb;
+    };
+  }
+
+  if(typeof(kulerRGB2HSV) != 'function'){
+    kulerRGB2HSV = function(rgb){
+      var h = 0;
+      var r = rgb.red;
+      var g = rgb.green;
+      var b = rgb.blue;
+      var min = Math.min(r, g, b);
+      var v = Math.max(r, g, b);
+      var s = (v === 0) ? 0 : (v - min) / v;
+      var delta = (s === 0) ? 0.00001 : v - min;
+      switch (v) {
+      case r:
+      h = (g - b) / delta;
+      break;
+      case g:
+      h = 2 + (b - r) / delta;
+      break;
+      case b:
+      h = 4 + (r - g) / delta;
+      break;
+      }
+      return {
+      hue: (1000 + h / 6) % 1,
+      saturation: s,
+      brightness: v
+      };
+    };
+  }
+};
+
+module.exports.scripts = {
+
+  colorUtil: function(colorObj){
+  var colorArr = [];
+  var colorMode = colorObj.colorMode;
+  var inputColorSpace = ColorSpace.RGB;
+
+  if(colorObj.colorMode == "rgb"){
+      colorArr[0] = colorObj.colorValues.rgb.red/255.0;
+      colorArr[1] = colorObj.colorValues.rgb.green/255.0;
+      colorArr[2] = colorObj.colorValues.rgb.blue/255.0;
+    inputColorSpace = ColorSpace.RGB;
+    }else if(colorObj.colorMode == "lab"){
+      colorArr[0] = colorObj.colorValues.lab.l;
+      colorArr[1] = colorObj.colorValues.lab.a;
+      colorArr[2] = colorObj.colorValues.lab.b;
+    inputColorSpace = ColorSpace.LAB;
+    }else  if(colorObj.colorMode == "hsb"){
+      colorArr[0] = colorObj.colorValues.hsb.hue;
+      colorArr[1] = colorObj.colorValues.hsb.saturation;
+      colorArr[2] = colorObj.colorValues.hsb.brightness;
+
+    var rgb = kulerHSV2RGB(colorArr[0], colorArr[1], colorArr[2]);
+    colorObj.colorValues.rgb = {red: rgb.red, green: rgb.green, blue: rgb.blue};
+    colorArr[0] = colorObj.colorValues.rgb.red/255.0;
+      colorArr[1] = colorObj.colorValues.rgb.green/255.0;
+      colorArr[2] = colorObj.colorValues.rgb.blue/255.0;
+    colorMode = "rgb";
+    inputColorSpace = ColorSpace.RGB;
+    }else  if(colorObj.colorMode == "cmyk"){
+      colorArr[0] = colorObj.colorValues.cmyk.cyan/100.0;
+      colorArr[1] = colorObj.colorValues.cmyk.magenta/100.0;
+      colorArr[2] = colorObj.colorValues.cmyk.yellow/100.0;
+      colorArr[3] = colorObj.colorValues.cmyk.black/100.0;
+    inputColorSpace = ColorSpace.CMYK;
+    }
+
+  var colorModes = ["rgb", "lab", "cmyk"];
+
+  for (var i=0; i<colorModes.length; ++i)
+  {
+    if (colorModes[i] != colorMode)
+    {
+      // Do approprite conversion based on scripting
+      var outColorSpace = ColorSpace.RGB;
+      if (colorModes[i] == "rgb")
+        outColorSpace = ColorSpace.RGB;
+      else if (colorModes[i] == "cmyk")
+        outColorSpace = ColorSpace.CMYK;
+      else if (colorModes[i] == "lab")
+        outColorSpace = ColorSpace.LAB;
+
+      var colorsOwner = app;
+      if(app.documents.length)
+        colorsOwner = app.activeDocument;
+      var convertValues = colorsOwner.colorTransform(colorArr, inputColorSpace, outColorSpace);
+
+      if (colorModes[i] == "rgb")
+      {
+        if (convertValues.length == 3)
+        {
+          colorObj.colorValues.rgb = {red: convertValues[0]*255.0, green: convertValues[1]*255.0, blue: convertValues[2]*255.0};
+        }
+      }
+      else if (colorModes[i] == "cmyk")
+      {
+        if (convertValues.length == 4)
+        {
+          colorObj.colorValues.cmyk = {cyan: convertValues[0]*100.0, magenta: convertValues[1]*100.0, yellow: convertValues[2]*100.0, black: convertValues[3]*100.0};
+        }
+      }
+      else if (colorModes[i] == "lab")
+      {
+        if (convertValues.length == 3)
+        {
+          colorObj.colorValues.lab = {l: convertValues[0], a: convertValues[1], b: convertValues[2]};
+        }
+      }
+    }
+  }
+
+  if (colorObj.colorMode != "hsb")
+  {
+    var rgb = {red: colorObj.colorValues.rgb.red/255.0, green: colorObj.colorValues.rgb.green/255.0, blue: colorObj.colorValues.rgb.blue/255.0};
+    var hsb = kulerRGB2HSV(rgb);
+    colorObj.colorValues.hsb = {hue: hsb.hue*360.0, saturation: hsb.saturation*100.0, brightness: hsb.brightness*100.0};
+  }
+  var finalResult = JSON.stringify(colorObj);
+  return finalResult;
+  },
+
+  getLoggedInUser:  function() {
+    var userId = app.userGuid;
+    return userId;
+  },
+
+  getPrimaryColor: function(){
+
+  var activeColor = app.strokeFillProxySettings.fillColor;
+  if(app.strokeFillProxySettings.active == StrokeFillProxyOptions.stroke)
+    activeColor = app.strokeFillProxySettings.strokeColor;
+
+  var result = {};
+  result.colorValues = {};
+
+  if( null != activeColor && 'undefined' != typeof activeColor.colorValue && 'undefined' != typeof activeColor.space)
+  {
+    var colorArr = activeColor.colorValue;
+    var colorsOwner = app;
+    if(app.documents.length)
+      colorsOwner = app.activeDocument;
+
+    if (activeColor.space == ColorSpace.rgb)
+    {
+      result.colorValues.rgb = {red: colorArr[0], green: colorArr[1], blue: colorArr[2]};
+      result.colorMode = "rgb";
+    }
+    else if (activeColor.space == ColorSpace.cmyk)
+    {
+      result.colorValues.cmyk = {cyan: colorArr[0], magenta: colorArr[1], yellow: colorArr[2], black: colorArr[3]};
+      result.colorMode = "cmyk";
+    }
+    else if (activeColor.space == ColorSpace.lab)
+    {
+      result.colorValues.lab = {l: colorArr[0], a: colorArr[1], b: colorArr[2]};
+      result.colorMode = "lab";
+    }
+  }
+
+    var finalResult = JSON.stringify(result);
+  sendCEPEvent("KulerPanel:GetActiveColor");
+  return finalResult;
+  },
+
+  setPrimaryColor: function(colorObj){
+  var fill = true;
+  if(app.strokeFillProxySettings.active == StrokeFillProxyOptions.stroke)
+  {
+    fill = false;
+  }
+  var colorArr = new Array();
+  colorArr[0] = 255; colorArr[1] = 0; colorArr[2] = 0;
+  if(colorObj.colorMode === "rgb"){
+      colorArr[0]   = colorObj.colorValues.rgb.red;
+      colorArr[1] = colorObj.colorValues.rgb.green;
+      colorArr[2]  = colorObj.colorValues.rgb.blue;
+    }else if(colorObj.colorMode === "lab"){
+      colorArr[0]   = colorObj.colorValues.lab.l;
+      colorArr[1]   = colorObj.colorValues.lab.a;
+      colorArr[2]   = colorObj.colorValues.lab.b;
+    }else  if(colorObj.colorMode === "hsb"){
+      colorArr[0]           = colorObj.colorValues.hsb.hue;
+      colorArr[1]  = colorObj.colorValues.hsb.saturation;
+      colorArr[2] = colorObj.colorValues.hsb.brightness;
+    }else  if(colorObj.colorMode === "cmyk"){
+      colorArr[0]       = colorObj.colorValues.cmyk.cyan;
+      colorArr[1] = colorObj.colorValues.cmyk.magenta;
+      colorArr[2]     = colorObj.colorValues.cmyk.yellow;
+      colorArr[3]      = colorObj.colorValues.cmyk.black;
+    }
+  setColor(colorArr, colorObj.colorMode, fill);
+  sendCEPEvent("KulerPanel:SetActiveColor");
+  },
+
+  addThemeToSwatches: function(arrColorObj, title){
+  var elem, swatchName;
+
+  var colorsOwner = app;
+  if(app.documents.length)
+    colorsOwner = app.activeDocument;
+
+
+  var newColorGroup, newColor, colorToAdd, colorGroupName = title;
+  var iCount = 0;
+  var hsv2RGB;
+
+  var colorGroupToAdd = colorsOwner.colorGroups.item(title);
+  while( ('undefined' != typeof colorGroupToAdd) && (null != colorGroupToAdd) )
+  {
+    ++iCount;
+    colorGroupName = title +" "+ iCount;
+    colorGroupToAdd = colorsOwner.colorGroups.item(colorGroupName);
+  }
+  newColorGroup  = colorsOwner.colorGroups.add(colorGroupName);
+
+  for(var i = 0; i < arrColorObj.length; i++){
+    elem = arrColorObj[i];
+    if(elem.colorMode === "rgb"){
+      swatchName = "R="+Math.floor(elem.colorValues.rgb.red + 0.5) +" G="+Math.floor(elem.colorValues.rgb.green + 0.5) +" B="+Math.floor(elem.colorValues.rgb.blue + 0.5) ;
+    }else if(elem.colorMode === "lab"){
+      swatchName = "L="+Math.floor(elem.colorValues.lab.l + 0.5) +" a="+Math.floor(elem.colorValues.lab.a + 0.5) +" b="+Math.floor(elem.colorValues.lab.b + 0.5) ;
+    }else  if(elem.colorMode === "hsb"){
+      hsv2RGB = kulerHSV2RGB(elem.colorValues.lab.l, elem.colorValues.lab.a, elem.colorValues.lab.b);
+      swatchName = "R="+Math.floor(hsv2RGB.red + 0.5) +" G="+Math.floor(hsv2RGB.green + 0.5) +" B="+Math.floor(hsv2RGB.blue + 0.5) ;
+    }else  if(elem.colorMode === "cmyk"){
+      swatchName = "C="+Math.floor(elem.colorValues.cmyk.cyan + 0.5) +" M="+Math.floor(elem.colorValues.cmyk.magenta + 0.5) +" Y="+Math.floor(elem.colorValues.cmyk.yellow + 0.5) +" K="+Math.floor(elem.colorValues.cmyk.black + 0.5);
+    }
+
+    iCount = 0;
+    colorToAdd = colorsOwner.colors.item(swatchName);
+    var finalSwatchName = swatchName;
+    while((('undefined' != typeof colorToAdd) && (null != colorToAdd)) || ((swatchName == "[Registration]")||(swatchName == "[None]")||(swatchName == "[Black]") ))
+    {
+      ++iCount;
+      finalSwatchName = swatchName +" "+ iCount;
+      colorToAdd = colorsOwner.colors.item(finalSwatchName);
+
+    }
+
+    var space = ColorSpace.rgb;
+    var colorValue = new Array();
+    if (elem.colorMode == "rgb")
+    {
+      space = ColorSpace.rgb;
+      colorValue[0] = elem.colorValues.rgb.red;
+      colorValue[1] = elem.colorValues.rgb.green;
+      colorValue[2] = elem.colorValues.rgb.blue;
+    }
+    else if (elem.colorMode == "cmyk")
+    {
+      space = ColorSpace.cmyk;
+      colorValue[0] = elem.colorValues.cmyk.cyan;
+      colorValue[1] = elem.colorValues.cmyk.magenta;
+      colorValue[2] = elem.colorValues.cmyk.yellow;
+      colorValue[3] = elem.colorValues.cmyk.black;
+    }
+    else if (elem.colorMode == "lab")
+    {
+      space = ColorSpace.lab;
+      colorValue[0] = elem.colorValues.lab.l;
+      colorValue[1] = elem.colorValues.lab.a;
+      colorValue[2] = elem.colorValues.lab.b;
+    }
+    else if (elem.colorMode == "hsb")
+    {
+      space = ColorSpace.rgb;
+      colorValue[0] = hsv2RGB.r;
+      colorValue[1] = hsv2RGB.g;
+      colorValue[2] = hsv2RGB.b;
+    }
+    newColor = colorsOwner.colors.add({name:finalSwatchName, model:ColorModel.process, space:space,colorValue:colorValue, parentColorGroup: newColorGroup});
+  }
+
+  sendCEPEvent("KulerPanel:AddToSwatches");
+  },
+
+  clear: function(options){
+  // Any cleanup activity to be done after panel is unloaded
+  },
+
+};
+
+});
+

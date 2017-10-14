@@ -1,11 +1,10 @@
-FROM python:3
-ENV PYTHONUNBUFFERED 1
+FROM node:8.2.1
 
-RUN mkdir /code
-WORKDIR /code
+RUN mkdir /node
+WORKDIR /node
 
-ADD requirements.txt /code/
-RUN pip install -r requirements.txt
+ADD package.json /node
+ADD yarn.lock /node
+RUN yarn install >/dev/null 2>/dev/null
 
-ADD . /code/
-ENTRYPOINT /code/entrypoint.sh
+ADD . /node/

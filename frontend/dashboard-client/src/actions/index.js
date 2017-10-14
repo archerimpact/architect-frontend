@@ -26,6 +26,21 @@ export function addTag(entities, name, tag) {
 	}
 }
 
+export function deleteTag(entities, name, tag) {
+	let entity = entities.find(x => x.name === name)
+	const index = entities.indexOf(entity)
+	entities[index] = Object.assign({}, entities[index])
+	
+	const new_chips = entities[index].chips
+	const chipIndex = new_chips.find(x => x === name)
+	entities[index].chips = entities[index].chips.splice().splice(chipIndex)
+
+	return {
+		type: ADD_TAG,
+		payload: entities
+	}
+}
+
 export function retrieveDetails(actionType, res) {
 	return {
 		type: actionType,

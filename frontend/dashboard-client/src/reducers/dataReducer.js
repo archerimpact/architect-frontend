@@ -2,7 +2,6 @@ import { ADD_LINK, ADD_ENTITY, ADD_TAG } from '../constants/actionTypes';
 import initialState from './initialState';
 
 export default function (state = initialState, action) {
-	
 	switch(action.type) {
 		case ADD_LINK:
 			return {

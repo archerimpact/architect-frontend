@@ -30,10 +30,13 @@ class NodeGraph extends Component {
 
 	getNodeColor(node) {
 		if (node.type === "Person") {
-			return "#FF0000"
+			return "#4FFFB3"
 		}
 		if (node.type === "Company") {
-			return "#add8e6" 
+			return "#4276FF" 
+		}
+		if (node.type === "Location") {
+			return "#3CCCE8"
 		}
 	}
 
@@ -53,8 +56,8 @@ class NodeGraph extends Component {
 
 		const simulation = d3.forceSimulation(data.nodes)
 			.force("center", d3.forceCenter(width/3, height/2))
-    		.force("charge", d3.forceManyBody().strength(-400))
-    		.force("link", d3.forceLink().id(function(d) { return d.id; }));
+    		.force("charge", d3.forceManyBody())
+    		.force("link", d3.forceLink().distance(50).id(function(d) { return d.id; }));
 
 		const svg = d3.select(this.refs.mountPoint)
 			.append('svg')
@@ -62,7 +65,7 @@ class NodeGraph extends Component {
 			.attr('height', height)
 			.attr('display', "block")
 			.attr('margin', "auto")
-			.attr('id', 'svg1');
+			.attr('id', 'svg1')
 
 		const linkElements = svg.selectAll('line')
 			.data(data.links)
@@ -80,18 +83,27 @@ class NodeGraph extends Component {
 			.append('g')
 			.style('cursor', 'pointer')
 
+		var event = d3.event
+
 		nodeElements.append('circle')
 			.attr('r',10)
 			.style('stroke', '#999999')
 			.style('stroke-width', 1.5)
 			.style('fill', (d) => this.getNodeColor(d));
 
+		svg.selectAll('circle').call(d3.drag()
+				.on("start", dragstarted)
+				.on("drag", dragged)
+				.on("end", dragended))
+
+
 		nodeElements.append('text')
 			.style("font-size", "12px")
-			.text((d) => d.name + ": " + d.type);	
+			.text((d) => d.name + ": " + d.type)
+			.call(dragDrop);	
 
 		simulation.on('tick', () => {
-			var movement = 400;
+			var movement = 0;
 			linkElements
 				.attr('x1', (d) => d.source.x)
 				.attr('y1', (d) => d.source.y)
@@ -102,7 +114,27 @@ class NodeGraph extends Component {
 		})	
 		simulation.force("link").links(data.links)
 
-		const dragDrop = d3.drag()
+		function dragstarted(d) {
+			debugger
+			if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+  				d.fx = d.x;
+  				d.fy = d.y;
+		}
+
+		function dragged(d) {
+			d.fx = d3.event.x;
+  			d.fy = d3.event.y;
+		}
+
+		function dragended(d) {
+  			if (!d3.event.active) simulation.alphaTarget(0);
+  				d.fx = null;
+ 				d.fy = null;
+			}
+
+		function dragDrop() {
+
+			d3.drag()
 			.on('start', (g) => {
 				debugger
 				g.children[0].fx = g.children[0].x
@@ -119,8 +151,7 @@ class NodeGraph extends Component {
 				}
 				g.children[0].fx = null
 				g.children[0].fy = null
-			})
-		nodeElements.call(dragDrop)
+			})}
 	}
 	
 

@@ -1,20 +1,18 @@
 version: '3'
 services:
-  db:
-    image: postgres
   backend:
     build: backend
     restart: always
+    command: node app.js
     volumes:
-      - ./backend:/code
+      - ./backend:/node
+      - /node/node_modules
     ports:
       - "8000:8000"
-    depends_on:
-      - db
   frontend:
     build: frontend/dashboard-client
     restart: always
-    command: yarn start
+    command: npm start
     volumes:
       - ./frontend/dashboard-client:/code
       - /code/node_modules

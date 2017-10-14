@@ -8,8 +8,8 @@
 
 ### Adding dependencies to the backend
 
-1. Add a line to `backend/requirements.txt`.
-2. Run `docker-compose build` to rebuild with the new requirement.
+1. From the project directory run `docker-compose exec backend yarn add <package>`.
+2. Make sure your teammates run `docker-compose build` whenever they eventually get your code changes, so that their backend containers rebuild with the new package.
 
 ### Migrations in PostrgreSQL
 

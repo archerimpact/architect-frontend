@@ -16,7 +16,7 @@ class EntityList extends Component {
 	render() {
 		return (
 			<div>
-			{this.props.savedEntities.entities.map((entity) => {
+			{this.props.savedEntities.entities.slice().reverse().map((entity) => {
 
 			return (
 				<div>

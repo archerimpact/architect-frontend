@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from '../assets/logo.svg';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import './App.css';
@@ -15,6 +14,7 @@ class SaveLinks extends Component {
             link: {url: '', label: ''},
         }
     }
+
     handleLinkInputChange(event) {
         this.setState({
             link: {
@@ -23,6 +23,7 @@ class SaveLinks extends Component {
             }
         })
     }
+
     handleLabelInputChange(event) {
         this.setState({
             link: {
@@ -31,6 +32,7 @@ class SaveLinks extends Component {
             }
         })
     }
+
     addLink() {
         this.props.dispatch(actions.addLink(this.state.link))
         this.setState({
@@ -40,7 +42,6 @@ class SaveLinks extends Component {
             }
         })
     }
-
 
     render() {
         return (
@@ -80,7 +81,6 @@ class SaveLinks extends Component {
                         </div>
                     );
                 })}
-
           </div>
         );
     }

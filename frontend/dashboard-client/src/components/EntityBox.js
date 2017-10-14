@@ -60,8 +60,9 @@ class EntityBox extends Component {
 		})
 	}
 
-	handleRequestDelete() {
-		return
+	handleRequestDelete = (e) => {
+		let entities = this.props.savedEntities.entities.slice();
+		this.props.dispatch(actions.deleteTag(entities, this.props.name, this.children))
 	}
 
 	render() {

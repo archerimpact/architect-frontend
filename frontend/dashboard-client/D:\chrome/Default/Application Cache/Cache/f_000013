@@ -1,0 +1,503 @@
+define(function(require, exports, module) {
+
+  /*
+  * NOTE:-
+  *       Before executing any extend script, JSON is injected into global context.
+  *       Color Object Format ( to be passed/returned while intraction to Kuler)
+  *       Each function in scripts will be executed in either CEP context or application  context.
+  *       To differentiate those functions, a signature ("_CEP") must be appended to the function name to execute it in CEP context else it will run in default application context.
+  * Definitions:-
+  *  1:-   colorObject : {
+  *            colorValues : {
+          *         "rgb"    : {
+          *                       "red" : (0,255),
+          *                       "green" : (0,255),
+          *                       "blue" : (0,255),
+          *                     },
+          *         "hsb"    : {
+          *                       "hue" : (0,360),
+          *                       "saturation" : (0,100),
+          *                       "brightness" : (0,100)
+          *                     },
+          *         "lab"     : {
+          *                     "l"  : (0,100),
+          *                     "a" : (-128,127),
+          *                     "b" : (-128,127)
+          *                     },
+          *         "cmyk"  : {
+          *                     "cyan" : (0,100),
+          *                     "magenta" : (0,100),
+          *                     "yellow" : (0,100),
+          *                     "black" : (0,100),
+          *                     }
+          *       }
+          *    },
+          *    colorMode : "can be any of 'rgb','hsb','lab,'cmyk'  "
+  *       };
+  *  2:-   Primary color :-  It  can be active color i.e. Forground in case of PS, stoke/fill color in case of ID. Foreground/background color in case of AI
+  */
+
+module.exports.settings = {
+  /*
+  Each setting variable can have 3 values
+  true - feature enabled
+  false - feature disabled.
+  function - this function returns true or false on basis of some condition ( for e.g. PP version specifc feature)
+  This function will be executed in context of Product by using csInterface.evalscript.
+   */
+ liveColorWheel : false,
+
+ /*
+  Enabling managedColor will allow the extension to use PP color conversion utilities.
+  For this to work, colorutil must be implemented.
+ */
+ managedColor: true,
+
+ /**
+ * [syncSecondaryColor  Enabling this feature allows to set background color from Kuler Panel to PP
+ * SecondayColor can be background color in PS, fill color in Id etc.
+ * ]
+ * @type {[boolean]}
+ */
+ syncSecondaryColor : false,
+
+ addThemeToSwatches: true,
+
+ syncPrimaryColor: true,
+
+ disableLogin: false
+
+};
+
+  /**
+   * Events which panel should listen for specific activities
+   *
+   */
+module.exports.events = {
+  /**
+   * PrimaryColorChanged event returns the primary color of application in JSON stringified format whenever it is changed from outisde of Kuler Panel.
+   *
+   * looseFocus event will be sent by extension to application. This event
+   */
+
+  primaryColorChanged: "string or function",
+
+  looseFocus: "string or function",
+
+  persistExtension: "string or function"
+};
+
+/**
+ * Set of utilities which can be used in any script should be put here
+ * e.g. PP specific color conversion utilty can be put in pre for being used in all functions
+ * @return none
+ */
+module.exports.pre = function() {
+  if(typeof(rgbToHsv) != 'function'){
+    rgbToHsv = function (rgb) {
+      var h = 0;
+      var r = rgb.red;
+      var g = rgb.green;
+      var b = rgb.blue;
+      var min = Math.min(r, g, b);
+      var v = Math.max(r, g, b);
+      var s = (v === 0) ? 0 : (v - min) / v;
+      var delta = (s === 0) ? 0.00001 : v - min;
+      switch (v) {
+      case r:
+        h = (g - b) / delta;
+        break;
+      case g:
+        h = 2 + (b - r) / delta;
+        break;
+      case b:
+        h = 4 + (r - g) / delta;
+        break;
+      }
+      return {
+        hue: (1000 + h / 6) % 1,
+        saturation: s,
+        brightness: v
+      };
+    };
+  }
+
+  if(typeof(hsvToRgb) != 'function'){
+    hsvToRgb =  function (hsv) {
+      var h = (hsv.hue /360.0) * 6;
+      var s = (hsv.saturation /100.0);
+      var v = (hsv.brightness /100.0);
+      var r;
+      var g;
+      var b;
+      if (s == 0)
+      {
+        r = v;
+        g = v;
+        b = v;
+      }
+      else
+      {
+        if (h >= 6)
+          h -= 6;
+
+        var i = parseInt(h);
+        var f = h - i;
+
+        var p= v * (1 - s);
+        var q = v * (1 - (s * f));
+        var t = v * (1 - (s * (1 - f)));
+
+        switch (i)
+        {
+        case 0:
+          r = v;  g = t;  b = p;
+          break;
+
+        case 1:
+          r = q;  g = v;  b = p;
+          break;
+
+        case 2:
+          r = p;  g = v;  b = t;
+          break;
+
+        case 3:
+          r = p;  g = q;  b = v;
+          break;
+
+        case 4:
+          r = t;  g = p;  b = v;
+          break;
+
+        case 5:
+          r = v;  g = p;  b = q;
+          break;
+        }
+      }
+      if(r<0){r=0;}
+      if(g<0){g=0;}
+      if(b<0){b=0;}
+      if(r>1){r=1;}
+      if(g>1){g=1;}
+      if(b>1){b=1;}
+
+      var rgb = {red:r*255 , green:g*255, blue:b*255};
+      return rgb;
+    };
+  }
+}
+
+module.exports.scripts = {
+
+  /**
+   *  Converts a color from one inputMode to all other modes
+   *
+   * @param {array} colorArr Array of color values ranging from (0-255) in case of RGB and other standard ranges in cases of other modes
+   * @param {string} inputColorMode Mode in which the input color is represented e.g. "rgb", "hsb", "cmyk", "lab"
+   *@return {colorObject} [JSON stringified colorObject defined in top Note section]
+   *
+   */
+
+  colorUtil: function(colorObj){
+    var rgbArr,labArr,cmykArr,hsbArr,c,newValues={};
+    var m = colorObj.colorMode;
+    if( m === "rgb"){
+        c = colorObj.colorValues.rgb;
+        newValues.rgb = {};
+        newValues.rgb.red   = c.red;
+        newValues.rgb.green = c.green;
+        newValues.rgb.blue  = c.blue;
+        labArr = app.convertSampleColor( ImageColorSpace.RGB, [c.red,c.green,c.blue],ImageColorSpace.LAB,ColorConvertPurpose.defaultpurpose ,false,false);
+        cmykArr = app.convertSampleColor( ImageColorSpace.RGB, [c.red,c.green,c.blue],ImageColorSpace.CMYK,ColorConvertPurpose.defaultpurpose ,false,false);
+        hsbArr = undefined;
+    }else if( m === "lab"){
+        c  = colorObj.colorValues.lab;
+        newValues.lab = {};
+        newValues.lab.l   = c.l;
+        newValues.lab.a   = c.a;
+        newValues.lab.b   = c.b;
+        rgbArr = app.convertSampleColor( ImageColorSpace.LAB, [c.l,c.a,c.b],ImageColorSpace.LAB,ColorConvertPurpose.defaultpurpose ,false,false);
+        cmykArr = app.convertSampleColor( ImageColorSpace.LAB, [c.l,c.a,c.b],ImageColorSpace.CMYK,ColorConvertPurpose.defaultpurpose ,false,false);
+        hsbArr = undefined;
+    }else  if( m === "hsb"){
+        c = colorObj.colorValues.hsb;
+        newValues.hsb = {};
+        newValues.hsb.hue         = c.hue;
+        newValues.hsb.saturation  = c.saturation;
+        newValues.hsb.brightness  = c.brightness;
+        var rgb = hsvToRgb(colorObj.colorValues.hsb);
+        rgbArr =[]; rgbArr[0] = rgb.red; rgbArr[1] = rgb.green; rgbArr[2] = rgb.blue;
+        labArr = app.convertSampleColor( ImageColorSpace.RGB, [rgbArr[0],rgbArr[1],rgbArr[2]],ImageColorSpace.LAB,ColorConvertPurpose.defaultpurpose ,false,false);
+        cmykArr = app.convertSampleColor( ImageColorSpace.RGB, [rgbArr[0],rgbArr[1],rgbArr[2]],ImageColorSpace.CMYK,ColorConvertPurpose.defaultpurpose ,false,false);
+    }else  if( m === "cmyk"){
+        c = colorObj.colorValues.cmyk;
+        newValues.cmyk = {};
+        newValues.cmyk.cyan       = c.cyan;
+        newValues.cmyk.magenta    = c.magenta;
+        newValues.cmyk.yellow     = c.yellow;
+        newValues.cmyk.black      = c.black;
+        labArr = app.convertSampleColor( ImageColorSpace.CMYK, [c.cyan,c.magenta,c.yellow,c.black],ImageColorSpace.LAB,ColorConvertPurpose.defaultpurpose ,false,false);
+        rgbArr = app.convertSampleColor( ImageColorSpace.CMYK, [c.cyan,c.magenta,c.yellow,c.black],ImageColorSpace.RGB,ColorConvertPurpose.defaultpurpose ,false,false);
+        hsbArr = undefined;
+    }
+    if(m != "rgb"){
+      newValues.rgb = {};
+      newValues.rgb.red   = rgbArr[0];
+      newValues.rgb.green = rgbArr[1];
+      newValues.rgb.blue  = rgbArr[2];
+    }
+
+    if(m!="lab"){
+      newValues.lab = {};
+      newValues.lab.l    = labArr[0];
+      newValues.lab.a   = labArr[1];
+      newValues.lab.b   = labArr[2];
+    }
+
+    if(m!="cmyk"){
+      newValues.cmyk = {};
+      newValues.cmyk.cyan       = cmykArr[0];
+      newValues.cmyk.magenta = cmykArr[1];
+      newValues.cmyk.yellow     = cmykArr[2];
+      newValues.cmyk.black      = cmykArr[3];
+    }
+    
+     if (m != "hsb"){
+      var rgb = {red: newValues.rgb.red/255.0, green: newValues.rgb.green/255.0, blue: newValues.rgb.blue/255.0};
+      var hsb = rgbToHsv(rgb);
+      newValues.hsb = {hue: hsb.hue*360.0, saturation: hsb.saturation*100.0, brightness: hsb.brightness*100.0};
+    }
+
+    var finalColorObj = {};
+          finalColorObj.colorValues = newValues;
+          finalColorObj.colorMode = colorObj.colorMode;
+    return JSON.stringify(finalColorObj);
+  },
+
+  /**
+   *  Get  current Logged-in user's AdobeID e.g. 2CB960E75342747E0A490D34@AdobeID
+   *
+   * @param none
+   * @return {string} AdobeID of loggedIn User, returns null or undefined if no user is logged in
+   */
+
+  getLoggedInUser:  function() {
+    var userId = app.userGUID;
+    return userId;
+  },
+
+  /**
+   *  Sets the  passed color as primary  color of Point product
+   *
+   * @param {array of floating point numbers} [colorArr] [An array of floating point numbers]
+   * @param {string} inputColorMode color Mode in which the input color array is represented e.g. "rgb", "hsb", "cmyk", "lab"
+   * @return {nothing}
+   */
+
+  setPrimaryColor: function(colorObj){
+    if(app.documents.length <= 0 ){
+      return undefined;
+    }
+   var c;
+    if(colorObj.colorMode === "rgb"){
+      c = new RGBColor();
+      c.red   = colorObj.colorValues.rgb.red;
+      c.green = colorObj.colorValues.rgb.green;
+      c.blue  = colorObj.colorValues.rgb.blue;
+    }else if(colorObj.colorMode === "lab"){
+      c = new LabColor();
+      c.l    = colorObj.colorValues.lab.l;
+      c.a   = colorObj.colorValues.lab.a;
+      c.b   = colorObj.colorValues.lab.b;
+    }else  if(colorObj.colorMode === "hsb"){
+      //Since there is no support for HSBColor in ILST scripting guide, converting HSB to RGB
+      var rgb = hsvToRgb(colorObj.colorValues.hsb);
+      c = new RGBColor();
+      c.red   = rgb.red;
+      c.green = rgb.green;
+      c.blue  = rgb.blue;
+    }else  if(colorObj.colorMode === "cmyk"){
+      c = new CMYKColor();
+      c.cyan       = colorObj.colorValues.cmyk.cyan;
+      c.magenta = colorObj.colorValues.cmyk.magenta;
+      c.yellow     = colorObj.colorValues.cmyk.yellow;
+      c.black      = colorObj.colorValues.cmyk.black;
+    }
+
+    if(app.isStrokeActive()){
+      app.activeDocument.defaultStrokeColor = c;
+    }else{
+      app.activeDocument.defaultFillColor = c;
+    }
+  },
+
+  /**
+   * [ Get primary color of application]
+   * @return {[array of numbers]} [ Array of numbers represent  primary color of application]
+   */
+  getPrimaryColor: function(){
+    var c;
+    if(app.isStrokeActive()){
+      c = app.activeDocument.defaultStrokeColor;
+    }else{
+      c = app.activeDocument.defaultFillColor;
+    }
+    var colorObj = {};
+    if(c.typename == "CMYKColor"){
+      colorObj.colorMode = "cmyk";
+      colorObj.colorValues = { "cmyk" : c };
+    }else if(c.typename == "RGBColor"){
+      colorObj.colorMode = "rgb";
+      colorObj.colorValues = { "rgb" : c };
+    }else if(c.typename == "LabColor"){
+      colorObj.colorMode = "lab";
+      colorObj.colorValues = { "lab" : c };
+    }else if (c.typename == 'SpotColor'){
+      colorObj.colorMode = 'spot';
+      colorObj.colorValues = {'spot' : c.spot.color};
+      if(c.spot.color.typename == "CMYKColor"){
+        colorObj.colorMode = "cmyk";
+        colorObj.colorValues = { "cmyk" : c.spot.color };
+      }else if(c.spot.color.typename == "RGBColor"){
+        colorObj.colorMode = "rgb";
+        colorObj.colorValues = { "rgb" : c.spot.color };
+      }else if(c.spot.color.typename == "LabColor"){
+        colorObj.colorMode = "lab";
+        colorObj.colorValues = { "lab" : c.spot.color };
+      }
+    }else {
+      colorObj = undefined;
+    }
+    return JSON.stringify(colorObj);
+  },
+
+  /**
+   * Set Secondary color of application
+   * @param  {[array of numbers]} colorArr [Array of number representing a color object to be set as secondary color of PP]
+   * @return none
+   */
+  setSecondaryColor: undefined,
+
+  addThemeToSwatches: function(arrColorObj, title){
+    try{
+      if('undefined' != typeof app
+        && 'undefined' != typeof app.documents
+        && 0 != app.documents.length
+        && 'undefined' != typeof app.activeDocument)
+      {
+        var doc = app.activeDocument;
+        var newSwatchGrp = doc.swatchGroups.add();
+        newSwatchGrp.name = title;
+        for(i=0;i<arrColorObj.length;i++)
+        {
+
+          //Creating the Appropriate Name
+          var col = arrColorObj[i];
+          // //Creating the Appropriate Name
+          var swatchColorName='';
+          if(col.colorMode === "rgb"){
+            swatchName = "R="+Math.floor(col.colorValues.rgb.red + 0.5) +" G="+Math.floor(col.colorValues.rgb.green + 0.5) +" B="+Math.floor(col.colorValues.rgb.blue + 0.5) ;
+          }else if(col.colorMode === "lab"){
+            swatchName = "L="+Math.floor(col.colorValues.lab.l + 0.5) +" a="+Math.floor(col.colorValues.lab.a + 0.5) +" b="+Math.floor(col.colorValues.lab.b + 0.5) ;
+          }else  if(col.colorMode === "hsb"){
+            hsv2RGB = hsvToRgb(col.colorValues.hsb);
+            swatchName = "R="+Math.floor(hsv2RGB.red + 0.5) +" G="+Math.floor(hsv2RGB.green + 0.5) +" B="+Math.floor(hsv2RGB.blue + 0.5) ;
+          }else  if(col.colorMode === "cmyk"){
+            swatchName = "C="+Math.floor(col.colorValues.cmyk.cyan + 0.5) +" M="+Math.floor(col.colorValues.cmyk.magenta + 0.5) +" Y="+Math.floor(col.colorValues.cmyk.yellow + 0.5) +" K="+Math.floor(col.colorValues.cmyk.black + 0.5);
+          }
+          var newColor;
+          //creating the color
+          if(col.colorMode.toLowerCase() == "rgb")
+          {
+              newColor = new RGBColor();
+              newColor.red = col.colorValues.rgb.red;
+              newColor.green = col.colorValues.rgb.green;
+              newColor.blue = col.colorValues.rgb.blue;
+          }
+          else if(col.colorMode.toLowerCase() == "cmyk")
+          {
+              newColor = new CMYKColor();
+              newColor.cyan = col.colorValues.cmyk.cyan;
+              newColor.magenta = col.colorValues.cmyk.magenta
+              newColor.yellow = col.colorValues.cmyk.yellow;
+              newColor.black = col.colorValues.cmyk.black;
+          }
+          else if(col.colorMode.toLowerCase() ==  "lab")
+          {
+            var lab = col.colorValues.lab;
+            var rgbArr = app.convertSampleColor( ImageColorSpace.LAB,
+              [ lab.l, lab.a, lab.b ] ,
+              ImageColorSpace.RGB,
+              ColorConvertPurpose.defaultpurpose ,
+              false,
+              false);
+              newColor = new RGBColor();
+              newColor.red = rgbArr[0]
+              newColor.green = rgbArr[1];
+              newColor.blue = rgbArr[2];
+          }
+          else if(col.colorMode.toLowerCase() == "hsb")
+          {
+              var rgb = hsvToRgb(col.colorValues.hsb);
+              newColor = new RGBColor();
+              newColor.red = rgb.red;
+              newColor.green = rgb.green;
+              newColor.blue = rgb.blue;
+          }
+
+          var newSwatch = doc.swatches.add();
+            newSwatch.name = swatchColorName;
+            newSwatch.color = newColor;
+            newSwatchGrp.addSwatch(newSwatch);
+        }
+      }
+    }
+    catch(err)
+    {
+      //TODO: - nothing
+    }
+  },
+
+
+    isTouchWorkspace: function(){
+      return app.IsTouchWorkspace();
+    },
+
+
+  /**
+   * Loose focus from Panel to application. While panel has focus, keyboard shortcuts of PP doesn't work.
+   * To force lose focus when user moves out mouse, it is used.
+   * This function will run in CEP context
+   *
+   * @param  {[object]} csInterface [csInterface object to use in creating event]
+   * @param  {[object]} options     [any optional parameter to pass while invoking function]
+   * @return none
+   */
+  looseFocus_CEP: undefined,
+
+  /**
+   * Persist the extension during the session of application i.e. extension won't unload until the application is quit.
+   * After user deselcts the Kuler Menu ( Window->Extension->Adobe Kuler), the extension is unloaded to enhance user's experience,
+   * This function will run in CEP context
+   *
+   * @param  {[type]} csInterface [description]
+   * @param  {[type]} options     [description]
+   * @return {[type]}             [description]
+   */
+   persistExtension_CEP: undefined,
+
+ /**
+  * Any cleanup activity to be performed before the extension is unloaded
+  * @param  {[object]} options Additional parameter to pass while cleanup
+  * @return none
+  */
+  clear: function(options){
+  // Any cleanup activity to be done after panel is unloaded
+  }
+
+};
+
+});
+
+
