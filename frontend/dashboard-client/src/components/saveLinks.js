@@ -57,7 +57,6 @@ class SaveLinks extends Component {
                   style = {{width: 500, marginRight: 20}}
                   onChange={this.handleLinkInputChange.bind(this)}
                 />
-                { ' ' }
                 <TextField
                   hintText="e.g. News article on Alice Ma"
                   floatingLabelText="(Optional) Add a note"
@@ -71,7 +70,6 @@ class SaveLinks extends Component {
                   primary
                   onClick={this.addLink.bind(this)}
                   label="Add" />
-                { ' ' }
                 <p> Your Saved Links </p>
                 {this.props.savedLinks.links.slice(0).reverse().map((link, id) => {
                     return (
