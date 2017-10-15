@@ -27,8 +27,8 @@ export function addLink(link) {
 // 	}
 // }
 
-// export function logOutUser() {
-// 	return {
-// 		type: USER_LOGOUT,
-// 	}
-// }
+export function logOutUser() {
+	return {
+		type: USER_LOGOUT,
+	}
+}

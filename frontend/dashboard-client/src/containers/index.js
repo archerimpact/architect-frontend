@@ -17,7 +17,7 @@ export default class Root extends Component {
 			    	<div>
 			    		<App/>
 			    		<Route exact path="/" component={Home} />
-			    		<div className="App">
+			    		<div className="Body">
 							<Route path="/links" component={SaveLinks}/>
 						</div>
 					</div>
