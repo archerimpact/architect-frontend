@@ -8,12 +8,12 @@ export function addLink(link) {
 	}
 }
 
-export function retrieveDetails(actionType, res) {
-	return {
-		type: actionType,
-		payload: res
-	};
-}
+// export function retrieveDetails(actionType, res) {
+// 	return {
+// 		type: actionType,
+// 		payload: res
+// 	};
+// }
 
 // export function fetchData(endpoint, actionType) {
 // 	return function (dispatch, getState) {
@@ -27,8 +27,8 @@ export function retrieveDetails(actionType, res) {
 // 	}
 // }
 
-export function logOutUser() {
-	return {
-		type: USER_LOGOUT,
-	}
-}
+// export function logOutUser() {
+// 	return {
+// 		type: USER_LOGOUT,
+// 	}
+// }
