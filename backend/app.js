@@ -5,6 +5,7 @@ var express = require('express'),
     passport = require('passport'),
     LocalStrategy = require('passport-local'),
     User = require('./models/user');
+    Document = require('./models/document')
     
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -33,6 +34,22 @@ app.use(function(req, res, next) {
     res.locals.currentUser = req.user;
     next();
 });
+
+app.post('/project', function(req, res) {
+    var d = {};
+    d.title = req.body.title;
+    d.text = req.body.text;
+    var newDocument = new Document(req.body);
+    console.log("this is the document " + d.title)
+    newDocument.save()
+        .then(item => {
+            res.send("item saved to database, text is" + d.title);
+        })
+        .catch(err => {
+            res.status(400).send("unable to save to database");
+        });
+
+})
 
 app.post('/login', passport.authenticate('local', {
         successRedirect: '/loggedIn',

@@ -1,15 +1,10 @@
 FROM node:8.2.1
 
-RUN mkdir -p /src/code
+RUN mkdir /code
+WORKDIR /code
 
-WORKDIR /src/code
-
-ADD package.json /src/code
+ADD package.json /code
 ADD yarn.lock /code
-RUN npm install 
-
-COPY ./src/app
-
-RUN npm run build
+RUN yarn install >/dev/null 2>/dev/null
 
 ADD . /code/

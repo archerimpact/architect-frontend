@@ -7,9 +7,7 @@ import EntityExtractor from './EntityExtractor';
 
 import Paper from 'material-ui/Paper';
 import './App.css'
-import {
-  Link
-} from 'react-router-dom';
+
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';

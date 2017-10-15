@@ -12,7 +12,7 @@ services:
   frontend:
     build: frontend/dashboard-client
     restart: always
-    command: npm start
+    command: yarn start
     volumes:
       - ./frontend/dashboard-client:/code
       - /code/node_modules

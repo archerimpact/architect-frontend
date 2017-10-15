@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Paper from 'material-ui/Paper';
 import EntityBox from './EntityBox.js'
 
 import { connect } from 'react-redux';
@@ -7,12 +6,6 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../actions/';
 
 class EntityList extends Component {
-
-	constructor(props) {
-		super(props);
-
-	}
-
 	render() {
 		return (
 			<div>

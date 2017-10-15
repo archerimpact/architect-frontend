@@ -4,11 +4,6 @@ import * as d3 from 'd3'
 
 class NodeGraph extends Component {
 
-	constructor(props){
-		super(props);
-		
-	}
-
 	entitiesToNodes(entities) {
 		return entities.map((entity) => {
 			return {"id": entity.name, "name": entity.name, "type": entity.type}
@@ -75,15 +70,12 @@ class NodeGraph extends Component {
 			.style('stroke-opacty', 0.6)
 			.style('stroke-width', 1.5);
 
-		const color = '#443030';
 
 		const nodeElements = svg.selectAll('circle')
 			.data(data.nodes)
 			.enter()
 			.append('g')
 			.style('cursor', 'pointer')
-
-		var event = d3.event
 
 		nodeElements.append('circle')
 			.attr('r',10)

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import Popover from 'material-ui/Popover/Popover';
 import RaisedButton from 'material-ui/RaisedButton';
-import {Menu, MenuItem} from 'material-ui/Menu';
 import TextField from 'material-ui/TextField';
 import AutoComplete from 'material-ui/AutoComplete';
 

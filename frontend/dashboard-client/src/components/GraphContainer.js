@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import './App.css';
-import * as d3 from 'd3'
-
 import Paper from 'material-ui/Paper';
 
 import NodeGraph from './NodeGraph.js';
@@ -20,7 +18,7 @@ class GraphContainer extends Component {
 	}
 
 	componentWillReceiveProps(nextProps){
-		if (this.props != nextProps) {
+		if (this.props !== nextProps) {
 			this.setState({
 				entities: nextProps.savedEntities.entities
 			})
