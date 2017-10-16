@@ -4,25 +4,28 @@ import * as d3 from 'd3'
 
 class NodeGraph extends Component {
 
+	//takes in a list of entities and maps it to a list of nodes for the d3 simulation
 	entitiesToNodes(entities) {
 		return entities.map((entity) => {
 			return {"id": entity.name, "name": entity.name, "type": entity.type}
-
 		});
-	}
+	};
 
+	//takes all of the tags of one entity and returns an array of all the links of that one entity
 	tagsToLinks(entity) {
 		return entity.chips.map((chip) => {
 			return {"source": entity.name, "target": chip}
-		})
-	}
+		});
+	};
 
+	//iterates over all the entities and builds an array of all the links for the d3 simulation
 	entitiesToLinks(entities) {
 		return [].concat.apply([], entities.map((entity) => {
 			return this.tagsToLinks(entity);
-		}))
-	}
+		}));
+	};
 
+	//returns the color of the node based on the type of the entity
 	getNodeColor(node) {
 		if (node.type === "Person") {
 			return "#4FFFB3"
@@ -35,11 +38,10 @@ class NodeGraph extends Component {
 		}
 	}
 
+	//the entire logic for generating a d3 forceSimulation graph
 	generateNetworkCanvas(entities) {
 		const dataNodes = this.entitiesToNodes(entities)
-		console.log(dataNodes)
 		const linkNodes = this.entitiesToLinks(entities)
-		console.log(linkNodes)
 
 		const data = {
 			"nodes": dataNodes,
@@ -83,16 +85,17 @@ class NodeGraph extends Component {
 			.style('stroke-width', 1.5)
 			.style('fill', (d) => this.getNodeColor(d));
 
+		/* The following is a function for making the graph draggable. Still a work in progress.
 		svg.selectAll('circle').call(d3.drag()
 				.on("start", dragstarted)
 				.on("drag", dragged)
 				.on("end", dragended))
+		*/
 
 
 		nodeElements.append('text')
 			.style("font-size", "12px")
 			.text((d) => d.name + ": " + d.type)
-			.call(dragDrop);	
 
 		simulation.on('tick', () => {
 			var movement = 0;
@@ -106,8 +109,8 @@ class NodeGraph extends Component {
 		})	
 		simulation.force("link").links(data.links)
 
+		/* The following is the functions for making the graph draggable. Still a work in progress.
 		function dragstarted(d) {
-			debugger
 			if (!d3.event.active) simulation.alphaTarget(0.3).restart();
   				d.fx = d.x;
   				d.fy = d.y;
@@ -125,10 +128,8 @@ class NodeGraph extends Component {
 			}
 
 		function dragDrop() {
-
 			d3.drag()
 			.on('start', (g) => {
-				debugger
 				g.children[0].fx = g.children[0].x
 				g.children[0].fy = g.children[0].y
 			})
@@ -143,23 +144,18 @@ class NodeGraph extends Component {
 				}
 				g.children[0].fx = null
 				g.children[0].fy = null
-			})}
+			})} */
 	}
 	
-
-	componentWillReceiveProps(nextProps) {
-		
+	//When the props update (aka when there's a new entity or relationship), delete the old graph and create a new one
+	componentWillReceiveProps(nextProps) {		
 		const mountPoint = d3.select('#svgdiv')
 		mountPoint.selectAll("svg").remove()
-
-		this.generateNetworkCanvas(nextProps.entities)
-		
+		this.generateNetworkCanvas(nextProps.entities)	
 	}
 
-
-
+	//builds the first graph based on after the component mounted and mountPoint was created.
 	componentDidMount = () => {
-
 		this.generateNetworkCanvas(this.props.entities)
 	}
 
@@ -169,11 +165,8 @@ class NodeGraph extends Component {
 				<div id="svgdiv" ref="mountPoint" />
 			</div>
 
-			)
+		)
 	}
 }
-
-
-
 
 export default NodeGraph

@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../actions/';
 
-
 class EntityExtractor extends Component{
 
 	constructor(props) {
@@ -33,8 +32,7 @@ class EntityExtractor extends Component{
         		</label>
         		<input type="submit" value="Submit" />
       		</form>
-
-			)
+		)
 	}
 }
 

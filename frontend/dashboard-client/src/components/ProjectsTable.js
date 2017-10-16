@@ -18,7 +18,6 @@ import * as actions from '../actions/';
 
 
 class ProjectsTable extends Component {
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -38,7 +37,6 @@ class ProjectsTable extends Component {
 			        <TableHeaderColumn>Owner</TableHeaderColumn>
 			        <TableHeaderColumn>Last Action</TableHeaderColumn>
 			        <TableHeaderColumn>Details</TableHeaderColumn>
-
 			      </TableRow>
 			    </TableHeader>
 			    <TableBody
@@ -52,16 +50,12 @@ class ProjectsTable extends Component {
 			        			<TableRowColumn>{project.lastAction}</TableRowColumn>
 			        			<TableRowColumn><Link to={"/project/" + project.id} style={{color: 'inherit' }}>Go to Project</Link></TableRowColumn>
 			      			</TableRow>
-
 			    		)
-
 			    	})}
 			    </TableBody>
 			</Table>
-  		)
-		
+  		)	
 	}
-
 }
 
 function mapDispatchToProps(dispatch) {

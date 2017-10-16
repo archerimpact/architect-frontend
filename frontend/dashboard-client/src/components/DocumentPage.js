@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import NewText from './NewText.js'
+import Summary from './Summary.js'
 import AddEntity from './AddEntity.js'
 import EntityList from './EntityList.js'
 import GraphContainer from './GraphContainer.js'
@@ -12,16 +12,14 @@ class DocumentPage extends Component {
 
   render() {
     return (
-      <div className="body">  
+      <div>  
         <div className="centered">
-            <NewText />
+            <Summary />
             <AddEntity className="addentity"/>
-
         </div>
         <div className="document-entities">
           <div className="left-column">
             <DocumentDisplay />
-
           </div>
 
           <div className="middle-column">
@@ -30,9 +28,7 @@ class DocumentPage extends Component {
 
           <div className="right-column">
             <GraphContainer />
-
           </div>
-
         </div>
       </div>
     );

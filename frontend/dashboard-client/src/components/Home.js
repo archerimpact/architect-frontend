@@ -34,7 +34,7 @@ class Home extends Component {
                             </Badge>
                         </div>
                     </div>
-                    <div className="body">
+                    <div>
                         <Paper className="table">
                             <ProjectsTable/>
                         </Paper>

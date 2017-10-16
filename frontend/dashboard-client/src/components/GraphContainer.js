@@ -9,32 +9,12 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../actions/';
 
 class GraphContainer extends Component {
-
-	constructor(props){
-		super(props)
-		this.state = {
-			entities: this.props.savedEntities.entities
-		}
-	}
-
-	componentWillReceiveProps(nextProps){
-		if (this.props !== nextProps) {
-			this.setState({
-				entities: nextProps.savedEntities.entities
-			})
-		}
-
-	}
-
 	render() {
 		return(
-
 			<Paper>
 				<NodeGraph entities={this.props.savedEntities.entities} />
 			</Paper>
-
-
-			)
+		)
 	}
 
 }

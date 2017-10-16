@@ -12,17 +12,11 @@ const style = {
 
 //shows just a jpg
 class DocumentDisplay extends Component {
-
-
-
 	render() {
 		return (
-
-			<div>
-				<Paper style={style} zDepth={3}>
-					<img src='http://www.webdomain.com.hk/gif/sampledoc/comhk.gif' id="banner" />
-				</Paper>
-			</div>
+			<Paper style={style} zDepth={3}>
+				<img src='http://www.webdomain.com.hk/gif/sampledoc/comhk.gif' id="banner" />
+			</Paper>
 		)
 	}
 

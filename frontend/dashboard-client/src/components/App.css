@@ -33,23 +33,13 @@
   margin: 10px;
 }
 
-#hello{
-  
-}
-#summary, .table{
+
+#summary, .table, .addentity{
   text-align:center;
 }
 
 #banner{
   width:90%;
-}
-
-.body{
-  width:100%;
-  text-align:center;
-}
-.addentity{
-  text-align:center;
 }
 
 .centered{
