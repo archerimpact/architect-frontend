@@ -7,6 +7,8 @@ export function addLink(link) {
 	}
 }
 
+// example of possible redux action creator and dispatch functions for server calls.
+
 // export function retrieveDetails(actionType, res) {
 // 	return {
 // 		type: actionType,
