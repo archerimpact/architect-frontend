@@ -5,21 +5,24 @@ import Home from '../components/Home';
 import App from '../components/App';
 import SaveLinks from '../components/saveLinks';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 export default class Root extends Component {
 	render() {
 		return (
-			<Provider store={this.props.store}>
-			    <Router>
-			    	<div>
-			    		<App/>
-			    		<Route exact path="/" component={Home} />
-			    		<div className="Body">
-							<Route path="/links" component={SaveLinks}/>
+			<MuiThemeProvider>
+				<Provider store={this.props.store}>
+				    <Router>
+				    	<div>
+				    		<App/>
+				    		<Route exact path="/" component={Home} />
+				    		<div className="Body">
+								<Route path="/links" component={SaveLinks}/>
+							</div>
 						</div>
-					</div>
-				</Router>
-			</Provider>
+					</Router>
+				</Provider>
+			</MuiThemeProvider>
 		);
 	}
 }
