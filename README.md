@@ -4,7 +4,7 @@
 
 1. Install Docker.
 2. Clone this repo.
-3. Run `docker-compose up` from the project directory. The frontend (react) should now be visible on localhost:3000, and the backend (django) should now be visible on localhost:8000.
+3. Run `docker-compose up` from the project directory. The frontend (react) should now be visible on localhost:3000, and the backend (node) should now be visible on localhost:8000.
 
 With Docker, all of your containers are basically running on a virtual linux machine. So, you must run migration commands within the container. 
 
