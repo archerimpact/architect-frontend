@@ -22,6 +22,7 @@ const circle_style = {
 	margin: 20,
 	textAlign: 'center',
 	display: 'inline-block',
+	backgroundSize: 60,
 	backgroundImage: "url('/daryus.jpg')",
 };
 
@@ -31,10 +32,10 @@ class EntityBox extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			name: props.name,
-			type: props.type,
+			name: props.entity.name,
+			type: props.entity.type,
 			tagFieldValue: '',
-			chips: props.chips
+			chips: props.entity.chips
 		}
 	};
 
@@ -47,14 +48,7 @@ class EntityBox extends Component {
 
 	handleTagSubmit = (e) => {	
 		let entities = this.props.savedEntities.entities.slice();
-		//let entity = entities.find(x => x.name === this.props.name)
-		//const index = entities.indexOf(entity)
-		//let newChip = this.state.tagFieldValue
-		//entities[index] = Object.assign({}, entities[index])
-		//entities[index].chips = entities[index].chips.concat([newChip])
-		//console.log("new entity chips: " + newEntities[index].chips.map((entity) => {return entity}))
-
-		this.props.dispatch(actions.addTag(entities, this.props.name, this.state.tagFieldValue))
+		this.props.dispatch(actions.addTag(entities, this.state.name, this.state.tagFieldValue))
 		this.setState({
 			tagFieldValue: ''
 		})
@@ -62,7 +56,7 @@ class EntityBox extends Component {
 
 	handleRequestDelete = (e) => {
 		let entities = this.props.savedEntities.entities.slice();
-		this.props.dispatch(actions.deleteTag(entities, this.props.name, this.children))
+		this.props.dispatch(actions.deleteTag(entities, this.state.name, this.children))
 	}
 
 	render() {
@@ -73,11 +67,11 @@ class EntityBox extends Component {
 						<Paper style={circle_style} circle={true}>
 						</Paper>
 						<div className="right-column">
-							<b> {this.props.name} </b>
-							<i> {this.props.type} </i>
-							<a href={this.props.link} target="_blank">{this.props.link}</a>
+							<b> {this.state.name} </b>
+							<i> {this.state.type} </i>
+							<a href={this.state.link} target="_blank">{this.state.link}</a>
 							<div className="chips">
-								{this.props.chips.map((chip) => {
+								{this.state.chips.map((chip) => {
 									return (
 										<Chip onRequestDelete={this.handleRequestDelete}> {chip} </Chip>
 										)
@@ -88,7 +82,7 @@ class EntityBox extends Component {
 								hintText="e.g. Daryus"
 			      				dataSource={this.props.entityNames}
 			      				onUpdateInput={this.handleTagFieldChange}
-			      				style={{width: 100, marginRight: 20}}
+			      				style={{width: 50, marginRight: 20}}
 			    			/>
 			    			<RaisedButton label="Add Tag" onClick={this.handleTagSubmit} />
 						</div>

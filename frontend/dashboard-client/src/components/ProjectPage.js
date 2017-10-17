@@ -35,11 +35,6 @@ class ProjectPage extends Component {
     }
 
     render() {
-        let entities = null
-        let title = null
-        if (this.state) {
-            entities = <EntitiesTable entities={this.state.entities}/>
-            title = <h2>{this.state.title}</h2>}
         return (
             <div>
                 <div className="App">

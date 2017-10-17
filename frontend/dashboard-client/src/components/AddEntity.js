@@ -22,7 +22,7 @@ class AddEntity extends Component {
 
 	};
 
-	handleTap = (e) => {
+	handleSubmit = (e) => {
 		e.preventDefault();
 		this.props.dispatch(actions.addEntity({name: this.state.nameFieldValue, type: this.state.typeFieldValue, link:this.state.linkFieldValue, chips: [this.state.tagFieldValue]}))
 		this.setState({
@@ -94,7 +94,7 @@ class AddEntity extends Component {
 					hintText="e.g. https://archerimpact.com"
 					onChange={this.handleLinkFieldChange} 
 					style = {{width: 250, marginRight: 20}}/> */}
-				<RaisedButton label="Add an Entity" onClick = {this.handleTap} />
+				<RaisedButton label="Add an Entity" onClick = {this.handleSubmit} />
 
 			</div>
 		)

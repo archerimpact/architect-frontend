@@ -39,7 +39,7 @@ class EntitiesTable extends Component {
 			>
 			    <TableHeader>
 			      <TableRow>
-			        <TableHeaderColumn>ID</TableHeaderColumn>
+			        <TableHeaderColumn>QID</TableHeaderColumn>
 			        <TableHeaderColumn>Name</TableHeaderColumn>
 			        <TableHeaderColumn>Type</TableHeaderColumn>
 			        <TableHeaderColumn>Document</TableHeaderColumn>
@@ -50,21 +50,17 @@ class EntitiesTable extends Component {
 			    	{this.state.entities.map((entity) => {
 			    		return(
 			    			<TableRow>
-			    				<TableRowColumn>{this.state.entities.indexOf(entity)}</TableRowColumn>
-			        			<TableRowColumn>{entity.name}</TableRowColumn>
+			    				<TableRowColumn>{entity.qid}</TableRowColumn>
+			        			<TableRowColumn><a href={"https://www.wikidata.org/wiki/" + entity.qid}>{entity.name} </a></TableRowColumn>
 			        			<TableRowColumn>{entity.type}</TableRowColumn>
 			        			<TableRowColumn><Link to="/document" style={{color: 'inherit' }}>Go to Document</Link></TableRowColumn>
 			      			</TableRow>
-
 			    		)
-
 			    	})}
 			    </TableBody>
 			</Table>
-  		)
-		
+  		)		
 	}
-
 }
 
 function mapDispatchToProps(dispatch) {

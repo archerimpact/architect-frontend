@@ -116,6 +116,7 @@ export function postProject(title, text) {
 }
 
 
+//Gets all entities related to a project. Server returns an object of objects containing all notes.
 export function getProject() {
 	var url ='http://localhost:8000/project';
 	var options = {
@@ -125,22 +126,15 @@ export function getProject() {
 		}
 	};
 
-	function rosetteToEntities(rosettes) {
-        console.log(typeof(rosettes))
-        console.log(rosettes)
-        var rosette;
-        var notes = [];
-        for (rosette in rosettes) {
-            notes.push(rosettes[rosette].entities)
-            console.log("here are the entities just pushed: " + rosettes[rosette].entities)
-        }
-        var rosette = Object.values(rosette)
-        console.log("here's all the entities: " + notes)
-        console.log("here's entities[0]: " + notes[0])
+	function notesToEntities(notes) {
+        //Turns an object of objects into an array of objects instead to iterate over it
+        var notes = Object.values(notes);
 
+        /* map over all notes, then map over all entities in each note, and build a new array entities 
+           which contains all entities of all notes */
        	var entities = notes.map((note) => {
-    		return note.map((entity) => {
-        		return {"name": entity.normalized, "type": entity.type}
+    		return note.entities.map((entity) => {
+        		return {"name": entity.normalized, "type": entity.type, "qid": entity.entityId}
     		})
     	})
     	return [].concat.apply([], entities)
@@ -153,11 +147,11 @@ export function getProject() {
 		.then(res => {
 			return res.json()})
 		.then(json => {
-			newEntities = rosetteToEntities(json);
+			newEntities = notesToEntities(json);
 			fulfill(newEntities)
 		})
 		.catch(err => {
-			reject('Error: could not return entities');
+			reject('Error: could not return entities because ' + err);
 		})
 	})
 }

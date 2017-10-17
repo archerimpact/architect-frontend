@@ -8,9 +8,9 @@ export default {
 	savedEntities: {
 		status: 'isLoading',
 		entities: [
-			{id: 0, name: 'Alice Ma', type: 'Person', chips: ['Daryus Medora'], projects: [0, 1]}, 
-			{id: 1, name: 'Daryus Medora', type: 'Person', chips: ['Alice Ma'], projects: [0]}, 
-			{id: 2, name: 'Angelina Wang', type: 'Person', chips: ['Daryus Medora'], projects: [1]}, 
+			{id: 0, name: 'Alice Ma', type: 'Person', chips: ['Daryus Medora'], projects: [0, 1], qid: ""}, 
+			{id: 1, name: 'Daryus Medora', type: 'Person', chips: ['Alice Ma'], projects: [0], qid: ""}, 
+			{id: 2, name: 'Angelina Wang', type: 'Person', chips: ['Daryus Medora'], projects: [1], qid: ""}, 
 			]
 	},
 	entityTypes: ["Company", "Person", "Location"],

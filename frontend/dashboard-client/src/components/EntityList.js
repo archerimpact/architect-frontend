@@ -13,7 +13,7 @@ class EntityList extends Component {
 
 			return (
 				<div>
-					<EntityBox name={entity.name} type={entity.type} link={entity.link} chips={entity.chips}/>
+					<EntityBox entity={entity}/>
 				</div>
 				)
 			})}

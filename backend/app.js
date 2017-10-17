@@ -59,16 +59,16 @@ var options = {
             }
 
 app.post('/project', function(req, res) {
-    console.log("this is the document " + req.body.title)
+    //console.log("this is the document " + req.body.title)
     var d = {};
     d.type = "textInput"
     d.title = req.body.title;
     d.content = req.body.text;
     if (d.content.length > 20) {
-        console.log("here's your text: " + d.content);
+        //console.log("here's your text: " + d.content);
         var post_data = JSON.stringify({'content': d.content})
         options.body = post_data
-        console.log("made it to line 71 in app.js")
+        //console.log("made it to line 71 in app.js")
         request(options, function(error, response, body) {
             if (!error) {
                 var bodyJSON = JSON.parse(body)
@@ -79,7 +79,7 @@ app.post('/project', function(req, res) {
                         res.send("item saved to database");
                     })
                     .catch(err => {
-                        console.log("this is the error: " + err);
+                        //console.log("this is the error: " + err);
                         res.status(400).send("unable to save to database");
                     });
             } else {console.log("there was an error: " + error)}
@@ -90,13 +90,11 @@ app.post('/project', function(req, res) {
 })
 
 app.get('/project', function(req, res) {
-    var allDocs = []
-    var collection;
+    //var collection;
     db.collection('notes').find({type: "textInput"}).toArray(function(err, result) {
         if (err) throw err;
-        console.log("here is the result of all of the documents: " + result);
-        allDocs = result;
-        res.send(allDocs);
+        //console.log("here is the result of all of the documents: " + result);
+        res.send(result);
     });
 })
 
