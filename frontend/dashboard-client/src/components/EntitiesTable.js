@@ -26,6 +26,12 @@ class EntitiesTable extends Component {
 		}
 	}
 
+	componentWillReceiveProps(nextProps) {
+		this.setState({
+			entities: nextProps.entities
+		})
+	}
+
 	render (){
 		return(
 			<Table

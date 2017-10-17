@@ -1,4 +1,4 @@
-import { ADD_LINK, ADD_ENTITY, ADD_TAG } from '../constants/actionTypes';
+import { ADD_LINK, ADD_ENTITY, ADD_TAG, ADD_ENTITIES } from '../constants/actionTypes';
 import initialState from './initialState';
 
 export default function (state = initialState, action) {
@@ -21,6 +21,15 @@ export default function (state = initialState, action) {
 					entities: state.savedEntities.entities.concat({name: action.payload.name, type: action.payload.type, link: action.payload.link, chips:action.payload.chips})
 				},
 				entityNames: state.entityNames.concat(action.payload.name)
+			}
+		case ADD_ENTITIES:
+			return {
+				...state,
+				savedEntities: {
+					...state.savedEntities,
+					status: 'isLoaded',
+					entities: state.savedEntities.entities.concat(action.payload.map((entity) => {return {name: entity.name, type: entity.type, link: '', chips: []}}))
+				},
 			}
 		case ADD_TAG:
 			return {

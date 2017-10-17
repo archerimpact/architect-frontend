@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
+import axios from 'axios'
+
 import Badge from 'material-ui/Badge';
 import IconButton from 'material-ui/IconButton';
 import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
 import EntitiesTable from './EntitiesTable';
 import EntityExtractor from './EntityExtractor';
-
 import Paper from 'material-ui/Paper';
 import './App.css'
-
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../actions/';
+import * as server from '../server/'
 
 class ProjectPage extends Component {
     constructor(props){
@@ -20,12 +21,26 @@ class ProjectPage extends Component {
         this.state = {
             project: project,
             title: project.title,
-            entities: project.entities.map((entityID) => {return this.props.savedEntities.entities[entityID]})
+            entities: []
         }
     }
 
+    componentWillMount = () => {
+        server.getProject()
+            .then((data) => {
+                this.setState({
+                    entities: data
+                })
+                this.props.dispatch(actions.addEntities(data))
+            })
+    }
 
     render() {
+        let entities = null
+        let title = null
+        if (this.state) {
+            entities = <EntitiesTable entities={this.state.entities}/>
+            title = <h2>{this.state.title}</h2>}
         return (
             <div>
                 <div className="App">
@@ -46,7 +61,7 @@ class ProjectPage extends Component {
                         </div>
                     </div>
                     <div className="body">
-                        <Paper className="table">
+                        <Paper className="table">                         
                             <EntitiesTable entities={this.state.entities}/>
                         </Paper>
                         <div className="text-container">
@@ -55,8 +70,6 @@ class ProjectPage extends Component {
                             </Paper>
                         </div>
                     </div>
-                    
-
                 </div>
             </div>
         );

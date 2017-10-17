@@ -3,7 +3,9 @@ var passportLocalMongoose = require('passport-local-mongoose');
 
 var DocumentSchema = new mongoose.Schema({
     title: String,
-    text: String
+    text: String,
+    entities: Array,
+    type: String,
 });
 
 DocumentSchema.plugin(passportLocalMongoose);

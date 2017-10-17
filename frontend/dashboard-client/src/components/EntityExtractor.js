@@ -1,26 +1,37 @@
 import React, { Component } from 'react';
-import './App.css'
+import './App.css';
+import axios from 'axios'
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../actions/';
+import * as server from '../server/'
 
 class EntityExtractor extends Component{
 
 	constructor(props) {
     	super(props);
     	this.state = {
-      		text: "Please write an essay about your favorite DOM element."
+      		text: "Please write an essay about your favorite DOM element.",
+          entities: []
     	}
     }
 
-	handleChange = (event) => {
+
+  handleChange = (event) => {
     	this.setState({text: event.target.value})
   	}
 
-  	handleSubmit = (event) => {
+  handleSubmit = (event) => {
     	alert('An essay was submitted: ' + this.state.text);
     	event.preventDefault();
+      server.postProject("Random Title", this.state.text)
+        .then((data) => {
+            console.log("posted data: " + data);
+        })
+        .catch((error) => {
+          console.log("found an error")
+        })
   	}
 
 	render() {
