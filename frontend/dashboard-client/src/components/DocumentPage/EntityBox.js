@@ -6,8 +6,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../actions/';
-
+import * as actions from '../../actions/';
 
 const style = {
 	width: "100%",
@@ -89,8 +88,7 @@ class EntityBox extends Component {
 					</div>
 				</Paper>
 			</div>
-
-			)
+		)
 	}
 
 }

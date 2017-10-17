@@ -10,17 +10,11 @@ var express = require('express'),
     
 var app = express();
 
-<<<<<<< HEAD
-var url = 'mongodb://alicema:crazy644@ds115045.mlab.com:15045/uxreceiver';
-mongoose.connect(url);
-var db = mongoose.connection;
-=======
 mongoose.connect('mongodb://michael:archer3@ds115045.mlab.com:15045/uxreceiver');
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
->>>>>>> 275cfe41a826eda7fcf277a3b9a7e52204a104b0
 // Use environment defined port or 8000
 var port = process.env.PORT || 8000;
 app.set('port', port)

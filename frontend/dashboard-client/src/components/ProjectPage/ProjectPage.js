@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 
+import '../App.css'
+
+import EntitiesTable from './EntitiesTable';
+import EntityExtractor from './EntityExtractor';
 import Badge from 'material-ui/Badge';
 import IconButton from 'material-ui/IconButton';
 import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
-import EntitiesTable from './EntitiesTable';
-import EntityExtractor from './EntityExtractor';
 import Paper from 'material-ui/Paper';
-import './App.css'
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../actions/';
-import * as server from '../server/'
+import * as actions from '../../actions/';
+import * as server from '../../server/'
 
 class ProjectPage extends Component {
     constructor(props){
@@ -59,7 +60,7 @@ class ProjectPage extends Component {
                     </div>
                     <div className="body">
                         <Paper className="table">                         
-                            <EntitiesTable entities={this.state.entities}/>
+                            <EntitiesTable entities={this.props.savedEntities.entities}/>
                         </Paper>
                     </div>
                 </div>

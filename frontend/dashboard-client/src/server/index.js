@@ -127,7 +127,7 @@ export function getProject() {
 
 	function notesToEntities(notes) {
         //Turns an object of objects into an array of objects instead to iterate over it
-        var notes = Object.values(notes);
+        notes = Object.values(notes);
 
         /* map over all notes, then map over all entities in each note, and build a new array entities 
            which contains all entities of all notes */

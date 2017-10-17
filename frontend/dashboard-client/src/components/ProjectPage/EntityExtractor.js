@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-import './App.css';
+import '../App.css';
 
 import RaisedButton from 'material-ui/RaisedButton';
 
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as actions from '../actions/';
-import * as server from '../server/'
+import * as server from '../../server/'
 
 class EntityExtractor extends Component{
 
@@ -18,7 +15,6 @@ class EntityExtractor extends Component{
           entities: []
     	}
     }
-
 
   handleChange = (event) => {
     	this.setState({text: event.target.value})
@@ -46,19 +42,4 @@ class EntityExtractor extends Component{
 	}
 }
 
-
-function mapDispatchToProps(dispatch) {
-    return {
-        actions: bindActionCreators(actions, dispatch),
-        dispatch: dispatch,
-    };
-}
-
-function mapStateToProps(state) {
-    return {
-        savedEntities: state.data.savedEntities,
-        entityNames: state.data.entityNames
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(EntityExtractor)
+export default EntityExtractor

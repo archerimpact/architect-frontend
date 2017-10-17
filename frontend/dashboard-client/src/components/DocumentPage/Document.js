@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import '../App.css';
 import Paper from 'material-ui/Paper';
 
 const style = {
@@ -11,7 +11,7 @@ const style = {
 };
 
 //shows just a jpg
-class DocumentDisplay extends Component {
+class Document extends Component {
 	render() {
 		return (
 			<Paper style={style} zDepth={3}>
@@ -22,4 +22,4 @@ class DocumentDisplay extends Component {
 
 }
 
-export default DocumentDisplay
+export default Document
