@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 
+import RaisedButton from 'material-ui/RaisedButton';
+
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../actions/';
@@ -12,7 +14,7 @@ class EntityExtractor extends Component{
     	super(props);
       this.handleSubmit = this.handleSubmit.bind(this)
     	this.state = {
-      		text: "Please write an essay about your favorite DOM element.",
+      		text: "Submit text to extract entities.",
           entities: []
     	}
     }
@@ -36,13 +38,10 @@ class EntityExtractor extends Component{
 
 	render() {
 		return(
-			<form onSubmit={this.handleSubmit}>
-        		<label>
-          		Name:
-          			<textarea className="add-text" value={this.state.text} onChange={this.handleChange} />
-        		</label>
-        		<input type="submit" value="Submit" />
-      		</form>
+        <div>
+      		<textarea className="add-text" value={this.state.text} onChange={this.handleChange} />
+    		  <RaisedButton label="Extract" onClick = {this.handleSubmit}/>
+        </div>
 		)
 	}
 }

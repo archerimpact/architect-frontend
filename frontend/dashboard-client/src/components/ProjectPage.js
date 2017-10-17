@@ -54,15 +54,13 @@ class ProjectPage extends Component {
                             </Badge>
                         </div>
                     </div>
+                    <div className="text-container">
+                        <EntityExtractor/>
+                    </div>
                     <div className="body">
                         <Paper className="table">                         
                             <EntitiesTable entities={this.state.entities}/>
                         </Paper>
-                        <div className="text-container">
-                            <Paper className="text-container">
-                                <EntityExtractor/>
-                            </Paper>
-                        </div>
                     </div>
                 </div>
             </div>

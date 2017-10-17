@@ -61,6 +61,8 @@ function register(authInfo) {
 	})
 }
 
+/* Sample method from Ryan's node.js application
+
 function addJob(jobTitle, startTime, endTime, location, rate, notes) {
 	var url ='https://workngo-rhayes128.c9users.io/employer/jobs';
 	var options = {
@@ -90,6 +92,7 @@ function addJob(jobTitle, startTime, endTime, location, rate, notes) {
 		})
 	})
 }
+*/
 
 export function postProject(title, text) {
 	var url ='http://localhost:8000/project';
@@ -141,7 +144,6 @@ export function getProject() {
     }
 
     let newEntities = null;
-
 	return new Promise(function(fulfill, reject) {
 		fetch(url, options)
 		.then(res => {
@@ -156,10 +158,9 @@ export function getProject() {
 	})
 }
 
+/* This was in Michael's master branch but was not how I exported my functions.
 
-
-
-/*module.exports = {
+module.exports = {
 	authenticate,
 	register,
 	getProject,

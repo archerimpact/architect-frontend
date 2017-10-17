@@ -39,7 +39,6 @@ app.use(function(req, res, next) {
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -49,7 +48,7 @@ app.use(function(req, res, next) {
     next();
 });
 
-var options = {
+var optionsEntityExtractor = {
             url: 'https://api.rosette.com/rest/v1/entities', 
             method: 'POST',
             headers: {
@@ -59,41 +58,40 @@ var options = {
             }
 
 app.post('/project', function(req, res) {
-    //console.log("this is the document " + req.body.title)
-    var d = {};
-    d.type = "textInput"
-    d.title = req.body.title;
-    d.content = req.body.text;
-    if (d.content.length > 20) {
-        //console.log("here's your text: " + d.content);
-        var post_data = JSON.stringify({'content': d.content})
-        options.body = post_data
-        //console.log("made it to line 71 in app.js")
-        request(options, function(error, response, body) {
+    console.log("this is the document text you are submitting: " + req.body.text)
+    var note = {
+        type: "textInput",
+        title: req.body.title,
+        content: req.body.text
+    };
+    if (note.content.length > 20) {
+        //Runs entity extractor here using Alice's API key defined in optionsEntityExtractor
+        optionsEntityExtractor.body = JSON.stringify({'content': note.content})
+        request(optionsEntityExtractor, function(error, response, body) {
             if (!error) {
                 var bodyJSON = JSON.parse(body)
-                d.entities = bodyJSON.entities;
-                var newNote = new Note(d);
+
+                //Saves entities to the note object, then store this in the Note schema in MongoDB.
+                note.entities = bodyJSON.entities;
+                var newNote = new Note(note);
                 newNote.save()
                     .then(item => {
                         res.send("item saved to database");
                     })
                     .catch(err => {
-                        //console.log("this is the error: " + err);
                         res.status(400).send("unable to save to database");
                     });
-            } else {console.log("there was an error: " + error)}
+            } else {console.log("there was an error in the Rosette extractor: " + error)}
         })
     }else{
-        res.send("Item already in database")
+        console.log("Didn't run entity extractor because the length of the content was too short.")
+        res.send("Length too short.")
     }
 })
 
 app.get('/project', function(req, res) {
-    //var collection;
     db.collection('notes').find({type: "textInput"}).toArray(function(err, result) {
         if (err) throw err;
-        //console.log("here is the result of all of the documents: " + result);
         res.send(result);
     });
 })
@@ -108,7 +106,6 @@ app.get('/logout', function(req, res) {
     req.logout();
     res.send('logged out');
 });
-
 
 app.post('/register', function(req, res) {
     var u = {};
@@ -127,7 +124,3 @@ app.post('/register', function(req, res) {
 app.get('*', function(req, res) {
     res.send('page not found');
 });
-
-/*app.listen(port, process.env.IP, function() {
-    console.log("Server has started on port: "+ port);
-});*/
