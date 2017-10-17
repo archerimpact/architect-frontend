@@ -9,8 +9,10 @@ var express = require('express'),
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-var url = 'mongodb://michael:archer3@ds115045.mlab.com:15045/uxreceiver';
-mongoose.connect(url);
+mongoose.connect('mongodb://michael:archer3@ds115045.mlab.com:15045/uxreceiver');
+
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
 
 // Use environment defined port or 8000
 var port = process.env.PORT || 8000;
