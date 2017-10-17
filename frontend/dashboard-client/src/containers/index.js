@@ -4,10 +4,7 @@ import './index.css';
 import Home from '../components/Home';
 import App from '../components/App';
 import SaveLinks from '../components/saveLinks';
-import {
-  BrowserRouter as Router,
-  Route,
-} from 'react-router-dom';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 
 export default class Root extends Component {
 	render() {
