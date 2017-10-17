@@ -93,26 +93,24 @@ function addJob(jobTitle, startTime, endTime, location, rate, notes) {
 
 export function postProject(title, text) {
 	var url ='http://localhost:8000/project';
-	var options = qs.stringify({
+	var options = {
 		method: 'POST',
 		headers: {
     		'Content-Type': 'application/json' },
-		body: {
+		body: JSON.stringify({
 			'title': title,
 			'text': text,
-		}
-	});
+		})
+	};
 	return new Promise(function(fulfill, reject) {
 		fetch(url, options)
 		.then(res => {
-			debugger
-			return res.json()})
+			return res})
 		.then(json => {
 			fulfill(json)
 		})
 		.catch(err => {
-			debugger
-			reject('Error: could not add job');
+			reject('Error: could not add entity because: ' + err);
 		})
 	})
 }
@@ -131,15 +129,21 @@ export function getProject() {
         console.log(typeof(rosettes))
         console.log(rosettes)
         var rosette;
-        var entities = [];
+        var notes = [];
         for (rosette in rosettes) {
-            entities.push(rosettes[rosette].entities)
-            console.log(rosettes[rosette].entities)
+            notes.push(rosettes[rosette].entities)
+            console.log("here are the entities just pushed: " + rosettes[rosette].entities)
         }
-        console.log(entities)
-        return entities[0].map((entity) => {
-            return {"name": entity.normalized, "type": entity.type}
-        })
+        var rosette = Object.values(rosette)
+        console.log("here's all the entities: " + notes)
+        console.log("here's entities[0]: " + notes[0])
+
+       	var entities = notes.map((note) => {
+    		return note.map((entity) => {
+        		return {"name": entity.normalized, "type": entity.type}
+    		})
+    	})
+    	return [].concat.apply([], entities)
     }
 
     let newEntities = null;

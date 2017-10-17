@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-var passportLocalMongoose = require('passport-local-mongoose');
 
 var DocumentSchema = new mongoose.Schema({
     title: String,
@@ -8,6 +7,5 @@ var DocumentSchema = new mongoose.Schema({
     type: String,
 });
 
-DocumentSchema.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model('Document', DocumentSchema);

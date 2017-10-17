@@ -6,6 +6,7 @@ var express = require('express'),
     LocalStrategy = require('passport-local'),
     User = require('./models/user'),
     Document = require('./models/document');
+    Note = require('./models/Note')
     
 var app = express();
 
@@ -62,17 +63,18 @@ app.post('/project', function(req, res) {
     var d = {};
     d.type = "textInput"
     d.title = req.body.title;
-    d.text = req.body.text;
-    if (d.text.length > 20) {
-        console.log("here's your text: " + d.text);
-        var post_data = JSON.stringify({'content': d.text})
+    d.content = req.body.text;
+    if (d.content.length > 20) {
+        console.log("here's your text: " + d.content);
+        var post_data = JSON.stringify({'content': d.content})
         options.body = post_data
+        console.log("made it to line 71 in app.js")
         request(options, function(error, response, body) {
             if (!error) {
                 var bodyJSON = JSON.parse(body)
                 d.entities = bodyJSON.entities;
-                var newDocument = new Document(d);
-                newDocument.save()
+                var newNote = new Note(d);
+                newNote.save()
                     .then(item => {
                         res.send("item saved to database");
                     })
@@ -90,9 +92,9 @@ app.post('/project', function(req, res) {
 app.get('/project', function(req, res) {
     var allDocs = []
     var collection;
-    db.collection('documents').find({type: "textInput"}).toArray(function(err, result) {
+    db.collection('notes').find({type: "textInput"}).toArray(function(err, result) {
         if (err) throw err;
-        console.log(result);
+        console.log("here is the result of all of the documents: " + result);
         allDocs = result;
         res.send(allDocs);
     });

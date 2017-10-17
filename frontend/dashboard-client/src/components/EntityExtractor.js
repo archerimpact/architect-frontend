@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './App.css';
-import axios from 'axios'
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -11,6 +10,7 @@ class EntityExtractor extends Component{
 
 	constructor(props) {
     	super(props);
+      this.handleSubmit = this.handleSubmit.bind(this)
     	this.state = {
       		text: "Please write an essay about your favorite DOM element.",
           entities: []
@@ -30,7 +30,7 @@ class EntityExtractor extends Component{
             console.log("posted data: " + data);
         })
         .catch((error) => {
-          console.log("found an error")
+          console.log("found an error: " + error)
         })
   	}
 
