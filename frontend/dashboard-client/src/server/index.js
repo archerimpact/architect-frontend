@@ -4,7 +4,7 @@ import 'whatwg-fetch';
 var qs = require('qs');
 
 function authenticate(authInfo) {
-	var url = 'https://localhost:/3001/login';
+	var url = 'https://localhost:8000/login';
 	var options = {
 		method: 'POST',
 		headers: {
@@ -31,7 +31,7 @@ function authenticate(authInfo) {
 }
 
 function register(authInfo) {
-	var url = 'https://localhost:/3001/register'
+	var url = 'https://localhost:8000/register'
 	var options = {
 		method: 'POST',
 		headers: {
@@ -61,23 +61,19 @@ function register(authInfo) {
 	})
 }
 
-/* Sample method from Ryan's node.js application
 
-function addJob(jobTitle, startTime, endTime, location, rate, notes) {
-	var url ='https://workngo-rhayes128.c9users.io/employer/jobs';
+/* Sample method for adding links
+function addLink(url, label, notes) {
+	var url ='http://localhost:8000/jobs';
 	var options = {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded'
 		},
 		body: qs.stringify({
-			jobTitle: jobTitle,
-			startTime: startTime,
-			endTime: endTime,
-			rate: rate,
-			loc: location,
-			notes: notes,
-			date: 'July 27, 2017',
+			url: url,
+			label: label,
+			notes: notes
 		})
 	};
 	return new Promise(function(fulfill, reject) {
@@ -88,7 +84,7 @@ function addJob(jobTitle, startTime, endTime, location, rate, notes) {
 			fulfill(json)
 		})
 		.catch(err => {
-			reject('Error: could not add job');
+			reject('Error: could not add link');
 		})
 	})
 }

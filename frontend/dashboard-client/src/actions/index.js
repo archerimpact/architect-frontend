@@ -1,6 +1,5 @@
 import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, ADD_ENTITIES} from '../constants/actionTypes';
 
-
 export function addLink(link) {
 	return {
 		type: ADD_LINK,
@@ -54,6 +53,15 @@ export function retrieveDetails(actionType, res) {
 		payload: res
 	};
 }
+
+// example of possible redux action creator and dispatch functions for server calls.
+
+// export function retrieveDetails(actionType, res) {
+// 	return {
+// 		type: actionType,
+// 		payload: res
+// 	};
+// }
 
 // export function fetchData(endpoint, actionType) {
 // 	return function (dispatch, getState) {

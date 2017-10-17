@@ -13,6 +13,9 @@ class SaveLinks extends Component {
         this.state = {
             link: {url: '', label: ''},
         }
+        this.handleLinkInputChange = this.handleLinkInputChange.bind(this);
+        this.handleLabelInputChange = this.handleLabelInputChange.bind(this);
+        this.addLink = this.addLink.bind(this);
     }
 
     handleLinkInputChange(event) {
@@ -55,23 +58,21 @@ class SaveLinks extends Component {
                   fullWidth={false}
                   value={this.state.link.url}
                   style = {{width: 500, marginRight: 20}}
-                  onChange={this.handleLinkInputChange.bind(this)}
+                  onChange={this.handleLinkInputChange}
                 />
-                { ' ' }
                 <TextField
                   hintText="e.g. News article on Alice Ma"
                   floatingLabelText="(Optional) Add a note"
                   fullWidth={false}
                   value={this.state.link.label}
                   style = {{width: 300}}
-                  onChange={this.handleLabelInputChange.bind(this)}
+                  onChange={this.handleLabelInputChange}
                 />
                 <RaisedButton
                   style={{margin: 12} }
                   primary
-                  onClick={this.addLink.bind(this)}
+                  onClick={this.addLink}
                   label="Add" />
-                { ' ' }
                 <p> Your Saved Links </p>
                 {this.props.savedLinks.links.slice(0).reverse().map((link, id) => {
                     return (
