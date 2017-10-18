@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import AddProject from './addProject';
 import { List, ListItem} from 'material-ui/List';
 import ActionHome from 'material-ui/svg-icons/action/home';
-import {red500, yellow500, blue500} from 'material-ui/styles/colors';
+import {red500, blue500} from 'material-ui/styles/colors';
 
 class ProjectList extends Component {
 	constructor() {
@@ -17,7 +17,7 @@ class ProjectList extends Component {
 		console.log("AHH")
 		var projects = this.state.projects;
 		var moreProjects = projects.concat(freshProject);
-		console.log(moreProjects)
+		console.log(moreProjects);
 		this.setState({projects: moreProjects});
 	}
 

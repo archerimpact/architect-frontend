@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Document, Page } from 'react-pdf/build/entry.webpack';
 import RaisedButton from 'material-ui/RaisedButton';
 import './pdf_uploader.css';
-
+import 'whatwg-fetch';
 
 class PDFUploader extends Component {
 	constructor() {
@@ -21,6 +21,28 @@ class PDFUploader extends Component {
     onFileChange(event) {
         this.setState({
             file: event.target.files[0],
+        });
+        //console.log(event.target.files[0]);
+        console.log("hello")
+
+        const data = new FormData();
+        data.append('file', event.target.files[0]);
+        data.append('originalname', 'random_file_name');
+        var url = 'http://localhost:8000/pdf-uploader';
+        var options = {
+            method: 'POST',
+            //headers: {
+            //    'Content-Type': 'multipart/form-data'
+            //},
+            body: data
+        };
+        fetch(url, options)
+        .then(response => {
+            //debugger;
+            console.log(response);
+        })
+        .catch(err => {
+            console.log('Error: could not upload document because: ' + err);
         });
     }
 
