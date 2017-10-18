@@ -57,7 +57,7 @@ class NodeGraph extends Component {
 		const simulation = d3.forceSimulation(data.nodes)
 			.force("center", d3.forceCenter(width/3, height/2))
     		.force("charge", d3.forceManyBody())
-    		.force("link", d3.forceLink().distance(50).id(function(d) { return d.id; }));
+    		.force("link", d3.forceLink().id(function(d) { return d.id; }));
 
 		const svg = d3.select(this.refs.mountPoint)
 			.append('svg')
@@ -84,17 +84,15 @@ class NodeGraph extends Component {
 
 		nodeElements.append('circle')
 			.attr('r',10)
-			.style('stroke', '#999999')
+			.style('stroke', '#FFFFFF')
 			.style('stroke-width', 1.5)
 			.style('fill', (d) => this.getNodeColor(d));
 
-		/* The following is a function for making the graph draggable. Still a work in progress.
+		
 		svg.selectAll('circle').call(d3.drag()
 				.on("start", dragstarted)
 				.on("drag", dragged)
 				.on("end", dragended))
-		*/
-
 
 		nodeElements.append('text')
 			.style("font-size", "12px")
@@ -112,7 +110,6 @@ class NodeGraph extends Component {
 		})	
 		simulation.force("link").links(data.links)
 
-		/* The following is the functions for making the graph draggable. Still a work in progress.
 		function dragstarted(d) {
 			if (!d3.event.active) simulation.alphaTarget(0.3).restart();
   				d.fx = d.x;
@@ -128,7 +125,9 @@ class NodeGraph extends Component {
   			if (!d3.event.active) simulation.alphaTarget(0);
   				d.fx = null;
  				d.fy = null;
-			}
+		}
+		
+		/* The following is the functions for making the graph draggable. Still a work in progress.
 
 		function dragDrop() {
 			d3.drag()
