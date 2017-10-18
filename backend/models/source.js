@@ -10,4 +10,5 @@ var DocumentSchema = new mongoose.Schema({
 	gcp_name: String, // gcp location, something?
 	content: String
 });
+
 module.exports = mongoose.model('Document', DocumentSchema);

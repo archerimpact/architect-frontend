@@ -25,7 +25,6 @@ class ProjectList extends Component {
     	const projectItems = this.state.projects.map((project) => {
 			return (
 				<ListItem className="projectName" key={project} primaryText={project} leftIcon={<ActionHome color={blue500} hoverColor={red500}/>} />
-				//<Project key={project} name={project}></Project>
 				);
 			});
         return (

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-//import { Document, Page } from 'react-pdf';
 import { Document, Page } from 'react-pdf/build/entry.webpack';
 import RaisedButton from 'material-ui/RaisedButton';
 import './pdf_uploader.css';
@@ -22,8 +21,6 @@ class PDFUploader extends Component {
         this.setState({
             file: event.target.files[0],
         });
-        //console.log(event.target.files[0]);
-        console.log("hello")
 
         const data = new FormData();
         data.append('file', event.target.files[0]);
@@ -38,7 +35,6 @@ class PDFUploader extends Component {
         };
         fetch(url, options)
         .then(response => {
-            //debugger;
             console.log(response);
         })
         .catch(err => {
