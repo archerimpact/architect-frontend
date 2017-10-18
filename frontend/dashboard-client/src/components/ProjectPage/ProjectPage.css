@@ -1,0 +1,31 @@
+.header{
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+}
+
+.header-text{
+  width:100%;
+  position: absolute;
+}
+
+#notifications{
+  width:100%;
+  text-align:right;
+}
+
+.table{
+  width:80%;
+  margin: 0 auto;
+}
+
+.add-text{
+  width:50%;
+  height: 200px;
+}
+
+.text-container{
+  margin: 0 auto;
+  width:80%;
+  height: 250px;
+}

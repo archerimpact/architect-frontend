@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
-import '../App.css'
+//import '../App.css'
+import './ProjectPage.css'
 
 import EntitiesTable from './EntitiesTable';
 import EntityExtractor from './EntityExtractor';

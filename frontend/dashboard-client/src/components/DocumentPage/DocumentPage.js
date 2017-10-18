@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import '../App.css';
+//import '../App.css';
+import './DocumentPage.css';
 
 import AddEntity from './AddEntity.js'
 import EntityList from './EntityList.js'

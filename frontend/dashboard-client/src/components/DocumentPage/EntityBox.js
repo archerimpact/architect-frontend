@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/';
 
-const style = {
+const container_style = {
 	width: "100%",
 	padding: 20,
 	textAlign: 'center',
@@ -61,7 +61,7 @@ class EntityBox extends Component {
 	render() {
 		return (
 			<div>
-				<Paper style={style}>
+				<Paper style={container_style}>
 					<div className=	"entity-box">
 						<Paper style={circle_style} circle={true}>
 						</Paper>

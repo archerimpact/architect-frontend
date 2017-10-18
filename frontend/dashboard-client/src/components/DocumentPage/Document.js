@@ -2,20 +2,21 @@ import React, { Component } from 'react';
 import '../App.css';
 import Paper from 'material-ui/Paper';
 
-const style = {
+const container_style = {
 	height:"100%",
 	width: "100%",
 	margin: 20,
 	textAlign: 'center',
 	display: 'inline-block',
+	padding: 10
 };
 
 //shows just a jpg
 class Document extends Component {
 	render() {
 		return (
-			<Paper style={style} zDepth={3}>
-				<img src='http://www.webdomain.com.hk/gif/sampledoc/comhk.gif' id="banner" />
+			<Paper style={container_style} zDepth={3}>
+				<img src='http://www.webdomain.com.hk/gif/sampledoc/comhk.gif' style={{width: "90%"}}/>
 			</Paper>
 		)
 	}
