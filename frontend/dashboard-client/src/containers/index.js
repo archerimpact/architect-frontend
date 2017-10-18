@@ -6,6 +6,7 @@ import App from '../components/App';
 import SaveLinks from '../components/saveLinks';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import CreateAccount from '../components/createAccount';
 
 export default class Root extends Component {
 	render() {
@@ -18,6 +19,7 @@ export default class Root extends Component {
 				    		<Route exact path="/" component={Home} />
 				    		<div className="Body">
 								<Route path="/links" component={SaveLinks}/>
+								<Route path="/createaccount" component={ CreateAccount } />
 							</div>
 						</div>
 					</Router>
