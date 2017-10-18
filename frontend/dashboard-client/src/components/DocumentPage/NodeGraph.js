@@ -28,16 +28,19 @@ class NodeGraph extends Component {
 	//returns the color of the node based on the type of the entity
 	getNodeColor(node) {
 		if (node.type === "Person" || node.type === "PERSON") {
-			return "#4FFFB3"
+			return "#FFB7A0"
 		}
 		if (node.type === "Company") {
-			return "#4276FF" 
+			return "#3EE8D3" 
 		}
 		if (node.type ==="ORGANIZATION") {
-			return "#551A8B"
+			return "#FAAAFF"
 		}
-		if (node.type === "Location") {
-			return "#3CCCE8"
+		if (node.type === "Location" || node.type === "LOCATION") {
+			return "#5163FF"
+		}
+		if (node.type === "NATIONALITY") {
+			return "#95FF6F"
 		}
 	}
 
