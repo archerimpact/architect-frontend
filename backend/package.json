@@ -6,7 +6,6 @@
   "author": "",
   "dependencies": {
     "body-parser": "^1.18.2",
-    "cloudinary": "^1.9.0",
     "express": "^3.21.2",
     "express-session": "^1.15.6",
     "fetch": "^1.1.0",
