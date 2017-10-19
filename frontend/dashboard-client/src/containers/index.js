@@ -7,6 +7,8 @@ import Home2 from '../components/Home2';
 import DocumentPage from '../components/DocumentPage/DocumentPage'
 import App from '../components/App';
 import SaveLinks from '../components/saveLinks';
+import ProjectList from '../components/projects/projectList';
+import PDFUploader from '../components/pdf_uploader/pdfUploader';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
@@ -23,6 +25,8 @@ export default class Root extends Component {
 				    		<Route exact path="/project/:id" component={ProjectPage} />
 				    		<div className="Body">
 								<Route path="/links" component={SaveLinks}/>
+								<Route path="/projects" component={ProjectList}/>
+								<Route path="/pdf-uploader" component={PDFUploader}/>
 							</div>
 							<Route path="/home2" component={Home2}/>
 							<Route path="/document" component={DocumentPage}/>

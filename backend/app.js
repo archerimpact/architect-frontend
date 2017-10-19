@@ -5,8 +5,12 @@ var express = require('express'),
     request = require('request'),
     LocalStrategy = require('passport-local'),
     User = require('./models/user'),
-    Document = require('./models/document');
-    Note = require('./models/Note')
+    Note = require('./models/Note'),
+    multer = require('multer'),
+    path = require('path'),
+    util = require('util'),
+    fs = require('fs'),
+    PDFParser = require("pdf2json");
     
 var app = express();
 
@@ -129,6 +133,44 @@ app.post('/register', function(req, res) {
         });
    });
 });
+
+const storage = multer.diskStorage({
+    destination: './files/',
+    filename: function(req, file, callback) {
+        console.log(file);
+        // TODO: Change this filename to something more unique in case of repeats
+        var file_name = file.originalname;
+        callback(null, file_name);
+    },
+});
+
+app.use(multer({
+     storage:storage
+     }).single('file'));
+
+const upload = multer({ storage: storage });
+
+app.post('/pdf-uploader', upload.single('file'), async (req, res) => {
+    try {
+        // TODO: save to google cloud here
+
+        var name = req.file.originalname;
+        let text_dest = "./files/" + name.substring(0, name.length - 4) + ".txt";
+        let pdfParser = new PDFParser(this,1);
+
+        pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError) );
+        pdfParser.on("pdfParser_dataReady", pdfData => {
+            var text = pdfParser.getRawTextContent();
+            fs.writeFile(text_dest, text, (error) => { console.error(error) });
+        });
+        pdfParser.loadPDF("./files/" + name);
+        res.send("PDF Converted To Text Success")
+
+        // TODO: delete pdf after done with it
+    } catch (err) {
+        res.sendStatus(400);
+    }
+})
 
 app.get('*', function(req, res) {
     res.send('page not found');
