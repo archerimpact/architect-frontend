@@ -5,10 +5,11 @@ var express = require('express'),
     passport = require('passport'),
     LocalStrategy = require('passport-local'),
     User = require('./models/user'),
-    Document = require('./models/source'),
     multer = require('multer'),
     path = require('path'),
-    util = require('util');
+    util = require('util'),
+    fs = require('fs'),
+    PDFParser = require("pdf2json");
     
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -92,8 +93,6 @@ app.post('/pdf-uploader', upload.single('file'), async (req, res) => {
     try {
         // TODO: save to google cloud here
 
-        let fs = require('fs'),
-            PDFParser = require("pdf2json");
         var name = req.file.originalname;
         let text_dest = "./files/" + name.substring(0, name.length - 4) + ".txt";
         let pdfParser = new PDFParser(this,1);

@@ -67,7 +67,6 @@ class PDFUploader extends Component {
           },
         };
 
-        const { file, numPages } = this.state;
         return (
         	<div className="pdf">
                 <div className="loader">
@@ -86,9 +85,9 @@ class PDFUploader extends Component {
                     </RaisedButton>
                 </div>
                 <div className="addDocument">
-                    <Document file={file} onLoadSuccess={this.onDocumentLoadSuccess} >
+                    <Document file={this.state.file} onLoadSuccess={this.onDocumentLoadSuccess} >
                     {
-                        Array.from(new Array(numPages),
+                        Array.from(new Array(this.state.numPages),
                             (el, index) => (
                                 <Page 
                                     className="page" 
