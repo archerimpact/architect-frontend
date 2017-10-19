@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import AddProject from './addProject';
-import { List, ListItem} from 'material-ui/List';
 import ActionHome from 'material-ui/svg-icons/action/home';
+import { List, ListItem} from 'material-ui/List';
 import {red500, blue500} from 'material-ui/styles/colors';
 
 class ProjectList extends Component {
@@ -14,7 +14,6 @@ class ProjectList extends Component {
 	}
 
 	addProject(freshProject) {
-		console.log("AHH")
 		var projects = this.state.projects;
 		var moreProjects = projects.concat(freshProject);
 		console.log(moreProjects);
@@ -24,7 +23,11 @@ class ProjectList extends Component {
     render() {
     	const projectItems = this.state.projects.map((project) => {
 			return (
-				<ListItem className="projectName" key={project} primaryText={project} leftIcon={<ActionHome color={blue500} hoverColor={red500}/>} />
+				<ListItem 
+					className="projectName" 
+					key={project} primaryText={project} 
+					leftIcon={<ActionHome color={blue500} hoverColor={red500}/>}
+				/>
 				);
 			});
         return (
