@@ -50,40 +50,50 @@ app.use(function(req, res, next) {
     next();
 });
 
-var optionsEntityExtractor = {
+function callEntityExtractor(string, callback){
+   var optionsEntityExtractor = {
             url: 'https://api.rosette.com/rest/v1/entities', 
             method: 'POST',
             headers: {
                 'X-RosetteAPI-Key': '554b291cfc61e3f3338b9f02065bd1a5'
             },
             'Content-Type': 'application/json',
-            }
+            body: JSON.stringify({'content': string})
+        }
+    request(optionsEntityExtractor, function(error, response, body) {
+        if (!error) {
+            return callback(JSON.parse(body));
+        } else {
+            console.log("there was an error in the Rosette extractor: ")
+            return {entities: []}
+        }
+    })     
+}
 
-app.post('/project', function(req, res) {
-    console.log("this is the document text you are submitting: " + req.body.text)
-    var note = {
-        type: "textInput",
-        title: req.body.title,
-        content: req.body.text
+function submitNote(title, content, entities) {
+    var note = new Note({
+            type: "textInput",
+            title: title,
+            content: content,
+            entities: entities
+        })
+    return note.save()
     };
-    if (note.content.length > 20) {
-        //Runs entity extractor here using Alice's API key defined in optionsEntityExtractor
-        optionsEntityExtractor.body = JSON.stringify({'content': note.content})
-        request(optionsEntityExtractor, function(error, response, body) {
-            if (!error) {
-                var bodyJSON = JSON.parse(body)
 
-                //Saves entities to the note object, then store this in the Note schema in MongoDB.
-                note.entities = bodyJSON.entities;
-                var newNote = new Note(note);
-                newNote.save()
-                    .then(item => {
-                        res.send("item saved to database");
-                    })
-                    .catch(err => {
-                        res.status(400).send("unable to save to database");
-                    });
-            } else {console.log("there was an error in the Rosette extractor: " + error)}
+
+app.post('/entities', function(req, res) {
+    console.log("this is the document text you are submitting: " + req.body.text)
+
+    if (req.body.text.length > 20) {
+        callEntityExtractor(req.body.text, function(response) {
+            var entities = response.entities;
+            submitNote(req.body.title, req.body.text, entities)
+                .then(item => {
+                    res.send("item saved to database");
+                })
+                .catch(err => {
+                    res.status(400).send("unable to save to database");
+                })
         })
     }else{
         console.log("Didn't run entity extractor because the length of the content was too short.")
@@ -91,7 +101,7 @@ app.post('/project', function(req, res) {
     }
 })
 
-app.get('/project', function(req, res) {
+app.get('/entities', function(req, res) {
     db.collection('notes').find({type: "textInput"}).toArray(function(err, result) {
         if (err) throw err;
         res.send(result);

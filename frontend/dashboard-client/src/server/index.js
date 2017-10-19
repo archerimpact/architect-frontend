@@ -91,7 +91,7 @@ function addLink(url, label, notes) {
 */
 
 export function postProject(title, text) {
-	var url ='http://localhost:8000/project';
+	var url ='http://localhost:8000/entities';
 	var options = {
 		method: 'POST',
 		headers: {
@@ -117,7 +117,7 @@ export function postProject(title, text) {
 
 //Gets all entities related to a project. Server returns an object of objects containing all notes.
 export function getProject() {
-	var url ='http://localhost:8000/project';
+	var url ='http://localhost:8000/entities';
 	var options = {
 		method: 'GET',
 		headers: {
