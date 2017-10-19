@@ -7,7 +7,6 @@ var express = require('express'),
     User = require('./models/user'),
     Document = require('./models/source'),
     multer = require('multer'),
-    cloudinary = require('cloudinary'),
     path = require('path'),
     util = require('util');
     
@@ -21,13 +20,6 @@ db.on('error', console.error.bind(console, 'connection error:'));
 
 // Use environment defined port or 8000
 var port = process.env.PORT || 8000;
-
-// Connect to cloudinary
-/*cloudinary.config({
-    cloud_name: 'dvwqtvo58',
-    api_key: '324848967822393',
-    api_secret: 'EZMeOg74aBd0Tpa3L9LxA8qfh1I',
-});*/
 
 app.use(require('express-session')({
     secret: 'sNGDGX1Kd5j4sQRYWE33',
@@ -84,7 +76,8 @@ const storage = multer.diskStorage({
     destination: './files/',
     filename: function(req, file, callback) {
         console.log(file);
-        var file_name = file.originalname;//Date.now()+path.extname(file.originalname)
+        // TODO: Change this filename to something more unique in case of repeats
+        var file_name = file.originalname;
         callback(null, file_name);
     },
 });
@@ -95,61 +88,25 @@ app.use(multer({
 
 const upload = multer({ storage: storage });
 
-var optionsEntityExtractor = {
-            url: 'https://api.rosette.com/rest/v1/entities', 
-            method: 'POST',
-            headers: {
-                'X-RosetteAPI-Key': '554b291cfc61e3f3338b9f02065bd1a5'
-            },
-            'Content-Type': 'application/json',
-            }
-
 app.post('/pdf-uploader', upload.single('file'), async (req, res) => {
     try {
         // TODO: save to google cloud here
 
-        let fs = require('fs'), PDFParser = require("pdf2json");
-
+        let fs = require('fs'),
+            PDFParser = require("pdf2json");
         var name = req.file.originalname;
         let text_dest = "./files/" + name.substring(0, name.length - 4) + ".txt";
-
-        // PDF part
-        var text = "";
         let pdfParser = new PDFParser(this,1);
 
         pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError) );
         pdfParser.on("pdfParser_dataReady", pdfData => {
-            text = pdfParser.getRawTextContent();
-            res.write(text);
-            //res.end(text);
+            var text = pdfParser.getRawTextContent();
             fs.writeFile(text_dest, text, (error) => { console.error(error) });
         });
-        //res.write('Text is located at: ' + text_dest);
         pdfParser.loadPDF("./files/" + name);
-        /*var url = 'https://api.rosette.com/rest/v1/entities';
-        var options = {
-            method: 'POST',
-            headers: {
-                'X-RosetteAPI-Key': '554b291cfc61e3f3338b9f02065bd1a5',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ 'content': text })
-        }
-        fetch(url, options)
-        .then(response => {res.send("wowow"); response.json(); })
-        .then(json => {
-            res.send("HELLO")
-            //res.send(json.entities);
-        })
-        .catch(err => {
-            console.log('Error: could not upload document because: ' + err);
-        });*/
+        res.send("PDF Converted To Text Success")
 
-
-
-        res.send("made it")
-
-        //TODO: delete pdf after done with it
+        // TODO: delete pdf after done with it
     } catch (err) {
         res.sendStatus(400);
     }

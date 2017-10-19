@@ -14,7 +14,7 @@ class PDFUploader extends Component {
         };
         this.onDocumentLoadSuccess = this.onDocumentLoadSuccess.bind(this);
         this.onFileChange = this.onFileChange.bind(this);
-        //this.changePage = this.changePage.bind(this);
+        // this.changePage = this.changePage.bind(this);
 	}
 
     onFileChange(event) {
@@ -28,9 +28,6 @@ class PDFUploader extends Component {
         var url = 'http://localhost:8000/pdf-uploader';
         var options = {
             method: 'POST',
-            //headers: {
-            //    'Content-Type': 'multipart/form-data'
-            //},
             body: data
         };
         fetch(url, options)
@@ -46,11 +43,12 @@ class PDFUploader extends Component {
 		this.setState({numPages: numPages, pageNumber: null,});
 	}
 
-    //changePage(by) {
-    //    this.setState(prevState => ({
-    //        pageNumber: prevState.pageNumber + by,
-    //    }))
-    //}
+    // Can be added later to allow page changes if only one page is displayed at a time
+/*    changePage(by) {
+       this.setState(prevState => ({
+           pageNumber: prevState.pageNumber + by,
+       }))
+    }*/
 
     render() {
         const styles = {
@@ -73,8 +71,18 @@ class PDFUploader extends Component {
         return (
         	<div className="pdf">
                 <div className="loader">
-                    <RaisedButton label="File upload" labelPosition="before" containerElement="label" style={styles.button} primary={true}>
-                        <input type="file" onChange={this.onFileChange} style={styles.exampleImageInput}/>
+                    <RaisedButton 
+                        label="File upload" 
+                        labelPosition="before" 
+                        containerElement="label" 
+                        style={styles.button} 
+                        primary={true}
+                    >
+                        <input 
+                            type="file" 
+                            onChange={this.onFileChange} 
+                            style={styles.exampleImageInput}
+                        />
                     </RaisedButton>
                 </div>
                 <div className="addDocument">
@@ -82,7 +90,12 @@ class PDFUploader extends Component {
                     {
                         Array.from(new Array(numPages),
                             (el, index) => (
-                                <Page className="page" key={index + 1} pageNumber={index+1} width={Math.min(600, document.body.clientWidth - 52)}/>
+                                <Page 
+                                    className="page" 
+                                    key={index + 1} 
+                                    pageNumber={index+1} 
+                                    width={Math.min(600, document.body.clientWidth - 52)}
+                                />
                                     ),
                                 )
                     }
