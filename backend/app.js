@@ -83,11 +83,9 @@ function submitNote(title, content, entities) {
 
 app.post('/entities', function(req, res) {
     console.log("this is the document text you are submitting: " + req.body.text)
-
     if (req.body.text.length > 20) {
         callEntityExtractor(req.body.text, function(response) {
-            var entities = response.entities;
-            submitNote(req.body.title, req.body.text, entities)
+            submitNote(req.body.title, req.body.text, response.entities)
                 .then(item => {
                     res.send("item saved to database");
                 })
@@ -96,8 +94,7 @@ app.post('/entities', function(req, res) {
                 })
         })
     }else{
-        console.log("Didn't run entity extractor because the length of the content was too short.")
-        res.send("Length too short.")
+        res.send("Didn't run entity extractor because the length of the content was too short.")
     }
 })
 

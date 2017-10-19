@@ -3,7 +3,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import AutoComplete from 'material-ui/AutoComplete';
 
-
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/';
@@ -19,10 +18,16 @@ class AddEntity extends Component {
 			linkFieldValue: '',
 			tagFieldValue: '',
 		};
+		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleClose = this.handleClose.bind(this);
+		this.handleNameFieldChange = this.handleNameFieldChange.bind(this);
+		this.handleTypeFieldChange = this.handleTypeFieldChange.bind(this);
+		this.handleLinkFieldChange = this.handleLinkFieldChange.bind(this);
+		this.handleTagFieldChange = this.handleTagFieldChange.bind(this);
 
 	};
 
-	handleSubmit = (e) => {
+	handleSubmit(event) {
 		e.preventDefault();
 		this.props.dispatch(actions.addEntity({name: this.state.nameFieldValue, type: this.state.typeFieldValue, link:this.state.linkFieldValue, chips: [this.state.tagFieldValue]}))
 		this.setState({
@@ -33,37 +38,37 @@ class AddEntity extends Component {
 			linkFieldValue: '',
 			tagFieldValue: '',
 		});
+	};
 
-	}
-
-	handleClose = () => {
+	handleClose(event) {
 		this.setState({
 			open: false,
-		})
-	}
+		});
+	};
 
-	handleNameFieldChange = (e) => {
+	handleNameFieldChange(event) {
 		this.setState({
-			nameFieldValue: e.target.value
+			nameFieldValue: event.target.value
 		});
-	}
-	handleTypeFieldChange = (e) => {
-		this.setState({
-			typeFieldValue: e
-		});
-	}
+	};
 
-	handleLinkFieldChange = (e) => {
+	handleTypeFieldChange(event) {
 		this.setState({
-			linkFieldValue: e.target.value
+			typeFieldValue: event
 		});
-	}
+	};
 
-	handleTagFieldChange = (e) => {
+	handleLinkFieldChange(event) {
 		this.setState({
-			tagFieldValue: e.target.value
+			linkFieldValue: event.target.value
 		});
-	}
+	};
+
+	handleTagFieldChange(event) {
+		this.setState({
+			tagFieldValue: event.target.value
+		});
+	};
 
 	render() {
 		return(
@@ -88,32 +93,31 @@ class AddEntity extends Component {
 					onChange={this.handleTagFieldChange}
 					style = {{width: 250, marginRight: 20}}/>
 
-				{/* <TextField 
+				{/* Currently not using but maybe later we want to be able to add links too
+					<TextField 
 					value={this.state.linkFieldValue} 					
 					floatingLabelText="Link"
 					hintText="e.g. https://archerimpact.com"
 					onChange={this.handleLinkFieldChange} 
 					style = {{width: 250, marginRight: 20}}/> */}
 				<RaisedButton label="Add an Entity" onClick = {this.handleSubmit} />
-
 			</div>
 		)
-	}
-
-}
+	};
+};
 
 function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators(actions, dispatch),
         dispatch: dispatch,
     };
-}
+};
 
 function mapStateToProps(state) {
     return {
         savedEntities: state.data.savedEntities,
         entityTypes: state.data.entityTypes,
     };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddEntity)
