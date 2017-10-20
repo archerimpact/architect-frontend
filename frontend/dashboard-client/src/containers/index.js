@@ -12,10 +12,23 @@ import PDFUploader from '../components/pdf_uploader/pdfUploader';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+
+	const muiTheme = getMuiTheme({
+	  palette: {
+	    primary1Color: '#4CBF88'
+	  }
+	});
+
+
 export default class Root extends Component {
+	
+
+
+
 	render() {
 		return (
-			<MuiThemeProvider>
+			<MuiThemeProvider muiTheme={muiTheme}>
 				<Provider store={this.props.store}>
 				    <Router>
 				    	<div>

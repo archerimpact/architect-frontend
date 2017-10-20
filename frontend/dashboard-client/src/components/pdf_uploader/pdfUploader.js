@@ -71,11 +71,12 @@ class PDFUploader extends Component {
         	<div className="pdf">
                 <div className="loader">
                     <RaisedButton 
-                        label="File upload" 
+                        label="Upload PDF" 
                         labelPosition="before" 
                         containerElement="label" 
                         style={styles.button} 
-                        primary={true}
+                        primary={false}
+                        secondary={true}
                     >
                         <input 
                             type="file" 

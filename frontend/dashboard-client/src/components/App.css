@@ -47,8 +47,9 @@
 }
 
 .column{
-  width:33%;
-  margin:5px;
+  width:70%;
+  margin:15px auto;
+  text-align: center;
 }
 
 
