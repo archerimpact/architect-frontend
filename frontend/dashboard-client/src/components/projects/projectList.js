@@ -5,6 +5,8 @@ import Paper from 'material-ui/Paper'
 import { List, ListItem} from 'material-ui/List';
 import {red500, blue500} from 'material-ui/styles/colors';
 
+import { Link } from 'react-router-dom';
+
 class ProjectList extends Component {
 	constructor() {
 		super();
@@ -32,15 +34,17 @@ class ProjectList extends Component {
 				);
 			});
         return (
-    		<Paper className="projects">
-    			<h3>Projects</h3>
+        	<div>
+                <h3>Projects</h3>
+                <Link to="/project/0" style={{color: 'inherit'}}>Go to Test Project</Link>
+                <p></p>  
 	        	<AddProject
 	        		submit={(freshProject)=>this.addProject(freshProject)}>
 	        	</AddProject>
 	        	<List className="list">
 	        		{projectItems}
 	        	</List>
-        	</Paper>
+	        </div>
         	);
     }
 }

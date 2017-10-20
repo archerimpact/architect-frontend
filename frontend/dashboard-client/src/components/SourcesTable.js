@@ -12,31 +12,31 @@ import { Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../../actions/';
-import * as server from '../../server/';
+import * as actions from '../actions/';
+import * as server from '../server/';
 
-class EntitiesTable extends Component {
+class SourcesTable extends Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			entities: this.props.savedEntities.entities
+			documents: this.props.savedDocuments.documents
 		}
 	}
 
-	componentWillMount = () => {
-        server.getProject()
+	/*componentWillMount = () => {
+        server.getDocuments()
             .then((data) => {
                 this.setState({
-                    entities: data
+                    documents: data
                 })
-                this.props.dispatch(actions.addEntities(data))
+                this.props.dispatch(actions.addDocuments(data))
         })
-    }
+    }*/
 
 	componentWillReceiveProps(nextProps) {
 		this.setState({
-			entities: nextProps.savedEntities.entities
+			documents: nextProps.savedDocuments.documents
 		})
 	}
 
@@ -45,7 +45,9 @@ class EntitiesTable extends Component {
 	render (){
 		return(
 			<div>
-				<h3>Entities</h3>
+	            <h3>Sources</h3>
+	            <Link to="/links" style={{color: 'inherit' }}>View saved links</Link>
+	            <p></p>  
 				<Table
 					multiSelectable={true}
 				>
@@ -57,11 +59,11 @@ class EntitiesTable extends Component {
 				    </TableHeader>
 				    <TableBody
 				    	showRowHover={true}>
-				    	{this.state.entities.map((entity) => {
+				    	{this.state.documents.map((document) => {
 				    		return(
 				    			<TableRow>
-				        			<TableRowColumn><a href={"https://www.wikidata.org/wiki/" + entity.qid}>{entity.name} </a></TableRowColumn>
-				        			<TableRowColumn>{entity.type}</TableRowColumn>
+				        			<TableRowColumn><a href={"/documents/" + document.id}>{document.name} </a></TableRowColumn>
+				        			<TableRowColumn>{document.type}</TableRowColumn>
 				      			</TableRow>
 				    		)
 				    	})}
@@ -83,9 +85,10 @@ function mapStateToProps(state) {
     return {
         savedEntities: state.data.savedEntities,
         entityNames: state.data.entityNames,
-        projects: state.data.projects
+        projects: state.data.projects,
+        savedDocuments: state.data.savedDocuments
     };
 }
 
  
-export default connect(mapStateToProps, mapDispatchToProps)(EntitiesTable)
+export default connect(mapStateToProps, mapDispatchToProps)(SourcesTable)

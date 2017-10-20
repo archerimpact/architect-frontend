@@ -9,6 +9,7 @@ import Badge from 'material-ui/Badge';
 import IconButton from 'material-ui/IconButton';
 import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
 import Paper from 'material-ui/Paper';
+import NodeGraph from '../DocumentPage/NodeGraph';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -56,14 +57,15 @@ class ProjectPage extends Component {
                             </Badge>
                         </div>
                     </div>
-                    <div className="text-container">
-                        <EntityExtractor/>
-                    </div>
-                    <div className="body">
-                        <Paper className="table">                         
-                            <EntitiesTable entities={this.props.savedEntities.entities}/>
-                        </Paper>
-                    </div>
+                    <Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
+                        <NodeGraph entities={this.props.savedEntities.entities}/>
+                        <div className="text-container">
+                            <EntityExtractor/>
+                        </div>
+                    </Paper>
+                    <Paper className="table">                         
+                        <EntitiesTable entities={this.props.savedEntities.entities}/>
+                    </Paper>
                 </div>
             </div>
         );
