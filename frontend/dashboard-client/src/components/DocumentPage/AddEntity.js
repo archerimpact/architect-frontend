@@ -28,11 +28,11 @@ class AddEntity extends Component {
 	};
 
 	handleSubmit(event) {
-		e.preventDefault();
+		event.preventDefault();
 		this.props.dispatch(actions.addEntity({name: this.state.nameFieldValue, type: this.state.typeFieldValue, link:this.state.linkFieldValue, chips: [this.state.tagFieldValue]}))
 		this.setState({
 			open: true,
-			anchorEl: e.currentTarget,
+			anchorEl: event.currentTarget,
 			nameFieldValue: '',
 			typeFieldValue: '',
 			linkFieldValue: '',

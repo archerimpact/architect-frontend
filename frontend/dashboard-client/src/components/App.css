@@ -33,5 +33,22 @@
   margin: 10px;
 }
 
+.projects{
+  width:100%;
+  padding: 15px 15px 15px 15px;
+  margin: auto;
+  display:inline-block;
+}
+
+.the-rest{
+  display:flex;
+  flex-direction: row;
+  width:100%;
+}
+
+.column{
+  width:33%;
+  margin:5px;
+}
 
 

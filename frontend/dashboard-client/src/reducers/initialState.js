@@ -13,6 +13,13 @@ export default {
 			{id: 2, name: 'Angelina Wang', type: 'Person', chips: ['Daryus Medora'], projects: [1], qid: ""}, 
 			]
 	},
+	savedDocuments: {
+		status: 'isLoading',
+		documents: [
+			{id: 0, name: 'Business Registry #1', type: 'Primary Source', projects: [0, 1], qid: ""}, 
+			{id: 1, name: 'Legal Case #1', type: 'Primary Source', projects: [0], qid: ""}, 
+			]
+	},
 	entityTypes: ["Company", "Person", "Location"],
 	entityNames: ["Alice Ma", "Daryus Medora", "Angelina Wang"],
 	projects: [

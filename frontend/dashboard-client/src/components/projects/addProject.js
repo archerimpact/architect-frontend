@@ -25,19 +25,18 @@ class AddProject extends Component {
     render() {
         return (
         	<div className="AddProject">
-            <form onSubmit={this.projectSubmit}>
-        		<TextField
-        			placeholder="Enter project name"
-        			value={this.state.value}
-        			onChange={this.handleChange}/>
-        		<RaisedButton 
-                    primary={true} 
-                    className="submit" 
-                    type="submit">
-                        New Project
-                </RaisedButton>
-        	</form>
-            <p>{this.props.name}</p>
+                <form onSubmit={this.projectSubmit}>
+            		<TextField
+            			placeholder="Enter project name"
+            			value={this.state.value}
+            			onChange={this.handleChange}/>
+            		<RaisedButton 
+                        primary={true} 
+                        className="submit" 
+                        type="submit"
+                        label="New Project" />
+            	</form>
+                <p>{this.props.name}</p>
             </div>
         );
     }

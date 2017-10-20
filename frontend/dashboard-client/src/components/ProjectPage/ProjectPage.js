@@ -26,15 +26,15 @@ class ProjectPage extends Component {
         }
     }
 
-    componentWillMount = () => {
+    /*componentWillMount = () => {
         server.getProject()
             .then((data) => {
                 this.setState({
                     entities: data
                 })
                 this.props.dispatch(actions.addEntities(data))
-            })
-    }
+        })
+    }*/
 
     render() {
         return (
