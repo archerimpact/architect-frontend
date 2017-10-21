@@ -16,7 +16,8 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 	const muiTheme = getMuiTheme({
 	  palette: {
-	    primary1Color: '#4CBF88'
+	    primary1Color: '#4CBF88',
+	    accent1Color: '#2c98f0'
 	  }
 	});
 

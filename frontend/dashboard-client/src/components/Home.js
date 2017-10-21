@@ -17,14 +17,14 @@ class Home extends Component {
     render() {
         return (
 
-            <div>
-                <div className="App">
+            <div style={{height:'100%'}}>
+                <div className="app">
                     <div className="summary">
                         <h1>Homepage</h1>         
                     </div>
-                    <div className="the-rest" style={{width:'90%', margin:'0 auto'}}>
-                        <Tabs tabItemContainerStyle={{background: 'grey'}}>
-                            <Tab label="Projects" type="default">
+                    <div className="the-rest" style={{width:'100%', margin:'0 auto'}}>
+                        <Tabs tabItemContainerStyle={{background: '#fafafa'}}>
+                            <Tab label="Projects" type="default" style={{backgroundColor: '#fafafa', color:'#747474'}}>
                             <div className="column">
                                 <Paper className="projects">
                                     <ProjectList/>
@@ -32,14 +32,14 @@ class Home extends Component {
 
                             </div>
                             </Tab>
-                            <Tab label="Entities">
+                            <Tab label="Entities" style={{backgroundColor: '#fafafa', color:'#747474'}}>
                                 <div className="column">
                                     <Paper className="projects">
                                         <EntitiesTable />
                                     </Paper>
                                 </div>
                             </Tab>
-                            <Tab label="Sources">
+                            <Tab label="Sources" style={{backgroundColor: '#fafafa', color:'#747474'}}>
                                 <div className="column">
                                     <PDFUploader />
                                     <p></p>

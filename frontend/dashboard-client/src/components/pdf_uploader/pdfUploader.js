@@ -75,8 +75,7 @@ class PDFUploader extends Component {
                         labelPosition="before" 
                         containerElement="label" 
                         style={styles.button} 
-                        primary={false}
-                        secondary={true}
+                        primary={true}
                     >
                         <input 
                             type="file" 
