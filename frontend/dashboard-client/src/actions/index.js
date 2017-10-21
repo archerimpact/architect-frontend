@@ -1,4 +1,4 @@
-import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, ADD_ENTITIES} from '../constants/actionTypes';
+import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES} from '../constants/actionTypes';
 
 export function addLink(link) {
 	return {
@@ -18,6 +18,13 @@ export function addEntities(entities){
 	return {
 		type: ADD_ENTITIES,
 		payload: entities
+	}
+}
+
+export function addSources(sources){
+	return {
+		type: ADD_SOURCES,
+		payload: sources
 	}
 }
 

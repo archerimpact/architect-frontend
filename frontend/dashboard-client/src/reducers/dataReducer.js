@@ -1,4 +1,4 @@
-import { ADD_LINK, ADD_ENTITY, ADD_TAG, ADD_ENTITIES } from '../constants/actionTypes';
+import { ADD_LINK, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES } from '../constants/actionTypes';
 import initialState from './initialState';
 
 export default function (state = initialState, action) {
@@ -23,7 +23,7 @@ export default function (state = initialState, action) {
 				entityNames: state.entityNames.concat(action.payload.name)
 			}
 		case ADD_ENTITIES:
-			var new_entities = state.savedEntities.entities.concat(action.payload.map((entity) => {return {name: entity.name, type: entity.type, link: '', chips: []}}))
+			var new_entities = state.savedEntities.entities.concat(action.payload.map((entity) => {return {name: entity.name, type: entity.type, link: '', chips: [], sources:[entity.sourceid]}}))
 
 			return {
 				...state,
@@ -34,6 +34,16 @@ export default function (state = initialState, action) {
 				},
 				entityNames: new_entities.map((entity) => {return entity.name})
 			}
+		case ADD_SOURCES:
+			return {
+				...state,
+				savedSources: {
+					...state.savedSources,
+					status: 'isLoaded',
+					notes: state.savedSources.notes.concat(action.payload)
+				},
+			}				
+
 		case ADD_TAG:
 			return {
 				...state,

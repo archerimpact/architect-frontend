@@ -20,27 +20,38 @@ class EntitiesTable extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			entities: this.props.savedEntities.entities
+			entities: this.props.savedEntities.entities,
+			sources: this.props.savedSources.notes
 		}
+		this.getEntitySource = this.getEntitySource.bind(this)
 	}
 
 	componentWillMount = () => {
         server.loadEntities()
             .then((data) => {
-                this.setState({
-                    entities: data
-                })
-                this.props.dispatch(actions.addEntities(data))
+                this.props.dispatch(actions.addEntities(data.entities))
+                this.props.dispatch(actions.addSources(data.notes))
         })
     }
 
 	componentWillReceiveProps(nextProps) {
 		this.setState({
-			entities: nextProps.savedEntities.entities
+			entities: nextProps.savedEntities.entities,
+			sources: nextProps.savedSources.notes
+
 		})
+		
 	}
 
-
+	getEntitySource(entity) {
+		var sourceid = entity.sources[0];
+		var source = this.state.sources.find(function (obj) {return obj._id=== entity.sources[0]});
+		if (typeof(source) !== "undefined"){
+			return source.content
+		} else {
+			return ""
+		}
+	}
 
 	render (){
 		return(
@@ -53,6 +64,7 @@ class EntitiesTable extends Component {
 				      <TableRow>
 				        <TableHeaderColumn>Name</TableHeaderColumn>
 				        <TableHeaderColumn>Type</TableHeaderColumn>
+				        <TableHeaderColumn>Document</TableHeaderColumn>
 				      </TableRow>
 				    </TableHeader>
 				    <TableBody
@@ -62,6 +74,7 @@ class EntitiesTable extends Component {
 				    			<TableRow>
 				        			<TableRowColumn><a href={"https://www.wikidata.org/wiki/" + entity.qid}>{entity.name} </a></TableRowColumn>
 				        			<TableRowColumn>{entity.type}</TableRowColumn>
+				        			<TableRowColumn>{this.getEntitySource(entity)}</TableRowColumn>
 				      			</TableRow>
 				    		)
 				    	})}
@@ -83,7 +96,8 @@ function mapStateToProps(state) {
     return {
         savedEntities: state.data.savedEntities,
         entityNames: state.data.entityNames,
-        projects: state.data.projects
+        projects: state.data.projects,
+        savedSources: state.data.savedSources
     };
 }
 

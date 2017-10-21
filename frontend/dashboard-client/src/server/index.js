@@ -127,13 +127,13 @@ export function loadEntities() {
 
 	function notesToEntities(notes) {
         //Turns an object of objects into an array of objects instead to iterate over it
-        notes = Object.values(notes);
 
+        console.log("here are the notes in notesToEntities: " + notes)
         /* map over all notes, then map over all entities in each note, and build a new array entities 
            which contains all entities of all notes */
        	var entities = notes.map((note) => {
     		return note.entities.map((entity) => {
-        		return {"name": entity.normalized, "type": entity.type, "qid": entity.entityId}
+        		return {"name": entity.normalized, "type": entity.type, "qid": entity.entityId, "sourceid": note._id}
     		})
     	})
     	return [].concat.apply([], entities)
@@ -143,10 +143,12 @@ export function loadEntities() {
 	return new Promise(function(fulfill, reject) {
 		fetch(url, options)
 		.then(res => {
+			console.log("response type before turning into json: " + typeof(res))
 			return res.json()})
 		.then(json => {
-			newEntities = notesToEntities(json);
-			fulfill(newEntities)
+			var notes = Object.values(json);
+			newEntities = notesToEntities(notes);
+			fulfill({entities: newEntities, notes: notes})
 		})
 		.catch(err => {
 			reject('Error: could not return entities because ' + err);

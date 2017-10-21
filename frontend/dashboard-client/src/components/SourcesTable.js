@@ -72,8 +72,8 @@ class SourcesTable extends Component {
 				    	{this.state.notes.map((note) => {
 				    		return(
 				    			<TableRow>
-				        			<TableRowColumn><a href={"/sources/" + note.id}>{note.name} </a></TableRowColumn>
-				        			<TableRowColumn>{note.text}</TableRowColumn>
+				        			<TableRowColumn><a href={"/sources/" + note._id}>{note.title} </a></TableRowColumn>
+				        			<TableRowColumn>{note.content}</TableRowColumn>
 				      			</TableRow>
 				    		)
 				    	})}
