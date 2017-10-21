@@ -93,6 +93,21 @@ app.post('/squirrels', function(req, res) {
     });
 });
 
+app.post('/findsquirrel', function (req, res) {
+    // var coll = req.body.collection; // hmm not easy to specify a collection dynamically using mongoose, mongodb simpler
+    // https://stackoverflow.com/questions/24035872/return-results-mongoose-in-find-query-to-a-variable
+    // shows how to do via .exec() or promises.
+    query = Squirrel.find().where(req.body.field, req.body.search_term);
+    // res.swend(result);
+    query.exec(function (err, squirrels) {
+        if (err) {
+            res.send(`error!: ${err}`);
+        } else {
+            res.send(squirrels);
+        }
+    })
+});
+
 
 
 app.get('*', function(req, res) {
