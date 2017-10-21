@@ -11,6 +11,10 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper'
 import {Tabs, Tab} from 'material-ui/Tabs';
 
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as actions from '../actions/';
+
 import { Link } from 'react-router-dom';
 
 class Home extends Component {
@@ -32,14 +36,14 @@ class Home extends Component {
 
                             </div>
                             </Tab>
-                            <Tab label="Entities" style={{backgroundColor: '#fafafa', color:'#747474'}}>
+                            <Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={{backgroundColor: '#fafafa', color:'#747474'}}>
                                 <div className="column">
                                     <Paper className="projects">
                                         <EntitiesTable />
                                     </Paper>
                                 </div>
                             </Tab>
-                            <Tab label="Sources" style={{backgroundColor: '#fafafa', color:'#747474'}}>
+                            <Tab label="Sources (2)" style={{backgroundColor: '#fafafa', color:'#747474'}}>
                                 <div className="column">
                                     <PDFUploader />
                                     <p></p>
@@ -56,4 +60,18 @@ class Home extends Component {
     }
 }
 
-export default Home
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(actions, dispatch),
+        dispatch: dispatch,
+    };
+}
+
+function mapStateToProps(state) {
+    return {
+        savedEntities: state.data.savedEntities,
+    };
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

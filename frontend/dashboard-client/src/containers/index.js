@@ -20,13 +20,10 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 	    accent1Color: '#2c98f0'
 	  }
 	});
+	//45AD7C (darker) or 4CBF88 (lighter)
 
 
 export default class Root extends Component {
-	
-
-
-
 	render() {
 		return (
 			<MuiThemeProvider muiTheme={muiTheme}>
