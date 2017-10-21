@@ -25,7 +25,7 @@ class EntitiesTable extends Component {
 	}
 
 	componentWillMount = () => {
-        server.getProject()
+        server.loadEntities()
             .then((data) => {
                 this.setState({
                     entities: data

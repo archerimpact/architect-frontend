@@ -23,7 +23,7 @@ class EntityExtractor extends Component{
   handleSubmit = (event) => {
     	alert('An essay was submitted: ' + this.state.text);
     	event.preventDefault();
-      server.postProject("Random Title", this.state.text)
+      server.submitText("Random Title", this.state.text)
         .then((data) => {
             console.log("posted data: " + data);
         })

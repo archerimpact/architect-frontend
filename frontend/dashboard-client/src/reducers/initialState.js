@@ -13,11 +13,14 @@ export default {
 			{id: 2, name: 'Angelina Wang', type: 'Person', chips: ['Daryus Medora'], projects: [1], qid: ""}, 
 			]
 	},
-	savedDocuments: {
+	savedSources: {
 		status: 'isLoading',
 		documents: [
-			{id: 0, name: 'Business Registry #1', type: 'Primary Source', projects: [0, 1], qid: ""}, 
-			{id: 1, name: 'Legal Case #1', type: 'Primary Source', projects: [0], qid: ""}, 
+			{id: 0, name: 'Business Registry #1', type: 'Primary Source', path: '', projects: [0, 1], qid: ""}, 
+			{id: 1, name: 'Legal Case #1', type: 'Primary Source', path: '', projects: [0], qid: ""}, 
+			],
+		notes: [
+			{id: 0, name: 'This is a note', type: 'Description', text: "Here's a lot of text", project: [0,1]}
 			]
 	},
 	entityTypes: ["Company", "Person", "Location"],

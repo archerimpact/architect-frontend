@@ -20,7 +20,8 @@ class SourcesTable extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			documents: this.props.savedDocuments.documents
+			documents: this.props.savedSources.documents,
+			notes: this.props.savedSources.notes
 		}
 	}
 
@@ -36,7 +37,8 @@ class SourcesTable extends Component {
 
 	componentWillReceiveProps(nextProps) {
 		this.setState({
-			documents: nextProps.savedDocuments.documents
+			documents: nextProps.savedSources.documents,
+			notes: nextProps.savedSources.notes
 		})
 	}
 
@@ -62,8 +64,16 @@ class SourcesTable extends Component {
 				    	{this.state.documents.map((document) => {
 				    		return(
 				    			<TableRow>
-				        			<TableRowColumn><a href={"/documents/" + document.id}>{document.name} </a></TableRowColumn>
+				        			<TableRowColumn><a href={"/sources/" + document.id}>{document.name} </a></TableRowColumn>
 				        			<TableRowColumn>{document.type}</TableRowColumn>
+				      			</TableRow>
+				    		)
+				    	})}
+				    	{this.state.notes.map((note) => {
+				    		return(
+				    			<TableRow>
+				        			<TableRowColumn><a href={"/sources/" + note.id}>{note.name} </a></TableRowColumn>
+				        			<TableRowColumn>{note.text}</TableRowColumn>
 				      			</TableRow>
 				    		)
 				    	})}
@@ -86,7 +96,7 @@ function mapStateToProps(state) {
         savedEntities: state.data.savedEntities,
         entityNames: state.data.entityNames,
         projects: state.data.projects,
-        savedDocuments: state.data.savedDocuments
+        savedSources: state.data.savedSources
     };
 }
 

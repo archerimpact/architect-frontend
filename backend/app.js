@@ -85,6 +85,10 @@ function submitNote(title, content, entities) {
     };
 
 
+app.get('/notes', function(req,res) {
+
+})
+
 app.post('/entities', function(req, res) {
     console.log("this is the document text you are submitting: " + req.body.text)
     if (req.body.text.length > 20) {

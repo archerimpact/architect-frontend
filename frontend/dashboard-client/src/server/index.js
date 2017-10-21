@@ -90,7 +90,7 @@ function addLink(url, label, notes) {
 }
 */
 
-export function postProject(title, text) {
+export function submitText(title, text) {
 	var url ='http://localhost:8000/entities';
 	var options = {
 		method: 'POST',
@@ -116,7 +116,7 @@ export function postProject(title, text) {
 
 
 //Gets all entities related to a project. Server returns an object of objects containing all notes.
-export function getProject() {
+export function loadEntities() {
 	var url ='http://localhost:8000/entities';
 	var options = {
 		method: 'GET',
@@ -152,6 +152,31 @@ export function getProject() {
 			reject('Error: could not return entities because ' + err);
 		})
 	})
+}
+
+export function loadSources() {
+	var url = 'http://localhost:8000/entities';
+	var options = {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	};
+
+	let notes = null;
+	return new Promise(function(fulfill, reject) {
+		fetch(url, options)
+		.then(res => {
+			return res.json()})
+		.then(json => {
+			console.log(json)
+			fulfill(json)
+		})
+		.catch(err => {
+			reject('Error: could not return entities because ' + err);
+		})
+	})
+
 }
 
 /* This was in Michael's master branch but was not how I exported my functions.
