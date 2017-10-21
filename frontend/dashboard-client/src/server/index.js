@@ -31,13 +31,15 @@ function authenticate(authInfo) {
 }
 
 function register(authInfo) {
-	var url = 'https://localhost:8000/register'
+	var url = 'https://localhost:8000/register';
 	var options = {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
+			// 'Content-Type': 'application/x-www-form-urlencoded'
+			'Content-Type': 'application/json'
 		},
-		body: qs.stringify({
+		body:
+            qs.stringify({
 			username: authInfo.username,
 			password: authInfo.password,
 			name: authInfo.name,

@@ -18,6 +18,7 @@ class CreateAccount extends React.Component {
         this.handleEmailInputChange = this.handleEmailInputChange.bind(this);
         this.handlePassword1InputChange = this.handlePassword1InputChange.bind(this);
         this.handlePassword2InputChange = this.handlePassword2InputChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
 
     }
 
@@ -33,52 +34,64 @@ class CreateAccount extends React.Component {
         this.setState({pw2: event.target.value});
     }
 
-    handleClick() {
-        console.log("handleClick!")
+    handleSubmit(event) {
+        // check that passwords match etc., validation.
+        // if (this.state.pw1 === this.state.pw2) {
+        //     console.log(event.target);
+        //     const ainfo =2;
+        // }
+        console.log(event.target);
     }
 
     render() {
         return (
             <div className='rows' style={{textAlign:"center", marginTop:40}} >
                 <p> Please enter your details below to create a new account! </p>
-                <TextField
-                    hintText="alice@investigator.com"
-                    floatingLabelText="Enter your email address"
-                    fullWidth={false}
-                    value={this.state.email}
-                    style = {{width: 500, marginRight: 20}}
-                    // onChange={this.handleEmailInputChange}
-                    type="text"
-                />
+                {/*works if you wanna send directly. otherwise handler, pull from state -is this safe?. action={"/register"} method="post" // onSubmit={this.handleSubmit} --- so right now not using the server/index methods */}
+                <form action={"http://localhost:8000/register"} method="post" >
+                    <TextField
+                        hintText="alice@investigator.com"
+                        floatingLabelText="Enter your email address"
+                        fullWidth={false}
+                        // value={this.state.email}
+                        style = {{width: 500, marginRight: 20}}
+                        // onChange={this.handleEmailInputChange}
+                        type="text"
+                        name={"username"}
+                    />
+                    <br />
+                    <TextField
+                        hintText="**********"
+                        floatingLabelText="Enter a password"
+                        fullWidth={false}
+                        // value={this.state.pw1}
+                        style = {{width: 500, marginRight: 20}}
+                        // onChange={this.handlePassword1InputChange}
+                        type={"password"}
+                        name={"password"}
+                    />
+                    <br />
+                    <TextField
+                        hintText="**********"
+                        floatingLabelText="Confirm password"
+                        fullWidth={false}
+                        // value={this.state.pw2}
+                        style = {{width: 500, marginRight: 20}}
+                        // onChange={this.handlePassword2InputChange}
+                        type={"password"}
+                        name={"password2"}
+                    />
+                    <br />
+                    <RaisedButton
+                        style={{margin: 12} }
+                        primary
+                        // onClick={this.handleSubmit}
+                        label="Create account"
+                        type="submit"
+                    />
+                    <br />
+                </form>
                 <br />
-                <TextField
-                    hintText="**********"
-                    floatingLabelText="Enter a password"
-                    fullWidth={false}
-                    value={this.state.pw1}
-                    style = {{width: 500, marginRight: 20}}
-                    onChange={this.handlePassword1InputChange}
-                    type={"password"}
-                />
-                <br />
-                <TextField
-                    hintText="**********"
-                    floatingLabelText="Confirm password"
-                    fullWidth={false}
-                    value={this.state.pw2}
-                    style = {{width: 500, marginRight: 20}}
-                    onChange={this.handlePassword2InputChange}
-                    type={"password"}
-                />
-                <br />
-                <br />
-                <RaisedButton
-                    style={{margin: 12} }
-                    primary
-                    onClick={this.handleClick}
-                    label="Create account"
-                    type="submit"
-                />
             </div>
         )
     }
