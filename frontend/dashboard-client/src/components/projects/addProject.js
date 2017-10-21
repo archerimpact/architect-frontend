@@ -4,14 +4,14 @@ import TextField from 'material-ui/TextField';
 import './projects.css';
 
 class AddProject extends Component {
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
 		this.state = {value: ''};
-		this.handleChange = this.handleChange.bind(this);
+		this.newProject = this.newProject.bind(this);
         this.projectSubmit = this.projectSubmit.bind(this);
 	}
 
-	handleChange(event) {
+	newProject(event) {
 		this.setState({value: event.target.value});
 		event.preventDefault();
 	}
@@ -29,12 +29,13 @@ class AddProject extends Component {
             		<TextField
             			placeholder="Enter project name"
             			value={this.state.value}
-            			onChange={this.handleChange}/>
+            			onChange={this.newProject}/>
             		<RaisedButton 
                         primary={true} 
                         className="submit" 
-                        type="submit"
-                        label="New Project" />
+                        type="submit">
+                        New Project
+                    </RaisedButton>
             	</form>
                 <p>{this.props.name}</p>
             </div>

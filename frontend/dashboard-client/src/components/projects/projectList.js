@@ -11,20 +11,20 @@ class ProjectList extends Component {
 	constructor() {
 		super();
 		this.state = {
-			projects: ['Guns', 'Trump Conspiracies'],
+			projects: [],
 		};
 		this.addProject = this.addProject.bind(this);
+		this.projectList = this.projectList.bind(this);
 	}
 
 	addProject(freshProject) {
 		var projects = this.state.projects;
 		var moreProjects = projects.concat(freshProject);
-		console.log(moreProjects);
 		this.setState({projects: moreProjects});
 	}
 
-    render() {
-    	const projectItems = this.state.projects.map((project) => {
+	projectList() {
+		const projectItems = this.state.projects.map((project) => {
 			return (
 				<ListItem 
 					className="projectName" 
@@ -33,6 +33,10 @@ class ProjectList extends Component {
 				/>
 				);
 			});
+		return projectItems;
+	}
+
+    render() {
         return (
         	<div>
                 <h3>Projects</h3>

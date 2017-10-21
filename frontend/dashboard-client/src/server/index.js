@@ -183,6 +183,8 @@ export function loadSources() {
 
 /* This was in Michael's master branch but was not how I exported my functions.
 
+=======
+>>>>>>> e986594746d08ba12efa710a8a2ba0489e46d300
 module.exports = {
 	authenticate,
 	register,
