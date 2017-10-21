@@ -53,8 +53,12 @@ app.post('/login', passport.authenticate('local', {
     }), function(req, res) {
 });
 
+app.get('/loggedIn', function(req, res) {
+    res.send("Logged in successfully!")
+})
 
-app.get('/logout', function(req, res) {
+
+app.get('/logout', function(req, res) { // no authentication here, just for testing
     req.logout();
     res.send('logged out');
 });
@@ -69,7 +73,7 @@ app.post('/register', function(req, res) {
             console.log(err);
         }
         passport.authenticate('local')(req, res, function() { // should be in an else - otherwise will still log you in even if you register? maybe that's not too bad....
-            res.send('Log in successful');
+            res.send('Account created; Log in successful');
         });
    });
 });

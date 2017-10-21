@@ -1,5 +1,7 @@
 import React from 'react';
 import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
+
 
 class LoginPage extends React.Component {
     constructor(props) {
@@ -15,24 +17,39 @@ class LoginPage extends React.Component {
         return (
             <div className='rows' style={{textAlign:"center", marginTop:40}}>
                 <p>Hello! Please login below.</p>
-                <form action={"/login"} method="post">
-                    <div>
-                        <label>Username:</label>
-                        <input type="text" name="username"/>
-                    </div>
-                    <div>
-                        <label>Password:</label>
-                        <input type="password" name="password"/>
-                    </div>
-                    <div>
-                        <input type="submit" value="Log In"/>
-                    </div>
+                <form action={"http://localhost:8000/login"} method="post" >
+                    <TextField
+                        hintText="alice@investigator.com"
+                        floatingLabelText="Enter your email address"
+                        fullWidth={false}
+                        // value={this.state.email}
+                        style = {{width: 500, marginRight: 20}}
+                        // onChange={this.handleEmailInputChange}
+                        type="text"
+                        name={"username"}
+                    />
+                    <br />
+                    <TextField
+                        hintText="**********"
+                        floatingLabelText="Enter your password"
+                        fullWidth={false}
+                        // value={this.state.pw1}
+                        style = {{width: 500, marginRight: 20}}
+                        // onChange={this.handlePassword1InputChange}
+                        type={"password"}
+                        name={"password"}
+                    />
+                    <br />
+                    <RaisedButton
+                        style={{margin: 12} }
+                        primary
+                        // onClick={this.handleSubmit}
+                        label="Login"
+                        type="submit"
+                    />
+                    <br />
                 </form>
 
-                <TextField
-                placeholder="hello2"
-                // onChange={this.loggy}
-d                />
             </div>
         );
     }
