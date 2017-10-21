@@ -3,7 +3,7 @@ services:
   backend:
     build: backend
     restart: always
-    command: nodemon --inspect=5858 #node app.js, only used for nodemon
+    command: nodemon --inspect=5858 # change back to node app.js when not for nodemon
     volumes:
       - ./backend:/node
       - /node/node_modules

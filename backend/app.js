@@ -76,7 +76,6 @@ app.post('/register', function(req, res) {
 const storage = multer.diskStorage({
     destination: './files/',
     filename: function(req, file, callback) {
-        console.log(file);
         // TODO: Change this filename to something more unique in case of repeats
         var file_name = file.originalname;
         callback(null, file_name);

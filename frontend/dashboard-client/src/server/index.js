@@ -87,7 +87,6 @@ function addLink(url, label, notes) {
 	})
 }
 
-
 module.exports = {
 	authenticate,
 	register,
