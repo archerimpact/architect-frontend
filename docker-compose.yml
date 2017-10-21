@@ -3,12 +3,14 @@ services:
   backend:
     build: backend
     restart: always
-    command: node app.js
+#    command: node app.js
+    command: nodemon --inspect=5858
     volumes:
       - ./backend:/node
       - /node/node_modules
     ports:
       - "8000:8000"
+      - "5858:5858"
   frontend:
     build: frontend/dashboard-client
     restart: always

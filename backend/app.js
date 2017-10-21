@@ -4,6 +4,7 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     passport = require('passport'),
     LocalStrategy = require('passport-local'),
+    Squirrel = require('./models/squirrel');
     User = require('./models/user');
     
 app.use(bodyParser.urlencoded({extended: true}));
@@ -12,10 +13,14 @@ app.use(bodyParser.json());
 // mongoose.connect('mongodb://michael:archer3@ds115045.mlab.com:15045/uxreceiver');
 mongoose.Promise = Promise;
 // mongoose.Promise = require('bluebird');
-mongoose.connect('mongodb://archer1:fanusie@ds011872.mlab.com:11872/redtwinedb', {useMongoClient: true, promiseLibrary: global.Promise});
-// PYTHON REFERENCE client = MongoClient("mongodb://admin:passw0rd@ds163232.mlab.com:63232/sdn")
-// PYTHON REFERENCE db = client.sdn
 // mlab acc - user: ofacasaurus; pass: m1chaelsBlueKettle
+const db_url = 'mongodb://archer1:fanusie@ds011872.mlab.com:11872/redtwinedb';
+const db_options = {
+    useMongoClient: true,
+    promiseLibrary: global.Promise
+};
+mongoose.connect(db_url,
+    db_options);
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -68,6 +73,27 @@ app.post('/register', function(req, res) {
         });
    });
 });
+
+
+
+app.post('/squirrels', function(req, res) {
+    var req_pretty = JSON.stringify(req.body, null, 2);
+    // data = {};
+    // data.name = req.body.name;
+    // data.favnut = req.body.favnut;
+    var newSquirrel = new Squirrel(req.body);
+
+    newSquirrel.save(function (err) {
+        if (err) {
+            res.send('error: squirrel not saved!');
+        } else {
+            res.send(`saved ${req_pretty}, great success!`);
+            // res.send(res.json(req.body));
+        }
+    });
+});
+
+
 
 app.get('*', function(req, res) {
     res.send('page not found');
