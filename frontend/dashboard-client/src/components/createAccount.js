@@ -1,13 +1,13 @@
 import React from 'react';
 // import './App.css';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as actions from '../actions/';
+// import { connect } from 'react-redux';
+// import { bindActionCreators } from 'redux';
+// import * as actions from '../actions/';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
 
-export class CreateAccount extends React.Component {
+class CreateAccount extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -47,7 +47,8 @@ export class CreateAccount extends React.Component {
                     fullWidth={false}
                     value={this.state.email}
                     style = {{width: 500, marginRight: 20}}
-                    onChange={this.handleEmailInputChange}
+                    // onChange={this.handleEmailInputChange}
+                    type="text"
                 />
                 <br />
                 <TextField
@@ -57,6 +58,7 @@ export class CreateAccount extends React.Component {
                     value={this.state.pw1}
                     style = {{width: 500, marginRight: 20}}
                     onChange={this.handlePassword1InputChange}
+                    type={"password"}
                 />
                 <br />
                 <TextField
@@ -66,6 +68,7 @@ export class CreateAccount extends React.Component {
                     value={this.state.pw2}
                     style = {{width: 500, marginRight: 20}}
                     onChange={this.handlePassword2InputChange}
+                    type={"password"}
                 />
                 <br />
                 <br />
@@ -73,24 +76,27 @@ export class CreateAccount extends React.Component {
                     style={{margin: 12} }
                     primary
                     onClick={this.handleClick}
-                    label="Create account" />
+                    label="Create account"
+                    type="submit"
+                />
             </div>
         )
     }
 }
 
 
-function mapDispatchToProps(dispatch) {
-    return {
-        actions: bindActionCreators(actions, dispatch),
-        dispatch: dispatch,
-    };
-}
+// function mapDispatchToProps(dispatch) {
+//     return {
+//         actions: bindActionCreators(actions, dispatch),
+//         dispatch: dispatch,
+//     };
+// }
+//
+// function mapStateToProps(state) {
+//     return {
+//         createAccount: state.data.createAccount,
+//     };
+// }
 
-function mapStateToProps(state) {
-    return {
-        createAccount: state.data.createAccount,
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(CreateAccount);
+// export default connect(mapStateToProps, mapDispatchToProps)(CreateAccount);
+export default CreateAccount;

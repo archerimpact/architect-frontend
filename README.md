@@ -19,3 +19,8 @@ With Docker, all of your containers are basically running on a virtual linux mac
 2. Open up a new shell, and again from the project directory run `docker-compose exec frontend yarn add <package>`.
 3. Make sure your teammates run `docker-compose build` whenever they eventually get your code changes, so that their frontend containers rebuild with the new package.
 
+### To see timestamps with logs for debugging backend
+
+1. Run `docker-compose up -d` to start the containers in the background.
+2. Run `docker-compose logs -ft` to start following the logs with timestamps.
+(Note - timestamps displayed in UTC - container's default timezone.)
