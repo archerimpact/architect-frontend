@@ -13,7 +13,6 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../actions/';
-import * as server from '../server/';
 
 class SourcesTable extends Component {
 
@@ -25,24 +24,12 @@ class SourcesTable extends Component {
 		}
 	}
 
-	/*componentWillMount = () => {
-        server.getDocuments()
-            .then((data) => {
-                this.setState({
-                    documents: data
-                })
-                this.props.dispatch(actions.addDocuments(data))
-        })
-    }*/
-
 	componentWillReceiveProps(nextProps) {
 		this.setState({
 			documents: nextProps.savedSources.documents,
 			notes: nextProps.savedSources.notes
 		})
 	}
-
-
 
 	render (){
 		return(
@@ -59,8 +46,6 @@ class SourcesTable extends Component {
 				        <TableHeaderColumn>Type</TableHeaderColumn>
 				        <TableHeaderColumn>Number of Entities</TableHeaderColumn>
 				        <TableHeaderColumn>Graph</TableHeaderColumn>
-
-
 				      </TableRow>
 				    </TableHeader>
 				    <TableBody
@@ -81,7 +66,6 @@ class SourcesTable extends Component {
 				        			<TableRowColumn>{note.content}</TableRowColumn>
 				        			<TableRowColumn>{note.entities.length}</TableRowColumn>
 				        			<TableHeaderColumn><a href={"/document/" + note._id}>Go to Graph</a></TableHeaderColumn>
-
 				      			</TableRow>
 				    		)
 				    	})}

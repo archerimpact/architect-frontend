@@ -40,7 +40,7 @@
   display:inline-block;
 }
 
-.the-rest{
+.tabs{
   display:flex;
   flex-direction: column;
   width:100%;

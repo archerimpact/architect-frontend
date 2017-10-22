@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import AddProject from './addProject';
 import ActionHome from 'material-ui/svg-icons/action/home';
-import Paper from 'material-ui/Paper'
 import { List, ListItem} from 'material-ui/List';
 import {red500, blue500} from 'material-ui/styles/colors';
 

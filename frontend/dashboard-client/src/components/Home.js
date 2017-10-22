@@ -17,7 +17,13 @@ import * as actions from '../actions/';
 
 import { Link } from 'react-router-dom';
 
+const tab_style = {
+    backgroundColor: '#fafafa',
+    color:'#747474'
+}
+
 class Home extends Component {
+
     render() {
         return (
 
@@ -26,9 +32,9 @@ class Home extends Component {
                     <div className="summary">
                         <h1>Homepage</h1>         
                     </div>
-                    <div className="the-rest" style={{width:'100%', margin:'0 auto'}}>
-                        <Tabs tabItemContainerStyle={{background: '#fafafa'}}>
-                            <Tab label="Projects" type="default" style={{backgroundColor: '#fafafa', color:'#747474'}}>
+                    <div className="tabs" style={{width:'100%', margin:'0 auto'}}>
+                        <Tabs >
+                            <Tab label="Projects" type="default" style={tab_style}>
                             <div className="column">
                                 <Paper className="projects">
                                     <ProjectList/>
@@ -36,14 +42,14 @@ class Home extends Component {
 
                             </div>
                             </Tab>
-                            <Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={{backgroundColor: '#fafafa', color:'#747474'}}>
+                            <Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={tab_style}>
                                 <div className="column">
                                     <Paper className="projects">
                                         <EntitiesTable />
                                     </Paper>
                                 </div>
                             </Tab>
-                            <Tab label={"Sources (" + this.props.savedSources.documents.length + this.props.savedSources.notes.length + ")"} style={{backgroundColor: '#fafafa', color:'#747474'}}>
+                            <Tab label="Sources" style={tab_style}>
                                 <div className="column">
                                     <PDFUploader />
                                     <p></p>

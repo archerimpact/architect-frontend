@@ -4,15 +4,29 @@ import * as d3 from 'd3'
 
 class NodeGraph extends Component {
 
-	//takes in a list of entities and maps it to a list of nodes for the d3 simulation
-	entitiesToNodes(entities, documents) {
+	//takes in a list of entities and documents and maps it to a list of nodes for the d3 simulation
+	createNodes(entities, documents) {
 		var entityNodes = entities.map((entity) => {
 			return {"id": entity.name, "name": entity.name, "type": entity.type}
 		});
 		var documentNodes = documents.map((documentid) => {
 			return {"id": documentid, "name": documentid, "type": "DOCUMENT"}
-		})
+		});
 		return documentNodes.concat(entityNodes)
+	};
+
+	//iterates over all the entitiesa and documents and builds an array of all the links for the d3 simulation
+	createLinks(entities, documents) {
+		var documentLinks =[]
+		if (documents.length >= 1) {
+			documentLinks = [].concat.apply([], documents.map((documentid) => {
+				return this.sourceToLinks(documentid, entities)
+			}))
+		} 
+		var entityConnections = [].concat.apply([], entities.map((entity) => {
+			return this.tagsToLinks(entity);
+		}));
+		return entityConnections.concat(documentLinks)
 	};
 
 	//takes all of the tags of one entity and returns an array of all the links of that one entity
@@ -22,25 +36,9 @@ class NodeGraph extends Component {
 		});
 	};
 
-	//iterates over all the entities and builds an array of all the links for the d3 simulation
-	entitiesToLinks(entities, documents) {
-		if (entities.length === 0) {
-			return []
-		}
-		if (documents.length >= 1) {
-			var documentLinks = [].concat.apply([], documents.map((documentid) => {
-				return this.sourceToLinks(documentid, entities)
-			}))
-		} 
-		var entityConnections = [].concat.apply([], entities.map((entity) => {
-			return this.tagsToLinks(entity);
-		}));
-		return entityConnections.concat(documentLinks)
-
-	};
-
+	//TO-DO: refactor so that this method takes entities and maps a connection
+	// to sources if and only if the source appears in this graph
 	sourceToLinks(sourceid, entities) {
-		
 		return entities.map((entity) => {
 			return {"source": entity.name, "target": sourceid};
 		});
@@ -68,9 +66,9 @@ class NodeGraph extends Component {
 	//the entire logic for generating a d3 forceSimulation graph
 	generateNetworkCanvas(entities) {
 		var documents = this.props.documents
-		const dataNodes = this.entitiesToNodes(entities, documents)
+		const dataNodes = this.createNodes(entities, documents)
 
-		const linkNodes = this.entitiesToLinks(entities, documents)
+		const linkNodes = this.createLinks(entities, documents)
 
 		const data = {
 			"nodes": dataNodes,
@@ -152,27 +150,6 @@ class NodeGraph extends Component {
   				d.fx = null;
  				d.fy = null;
 		}
-		
-		/* The following is the functions for making the graph draggable. Still a work in progress.
-
-		function dragDrop() {
-			d3.drag()
-			.on('start', (g) => {
-				g.children[0].fx = g.children[0].x
-				g.children[0].fy = g.children[0].y
-			})
-			.on('drag', (g) => {
-				simulation.alphaTarget(0.7).restart()
-				g.children[0].fx = d3.event.x
-				g.children[0].fy = d3.event.y
-			})
-			.on('end', (g) => {
-				if (!d3.event.active) {
-			  	simulation.alphaTarget(0)
-				}
-				g.children[0].fx = null
-				g.children[0].fy = null
-			})} */
 	}
 	
 	//When the props update (aka when there's a new entity or relationship), delete the old graph and create a new one

@@ -58,7 +58,7 @@ class ProjectPage extends Component {
                         </div>
                     </div>
                     <Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
-                        <NodeGraph entities={this.props.savedEntities.entities}/>
+                        <NodeGraph entities={this.props.savedEntities.entities} documents={[]}/>
                         <div className="text-container">
                             <EntityExtractor/>
                         </div>

@@ -156,31 +156,6 @@ export function loadEntities() {
 	})
 }
 
-export function loadSources() {
-	var url = 'http://localhost:8000/entities';
-	var options = {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json'
-		}
-	};
-
-	let notes = null;
-	return new Promise(function(fulfill, reject) {
-		fetch(url, options)
-		.then(res => {
-			return res.json()})
-		.then(json => {
-			console.log(json)
-			fulfill(json)
-		})
-		.catch(err => {
-			reject('Error: could not return entities because ' + err);
-		})
-	})
-
-}
-
 /* This was in Michael's master branch but was not how I exported my functions.
 
 =======
