@@ -31,12 +31,14 @@ class Home extends Component {
                     <div className="tabs" style={{width:'100%', margin:'0 auto'}}>
                         <Tabs >
                             <Tab label="Projects" type="default" style={tab_style}>
-                            <div className="column">
-                                <Paper className="projects">
-                                    <ProjectList/>
-                                </Paper>
-                            </div>
+                                <div className="column">
+                                    <Paper className="projects">
+                                        <ProjectList/>
+                                    </Paper>
+                                </div>
                             </Tab>
+                            {/*TODO: change the home page to make more sense
+
                             <Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={tab_style}>
                                 <div className="column">
                                     <Paper className="projects">
@@ -52,7 +54,7 @@ class Home extends Component {
                                         <SourcesTable />
                                     </Paper>
                                 </div>
-                            </Tab>
+                            </Tab>*/}
                         </Tabs>
                     </div>
                 </div>
