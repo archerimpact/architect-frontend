@@ -5,10 +5,14 @@ import * as d3 from 'd3'
 class NodeGraph extends Component {
 
 	//takes in a list of entities and maps it to a list of nodes for the d3 simulation
-	entitiesToNodes(entities) {
-		return entities.map((entity) => {
+	entitiesToNodes(entities, documents) {
+		var entityNodes = entities.map((entity) => {
 			return {"id": entity.name, "name": entity.name, "type": entity.type}
 		});
+		var documentNodes = documents.map((documentid) => {
+			return {"id": documentid, "name": documentid, "type": "DOCUMENT"}
+		})
+		return documentNodes.concat(entityNodes)
 	};
 
 	//takes all of the tags of one entity and returns an array of all the links of that one entity
@@ -19,10 +23,27 @@ class NodeGraph extends Component {
 	};
 
 	//iterates over all the entities and builds an array of all the links for the d3 simulation
-	entitiesToLinks(entities) {
-		return [].concat.apply([], entities.map((entity) => {
+	entitiesToLinks(entities, documents) {
+		if (entities.length === 0) {
+			return []
+		}
+		if (documents.length >= 1) {
+			var documentLinks = [].concat.apply([], documents.map((documentid) => {
+				return this.sourceToLinks(documentid, entities)
+			}))
+		} 
+		var entityConnections = [].concat.apply([], entities.map((entity) => {
 			return this.tagsToLinks(entity);
 		}));
+		return entityConnections.concat(documentLinks)
+
+	};
+
+	sourceToLinks(sourceid, entities) {
+		
+		return entities.map((entity) => {
+			return {"source": entity.name, "target": sourceid};
+		});
 	};
 
 	//returns the color of the node based on the type of the entity
@@ -30,7 +51,7 @@ class NodeGraph extends Component {
 		if (node.type === "Person" || node.type === "PERSON") {
 			return "#FFB7A0"
 		}
-		if (node.type === "Company") {
+		if (node.type === "Company" || node.type === "DOCUMENT") {
 			return "#3EE8D3" 
 		}
 		if (node.type ==="ORGANIZATION") {
@@ -46,8 +67,10 @@ class NodeGraph extends Component {
 
 	//the entire logic for generating a d3 forceSimulation graph
 	generateNetworkCanvas(entities) {
-		const dataNodes = this.entitiesToNodes(entities)
-		const linkNodes = this.entitiesToLinks(entities)
+		var documents = this.props.documents
+		const dataNodes = this.entitiesToNodes(entities, documents)
+
+		const linkNodes = this.entitiesToLinks(entities, documents)
 
 		const data = {
 			"nodes": dataNodes,
@@ -60,7 +83,7 @@ class NodeGraph extends Component {
 		const simulation = d3.forceSimulation(data.nodes)
 			.force("center", d3.forceCenter(width/3, height/2))
     		.force("charge", d3.forceManyBody())
-    		.force("link", d3.forceLink().id(function(d) { return d.id; }));
+    		.force("link", d3.forceLink().distance(100).id(function(d) { return d.id; }));
 
 		const svg = d3.select(this.refs.mountPoint)
 			.append('svg')
@@ -76,7 +99,7 @@ class NodeGraph extends Component {
 			.append('line')
 			.style('stroke', '#999999')
 			.style('stroke-opacty', 0.6)
-			.style('stroke-width', 1.5);
+			.style('stroke-width', 2.0);
 
 
 		const nodeElements = svg.selectAll('circle')
@@ -86,7 +109,7 @@ class NodeGraph extends Component {
 			.style('cursor', 'pointer')
 
 		nodeElements.append('circle')
-			.attr('r',10)
+			.attr('r',7)
 			.style('stroke', '#FFFFFF')
 			.style('stroke-width', 1.5)
 			.style('fill', (d) => this.getNodeColor(d));
@@ -99,7 +122,7 @@ class NodeGraph extends Component {
 
 		nodeElements.append('text')
 			.style("font-size", "12px")
-			.text((d) => d.name + ": " + d.type)
+			.text((d) => d.name)
 
 		simulation.on('tick', () => {
 			var movement = 0;

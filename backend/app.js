@@ -87,6 +87,7 @@ function submitNote(title, content, entities) {
 
 app.get('/notes', function(req,res) {
 
+
 })
 
 app.post('/entities', function(req, res) {

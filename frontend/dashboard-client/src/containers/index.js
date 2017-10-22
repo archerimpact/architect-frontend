@@ -40,7 +40,7 @@ export default class Root extends Component {
 								<Route path="/pdf-uploader" component={PDFUploader}/>
 							</div>
 							<Route path="/home2" component={Home2}/>
-							<Route path="/document" component={DocumentPage}/>
+							<Route path="/document/:id" component={DocumentPage}/>
 						</div>
 					</Router>
 				</Provider>

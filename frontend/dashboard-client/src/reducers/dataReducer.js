@@ -30,7 +30,7 @@ export default function (state = initialState, action) {
 				savedEntities: {
 					...state.savedEntities,
 					status: 'isLoaded',
-					entities: new_entities
+					entities: action.payload.map((entity) => {return {name: entity.name, type: entity.type, link: '', chips: [], sources:[entity.sourceid]}})
 				},
 				entityNames: new_entities.map((entity) => {return entity.name})
 			}
@@ -40,7 +40,7 @@ export default function (state = initialState, action) {
 				savedSources: {
 					...state.savedSources,
 					status: 'isLoaded',
-					notes: state.savedSources.notes.concat(action.payload)
+					notes: action.payload
 				},
 			}				
 

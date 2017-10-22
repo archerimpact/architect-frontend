@@ -57,6 +57,10 @@ class SourcesTable extends Component {
 				      <TableRow>
 				        <TableHeaderColumn>Name</TableHeaderColumn>
 				        <TableHeaderColumn>Type</TableHeaderColumn>
+				        <TableHeaderColumn>Number of Entities</TableHeaderColumn>
+				        <TableHeaderColumn>Graph</TableHeaderColumn>
+
+
 				      </TableRow>
 				    </TableHeader>
 				    <TableBody
@@ -66,6 +70,7 @@ class SourcesTable extends Component {
 				    			<TableRow>
 				        			<TableRowColumn><a href={"/sources/" + document.id}>{document.name} </a></TableRowColumn>
 				        			<TableRowColumn>{document.type}</TableRowColumn>
+				        			<TableRowColumn>{document.entities.length}</TableRowColumn>
 				      			</TableRow>
 				    		)
 				    	})}
@@ -74,6 +79,9 @@ class SourcesTable extends Component {
 				    			<TableRow>
 				        			<TableRowColumn><a href={"/sources/" + note._id}>{note.title} </a></TableRowColumn>
 				        			<TableRowColumn>{note.content}</TableRowColumn>
+				        			<TableRowColumn>{note.entities.length}</TableRowColumn>
+				        			<TableHeaderColumn><a href={"/document/" + note._id}>Go to Graph</a></TableHeaderColumn>
+
 				      			</TableRow>
 				    		)
 				    	})}

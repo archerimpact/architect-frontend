@@ -46,7 +46,7 @@ class ProjectList extends Component {
 	        		submit={(freshProject)=>this.addProject(freshProject)}>
 	        	</AddProject>
 	        	<List className="list">
-	        		{projectItems}
+	        		{this.projectList()}
 	        	</List>
 	        </div>
         	);

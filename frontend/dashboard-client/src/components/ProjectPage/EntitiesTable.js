@@ -38,9 +38,7 @@ class EntitiesTable extends Component {
 		this.setState({
 			entities: nextProps.savedEntities.entities,
 			sources: nextProps.savedSources.notes
-
-		})
-		
+		})	
 	}
 
 	getEntitySource(entity) {
@@ -65,6 +63,7 @@ class EntitiesTable extends Component {
 				        <TableHeaderColumn>Name</TableHeaderColumn>
 				        <TableHeaderColumn>Type</TableHeaderColumn>
 				        <TableHeaderColumn>Document</TableHeaderColumn>
+				        <TableHeaderColumn>Graph</TableHeaderColumn>
 				      </TableRow>
 				    </TableHeader>
 				    <TableBody
@@ -75,6 +74,7 @@ class EntitiesTable extends Component {
 				        			<TableRowColumn><a href={"https://www.wikidata.org/wiki/" + entity.qid}>{entity.name} </a></TableRowColumn>
 				        			<TableRowColumn>{entity.type}</TableRowColumn>
 				        			<TableRowColumn>{this.getEntitySource(entity)}</TableRowColumn>
+				        			<TableRowColumn>Go to Graph</TableRowColumn>
 				      			</TableRow>
 				    		)
 				    	})}

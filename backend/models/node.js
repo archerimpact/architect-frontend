@@ -17,7 +17,7 @@ var sourceSchema = new mongoose.Schema({
 		date: Date
 	},
 	// TODO: possibly change this to be entitySchema rather than String later on
-    entities: [String],
+    entities: [Object], //Alice: changed to an array of objects instead
     type: String // Must be Document, Image, or Video
 })
 

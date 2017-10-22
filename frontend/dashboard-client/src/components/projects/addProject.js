@@ -33,9 +33,8 @@ class AddProject extends Component {
             		<RaisedButton 
                         primary={true} 
                         className="submit" 
-                        type="submit">
-                        New Project
-                    </RaisedButton>
+                        type="submit"
+                        label="New Project" />
             	</form>
                 <p>{this.props.name}</p>
             </div>

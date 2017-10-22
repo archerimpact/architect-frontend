@@ -43,7 +43,7 @@ class Home extends Component {
                                     </Paper>
                                 </div>
                             </Tab>
-                            <Tab label="Sources (2)" style={{backgroundColor: '#fafafa', color:'#747474'}}>
+                            <Tab label={"Sources (" + this.props.savedSources.documents.length + this.props.savedSources.notes.length + ")"} style={{backgroundColor: '#fafafa', color:'#747474'}}>
                                 <div className="column">
                                     <PDFUploader />
                                     <p></p>
@@ -70,6 +70,7 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
     return {
         savedEntities: state.data.savedEntities,
+        savedSources: state.data.savedSources
     };
 }
 

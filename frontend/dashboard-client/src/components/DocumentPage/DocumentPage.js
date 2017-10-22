@@ -12,8 +12,43 @@ import Paper from 'material-ui/Paper';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/';
+import * as server from '../../server/';
+
 
 class DocumentPage extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      entities: this.props.savedEntities.entities,
+      sourceid: this.props.match.params.id,
+    }
+    this.getEntities = this.getEntities.bind(this)
+  }
+
+  componentWillMount = () => {
+        server.loadEntities()
+            .then((data) => {
+                this.props.dispatch(actions.addEntities(data.entities))
+                this.props.dispatch(actions.addSources(data.notes))
+        })
+    }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      entities: nextProps.savedEntities.entities
+    })
+  }
+
+  getEntities() {
+    var sourceid = this.state.sourceid
+    var entities = this.state.entities.filter(function (obj) {return obj.sources[0]=== sourceid})
+    
+    if (typeof(entities)==="undefined") {
+      return []
+    }
+    else {return entities}
+  }
 
   render() {
     return (
@@ -30,12 +65,12 @@ class DocumentPage extends Component {
           </div>
 
           <div className="middle-column">
-            <EntityList entities={this.props.savedEntities.entities}/>
+            <EntityList entities={this.getEntities()}/>
           </div>
 
           <div className="right-column">
             <Paper>
-              <NodeGraph entities= {this.props.savedEntities.entities}/>
+              <NodeGraph entities={this.getEntities()} documents={[this.state.sourceid]}/>
             </Paper>
           </div>
         </div>
@@ -54,6 +89,7 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
     return {
         savedEntities: state.data.savedEntities,
+        savedSources: state.data.savedSources
     };
 }
 

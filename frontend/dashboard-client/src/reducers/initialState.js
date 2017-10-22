@@ -16,11 +16,11 @@ export default {
 	savedSources: {
 		status: 'isLoading',
 		documents: [
-			{id: 0, name: 'Business Registry #1', type: 'Primary Source', path: '', projects: [0, 1], qid: ""}, 
-			{id: 1, name: 'Legal Case #1', type: 'Primary Source', path: '', projects: [0], qid: ""}, 
+			{id: 0, name: 'Business Registry #1', type: 'Primary Source', path: '', projects: [0, 1], entities: [""]}, 
+			{id: 1, name: 'Legal Case #1', type: 'Primary Source', path: '', projects: [0], entities: [""]}, 
 			],
 		notes: [
-			{id: 0, name: 'This is a note', type: 'Description', text: "Here's a lot of text", project: [0,1]}
+			{id: 0, title: 'This is a note', type: 'Description', content: "Here's a lot of text", project: [0,1], entities: [""]}
 			]
 	},
 	entityTypes: ["Company", "Person", "Location"],
