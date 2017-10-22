@@ -4,9 +4,10 @@ var Schema = mongoose.Schema;
 var vertexSchema = new mongoose.Schema({
 	_id: Schema.Types.ObjectId,
 	name: String,
-	links: [{ type: Schema.Types.ObjectId, ref: 'Link' }],
+	connections: [{ type: Schema.Types.ObjectId, ref: 'Connection' }],
 	notes: String,
-    type: String, // Must be Source or Entity
+    type: String, // Must be Source or Entity,
+    date, Date,
     source: { type: Schema.Types.ObjectId, ref: 'Source' },
     entity: { type: Schema.Types.ObjectId, ref: 'Entity' }
 });
@@ -16,7 +17,7 @@ var sourceSchema = new mongoose.Schema({
 	cloudReference: String,
 	url: String,
 	metaData: {
-		date: Date
+        // TODO: fill in metadata
 	},
 	// TODO: possibly change this to be entitySchema rather than String later on
     entities: [String],
