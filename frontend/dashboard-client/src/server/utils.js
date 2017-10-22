@@ -1,4 +1,3 @@
-'use strict';
 import 'whatwg-fetch';
 
 export function saveDocument(file) {
