@@ -71,7 +71,6 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
     return {
         savedEntities: state.data.savedEntities,
-        entityNames: state.data.entityNames,
         projects: state.data.projects
     };
 }

@@ -23,7 +23,6 @@ class Home extends Component {
 
     render() {
         return (
-
             <div style={{height:'100%'}}>
                 <div className="app">
                     <div className="summary">
