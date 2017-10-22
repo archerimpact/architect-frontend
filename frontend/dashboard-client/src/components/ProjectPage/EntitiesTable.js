@@ -28,7 +28,7 @@ class EntitiesTable extends Component {
             .then((data) => {
                 this.props.dispatch(actions.addEntities(data.entities))
                 this.props.dispatch(actions.addSources(data.notes))
-        })
+        	}).catch((err) => console.log("There was an error: " + err))
     }
 
 	componentWillReceiveProps(nextProps) {
