@@ -7,15 +7,12 @@ import EntitiesTable from './ProjectPage/EntitiesTable';
 import SourcesTable from './SourcesTable';
 import PDFUploader from './pdf_uploader/pdfUploader';
 
-import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper'
 import {Tabs, Tab} from 'material-ui/Tabs';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../actions/';
-
-import { Link } from 'react-router-dom';
 
 const tab_style = {
     backgroundColor: '#fafafa',
@@ -39,7 +36,6 @@ class Home extends Component {
                                 <Paper className="projects">
                                     <ProjectList/>
                                 </Paper>
-
                             </div>
                             </Tab>
                             <Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={tab_style}>

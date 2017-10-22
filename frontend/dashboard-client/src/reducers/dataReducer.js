@@ -23,6 +23,7 @@ export default function (state = initialState, action) {
 				entityNames: state.entityNames.concat(action.payload.name)
 			}
 		case ADD_ENTITIES:
+			debugger
 			var new_entities = state.savedEntities.entities.concat(action.payload.map((entity) => {return {name: entity.name, type: entity.type, link: '', chips: [], sources:[entity.sourceid]}}))
 
 			return {
@@ -30,7 +31,7 @@ export default function (state = initialState, action) {
 				savedEntities: {
 					...state.savedEntities,
 					status: 'isLoaded',
-					entities: action.payload.map((entity) => {return {name: entity.name, type: entity.type, link: '', chips: [], sources:[entity.sourceid], qid: entity.entityid}})
+					entities: action.payload.map((entity) => {return {name: entity.name, type: entity.type, link: '', chips: [], sources:[entity.sourceid], qid: entity.qid}})
 				},
 				entityNames: new_entities.map((entity) => {return entity.name})
 			}

@@ -14,7 +14,6 @@ import NodeGraph from '../DocumentPage/NodeGraph';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/';
-import * as server from '../../server/'
 
 class ProjectPage extends Component {
     constructor(props){
@@ -26,16 +25,6 @@ class ProjectPage extends Component {
             entities: []
         }
     }
-
-    /*componentWillMount = () => {
-        server.getProject()
-            .then((data) => {
-                this.setState({
-                    entities: data
-                })
-                this.props.dispatch(actions.addEntities(data))
-        })
-    }*/
 
     render() {
         return (

@@ -8,15 +8,12 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 
-import { Link } from 'react-router-dom';
-
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/';
 import * as server from '../../server/';
 
 class EntitiesTable extends Component {
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -42,8 +39,9 @@ class EntitiesTable extends Component {
 	}
 
 	getEntitySource(entity) {
+		//TODO: refactor to account for entities having multiple sources
 		var sourceid = entity.sources[0];
-		var source = this.state.sources.find(function (obj) {return obj._id=== entity.sources[0]});
+		var source = this.state.sources.find(function (obj) {return obj._id=== sourceid});
 		if (typeof(source) !== "undefined"){
 			return source.content
 		} else {

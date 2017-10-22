@@ -6,9 +6,8 @@ var userSchema = new mongoose.Schema({
 	_id: Schema.Types.ObjectId,
     username: String,
     password: String,
+    date: Date,
     projects: [{ type: Schema.Types.ObjectId, ref: 'Project' }],
-    entities: [{ type: Schema.Types.ObjectId, ref: 'Entity' }],
-    sources: [{ type: Schema.Types.ObjectId, ref: 'Source' }]
 });
 
 userSchema.plugin(passportLocalMongoose);
