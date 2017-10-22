@@ -1,12 +1,13 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var VertexSchema = new mongoose.Schema({
+var vertexSchema = new mongoose.Schema({
 	_id: Schema.Types.ObjectId,
 	name: String,
-	links: [{ type: Schema.Types.ObjectId, ref: 'Link' }],
+	connections: [{ type: Schema.Types.ObjectId, ref: 'Connection' }],
 	notes: String,
     type: String, // Must be Source or Entity
+    date_added: Date,
     source: { type: Schema.Types.ObjectId, ref: 'Source' },
     entity: { type: Schema.Types.ObjectId, ref: 'Entity' }
 });
@@ -16,12 +17,12 @@ var sourceSchema = new mongoose.Schema({
 	cloudReference: String,
 	url: String,
 	metaData: {
-		date: Date
+		// TODO: what kind of metadata?
 	},
 	// TODO: possibly change this to be entitySchema rather than String later on
     entities: [String],
     type: String, // Must be "Document", "Image", or "Video"
-    source: Schema.Types.Mixed // Must be documentSchema, imageSchema, or VideoSchema
+    source: { type: Schema.Types.ObjectId } // Must be documentSchema, imageSchema, or VideoSchema
 })
 
 var entitySchema = new mongoose.Schema({
@@ -34,6 +35,12 @@ var documentSchema = new mongoose.Schema({
 	_id: Schema.Types.ObjectId,
 	content: String,
 });
+
+/*documentSchema.methods = {
+	create: function (_cloudReference, _url, _metaData, _entities, _name) {
+
+	}
+}*/
 
 var imageSchema = new mongoose.Schema({
 	_id: Schema.Types.ObjectId,
