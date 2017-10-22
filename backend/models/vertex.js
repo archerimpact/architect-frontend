@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var VertexSchema = new mongoose.Schema({
+var vertexSchema = new mongoose.Schema({
 	_id: Schema.Types.ObjectId,
 	name: String,
 	links: [{ type: Schema.Types.ObjectId, ref: 'Link' }],
