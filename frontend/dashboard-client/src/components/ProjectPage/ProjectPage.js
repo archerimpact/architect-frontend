@@ -18,6 +18,7 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/';
+import * as server from '../../server/';
 
 const tab_style = {
     backgroundColor: '#fafafa',
@@ -31,8 +32,23 @@ class ProjectPage extends Component {
         this.state = {
             project: project,
             title: project.title,
-            entities: []
+            entities: [],
+            notes: []
         }
+    }
+
+    componentWillMount = () => {
+        server.loadEntities()
+            .then((data) => {
+                this.props.dispatch(actions.addEntities(data.entities))
+                this.props.dispatch(actions.addSources(data.notes))
+            }).catch((err) => console.log("There was an error: " + err))
+    }
+
+    componentWillReceiveProps(nextProps){
+        this.setState({
+            notes: nextProps.savedSources.notes
+        })
     }
 
     render() {
@@ -55,14 +71,12 @@ class ProjectPage extends Component {
                             </Badge>
                         </div>
                     </div>
-
-
                     <div className="tabs" style={{width:'100%', margin:'0 auto'}}>
                         <Tabs >
                             <Tab label="Workspace" type="default" style={tab_style}>
                                 <div className="column">
                                     <Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
-                                        <NodeGraph entities={this.props.savedEntities.entities} documents={["59e654c3dc98db011d413f5f"]}/>
+                                        <NodeGraph entities={this.props.savedEntities.entities} sources={this.props.savedSources.notes}/>
                                         <div className="text-container">
                                             <EntityExtractor/>
                                         </div>
@@ -103,7 +117,8 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
     return {
         savedEntities: state.data.savedEntities,
-        projects: state.data.projects
+        projects: state.data.projects,
+        savedSources: state.data.savedSources
     };
 }
 
