@@ -39,13 +39,6 @@ class EntitiesTable extends Component {
         	}).catch((err) => console.log("There was an error: " + err))
     }
 
-	componentWillReceiveProps(nextProps) {
-		this.setState({
-			entities: nextProps.savedEntities.entities,
-			sources: nextProps.savedSources.notes
-		})	
-	}
-
 	getEntitySource(entity) {
 		//TODO: refactor to account for entities having multiple sources
 		var sourceid = entity.sources[0];

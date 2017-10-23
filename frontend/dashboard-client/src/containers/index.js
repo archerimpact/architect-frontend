@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import './index.css';
 import Home from '../components/Home';
 import ProjectPage from '../components/ProjectPage/ProjectPage';
-import SourcePage from '../components/SourcePage/SourcePage'
+//import SourcePage from '../components/SourcePage/SourcePage'
 import App from '../components/App';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -29,7 +29,7 @@ export default class Root extends Component {
 				    		<App/>
 				    		<Route exact path="/" component={Home} />
 				    		<Route exact path="/project/:id" component={ProjectPage} />				    		
-							<Route path="/source/:id" component={SourcePage}/>
+							{/*<Route path="/source/:id" component={SourcePage}/>*/}
 						</div>
 					</Router>
 				</Provider>
