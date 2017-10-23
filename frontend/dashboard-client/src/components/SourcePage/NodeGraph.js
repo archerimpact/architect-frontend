@@ -14,18 +14,32 @@ class NodeGraph extends Component {
 		var documentNodes = documents.map((document) => {
 			return {"id": document._id, "name": document.title, "type": "DOCUMENT"}
 		});
+		if (typeof(documentNodes)==="undefined"){
+			documentNodes=[]
+		}
+		if (typeof(entityNodes)==="undefined"){
+			entityNodes=[]
+		}
+
 		return documentNodes.concat(entityNodes)
 	};
 
 	//iterates over all the entitiesa and documents and builds an array of all the links for the d3 simulation
 	createLinks(entities, documents) {
 		var documentLinks = [].concat.apply([], documents.map((document) => {
-				return this.sourceToLinks(document._id, entities)
+				return this.sourceToLinks(document)
 			}))
-		var entityConnections = [].concat.apply([], entities.map((entity) => {
+		var entityLinks= [].concat.apply([], entities.map((entity) => {
 			return this.tagsToLinks(entity);
 		}));
-		return entityConnections.concat(documentLinks)
+
+		if (typeof(documentLinks)==="undefined"){
+			documentLinks=[]
+		}
+		if (typeof(entityLinks)==="undefined"){
+			entityLinks=[]
+		}
+		return entityLinks.concat(documentLinks)
 	};
 
 	//takes all of the tags of one entity and returns an array of all the links of that one entity
@@ -37,10 +51,14 @@ class NodeGraph extends Component {
 
 	//TO-DO: refactor so that this method takes entities and maps a connection
 	// to sources if and only if the source appears in this graph
-	sourceToLinks(sourceid, entities) {
-		return entities.map((entity) => {
-			return {"source": entity.name, "target": entity.sources[0]};
-		});
+	sourceToLinks(document) {
+		if (document.length === 0) {
+			return
+		}else{
+			return document.entities.map((entity) => {
+				return {"source": entity.normalized, "target": document._id}
+			})
+		}
 	};
 
 	//returns the color of the node based on the type of the entity
@@ -77,7 +95,7 @@ class NodeGraph extends Component {
 
 		const simulation = d3.forceSimulation(data.nodes)
 			.force("center", d3.forceCenter(width/3, height/2))
-    		.force("charge", d3.forceManyBody())
+    		.force("charge", d3.forceManyBody(-100))
     		.force("link", d3.forceLink().distance(100).id(function(d) { return d.id; }));
 
 		const svg = d3.select(this.refs.mountPoint)

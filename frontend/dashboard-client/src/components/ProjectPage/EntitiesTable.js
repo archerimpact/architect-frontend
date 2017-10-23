@@ -16,26 +16,13 @@ import * as server from '../../server/';
 class EntitiesTable extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			entities: this.props.savedEntities.entities,
-			sources: this.props.savedSources.notes
-		}
 		this.getEntitySource = this.getEntitySource.bind(this)
-	}
-
-
-
-	componentWillReceiveProps(nextProps) {
-		this.setState({
-			entities: nextProps.savedEntities.entities,
-			sources: nextProps.savedSources.notes
-		})	
 	}
 
 	getEntitySource(entity) {
 		//TODO: refactor to account for entities having multiple sources
 		var sourceid = entity.sources[0];
-		var source = this.state.sources.find(function (obj) {return obj._id=== sourceid});
+		var source = this.props.savedSources.documents.find(function (obj) {return obj._id=== sourceid});
 		if (typeof(source) !== "undefined"){
 			return source.content
 		} else {
@@ -60,7 +47,7 @@ class EntitiesTable extends Component {
 				    </TableHeader>
 				    <TableBody
 				    	showRowHover={true}>
-				    	{this.state.entities.map((entity) => {
+				    	{this.props.savedEntities.entities.map((entity) => {
 				    		return(
 				    			<TableRow>
 				        			<TableRowColumn><a href={"https://www.wikidata.org/wiki/" + entity.qid}>{entity.name} </a></TableRowColumn>

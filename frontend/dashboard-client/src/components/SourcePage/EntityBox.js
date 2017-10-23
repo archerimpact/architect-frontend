@@ -36,16 +36,19 @@ class EntityBox extends Component {
 			tagFieldValue: '',
 			chips: props.entity.chips
 		}
+		this.handleTagFieldChange = this.handleTagFieldChange.bind(this);
+		this.handleTagSubmit = this.handleTagSubmit.bind(this);
+		this.handleRequestDelete = this.handleRequestDelete.bind(this);
 	};
 
-	handleTagFieldChange = (value) => {
-		console.log(value)
+	handleTagFieldChange(value) {
 		this.setState({
 			tagFieldValue: value
 		});
 	}
 
-	handleTagSubmit = (e) => {	
+	//TODO: refactor connections for the new schema
+	handleTagSubmit(event) {	
 		let entities = this.props.savedEntities.entities.slice();
 		this.props.dispatch(actions.addTag(entities, this.state.name, this.state.tagFieldValue))
 		this.setState({
@@ -53,7 +56,7 @@ class EntityBox extends Component {
 		})
 	}
 
-	handleRequestDelete = (e) => {
+	handleRequestDelete(event) {
 		let entities = this.props.savedEntities.entities.slice();
 		this.props.dispatch(actions.deleteTag(entities, this.state.name, this.children))
 	}

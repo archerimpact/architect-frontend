@@ -16,36 +16,19 @@ import * as server from '../../server/';
 
 
 class SourcePage extends Component {
-
-  constructor(props) {
-    super(props);
-    var sourceid=this.props.match.params.id
-    this.state = {
-      entities: this.props.savedEntities.entities,
-      source: this.props.savedSources.notes.find((note) => {return note._id === sourceid}),
-    }
-    //this.getEntities = this.getEntities.bind(this)
-  }
-
   componentWillMount = () => {
         server.loadEntities()
             .then((data) => {
-                this.props.dispatch(actions.addEntities(data.entities))
-                
-                this.props.dispatch(actions.addSources(data.notes))
+                this.props.dispatch(actions.addEntities(data.entities))            
+                this.props.dispatch(actions.addSources(data.documents))
         }).catch((err) => console.log(err))
     }
-  /*getEntities() {
-    var sourceid = this.state.sourceid
-    var entities = this.state.entities.filter(function (obj) {return obj.sources[0]=== sourceid})
-    
-    if (typeof(entities)==="undefined") {
-      return []
-    }
-    else {return entities}
-  }*/
 
   render() {
+    var currentSources = [this.props.savedSources.documents.find((document) => {return document._id === this.props.match.params.id})]
+    if (typeof(currentSources[0]) === "undefined") {
+      currentSources=[]
+    }
     return (
       <div>  
         <div className="centered">
@@ -61,10 +44,9 @@ class SourcePage extends Component {
           <div className="middle-column">
             <EntityList entities={this.props.sourceEntities}/>
           </div>
-
           <div className="right-column">
             <Paper>
-              <NodeGraph entities={this.props.sourceEntities} sources={this.props.savedSources.notes}/>
+              <NodeGraph entities={this.props.sourceEntities} sources={currentSources}/>
             </Paper>
           </div>
         </div>

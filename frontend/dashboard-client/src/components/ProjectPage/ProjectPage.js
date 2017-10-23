@@ -32,8 +32,6 @@ class ProjectPage extends Component {
         this.state = {
             project: project,
             title: project.title,
-            entities: [],
-            notes: []
         }
     }
 
@@ -41,15 +39,10 @@ class ProjectPage extends Component {
         server.loadEntities()
             .then((data) => {
                 this.props.dispatch(actions.addEntities(data.entities))
-                this.props.dispatch(actions.addSources(data.notes))
+                this.props.dispatch(actions.addSources(data.documents))
             }).catch((err) => console.log("There was an error: " + err))
     }
 
-    componentWillReceiveProps(nextProps){
-        this.setState({
-            notes: nextProps.savedSources.notes
-        })
-    }
 
     render() {
         return (
@@ -76,7 +69,7 @@ class ProjectPage extends Component {
                             <Tab label="Workspace" type="default" style={tab_style}>
                                 <div className="column">
                                     <Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
-                                        <NodeGraph entities={this.props.savedEntities.entities} sources={this.props.savedSources.notes}/>
+                                        <NodeGraph entities={this.props.savedEntities.entities} sources={this.props.savedSources.documents}/>
                                         <div className="text-container">
                                             <EntityExtractor/>
                                         </div>

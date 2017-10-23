@@ -12,7 +12,6 @@ class EntityExtractor extends Component{
       this.handleSubmit = this.handleSubmit.bind(this)
     	this.state = {
       		text: "Submit text to extract entities.",
-          entities: []
     	}
     }
 
@@ -21,7 +20,6 @@ class EntityExtractor extends Component{
   	}
 
   handleSubmit = (event) => {
-    	alert('An essay was submitted: ' + this.state.text);
     	event.preventDefault();
       server.submitText("Random Title", this.state.text)
         .then((data) => {

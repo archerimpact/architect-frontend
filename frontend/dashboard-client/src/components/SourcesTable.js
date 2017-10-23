@@ -13,20 +13,6 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 class SourcesTable extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			documents: this.props.savedSources.documents,
-			notes: this.props.savedSources.notes
-		}
-	}
-
-	componentWillReceiveProps(nextProps) {
-		this.setState({
-			documents: nextProps.savedSources.documents,
-			notes: nextProps.savedSources.notes
-		})
-	}
 
 	render (){
 		return(
@@ -47,22 +33,13 @@ class SourcesTable extends Component {
 				    </TableHeader>
 				    <TableBody
 				    	showRowHover={true}>
-				    	{this.state.documents.map((document) => {
+				    	{this.props.savedSources.documents.map((document) => {
 				    		return(
 				    			<TableRow>
-				        			<TableRowColumn><a href={"/sources/" + document.id}>{document.name} </a></TableRowColumn>
-				        			<TableRowColumn>{document.type}</TableRowColumn>
+				        			<TableRowColumn>{document.title}</TableRowColumn>
+				        			<TableRowColumn>{document.content}</TableRowColumn>
 				        			<TableRowColumn>{document.entities.length}</TableRowColumn>
-				      			</TableRow>
-				    		)
-				    	})}
-				    	{this.state.notes.map((note) => {
-				    		return(
-				    			<TableRow>
-				        			<TableRowColumn>{note.title}</TableRowColumn>
-				        			<TableRowColumn>{note.content}</TableRowColumn>
-				        			<TableRowColumn>{note.entities.length}</TableRowColumn>
-				        			<TableHeaderColumn><a href={"/source/" + note._id}>View Details</a></TableHeaderColumn>
+				        			<TableHeaderColumn><a href={"/source/" + document._id}>View Details</a></TableHeaderColumn>
 				      			</TableRow>
 				    		)
 				    	})}
@@ -75,12 +52,8 @@ class SourcesTable extends Component {
 
 function mapStateToProps(state) {
     return {
-        savedEntities: state.data.savedEntities,
-        entityNames: state.data.entityNames,
-        projects: state.data.projects,
-        savedSources: state.data.savedSources
+    	savedSources: state.data.savedSources
     };
 }
-
  
 export default connect(mapStateToProps)(SourcesTable)

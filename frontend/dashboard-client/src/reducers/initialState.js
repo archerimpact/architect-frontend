@@ -16,10 +16,8 @@ export default {
 	savedSources: {
 		status: 'isLoading',
 		documents: [
-			{id: 0, name: 'Business Registry #1', type: 'Primary Source', path: '', projects: [0, 1], entities: [""]}, 
-			{id: 1, name: 'Legal Case #1', type: 'Primary Source', path: '', projects: [0], entities: [""]}, 
-			],
-		notes: []
+			{_id: 0, name: 'A test document', content: "A lot of test content", entities: []}
+		]
 	},
 	entityTypes: ["Company", "Person", "Location"],
 	entityNames: ["Alice Ma", "Daryus Medora", "Angelina Wang"],

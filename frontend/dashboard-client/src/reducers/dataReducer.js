@@ -38,7 +38,7 @@ export default function (state = initialState, action) {
 				savedSources: {
 					...state.savedSources,
 					status: 'isLoaded',
-					notes: action.payload
+					documents: action.payload
 				},
 			}				
 
