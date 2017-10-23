@@ -17,7 +17,7 @@ var sourceSchema = new mongoose.Schema({
 	cloudReference: String,
 	url: String,
 	metaData: {
-		// TODO: what kind of metadata?
+        // TODO: fill in metadata
 	},
 	// TODO: possibly change this to be entitySchema rather than String later on
     entities: [String],
