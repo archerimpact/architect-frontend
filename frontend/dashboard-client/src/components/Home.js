@@ -7,15 +7,12 @@ import EntitiesTable from './Entity/';
 import SourcesTable from './SourcesTable';
 import PDFUploader from './pdf_uploader/pdfUploader';
 
-import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper'
 import {Tabs, Tab} from 'material-ui/Tabs';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../actions/';
-
-import { Link } from 'react-router-dom';
 
 const tab_style = {
     backgroundColor: '#fafafa',
@@ -26,7 +23,6 @@ class Home extends Component {
 
     render() {
         return (
-
             <div style={{height:'100%'}}>
                 <div className="app">
                     <div className="summary">
@@ -35,13 +31,14 @@ class Home extends Component {
                     <div className="tabs" style={{width:'100%', margin:'0 auto', top: 64}}>
                         <Tabs >
                             <Tab label="Projects" type="default" style={tab_style}>
-                            <div className="column">
-                                <Paper className="projects">
-                                    <ProjectList/>
-                                </Paper>
-
-                            </div>
+                                <div className="column">
+                                    <Paper className="projects">
+                                        <ProjectList/>
+                                    </Paper>
+                                </div>
                             </Tab>
+                            {/*TODO: change the home page to make more sense
+
                             <Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={tab_style}>
                                 <div className="column">
                                     <Paper className="projects">
@@ -57,7 +54,7 @@ class Home extends Component {
                                         <SourcesTable />
                                     </Paper>
                                 </div>
-                            </Tab>
+                            </Tab>*/}
                         </Tabs>
                     </div>
                 </div>

@@ -5,16 +5,24 @@ import './ProjectPage.css'
 
 import EntitiesTable from '../Entity/';
 import EntityExtractor from './EntityExtractor';
+import NodeGraph from '../SourcePage/NodeGraph';
+import SourcesTable from '../SourcesTable';
+import PDFUploader from '../pdf_uploader/pdfUploader';
+
 import Badge from 'material-ui/Badge';
 import IconButton from 'material-ui/IconButton';
 import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
 import Paper from 'material-ui/Paper';
-import NodeGraph from '../DocumentPage/NodeGraph';
+import {Tabs, Tab} from 'material-ui/Tabs';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/';
-import * as server from '../../server/'
+
+const tab_style = {
+    backgroundColor: '#fafafa',
+    color:'#747474'
+}
 
 class ProjectPage extends Component {
     constructor(props){
@@ -26,16 +34,6 @@ class ProjectPage extends Component {
             entities: []
         }
     }
-
-    /*componentWillMount = () => {
-        server.getProject()
-            .then((data) => {
-                this.setState({
-                    entities: data
-                })
-                this.props.dispatch(actions.addEntities(data))
-        })
-    }*/
 
     render() {
         return (
@@ -57,15 +55,38 @@ class ProjectPage extends Component {
                             </Badge>
                         </div>
                     </div>
-                    <Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
-                        <NodeGraph entities={this.props.savedEntities.entities} documents={[]}/>
-                        <div className="text-container">
-                            <EntityExtractor/>
-                        </div>
-                    </Paper>
-                    <Paper className="table">                         
-                        <EntitiesTable entities={this.props.savedEntities.entities}/>
-                    </Paper>
+
+
+                    <div className="tabs" style={{width:'100%', margin:'0 auto'}}>
+                        <Tabs >
+                            <Tab label="Workspace" type="default" style={tab_style}>
+                                <div className="column">
+                                    <Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
+                                        <NodeGraph entities={this.props.savedEntities.entities} documents={["59e654c3dc98db011d413f5f"]}/>
+                                        <div className="text-container">
+                                            <EntityExtractor/>
+                                        </div>
+                                    </Paper>
+                                </div>
+                            </Tab>
+                            <Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={tab_style}>
+                                <div className="column">
+                                    <Paper className="projects">
+                                        <EntitiesTable />
+                                    </Paper>
+                                </div>
+                            </Tab>
+                            <Tab label="Sources" style={tab_style}>
+                                <div className="column">
+                                    <PDFUploader />
+                                    <p></p>
+                                    <Paper className="projects">
+                                        <SourcesTable />
+                                    </Paper>
+                                </div>
+                            </Tab>
+                        </Tabs>
+                    </div>
                 </div>
             </div>
         );
@@ -82,7 +103,6 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
     return {
         savedEntities: state.data.savedEntities,
-        entityNames: state.data.entityNames,
         projects: state.data.projects
     };
 }

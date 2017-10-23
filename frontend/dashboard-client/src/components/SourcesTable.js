@@ -11,11 +11,8 @@ import {
 import { Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as actions from '../actions/';
 
 class SourcesTable extends Component {
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -62,10 +59,10 @@ class SourcesTable extends Component {
 				    	{this.state.notes.map((note) => {
 				    		return(
 				    			<TableRow>
-				        			<TableRowColumn><a href={"/sources/" + note._id}>{note.title} </a></TableRowColumn>
+				        			<TableRowColumn>{note.title}</TableRowColumn>
 				        			<TableRowColumn>{note.content}</TableRowColumn>
 				        			<TableRowColumn>{note.entities.length}</TableRowColumn>
-				        			<TableHeaderColumn><a href={"/document/" + note._id}>Go to Graph</a></TableHeaderColumn>
+				        			<TableHeaderColumn><a href={"/source/" + note._id}>View Details</a></TableHeaderColumn>
 				      			</TableRow>
 				    		)
 				    	})}
@@ -74,13 +71,6 @@ class SourcesTable extends Component {
 			</div>
   		)		
 	}
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        actions: bindActionCreators(actions, dispatch),
-        dispatch: dispatch,
-    };
 }
 
 function mapStateToProps(state) {
@@ -93,4 +83,4 @@ function mapStateToProps(state) {
 }
 
  
-export default connect(mapStateToProps, mapDispatchToProps)(SourcesTable)
+export default connect(mapStateToProps)(SourcesTable)
