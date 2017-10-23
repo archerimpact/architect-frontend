@@ -10,6 +10,8 @@ import {
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import TextField from 'material-ui/TextField';
+import IconButton from 'material-ui/IconButton';
+import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
 
 import { connect } from 'react-redux';
@@ -27,7 +29,8 @@ class EntitiesTable extends Component {
 			currentEntity: null
 		}
 		this.getEntitySource = this.getEntitySource.bind(this)
-		this.toggleEntityDrawer = this.toggleEntityDrawer.bind(this)
+		this.closeEntityDrawer = this.closeEntityDrawer.bind(this)
+		this.openEntityDrawer = this.openEntityDrawer.bind(this)
 	}
 
 
@@ -42,7 +45,7 @@ class EntitiesTable extends Component {
 	getEntitySource(entity) {
 		//TODO: refactor to account for entities having multiple sources
 		var sourceid = entity.sources[0];
-		var source = this.state.sources.find(function (obj) {return obj._id=== sourceid});
+		var source = this.props.savedSources.find(function (obj) {return obj._id=== sourceid});
 		if (typeof(source) !== "undefined"){
 			return source.content
 		} else {
@@ -50,9 +53,14 @@ class EntitiesTable extends Component {
 		}
 	}
 
-	toggleEntityDrawer = (row) => {
+	openEntityDrawer = (row) => {
 		var currentEntity = this.state.entities[row]
-		this.setState({drawerOpen: !this.state.drawerOpen, currentEntity: currentEntity})};
+		this.setState({drawerOpen: true, currentEntity: currentEntity})
+	}
+
+	closeEntityDrawer = () => {
+		this.setState({drawerOpen: false, currentEntity: null})
+	}
 
 	entityDrawer() {
 		return (
@@ -82,10 +90,13 @@ class EntitiesTable extends Component {
 			<div>
 				<h3>Entities</h3>
 				<Drawer width={300} containerStyle={{height: 'calc(100% - 64px)', top: 64}} openSecondary={true} open={this.state.drawerOpen} >
-		          	<h2> Entitiy Details </h2>
+		          	<AppBar onLeftIconButtonTouchTap={this.closeEntityDrawer}
+    						iconElementLeft={<IconButton><NavigationClose /></IconButton>}
+    						title={'Entitiy Details'}
+    						 />                
 		          	{this.state.currentEntity ? this.entityDrawer() : null}
 		        </Drawer>
-				<Table multiSelectable={true} onCellClick={this.toggleEntityDrawer} displayRowCheckbox={false}>
+				<Table multiSelectable={true} onCellClick={this.openEntityDrawer} displayRowCheckbox={false}>
 				    <TableHeader>
 				      <TableRow>
 				        <TableHeaderColumn>Name</TableHeaderColumn>
@@ -98,7 +109,7 @@ class EntitiesTable extends Component {
 				    	showRowHover={true}
 				    	displayRowCheckbox={false}
 				    	>
-				    	{this.state.entities.map((entity) => {
+				    	{this.props.savedEntities.entities.map((entity) => {
 				    		return(
 				    			<TableRow>
 				        			<TableRowColumn><a href={"https://www.wikidata.org/wiki/" + entity.qid}>{entity.name} </a></TableRowColumn>

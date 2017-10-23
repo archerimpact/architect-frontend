@@ -64,10 +64,9 @@ class NodeGraph extends Component {
 
 	//the entire logic for generating a d3 forceSimulation graph
 	generateNetworkCanvas(entities, sources) {
-		console.log("these are your sources in the nodegraph: " + sources)
 		const dataNodes = this.createNodes(entities, sources)
-
 		const linkNodes = this.createLinks(entities, sources)
+		
 		const data = {
 			"nodes": dataNodes,
 			"links": linkNodes
