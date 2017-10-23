@@ -24,7 +24,7 @@ app.use(multer({
 
 const upload = multer({ storage: storage });
 
-function saveDoc(text, name, ) {  
+function saveDoc(text, name) {  
     var doc = {
         _id: new mongoose.Types.ObjectId,
         content: text
