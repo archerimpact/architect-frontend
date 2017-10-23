@@ -23,8 +23,6 @@ class EntitiesTable extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			entities: this.props.savedEntities.entities,
-			sources: this.props.savedSources.notes,
 			drawerOpen: false,
 			currentEntity: null
 		}
@@ -45,7 +43,7 @@ class EntitiesTable extends Component {
 	getEntitySource(entity) {
 		//TODO: refactor to account for entities having multiple sources
 		var sourceid = entity.sources[0];
-		var source = this.props.savedSources.find(function (obj) {return obj._id=== sourceid});
+		var source = this.props.savedSources.notes.find(function (obj) {return obj._id=== sourceid});
 		if (typeof(source) !== "undefined"){
 			return source.content
 		} else {
@@ -54,7 +52,7 @@ class EntitiesTable extends Component {
 	}
 
 	openEntityDrawer = (row) => {
-		var currentEntity = this.state.entities[row]
+		var currentEntity = this.props.savedEntities.entities[row]
 		this.setState({drawerOpen: true, currentEntity: currentEntity})
 	}
 
@@ -96,8 +94,8 @@ class EntitiesTable extends Component {
     						 />                
 		          	{this.state.currentEntity ? this.entityDrawer() : null}
 		        </Drawer>
-				<Table multiSelectable={true} onCellClick={this.openEntityDrawer} displayRowCheckbox={false}>
-				    <TableHeader>
+				<Table multiSelectable={true} onRowSelection={this.openEntityDrawer} >
+				    <TableHeader enableSelectAll>
 				      <TableRow>
 				        <TableHeaderColumn>Name</TableHeaderColumn>
 				        <TableHeaderColumn>Type</TableHeaderColumn>
@@ -107,12 +105,12 @@ class EntitiesTable extends Component {
 				    </TableHeader>
 				    <TableBody
 				    	showRowHover={true}
-				    	displayRowCheckbox={false}
+				    	displayRowCheckbox={true}
 				    	>
 				    	{this.props.savedEntities.entities.map((entity) => {
 				    		return(
 				    			<TableRow>
-				        			<TableRowColumn><a href={"https://www.wikidata.org/wiki/" + entity.qid}>{entity.name} </a></TableRowColumn>
+				        			<TableRowColumn>{entity.qid.charAt(0) != "T" ? <a href={"https://www.wikidata.org/wiki/" + entity.qid}>{entity.name} </a> : entity.name} </TableRowColumn>
 				        			<TableRowColumn>{entity.type}</TableRowColumn>
 				        			<TableRowColumn>{this.getEntitySource(entity)}</TableRowColumn>
 				        			<TableRowColumn>Go to Graph</TableRowColumn>
