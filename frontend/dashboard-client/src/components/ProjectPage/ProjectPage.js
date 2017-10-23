@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 //import '../App.css'
 import './ProjectPage.css'
 
-import EntitiesTable from './EntitiesTable';
+import EntitiesTable from '../Entity/';
 import EntityExtractor from './EntityExtractor';
 import Badge from 'material-ui/Badge';
 import IconButton from 'material-ui/IconButton';

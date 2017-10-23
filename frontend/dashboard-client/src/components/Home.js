@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import './App.css'
 
 import ProjectList from './projects/projectList.js';
-import EntitiesTable from './ProjectPage/EntitiesTable';
+import EntitiesTable from './Entity/';
 import SourcesTable from './SourcesTable';
 import PDFUploader from './pdf_uploader/pdfUploader';
 
@@ -32,7 +32,7 @@ class Home extends Component {
                     <div className="summary">
                         <h1>Homepage</h1>         
                     </div>
-                    <div className="tabs" style={{width:'100%', margin:'0 auto'}}>
+                    <div className="tabs" style={{width:'100%', margin:'0 auto', top: 64}}>
                         <Tabs >
                             <Tab label="Projects" type="default" style={tab_style}>
                             <div className="column">

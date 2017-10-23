@@ -3,7 +3,6 @@ import { Provider } from 'react-redux';
 import './index.css';
 import Home from '../components/Home';
 import ProjectPage from '../components/ProjectPage/ProjectPage';
-import Home2 from '../components/Home2';
 import DocumentPage from '../components/DocumentPage/DocumentPage'
 import App from '../components/App';
 import SaveLinks from '../components/saveLinks';
@@ -33,14 +32,14 @@ export default class Root extends Component {
 				    		<App/>
 				    		<Route exact path="/" component={Home} />
 
-				    		<Route exact path="/project/:id" component={ProjectPage} />
+				    		{/*<Route exact path="/project/:id" component={ProjectPage} />
 				    		<div className="Body">
 								<Route path="/links" component={SaveLinks}/>
 								<Route path="/projects" component={ProjectList}/>
 								<Route path="/pdf-uploader" component={PDFUploader}/>
 							</div>
 							<Route path="/home2" component={Home2}/>
-							<Route path="/document/:id" component={DocumentPage}/>
+							<Route path="/document/:id" component={DocumentPage}/>*/}
 						</div>
 					</Router>
 				</Provider>

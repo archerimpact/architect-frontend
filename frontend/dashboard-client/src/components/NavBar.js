@@ -8,7 +8,7 @@ class NavBar extends Component {
 	render () {
 		return (
 			<div >
-				<AppBar position="static"  />
+				<AppBar />
 			</div>
 		)
 	}
