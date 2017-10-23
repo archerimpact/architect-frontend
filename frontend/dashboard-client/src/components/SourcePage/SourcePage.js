@@ -35,13 +35,6 @@ class SourcePage extends Component {
                 this.props.dispatch(actions.addSources(data.notes))
         }).catch((err) => console.log(err))
     }
-
-  /*componentWillReceiveProps(nextProps) {
-    this.setState({
-      entities: nextProps.savedEntities.entities
-    })
-  }*/
-
   /*getEntities() {
     var sourceid = this.state.sourceid
     var entities = this.state.entities.filter(function (obj) {return obj.sources[0]=== sourceid})
@@ -88,7 +81,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, props) {
-    debugger
     var sourceid = props.match.params.id
     return {
         savedEntities: state.data.savedEntities,

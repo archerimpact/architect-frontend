@@ -8,7 +8,6 @@ class NodeGraph extends Component {
 
 	//takes in a list of entities and documents and maps it to a list of nodes for the d3 simulation
 	createNodes(entities, documents) {
-		debugger
 		var entityNodes = entities.map((entity) => {
 			return {"id": entity.name, "name": entity.name, "type": entity.type}
 		});
@@ -64,8 +63,7 @@ class NodeGraph extends Component {
 	}
 
 	//the entire logic for generating a d3 forceSimulation graph
-	generateNetworkCanvas(entities) {
-		var sources = this.props.sources
+	generateNetworkCanvas(entities, sources) {
 		console.log("these are your sources in the nodegraph: " + sources)
 		const dataNodes = this.createNodes(entities, sources)
 
@@ -156,12 +154,12 @@ class NodeGraph extends Component {
 	componentWillReceiveProps(nextProps) {		
 		const mountPoint = d3.select('#svgdiv')
 		mountPoint.selectAll("svg").remove()
-		this.generateNetworkCanvas(nextProps.entities)	
+		this.generateNetworkCanvas(nextProps.entities, nextProps.sources)	
 	}
 
 	//builds the first graph based on after the component mounted and mountPoint was created.
 	componentDidMount = () => {
-		this.generateNetworkCanvas(this.props.entities)
+		this.generateNetworkCanvas(this.props.entities, this.props.sources)
 	}
 
 	render() {
