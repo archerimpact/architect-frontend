@@ -21,7 +21,7 @@ export default class Root extends Component {
 				    		<div className="Body">
 								<Route path="/links" component={SaveLinks}/>
 								<Route path="/projects" component={ProjectList}/>
-								<Route path="/pdf-uploader" component={PDFUploader}/>
+								<Route path="/investigation/pdf-uploader" component={PDFUploader}/>
 							</div>
 						</div>
 					</Router>

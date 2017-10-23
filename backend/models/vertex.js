@@ -36,12 +36,6 @@ var documentSchema = new mongoose.Schema({
 	content: String,
 });
 
-/*documentSchema.methods = {
-	create: function (_cloudReference, _url, _metaData, _entities, _name) {
-
-	}
-}*/
-
 var imageSchema = new mongoose.Schema({
 	_id: Schema.Types.ObjectId,
 });

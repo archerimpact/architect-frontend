@@ -11,7 +11,7 @@ class Home extends Component {
                     <p></p>
                     <Link to="/projects" style={{color: 'inherit' }}>View projects</Link>
                     <p></p>
-                    <Link to="/pdf-uploader" style={{color: 'inherit' }}>Upload a pdf</Link>
+                    <Link to="/investigation/pdf-uploader" style={{color: 'inherit' }}>Upload a pdf</Link>
                 </div>
             </div>
         );
