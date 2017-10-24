@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import EntityBox from './EntityBox.js'
+import EntityBox from './EntityBox.js';
 
 class EntityList extends Component {
 	render() {
@@ -10,11 +10,11 @@ class EntityList extends Component {
 						<div>
 							<EntityBox entity={entity}/>
 						</div>
-					)
+					);
 				})}
 			</div>
-		)
-	}
+		);
+	};
 }
 
-export default EntityList
+export default EntityList;

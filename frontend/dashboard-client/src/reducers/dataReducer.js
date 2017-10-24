@@ -18,7 +18,7 @@ export default function (state = initialState, action) {
 				savedEntities: {
 					...state.savedEntities,
 					status: 'isLoaded',
-					entities: state.savedEntities.entities.concat({name: action.payload.name, type: action.payload.type, link: action.payload.link, chips:action.payload.chips})
+					entities: state.savedEntities.entities.concat({name: action.payload.name, type: action.payload.type, link: action.payload.link, tags: action.payload.tags})
 				},
 				entityNames: state.entityNames.concat(action.payload.name)
 			}
@@ -28,7 +28,7 @@ export default function (state = initialState, action) {
 				savedEntities: {
 					...state.savedEntities,
 					status: 'isLoaded',
-					entities: action.payload.map((entity) => {return {name: entity.name, type: entity.type, link: '', chips: [], sources:[entity.sourceid], qid: entity.qid}})
+					entities: action.payload.map((entity) => {return {name: entity.name, type: entity.type, link: '', tags: [], sources:[entity.sourceid], qid: entity.qid}})
 				},
 				entityNames: action.payload.map((entity) => {return entity.name})
 			}

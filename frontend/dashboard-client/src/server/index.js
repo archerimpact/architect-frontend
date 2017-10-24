@@ -15,6 +15,7 @@ function authenticate(authInfo) {
 			password: authInfo.password
 		})
 	};
+	
 	return new Promise(function(fulfill, reject) {
 		fetch(url, options)
 		.then(res => res.json())
@@ -26,8 +27,8 @@ function authenticate(authInfo) {
 		})
 		.catch(err => {
 			reject('Error: could not authenticate');
-		})
-	})
+		});
+	});
 }
 
 function register(authInfo) {
@@ -53,14 +54,13 @@ function register(authInfo) {
 			if (!json.login) {
 				reject('Error: could not authenticate');
 			}
-			fulfill(json)
+			fulfill(json);
 		})
 		.catch(err => {
 			reject('Error: could not register');
-		})
+		});
 	})
 }
-
 
 /* Sample method for adding links
 function addLink(url, label, notes) {
@@ -95,7 +95,7 @@ export function submitText(title, text) {
 	var options = {
 		method: 'POST',
 		headers: {
-    		'Content-Type': 'application/json' },
+			'Content-Type': 'application/json' },
 		body: JSON.stringify({
 			'title': title,
 			'text': text,
@@ -104,19 +104,17 @@ export function submitText(title, text) {
 	return new Promise(function(fulfill, reject) {
 		fetch(url, options)
 		.then(res => {
-			return res})
-		.then(json => {
-			fulfill(json)
+			fulfill(res);
 		})
 		.catch(err => {
 			reject('Error: could not add entity because: ' + err);
-		})
-	})
+		});
+	});
 }
 
-
-//Gets all entities related to a project. Server returns an object of objects containing all notes.
 export function loadEntities() {
+	/* Gets all entities related to a project. Server returns an object of objects containing all notes. */
+
 	var url ='http://localhost:8000/entities';
 	var options = {
 		method: 'GET',
@@ -126,22 +124,23 @@ export function loadEntities() {
 	};
 
 	function documentsToEntities(documents) {
-        /* map over all notes, then map over all entities in each note, and build a new array entities 
-           which contains all entities of all notes */
-       	var entities = documents.map((document) => {
-    		return document.entities.map((entity) => {
-        		return {"name": entity.normalized, "type": entity.type, "qid": entity.entityId, "sourceid": document._id}
-    		})
-    	})
-    	return [].concat.apply([], entities)
-    }
+		/* map over all notes, then map over all entities in each note, and build a new array entities 
+		   which contains all entities of all notes */
 
-    let newEntities = null;
+		var entities = documents.map((document) => {
+			return document.entities.map((entity) => {
+				return {"name": entity.normalized, "type": entity.type, "qid": entity.entityId, "sourceid": document._id}
+			});
+		});
+		return [].concat.apply([], entities);
+	}
+
+	let newEntities = null;
 	return new Promise(function(fulfill, reject) {
 		fetch(url, options)
 		.then(res => {
-			console.log("response type before turning into json: " + typeof(res))
-			return res.json()})
+			return res.json();
+		})
 		.then(json => {
 			var documents = Object.values(json);
 			newEntities = documentsToEntities(documents);
@@ -149,17 +148,6 @@ export function loadEntities() {
 		})
 		.catch(err => {
 			reject('Error: could not return entities because ' + err);
-		})
-	})
+		});
+	});
 }
-
-/* This was in Michael's master branch but was not how I exported my functions.
-
-=======
->>>>>>> e986594746d08ba12efa710a8a2ba0489e46d300
-module.exports = {
-	authenticate,
-	register,
-	getProject,
-}*/
-

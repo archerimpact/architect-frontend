@@ -85,7 +85,6 @@ function submitNote(title, content, entities) {
     };
 
 app.post('/entities', function(req, res) {
-    console.log("this is the document text you are submitting: " + req.body.text)
     if (req.body.text.length > 20) {
         callEntityExtractor(req.body.text, function(response) {
             submitNote(req.body.title, req.body.text, response.entities)

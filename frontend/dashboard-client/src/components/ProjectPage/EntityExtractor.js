@@ -2,42 +2,62 @@ import React, { Component } from 'react';
 import '../App.css';
 
 import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
 
 import * as server from '../../server/'
 
 class EntityExtractor extends Component{
-
 	constructor(props) {
-    	super(props);
-      this.handleSubmit = this.handleSubmit.bind(this)
-    	this.state = {
-      		text: "Submit text to extract entities.",
-    	}
-    }
+		super(props);
+		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleTextChange = this.handleTextChange.bind(this);
+		this.handleTitleChange = this.handleTitleChange.bind(this);
+		this.state = {
+			text: "",
+			title:""
+		};
+	};
 
-  handleChange = (event) => {
-    	this.setState({text: event.target.value})
-  	}
+	handleTextChange(event) {
+		this.setState({text: event.target.value});
+	};
 
-  handleSubmit = (event) => {
-    	event.preventDefault();
-      server.submitText("Random Title", this.state.text)
-        .then((data) => {
-            console.log("posted data: " + data);
-        })
-        .catch((error) => {
-          console.log("found an error: " + error)
-        })
-  	}
+	handleTitleChange(event) {
+		this.setState({title: event.target.value});
+	};
+
+	handleSubmit(event) {
+		event.preventDefault();
+		server.submitText(this.state.title, this.state.text)
+		.then((data) => {
+			this.setState({text: ""});
+		})
+		.catch((error) => {
+			console.log(error)
+		});
+	};
 
 	render() {
 		return(
-        <div>
-      		<textarea className="add-text" value={this.state.text} onChange={this.handleChange} />
-    		  <RaisedButton label="Extract" onClick = {this.handleSubmit}/>
-        </div>
-		)
-	}
+			<div>
+				<TextField
+					hintText="Include a title for your text"
+					value={this.state.title}
+					onChange={this.handleTitleChange}
+				/>
+				<TextField 
+					className="add-text" 
+					multiLine={true} 
+					rows={5} 
+					rowsMax={10}
+					hintText="Submit text to extract entities" 
+					value={this.state.text} 
+					onChange={this.handleTextChange} 
+				/>
+				<RaisedButton label="Extract" onClick={this.handleSubmit}/>
+			</div>
+		);
+	};
 }
 
-export default EntityExtractor
+export default EntityExtractor;

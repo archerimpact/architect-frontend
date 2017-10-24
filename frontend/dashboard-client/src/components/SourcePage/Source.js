@@ -18,9 +18,8 @@ class Source extends Component {
 			<Paper style={container_style} zDepth={3}>
 				<img src='http://www.webdomain.com.hk/gif/sampledoc/comhk.gif' style={{width: "90%"}}/>
 			</Paper>
-		)
-	}
-
+		);
+	};
 }
 
-export default Source
+export default Source;
