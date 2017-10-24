@@ -35,52 +35,50 @@ class ProjectPage extends Component {
 	render() {
 		return (
 			<div>
-				<div>
-					<div className="header">
-						<div className="header-text">
-							<h2>{this.props.currentProject.title}</h2>
-						</div>
-						<div id="notifications">
-							<Badge
-							  badgeContent={10}
-							  secondary={true}
-							  badgeStyle={{top: 12, right: 12}}
-							>
-							  <IconButton tooltip="Notifications">
-								<NotificationsIcon />
-							  </IconButton>
-							</Badge>
-						</div>
+				<div className="header">
+					<div className="header-text">
+						<h3>{this.props.currentProject.title}</h3>
 					</div>
-					<div className="tabs" style={{width:'100%', margin:'0 auto'}}>
-						<Tabs >
-							<Tab label="Workspace" type="default" style={tab_style}>
-								<div className="column">
-									<Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
-										<NodeGraph entities={this.props.savedEntities.entities} sources={this.props.savedSources.documents}/>
-										<div className="text-container">
-											<EntityExtractor/>
-										</div>
-									</Paper>
-								</div>
-							</Tab>
-							<Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={tab_style}>
-								<div className="column">
-									<Paper className="projects">
-										<EntitiesTable />
-									</Paper>
-								</div>
-							</Tab>
-							<Tab label="Sources" style={tab_style}>
-								<div className="column">
-									<PDFUploader />
-									<Paper className="projects">
-										<SourcesTable />
-									</Paper>
-								</div>
-							</Tab>
-						</Tabs>
+					<div id="notifications">
+						<Badge
+						  badgeContent={10}
+						  secondary={true}
+						  badgeStyle={{top: 12, right: 12}}
+						>
+						  <IconButton tooltip="Notifications">
+							<NotificationsIcon />
+						  </IconButton>
+						</Badge>
 					</div>
+				</div>
+				<div className="tabs" style={{width:'100%', margin:'0 auto'}}>
+					<Tabs >
+						<Tab label="Workspace" type="default" style={tab_style}>
+							<div className="column">
+								<Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
+									<NodeGraph entities={this.props.savedEntities.entities} sources={this.props.savedSources.documents}/>
+									<div className="text-container">
+										<EntityExtractor/>
+									</div>
+								</Paper>
+							</div>
+						</Tab>
+						<Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={tab_style}>
+							<div className="column">
+								<Paper className="projects">
+									<EntitiesTable />
+								</Paper>
+							</div>
+						</Tab>
+						<Tab label="Sources" style={tab_style}>
+							<div className="column">
+								<PDFUploader />
+								<Paper className="projects">
+									<SourcesTable />
+								</Paper>
+							</div>
+						</Tab>
+					</Tabs>
 				</div>
 			</div>
 		);

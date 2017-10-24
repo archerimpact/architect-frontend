@@ -92,13 +92,13 @@ class NodeGraph extends Component {
 			"links": linkNodes
 		};
 
-		const width = 500;
-		const height = 500;
+		const width = 700;
+		const height = 700;
 
 		const simulation = d3.forceSimulation(data.nodes)
-			.force("center", d3.forceCenter(width/3, height/2))
+			.force("center", d3.forceCenter(width/2, height/2))
 			.force("charge", d3.forceManyBody(-100))
-			.force("link", d3.forceLink().distance(100).id(function(d) { return d.id; }));
+			.force("link", d3.forceLink().distance(80).id(function(d) { return d.id; }));
 
 		const svg = d3.select(this.refs.mountPoint)
 			.append('svg')
