@@ -116,7 +116,6 @@ class NodeGraph extends Component {
 			.style('stroke-opacty', 0.6)
 			.style('stroke-width', 2.0);
 
-
 		const nodeElements = svg.selectAll('circle')
 			.data(data.nodes)
 			.enter()
@@ -129,7 +128,7 @@ class NodeGraph extends Component {
 			.style('stroke-width', 1.5)
 			.style('fill', (d) => this.getNodeColor(d));
 		
-		svg.selectAll('circle').call(d3.drag()
+		svg.selectAll('g').call(d3.drag()
 			.on("start", dragstarted)
 			.on("drag", dragged)
 			.on("end", dragended));

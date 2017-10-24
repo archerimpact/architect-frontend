@@ -57,10 +57,12 @@ class ProjectPage extends Component {
 							<div className="column">
 								<Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
 									<NodeGraph entities={this.props.savedEntities.entities} sources={this.props.savedSources.documents}/>
-									<div className="text-container">
-										<EntityExtractor/>
-									</div>
 								</Paper>
+                <Paper style={{position: "absolute"}}>
+                  <div className="text-container">
+                    <EntityExtractor/>
+                  </div>
+                </Paper>
 							</div>
 						</Tab>
 						<Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={tab_style}>
