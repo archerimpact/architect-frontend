@@ -54,50 +54,50 @@ app.use(function(req, res, next) {
     next();
 });
 
-function callEntityExtractor(string, callback){
-   var optionsEntityExtractor = {
-            url: 'https://api.rosette.com/rest/v1/entities', 
-            method: 'POST',
-            headers: {
-                'X-RosetteAPI-Key': '554b291cfc61e3f3338b9f02065bd1a5'
-            },
-            'Content-Type': 'application/json',
-            body: JSON.stringify({'content': string})
-        }
-    request(optionsEntityExtractor, function(error, response, body) {
-        if (!error) {
-            return callback(JSON.parse(body));
-        } else {
-            console.log("there was an error in the Rosette extractor: ")
-            return {entities: []}
-        }
-    })     
+function callEntityExtractor(string, callback) {
+ var optionsEntityExtractor = {
+    url: 'https://api.rosette.com/rest/v1/entities', 
+    method: 'POST',
+    headers: {
+        'X-RosetteAPI-Key': '554b291cfc61e3f3338b9f02065bd1a5'
+    },
+    'Content-Type': 'application/json',
+    body: JSON.stringify({'content': string})
+  }
+  request(optionsEntityExtractor, function(error, response, body) {
+    if (!error) {
+        return callback(JSON.parse(body));
+    } else {
+      console.log("there was an error in the Rosette extractor: ");
+      return {entities: []};
+    };
+  });     
 }
 
 function submitNote(title, content, entities) {
-    var note = new Note({
-            type: "textInput",
-            title: title,
-            content: content,
-            entities: entities
-        })
-    return note.save()
-    };
+  var note = new Note({
+    type: "textInput",
+    title: title,
+    content: content,
+    entities: entities
+  });
+  return note.save();
+};
 
 app.post('/entities', function(req, res) {
-    if (req.body.text.length > 20) {
-        callEntityExtractor(req.body.text, function(response) {
-            submitNote(req.body.title, req.body.text, response.entities)
-                .then(item => {
-                    res.send("item saved to database");
-                })
-                .catch(err => {
-                    res.status(400).send("unable to save to database");
-                })
-        })
-    }else{
-        res.send("Didn't run entity extractor because the length of the content was too short.")
-    }
+  if (req.body.text.length > 20) {
+    callEntityExtractor(req.body.text, function(response) {
+      submitNote(req.body.title, req.body.text, response.entities)
+      .then(item => {
+          res.send("item saved to database");
+      })
+      .catch(err => {
+          res.status(400).send("unable to save to database");
+      })
+    })
+  }else{
+    res.send("Didn't run entity extractor because the length of the content was too short.")
+  }
 })
 
 app.get('/entities', function(req, res) {
