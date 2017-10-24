@@ -24,7 +24,7 @@ app.use(multer({
 
 const upload = multer({ storage: storage });
 
-function saveDoc(text, name, ) {  
+function saveDoc(text, name) {  
     var doc = {
         _id: new mongoose.Types.ObjectId,
         content: text
@@ -102,4 +102,19 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
         res.sendStatus(400);
     }
 })
+app.post('/investigation/project', function(req, res) {
+    var project = {
+        _id: new mongoose.Types.ObjectId,
+        name: req.name
+        users: // Put in a fake one
+    };
+    var newProject = new Project(project);
+    newProject.save()
+        .then(item => {
+            res.send("New project saved");
+        })
+        .catch(err => {
+            res.status(400).send("Unable to save to database because: " + err);
+        })
+});
 
