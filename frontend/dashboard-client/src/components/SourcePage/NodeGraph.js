@@ -78,6 +78,24 @@ class NodeGraph extends Component {
 		};
 	};
 
+  getImage(node) {
+    if (node.type === "Person" || node.type === "PERSON") {
+      return "https://www.materialui.co/materialIcons/social/person_grey_192x192.png";
+    };
+    if ( node.type === "DOCUMENT") {
+      return "http://www.iconsdb.com/icons/preview/gray/document-xxl.png";
+    };
+    if (node.type ==="ORGANIZATION" || node.type === "Company") {
+      return "https://maxcdn.icons8.com/Share/icon/dotty/Business//organization1600.png";
+    };
+    if (node.type === "Location" || node.type === "LOCATION") {
+      return "https://d30y9cdsu7xlg0.cloudfront.net/png/12638-200.png";
+    };
+    if (node.type === "NATIONALITY") {
+      return "https://cdn0.iconfinder.com/data/icons/buntu-trade/100/flag_glyph_convert-512.png";
+    };
+  }
+
 	generateNetworkCanvas(entities, sources) {
 		/* The entire logic for generating a d3 forceSimulation graph */
 		if (typeof(sources[0]) === "undefined") {
@@ -92,13 +110,13 @@ class NodeGraph extends Component {
 			"links": linkNodes
 		};
 
-		const width = 700;
+		const width = 1000;
 		const height = 700;
 
 		const simulation = d3.forceSimulation(data.nodes)
 			.force("center", d3.forceCenter(width/2, height/2))
-			.force("charge", d3.forceManyBody(-100))
-			.force("link", d3.forceLink().distance(80).id(function(d) { return d.id; }));
+			.force("charge", d3.forceManyBody())
+			.force("link", d3.forceLink().distance(60).id(function(d) { return d.id; }));
 
 		const svg = d3.select(this.refs.mountPoint)
 			.append('svg')
@@ -106,7 +124,8 @@ class NodeGraph extends Component {
 			.attr('height', height)
 			.attr('display', "block")
 			.attr('margin', "auto")
-			.attr('id', 'svg1');
+			.attr('id', 'svg1')
+      .call(d3.zoom().on("zoom", redraw))
 
 		const linkElements = svg.selectAll('line')
 			.data(data.links)
@@ -122,12 +141,17 @@ class NodeGraph extends Component {
 			.append('g')
 			.style('cursor', 'pointer');
 
-		nodeElements.append('circle')
+    nodeElements.append('circle')
 			.attr('r',7)
 			.style('stroke', '#FFFFFF')
 			.style('stroke-width', 1.5)
 			.style('fill', (d) => this.getNodeColor(d));
-		
+
+    nodeElements.append('image')
+      .attr("xlink:href", (d) => this.getImage(d))
+      .attr("height", 20)
+      .attr("width", 20);
+    
 		svg.selectAll('g').call(d3.drag()
 			.on("start", dragstarted)
 			.on("drag", dragged)
@@ -138,14 +162,13 @@ class NodeGraph extends Component {
 			.text((d) => d.name);
 
 		simulation.on('tick', () => {
-			var movement = 0;
 			linkElements
 				.attr('x1', (d) => d.source.x)
 				.attr('y1', (d) => d.source.y)
 				.attr('x2', (d) => d.target.x)
 				.attr('y2', (d) => d.target.y);
 			nodeElements
-				.attr('transform', (d) => {return 'translate(' + d.x + movement + ',' + d.y + movement + ')'});
+				.attr('transform', (d) => {return 'translate(' + d.x + ',' + d.y + ')'});
 		});
 
 		simulation.force("link").links(data.links);
@@ -170,9 +193,13 @@ class NodeGraph extends Component {
 				d.fy = null;
 			};
 		};
+
+    function redraw() {
+      svg.attr("transform", d3.event.transform);
+    }
 	};
-	
-	componentWillReceiveProps(nextProps) {		
+
+  componentWillReceiveProps(nextProps) {		
 		/* When the props update (aka when there's a new entity or relationship), 
 			delete the old graph and create a new one */
 

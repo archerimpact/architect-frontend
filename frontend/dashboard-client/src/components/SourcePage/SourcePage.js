@@ -29,7 +29,7 @@ class SourcePage extends Component {
 					<div id="summary">      
 						<h1 id="hello">Document</h1>
 					</div>
-					<AddEntity className="addentity"/>
+					<AddEntity className="addentity" sourceid={this.props.match.params.id}/>
 				</div>
 				<div className="document-entities">
 					<div className="left-column">

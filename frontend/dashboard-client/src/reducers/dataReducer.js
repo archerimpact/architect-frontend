@@ -18,7 +18,7 @@ export default function (state = initialState, action) {
 				savedEntities: {
 					...state.savedEntities,
 					status: 'isLoaded',
-					entities: state.savedEntities.entities.concat({name: action.payload.name, type: action.payload.type, link: action.payload.link, tags: action.payload.tags})
+					entities: state.savedEntities.entities.concat(action.payload)
 				},
 				entityNames: state.entityNames.concat(action.payload.name)
 			}

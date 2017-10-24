@@ -30,10 +30,7 @@ class EntityBox extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			name: props.entity.name,
-			type: props.entity.type,
 			tagFieldValue: '',
-			tags: props.entity.tags
 		};
 		this.handleTagFieldChange = this.handleTagFieldChange.bind(this);
 		this.handleTagSubmit = this.handleTagSubmit.bind(this);
@@ -49,7 +46,7 @@ class EntityBox extends Component {
 	// TODO: refactor connections for the new schema
 	handleTagSubmit(event) {	
 		let entities = this.props.savedEntities.entities.slice();
-		this.props.dispatch(actions.addTag(entities, this.state.name, this.state.tagFieldValue));
+		this.props.dispatch(actions.addTag(entities, this.props.entity.name, this.state.tagFieldValue));
 		this.setState({
 			tagFieldValue: ''
 		});
@@ -57,7 +54,7 @@ class EntityBox extends Component {
 
 	handleRequestDelete(event) {
 		let entities = this.props.savedEntities.entities.slice();
-		this.props.dispatch(actions.deleteTag(entities, this.state.name, this.children));
+		this.props.dispatch(actions.deleteTag(entities, this.props.entity.name, this.children));
 	};
 
 	render() {
@@ -68,11 +65,11 @@ class EntityBox extends Component {
 						<Paper style={circle_style} circle={true}>
 						</Paper>
 						<div className="right-column">
-							<b>{this.state.name}</b>
-							<i>{this.state.type}</i>
-							<a href={this.state.link} target="_blank">{this.state.link}</a>
+							<b>{this.props.entity.name}</b>
+							<i>{this.props.entity.type}</i>
+							<a href={this.state.link} target="_blank">{this.props.entity.link}</a>
 							<div className="tags">
-								{this.state.tags.map((tag) => {
+								{this.props.entity.tags.map((tag) => {
 									return (
 										<Chip onRequestDelete={this.handleRequestDelete}>{tag}</Chip>
 										);

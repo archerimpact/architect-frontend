@@ -157,8 +157,17 @@ app.post('/pdf-uploader', upload.single('file'), async (req, res) => {
 
         pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError) );
         pdfParser.on("pdfParser_dataReady", pdfData => {
-            var text = pdfParser.getRawTextContent();
-            fs.writeFile(text_dest, text, (error) => { console.error(error) });
+          var text = pdfParser.getRawTextContent();
+          fs.writeFile(text_dest, text, (error) => { console.error(error) });
+          callEntityExtractor(text, function(response) {
+            submitNote(req.file.originalname, req.body.text, response.entities)
+            .then(item => {
+                res.send("item saved to database");
+            })
+            .catch(err => {
+                res.status(400).send("unable to save to database");
+            })
+          })
         });
         pdfParser.loadPDF("./files/" + name);
         res.send("PDF Converted To Text Success")

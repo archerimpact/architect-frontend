@@ -6,6 +6,7 @@ import EntityExtractor from './EntityExtractor';
 import NodeGraph from '../SourcePage/NodeGraph';
 import SourcesTable from '../SourcesTable';
 import PDFUploader from '../pdf_uploader/pdfUploader';
+import AddEntity from '../SourcePage/AddEntity'
 
 import Badge from 'material-ui/Badge';
 import IconButton from 'material-ui/IconButton';
@@ -54,7 +55,7 @@ class ProjectPage extends Component {
 				<div className="tabs" style={{width:'100%', margin:'0 auto'}}>
 					<Tabs >
 						<Tab label="Workspace" type="default" style={tab_style}>
-							<div className="column">
+							<div className="graph-canvas">
 								<Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
 									<NodeGraph entities={this.props.savedEntities.entities} sources={this.props.savedSources.documents}/>
 								</Paper>
@@ -62,6 +63,7 @@ class ProjectPage extends Component {
                   <div className="text-container">
                     <EntityExtractor/>
                   </div>
+                  <AddEntity sourceid={0}/>
                 </Paper>
 							</div>
 						</Tab>

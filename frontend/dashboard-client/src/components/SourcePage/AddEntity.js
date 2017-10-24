@@ -22,9 +22,9 @@ class AddEntity extends Component {
 		this.handleTagFieldChange = this.handleTagFieldChange.bind(this);
 	};
 
-	handleSubmit(event) {
+	handleSubmit = (event) => {
 		event.preventDefault();
-		this.props.dispatch(actions.addEntity({name: this.state.nameFieldValue, type: this.state.typeFieldValue, link: "", tags: [this.state.tagFieldValue]}));
+		this.props.dispatch(actions.addEntity({name: this.state.nameFieldValue, type: this.state.typeFieldValue, link: "", tags: [this.state.tagFieldValue], sources: [this.props.sourceid]}));
 		this.setState({
 			nameFieldValue: '',
 			typeFieldValue: '',
