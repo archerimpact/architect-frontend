@@ -6,8 +6,8 @@ var vertexSchema = new mongoose.Schema({
 	name: String,
 	connections: [{ type: Schema.Types.ObjectId, ref: 'Connection' }],
 	notes: String,
-    type: String, // Must be Source or Entity,
-    date, Date,
+    type: String, // Must be Source or Entity
+    date_added: Date,
     source: { type: Schema.Types.ObjectId, ref: 'Source' },
     entity: { type: Schema.Types.ObjectId, ref: 'Entity' }
 });
@@ -22,7 +22,7 @@ var sourceSchema = new mongoose.Schema({
 	// TODO: possibly change this to be entitySchema rather than String later on
     entities: [String],
     type: String, // Must be "Document", "Image", or "Video"
-    source: Schema.Types.Mixed // Must be documentSchema, imageSchema, or VideoSchema
+    source: { type: Schema.Types.ObjectId } // Must be documentSchema, imageSchema, or VideoSchema
 })
 
 var entitySchema = new mongoose.Schema({
