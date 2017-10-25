@@ -1,4 +1,5 @@
 import React from 'react';
+import { configData } from '../config.js';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
@@ -17,7 +18,7 @@ class LoginPage extends React.Component {
         return (
             <div className='rows' style={{textAlign:"center", marginTop:40}}>
                 <p>Hello! Please login below.</p>
-                <form action={"http://localhost:8000/login"} method="post" >
+                <form action={configData.backend_url + '/login'} method="post" >
                     <TextField
                         hintText="alice@investigator.com"
                         floatingLabelText="Enter your email address"

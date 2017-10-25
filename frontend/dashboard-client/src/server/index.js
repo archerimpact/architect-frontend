@@ -4,7 +4,7 @@ import 'whatwg-fetch';
 var qs = require('qs');
 
 function authenticate(authInfo) {
-	var url = 'https://localhost:8000/login';
+	var url = configData.backend_url + '/login';
 	var options = {
 		method: 'POST',
 		headers: {
@@ -31,7 +31,7 @@ function authenticate(authInfo) {
 }
 
 function register(authInfo) {
-	var url = 'https://localhost:8000/register';
+	var url = configData.backend_url + '/register';
 	var options = {
 		method: 'POST',
 		headers: {
@@ -64,7 +64,7 @@ function register(authInfo) {
 }
 
 function addLink(url, label, notes) {
-	var url ='http://localhost:8000/jobs';
+	var url = configData.backend_url + '/jobs';
 	var options = {
 		method: 'POST',
 		headers: {

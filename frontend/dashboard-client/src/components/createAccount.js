@@ -1,4 +1,6 @@
 import React from 'react';
+import { configData } from '../config.js';
+
 // import './App.css';
 // import { connect } from 'react-redux';
 // import { bindActionCreators } from 'redux';
@@ -48,7 +50,7 @@ class CreateAccount extends React.Component {
             <div className='rows' style={{textAlign:"center", marginTop:40}} >
                 <p> Please enter your details below to create a new account! </p>
                 {/*works if you wanna send directly. otherwise handler, pull from state -is this safe?. action={"/register"} method="post" // onSubmit={this.handleSubmit} --- so right now not using the server/index methods */}
-                <form action={"http://localhost:8000/register"} method="post" >
+                <form action={configData.backend_url + "/register"} method="post" >
                     <TextField
                         hintText="alice@investigator.com"
                         floatingLabelText="Enter your email address ACTUALLY USERNAME RN"

@@ -55,7 +55,7 @@ app.post('/login', passport.authenticate('local', {
 
 app.get('/loggedIn', function(req, res) {
     res.send("Logged in successfully!")
-})
+});
 
 
 app.get('/logout', function(req, res) { // no authentication here, just for testing
