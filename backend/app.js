@@ -4,21 +4,21 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     passport = require('passport'),
     LocalStrategy = require('passport-local'),
-    Squirrel = require('./models/squirrel');
     User = require('./models/user');
+    configData = require('./config.js');
     
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-// mongoose.connect('mongodb://michael:archer3@ds115045.mlab.com:15045/uxreceiver');
+const frontend_url = configData.frontend_url;
+
+const db_url = configData.db_url;
 mongoose.Promise = Promise;
-// mongoose.Promise = require('bluebird');
-// mlab acc - user: ofacasaurus; pass: m1chaelsBlueKettle
-const db_url = 'mongodb://archer1:fanusie@ds011872.mlab.com:11872/redtwinedb';
 const db_options = {
     useMongoClient: true,
     promiseLibrary: global.Promise
 };
+
 mongoose.connect(db_url,
     db_options);
 
@@ -29,7 +29,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 var port = process.env.PORT || 8000;
 
 app.use(require('express-session')({
-    secret: 'sNGDGX1Kd5j4sQRYWE33',
+    secret: configData.express_session_secret,
     resave: false,
     saveUninitialized: false
 }));
@@ -47,10 +47,22 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.post('/login', passport.authenticate('local', {
-        successRedirect: '/loggedIn',
-        failureRedirect: '/failed',
-    }), function(req, res) {
+// app.post('/login', passport.authenticate('local', {
+//         successRedirect: frontend_url + '/links',
+//         failureRedirect: '/failed',
+//     }), function(req, res) {
+// });
+app.post('/login', function(req, res, next) {
+    passport.authenticate('local', function(err, user, info) {
+        if (err) { return next(err); }
+        if (!user) {
+            console.log(info);
+            return res.redirect(frontend_url + '/loginpage'); }
+        req.logIn(user, function(err) {
+            if (err) { return next(err); }
+            return res.redirect(frontend_url + '/links');
+        });
+    })(req, res, next)
 });
 
 app.get('/loggedIn', function(req, res) {
@@ -71,45 +83,22 @@ app.post('/register', function(req, res) {
     User.register(newUser, req.body.password, function(err, user) {
         if (err) {
             console.log(err);
+            // return res.send(err); // form post action - cannot receive response!
+            // implement custom function for this. error message should also be rendered by front-end.
+            res.send(err.name + ": " + err.message + "!");
         }
-        passport.authenticate('local')(req, res, function() { // should be in an else - otherwise will still log you in even if you register? maybe that's not too bad....
+        // passport.authenticate('local')(req, res, function() {
+        //     return res.redirect(frontend_url + '/links')
+        // });
+
+        passport.authenticate('local', {
+            successRedirect: frontend_url + '/links',
+            failureRedirect: '/failed',
+        })(req, res, function() {
             res.send('Account created; Log in successful');
+            // res.redirect(frontend_url + '/links');
         });
    });
-});
-
-
-
-app.post('/squirrels', function(req, res) {
-    var req_pretty = JSON.stringify(req.body, null, 2);
-    // data = {};
-    // data.name = req.body.name;
-    // data.favnut = req.body.favnut;
-    var newSquirrel = new Squirrel(req.body);
-
-    newSquirrel.save(function (err) {
-        if (err) {
-            res.send('error: squirrel not saved!');
-        } else {
-            res.send(`saved ${req_pretty}, great success!`);
-            // res.send(res.json(req.body));
-        }
-    });
-});
-
-app.post('/findsquirrel', function (req, res) {
-    // var coll = req.body.collection; // hmm not easy to specify a collection dynamically using mongoose, mongodb simpler
-    // https://stackoverflow.com/questions/24035872/return-results-mongoose-in-find-query-to-a-variable
-    // shows how to do via .exec() or promises.
-    query = Squirrel.find().where(req.body.field, req.body.search_term);
-    // res.swend(result);
-    query.exec(function (err, squirrels) {
-        if (err) {
-            res.send(`error!: ${err}`);
-        } else {
-            res.send(squirrels);
-        }
-    })
 });
 
 

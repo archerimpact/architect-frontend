@@ -11,7 +11,7 @@ function authenticate(authInfo) {
 			'Content-Type': 'application/x-www-form-urlencoded'
 		},
 		body: qs.stringify({
-			username: authInfo.username,
+			email: authInfo.username,
 			password: authInfo.password
 		})
 	};

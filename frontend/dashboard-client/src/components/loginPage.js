@@ -3,15 +3,9 @@ import { configData } from '../config.js';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
-
 class LoginPage extends React.Component {
     constructor(props) {
         super(props);
-    }
-
-
-    loggy() {
-        console.log('hello');
     }
 
     render() {
@@ -50,7 +44,6 @@ class LoginPage extends React.Component {
                     />
                     <br />
                 </form>
-
             </div>
         );
     }

@@ -53,7 +53,7 @@ class CreateAccount extends React.Component {
                 <form action={configData.backend_url + "/register"} method="post" >
                     <TextField
                         hintText="alice@investigator.com"
-                        floatingLabelText="Enter your email address ACTUALLY USERNAME RN"
+                        floatingLabelText="Enter your email address"
                         fullWidth={false}
                         // value={this.state.email}
                         style = {{width: 500, marginRight: 20}}
