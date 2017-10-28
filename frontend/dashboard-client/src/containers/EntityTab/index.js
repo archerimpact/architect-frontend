@@ -113,7 +113,6 @@ class EntitiesTable extends Component {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		actions: bindActionCreators(actions, dispatch),
 		dispatch: dispatch,
 	};
 }

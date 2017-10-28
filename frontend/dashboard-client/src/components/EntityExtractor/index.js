@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import '../App.css';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../../actions/';
+import * as actions from '../../redux/actions/';
 import * as server from '../../server/';
 
 class EntityExtractor extends Component{
@@ -34,15 +33,15 @@ class EntityExtractor extends Component{
 		server.submitText(this.state.title, this.state.text)
 		.then((data) => {
 			this.setState({text: ""});
-      server.loadEntities()
-        .then((data2) => {
-          debugger
-          this.props.dispatch(actions.addEntities(data2.entities))
-          this.props.dispatch(actions.addSources(data2.documents))
-      }).catch((err) => console.log("There was an error: " + err));
+	        server.loadEntities()
+		        .then((data2) => {
+			        debugger
+			        // this.props.dispatch(actions.addEntities(data2.entities))
+			        // this.props.dispatch(actions.addSources(data2.documents))
+		      	}).catch((err) => console.log("There was an error: " + err));
 		})
 		.catch((error) => {
-			console.log(error)
+				console.log(error)
 		});
 	};
 

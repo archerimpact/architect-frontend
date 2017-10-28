@@ -2,13 +2,16 @@ import React, { Component } from 'react';
 
 import './style.css'
 
-import EntitiesTab from '../components/Entity/EntitiesTab';
-import EntityExtractor from '../components/EntityExtractor/';
-import NodeGraph from '../components/NodeGraph';
-import SourcesTable from '../SourcesTable';
+// import EntitiesTab from '../components/Entity/EntitiesTab';
 
-import PDFUploader from '../pdf_uploader/pdfUploader';
-import AddEntity from '../SourcePage/AddEntity'
+import EntitiesTab from '../../containers/EntityTab';
+
+import EntityExtractor from '../../components/EntityExtractor/';
+import NodeGraph from '../../components/NodeGraph';
+import SourcesTab from '../../containers/SourcesTab';
+
+import PDFUploader from '../../components/PDFUploader';
+import AddEntity from '../../components/Entity/AddEntity';
 
 import Badge from 'material-ui/Badge';
 import IconButton from 'material-ui/IconButton';
@@ -18,7 +21,7 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../../actions/';
+import * as actions from '../../redux/actions/';
 import * as server from '../../server/';
 
 const tab_style = {
@@ -80,7 +83,7 @@ class ProjectPage extends Component {
 							<div className="column">
 								<PDFUploader />
 								<Paper className="projects">
-									<SourcesTable />
+									<SourcesTab />
 								</Paper>
 							</div>
 						</Tab>

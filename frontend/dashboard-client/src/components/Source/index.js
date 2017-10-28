@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import '../App.css';
 import Paper from 'material-ui/Paper';
 
 const container_style = {

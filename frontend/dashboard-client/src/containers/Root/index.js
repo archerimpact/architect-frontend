@@ -4,10 +4,10 @@ import { Provider } from 'react-redux';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
-import Home from '../pages/Home/';
-import Project from '../pages/Project/';
-import Source from '../pages/Source/';
-import NavBar from '../components/NavBar';
+import Home from '../../pages/Home/';
+import Project from '../../pages/Project/';
+import Source from '../../pages/Source/';
+import NavBar from '../../components/NavBar';
 
 import './index.css';
 // Color options: 45AD7C (darker green) or 4CBF88 (lighter green)
@@ -22,7 +22,7 @@ export default class Root extends Component {
 	render() {
 		return (
 			<MuiThemeProvider muiTheme={muiTheme}>
-				<Provider store={this.props.store}>T
+				<Provider store={this.props.store}>
 					<Router>
 						<div>
 							<NavBar />

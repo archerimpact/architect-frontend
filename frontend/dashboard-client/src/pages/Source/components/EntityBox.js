@@ -7,7 +7,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../../actions/';
+import * as actions from '../../../redux/actions/';
 
 const container_style = {
 	width: "100%",

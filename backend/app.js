@@ -12,7 +12,6 @@ var express = require('express'),
     fs = require('fs'),
     PDFParser = require("pdf2json");
 
-module.exports = app;
     
 var app = express();
 
@@ -134,8 +133,11 @@ app.post('/register', function(req, res) {
    });
 });
 
-app.use('/investigation', require('./controllers/investigation'))
 
 app.get('*', function(req, res) {
     res.send('page not found');
 });
+
+module.exports = app;
+
+app.use('/investigation', require('./controllers/investigation'))
