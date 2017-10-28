@@ -1,29 +1,31 @@
 import React, { Component } from 'react';
 import AddProject from './addProject';
 import * as server_utils from '../../server/utils';
+import * as actions from '../../actions/';
 import ActionHome from 'material-ui/svg-icons/action/home';
 import { List, ListItem} from 'material-ui/List';
 import {red500, blue500} from 'material-ui/styles/colors';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 class ProjectList extends Component {
-	constructor() {
-		super();
-		this.state = {
-			projects: [],
-		};
+	constructor(props) {
+		super(props);
 		this.addProject = this.addProject.bind(this);
 		this.projectList = this.projectList.bind(this);
 	}
 
-	addProject(freshProject) {
-		var projects = this.state.projects;
-		server_utils.addProject(freshProject);
-		var moreProjects = projects.concat(freshProject);
-		this.setState({projects: moreProjects});
+	componentDidMount() {
+		this.props.actions.fetchProjects();
 	}
 
-	projectList() {
-		const projectItems = this.state.projects.map((project) => {
+	addProject(freshProject) {
+		server_utils.addProject(freshProject);
+		this.props.actions.fetchProjects();
+	}
+
+	projectList(projects) {
+		const projectItems = projects.map((project) => {
 			return (
 				<ListItem 
 					className="projectName" 
@@ -36,16 +38,42 @@ class ProjectList extends Component {
 	}
 
     render() {
-        return (
-        	<div className="projects">
-	        	<List className="list">
-	        		{this.projectList()}
-	        	</List>
-	        	<AddProject submit={(freshProject)=>this.addProject(freshProject)}>
-	        	</AddProject>
-        	</div>
-        	);
+    	if (this.props.status === 'isLoading') {
+    		return (<div className="projects">
+    					<p> Loading ... </p>
+    				</div>
+    			);
+    	} else {
+    		return (
+	        	<div className="projects">
+		        	<List className="list">
+		        		{this.projectList(this.props.projects)}
+		        	</List>
+		        	<AddProject submit={(freshProject)=>this.addProject(freshProject)}>
+		        	</AddProject>
+	        	</div>
+	        	);
+    	} 
     }
 }
 
-export default ProjectList
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(actions, dispatch)
+    };
+}
+
+function mapStateToProps(state) {
+	if (state.data.savedProjects.status === 'isLoading') {
+		return {
+			status: state.data.savedProjects.status,
+	    }
+	} else {
+	    return {
+			status: state.data.savedProjects.status,
+	        projects: state.data.savedProjects.projects,
+	    }
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectList)

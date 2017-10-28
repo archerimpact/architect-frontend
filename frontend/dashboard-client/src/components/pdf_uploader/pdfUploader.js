@@ -36,7 +36,6 @@ class PDFUploader extends Component {
         this.setState({
             file: event.target.files[0],
         });
-
         server_utils.saveDocument(event.target.files[0]);
     }
 
@@ -52,7 +51,6 @@ class PDFUploader extends Component {
     }*/
 
     render() {
-
         return (
         	<div className="pdf">
                 <div className="loader">
@@ -81,8 +79,8 @@ class PDFUploader extends Component {
                                     pageNumber={index+1} 
                                     width={Math.min(600, document.body.clientWidth - 52)}
                                 />
-                                    ),
-                                )
+                            ),
+                        )
                     }
                     </Document>
                 </div>

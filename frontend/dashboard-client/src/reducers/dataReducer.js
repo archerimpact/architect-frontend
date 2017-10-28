@@ -1,4 +1,4 @@
-import { ADD_LINK } from '../constants/actionTypes';
+import { ADD_LINK, STORE_PROJECTS } from '../constants/actionTypes';
 import initialState from './initialState';
 
 export default function (state = initialState, action) {
@@ -10,6 +10,15 @@ export default function (state = initialState, action) {
 					...state.savedLinks,
 					status: 'isLoaded',
 					links: state.savedLinks.links.concat(action.payload)
+				}
+			}
+		case STORE_PROJECTS:
+			return {
+				...state,
+				savedProjects: {
+					...state.savedProjects,
+					status: 'isLoaded',
+					projects: action.payload
 				}
 			}
 		default:

@@ -102,11 +102,12 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
         res.sendStatus(400);
     }
 })
+
 app.post('/investigation/project', function(req, res) {
     var project = {
         _id: new mongoose.Types.ObjectId,
-        name: req.name
-        users: // Put in a fake one
+        name: req.body.name
+        //users: // Put in a fake one
     };
     var newProject = new Project(project);
     newProject.save()
@@ -116,5 +117,16 @@ app.post('/investigation/project', function(req, res) {
         .catch(err => {
             res.status(400).send("Unable to save to database because: " + err);
         })
+});
+
+app.get('/investigation/projectList', function(req, res) {
+    Project.find(function (err, projects) {
+        var names = [];
+        if (err) return console.error(err);
+        for (var i = 0; i < projects.length; i++) {
+            names = names.concat(projects[i].name)
+        }
+        res.send(names);
+    })
 });
 
