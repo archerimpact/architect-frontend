@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Document, Page } from 'react-pdf/build/entry.webpack';
 import RaisedButton from 'material-ui/RaisedButton';
 import * as server_utils from '../../server/utils';
-import './pdf_uploader.css';
+import './style.css';
 import 'whatwg-fetch';
 
 class PDFUploader extends Component {

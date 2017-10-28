@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 
 //import '../App.css'
-import './ProjectPage.css'
+import './style.css'
 
-import EntitiesTable from '../Entity/';
-import EntityExtractor from './EntityExtractor';
-import NodeGraph from '../SourcePage/NodeGraph';
+import EntitiesTab from '../components/Entity/EntitiesTab';
+import EntityExtractor from '../components/EntityExtractor/';
+import NodeGraph from '../components/NodeGraph';
 import SourcesTable from '../SourcesTable';
-import PDFUploader from '../pdf_uploader/pdfUploader';
+import PDFUploader from '../comonents/PDFUploader/';
 
 import Badge from 'material-ui/Badge';
 import IconButton from 'material-ui/IconButton';
@@ -86,7 +86,7 @@ class ProjectPage extends Component {
                             <Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={tab_style}>
                                 <div className="column">
                                     <Paper className="projects">
-                                        <EntitiesTable />
+                                        <EntitiesTab />
                                     </Paper>
                                 </div>
                             </Tab>

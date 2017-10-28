@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import AddProject from './addProject';
+import { Link } from 'react-router-dom';
 import ActionHome from 'material-ui/svg-icons/action/home';
 import { List, ListItem} from 'material-ui/List';
 import {red500, blue500} from 'material-ui/styles/colors';
 
-import { Link } from 'react-router-dom';
+import AddProject from './addProject';
+import './style.css';
 
 class ProjectList extends Component {
 	constructor() {
@@ -41,9 +42,7 @@ class ProjectList extends Component {
                 <h3>Projects</h3>
                 <Link to="/project/0" style={{color: 'inherit'}}>Go to Test Project</Link>
                 <p></p>  
-	        	<AddProject
-	        		submit={(freshProject)=>this.addProject(freshProject)}>
-	        	</AddProject>
+	        	<AddProject submit={(freshProject)=>this.addProject(freshProject)} />
 	        	<List className="list">
 	        		{this.projectList()}
 	        	</List>

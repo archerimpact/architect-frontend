@@ -8,7 +8,7 @@ import {Link} from 'react-router-dom';
 class NavBar extends Component {
 
 	goHome(event){
-
+		
 	}
 
 	render () {

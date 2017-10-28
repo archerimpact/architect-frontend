@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import { Provider } from 'react-redux';
 import './index.css';
-import Home from '../components/Home';
-import ProjectPage from '../components/ProjectPage/ProjectPage';
+import Home from '../pages/Home/';
+import Project from '../pages/Project/';
 //import SourcePage from '../components/SourcePage/SourcePage'
-import App from '../components/App';
+import NavBar from '../components/NavBar';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
@@ -26,9 +26,9 @@ export default class Root extends Component {
 				<Provider store={this.props.store}>
 				    <Router>
 				    	<div>
-				    		<App/>
+				    		<NavBar />
 				    		<Route exact path="/" component={Home} />
-				    		<Route exact path="/project/:id" component={ProjectPage} />				    		
+				    		<Route exact path="/project/:id" component={Project} />				    		
 							{/*<Route path="/source/:id" component={SourcePage}/>*/}
 						</div>
 					</Router>
