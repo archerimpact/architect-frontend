@@ -13,11 +13,9 @@ import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
-
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../../actions/';
-import * as server from '../../server/';
+
 
 class EntitiesTable extends Component {
 	constructor(props) {
@@ -25,39 +23,30 @@ class EntitiesTable extends Component {
 		this.state = {
 			drawerOpen: false,
 			currentEntity: null
-		}
-		this.getEntitySource = this.getEntitySource.bind(this)
-		this.closeEntityDrawer = this.closeEntityDrawer.bind(this)
-		this.openEntityDrawer = this.openEntityDrawer.bind(this)
-	}
-
-
-	componentWillMount = () => {
-        server.loadEntities()
-            .then((data) => {
-                this.props.dispatch(actions.addEntities(data.entities))
-                this.props.dispatch(actions.addSources(data.notes))
-        	}).catch((err) => console.log("There was an error: " + err))
-    }
+		};
+		this.getEntitySource = this.getEntitySource.bind(this);
+		this.openEntityDrawer = this.openEntityDrawer.bind(this);
+		this.closeEntityDrawer = this.closeEntityDrawer.bind(this);
+	};
 
 	getEntitySource(entity) {
 		//TODO: refactor to account for entities having multiple sources
 		var sourceid = entity.sources[0];
-		var source = this.props.savedSources.notes.find(function (obj) {return obj._id=== sourceid});
+		var source = this.props.savedSources.documents.find(function (obj) {return obj._id=== sourceid});
 		if (typeof(source) !== "undefined"){
-			return source.content
+			return source.content;
 		} else {
-			return ""
-		}
-	}
+			return "";
+		};
+	};
 
 	openEntityDrawer = (row) => {
-		var currentEntity = this.props.savedEntities.entities[row]
-		this.setState({drawerOpen: true, currentEntity: currentEntity})
+		var currentEntity = this.props.savedEntities.entities[row];
+		this.setState({drawerOpen: true, currentEntity: currentEntity});
 	}
 
 	closeEntityDrawer = () => {
-		this.setState({drawerOpen: false, currentEntity: null})
+		this.setState({drawerOpen: false, currentEntity: null});
 	}
 
 	entityDrawer() {
@@ -81,9 +70,10 @@ class EntitiesTable extends Component {
 			      rows={1}
 			    /><br />
 			</div>
-			)
+		);
 	}
-	render () {
+
+	render() {
 		return(
 			<div>
 				<h3>Entities</h3>
@@ -94,7 +84,7 @@ class EntitiesTable extends Component {
     						 />                
 		          	{this.state.currentEntity ? this.entityDrawer() : null}
 		        </Drawer>
-				<Table multiSelectable={true} onRowSelection={this.openEntityDrawer} >
+				<Table multiSelectable={true} onRowSelection={this.openEntityDrawer}>
 				    <TableHeader enableSelectAll>
 				      <TableRow>
 				        <TableHeaderColumn>Name</TableHeaderColumn>
@@ -103,42 +93,38 @@ class EntitiesTable extends Component {
 				        <TableHeaderColumn>Graph</TableHeaderColumn>
 				      </TableRow>
 				    </TableHeader>
-				    <TableBody
-				    	showRowHover={true}
-				    	displayRowCheckbox={true}
-				    	>
-				    	{this.props.savedEntities.entities.map((entity) => {
+					<TableBody showRowHover={true} displayRowCheckbox={true}>
+						{this.props.savedEntities.entities.map((entity) => {
 				    		return(
 				    			<TableRow>
-				        			<TableRowColumn>{entity.qid.charAt(0) != "T" ? <a href={"https://www.wikidata.org/wiki/" + entity.qid}>{entity.name} </a> : entity.name} </TableRowColumn>
+				        			<TableRowColumn>{entity.qid && entity.qid.charAt(0) != "T" ? <a href={"https://www.wikidata.org/wiki/" + entity.qid}>{entity.name} </a> : entity.name} </TableRowColumn>
 				        			<TableRowColumn>{entity.type}</TableRowColumn>
 				        			<TableRowColumn>{this.getEntitySource(entity)}</TableRowColumn>
 				        			<TableRowColumn>Go to Graph</TableRowColumn>
 				      			</TableRow>
-				    		)
+				    		);
 				    	})}
-				    </TableBody>
+					</TableBody>
 				</Table>
 			</div>
-  		)		
-	}
+		);      
+	};
 }
 
 function mapDispatchToProps(dispatch) {
-    return {
-        actions: bindActionCreators(actions, dispatch),
-        dispatch: dispatch,
-    };
+	return {
+		actions: bindActionCreators(actions, dispatch),
+		dispatch: dispatch,
+	};
 }
 
 function mapStateToProps(state) {
-    return {
-        savedEntities: state.data.savedEntities,
-        entityNames: state.data.entityNames,
-        projects: state.data.projects,
-        savedSources: state.data.savedSources
-    };
+	return {
+		savedEntities: state.data.savedEntities,
+		entityNames: state.data.entityNames,
+		projects: state.data.projects,
+		savedSources: state.data.savedSources
+	};
 }
-
  
-export default connect(mapStateToProps, mapDispatchToProps)(EntitiesTable)
+export default connect(mapStateToProps, mapDispatchToProps)(EntitiesTable);

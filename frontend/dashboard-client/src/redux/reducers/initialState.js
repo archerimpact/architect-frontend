@@ -8,18 +8,16 @@ export default {
 	savedEntities: {
 		status: 'isLoading',
 		entities: [
-			{id: 0, name: 'Alice Ma', type: 'Person', chips: ['Daryus Medora'], sources: [], projects: [0, 1], qid: ""}, 
-			{id: 1, name: 'Daryus Medora', type: 'Person', chips: ['Alice Ma'], sources: [], projects: [0], qid: ""}, 
-			{id: 2, name: 'Angelina Wang', type: 'Person', chips: ['Daryus Medora'], sources: [], projects: [1], qid: ""}, 
+			{id: 0, name: 'Alice Ma', type: 'Person', tags: ['Daryus Medora'], sources: [], projects: [0, 1], qid: ""}, 
+			{id: 1, name: 'Daryus Medora', type: 'Person', tags: ['Alice Ma'], sources: [], projects: [0], qid: ""}, 
+			{id: 2, name: 'Angelina Wang', type: 'Person', tags: ['Daryus Medora'], sources: [], projects: [1], qid: ""}, 
 			]
 	},
 	savedSources: {
 		status: 'isLoading',
 		documents: [
-			{id: 0, name: 'Business Registry #1', type: 'Primary Source', path: '', projects: [0, 1], entities: [""]}, 
-			{id: 1, name: 'Legal Case #1', type: 'Primary Source', path: '', projects: [0], entities: [""]}, 
-			],
-		notes: []
+			{_id: 0, name: 'A test document', content: "A lot of test content", entities: []}
+		]
 	},
 	entityTypes: ["Company", "Person", "Location"],
 	entityNames: ["Alice Ma", "Daryus Medora", "Angelina Wang"],

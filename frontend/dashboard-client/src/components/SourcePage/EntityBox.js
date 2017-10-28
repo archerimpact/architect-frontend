@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import Paper from 'material-ui/Paper';
 import Chip from 'material-ui/Chip';
 import AutoComplete from 'material-ui/AutoComplete';
@@ -25,38 +26,36 @@ const circle_style = {
 	backgroundImage: "url('/daryus.jpg')",
 };
 
-
 class EntityBox extends Component {
-
 	constructor(props) {
-		super(props)
+		super(props);
 		this.state = {
-			name: props.entity.name,
-			type: props.entity.type,
 			tagFieldValue: '',
-			chips: props.entity.chips
-		}
+		};
+		this.handleTagFieldChange = this.handleTagFieldChange.bind(this);
+		this.handleTagSubmit = this.handleTagSubmit.bind(this);
+		this.handleRequestDelete = this.handleRequestDelete.bind(this);
 	};
 
-	handleTagFieldChange = (value) => {
-		console.log(value)
+	handleTagFieldChange(value) {
 		this.setState({
 			tagFieldValue: value
 		});
-	}
+	};
 
-	handleTagSubmit = (e) => {	
+	// TODO: refactor connections for the new schema
+	handleTagSubmit(event) {	
 		let entities = this.props.savedEntities.entities.slice();
-		this.props.dispatch(actions.addTag(entities, this.state.name, this.state.tagFieldValue))
+		this.props.dispatch(actions.addTag(entities, this.props.entity.name, this.state.tagFieldValue));
 		this.setState({
 			tagFieldValue: ''
-		})
-	}
+		});
+	};
 
-	handleRequestDelete = (e) => {
+	handleRequestDelete(event) {
 		let entities = this.props.savedEntities.entities.slice();
-		this.props.dispatch(actions.deleteTag(entities, this.state.name, this.children))
-	}
+		this.props.dispatch(actions.deleteTag(entities, this.props.entity.name, this.children));
+	};
 
 	render() {
 		return (
@@ -66,45 +65,44 @@ class EntityBox extends Component {
 						<Paper style={circle_style} circle={true}>
 						</Paper>
 						<div className="right-column">
-							<b> {this.state.name} </b>
-							<i> {this.state.type} </i>
-							<a href={this.state.link} target="_blank">{this.state.link}</a>
-							<div className="chips">
-								{this.state.chips.map((chip) => {
+							<b>{this.props.entity.name}</b>
+							<i>{this.props.entity.type}</i>
+							<a href={this.state.link} target="_blank">{this.props.entity.link}</a>
+							<div className="tags">
+								{this.props.entity.tags.map((tag) => {
 									return (
-										<Chip onRequestDelete={this.handleRequestDelete}> {chip} </Chip>
-										)
+										<Chip onRequestDelete={this.handleRequestDelete}>{tag}</Chip>
+										);
 								})}
 							</div>
-						    <AutoComplete
+							<AutoComplete
 								floatingLabelText="Add Tags"
 								hintText="e.g. Daryus"
-			      				dataSource={this.props.entityNames}
-			      				onUpdateInput={this.handleTagFieldChange}
-			      				style={{width: 50, marginRight: 20}}
-			    			/>
-			    			<RaisedButton label="Add Tag" onClick={this.handleTagSubmit} />
+								dataSource={this.props.entityNames}
+								onUpdateInput={this.handleTagFieldChange}
+								style={{width: 50, marginRight: 20}}
+							/>
+							<RaisedButton label="Add Tag" onClick={this.handleTagSubmit} />
 						</div>
 					</div>
 				</Paper>
 			</div>
-		)
-	}
-
+		);
+	};
 }
 
 function mapDispatchToProps(dispatch) {
-    return {
-        actions: bindActionCreators(actions, dispatch),
-        dispatch: dispatch,
-    };
+  return {
+	  actions: bindActionCreators(actions, dispatch),
+	  dispatch: dispatch,
+  };
 }
 
 function mapStateToProps(state) {
-    return {
-        savedEntities: state.data.savedEntities,
-        entityNames: state.data.entityNames
-    };
+  return {
+	  savedEntities: state.data.savedEntities,
+	  entityNames: state.data.entityNames
+  };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EntityBox)
+export default connect(mapStateToProps, mapDispatchToProps)(EntityBox);

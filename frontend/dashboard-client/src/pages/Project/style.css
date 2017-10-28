@@ -1,7 +1,7 @@
 .header{
   display: flex;
   flex-direction: row;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .header-text{
@@ -28,4 +28,11 @@
   margin: 0 auto;
   width:80%;
   height: 250px;
+  display:inline-block;
+}
+
+.graph-canvas{
+  width:90%;
+  margin:15px auto;
+  text-align: center;
 }

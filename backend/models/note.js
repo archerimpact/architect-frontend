@@ -7,5 +7,4 @@ var NoteSchema = new mongoose.Schema({
     type: String,
 });
 
-
 module.exports = mongoose.model('Note', NoteSchema);
