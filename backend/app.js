@@ -11,6 +11,8 @@ var express = require('express'),
     util = require('util'),
     fs = require('fs'),
     PDFParser = require("pdf2json");
+
+module.exports = app;
     
 var app = express();
 
@@ -132,51 +134,7 @@ app.post('/register', function(req, res) {
    });
 });
 
-const storage = multer.diskStorage({
-    destination: './files/',
-    filename: function(req, file, callback) {
-        // TODO: Change this filename to something more unique in case of repeats
-        var file_name = file.originalname;
-        callback(null, file_name);
-    },
-});
-
-app.use(multer({
-     storage:storage
-     }).single('file'));
-
-const upload = multer({ storage: storage });
-
-app.post('/pdf-uploader', upload.single('file'), async (req, res) => {
-    try {
-        // TODO: save to google cloud here
-
-        var name = req.file.originalname;
-        let text_dest = "./files/" + name.substring(0, name.length - 4) + ".txt";
-        let pdfParser = new PDFParser(this,1);
-
-        pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError) );
-        pdfParser.on("pdfParser_dataReady", pdfData => {
-          var text = pdfParser.getRawTextContent();
-          fs.writeFile(text_dest, text, (error) => { console.error(error) });
-          callEntityExtractor(text, function(response) {
-            submitNote(req.file.originalname, req.body.text, response.entities)
-            .then(item => {
-                res.send("item saved to database");
-            })
-            .catch(err => {
-                res.status(400).send("unable to save to database");
-            })
-          })
-        });
-        pdfParser.loadPDF("./files/" + name);
-        res.send("PDF Converted To Text Success")
-
-        // TODO: delete pdf after done with it
-    } catch (err) {
-        res.sendStatus(400);
-    }
-})
+app.use('/investigation', require('./controllers/investigation'))
 
 app.get('*', function(req, res) {
     res.send('page not found');
