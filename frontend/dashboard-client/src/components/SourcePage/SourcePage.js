@@ -14,7 +14,7 @@ import * as actions from '../../actions/';
 import * as server from '../../server/';
 
 class SourcePage extends Component {
-	componentWillMount = () => {
+	componentDidMount = () => {
 		server.loadEntities()
 			.then((data) => {
 				this.props.dispatch(actions.addEntities(data.entities));          

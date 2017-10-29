@@ -3,22 +3,23 @@ var express = require('express'),
     mongoose = require('mongoose'),
     bodyParser = require('body-parser'),
     passport = require('passport'),
-    request = require('request'),
     LocalStrategy = require('passport-local'),
     User = require('./models/user'),
-    Note = require('./models/Note'),
     multer = require('multer'),
     path = require('path'),
     util = require('util'),
     fs = require('fs'),
     PDFParser = require("pdf2json");
-
-module.exports = app;
     
 mongoose.connect('mongodb://michael:archer3@ds115045.mlab.com:15045/uxreceiver');
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
+
+module.exports = {
+  app,
+  db
+};
 
 // Use environment defined port or 8000
 var port = process.env.PORT || 8000;
@@ -54,59 +55,6 @@ app.use(function(req, res, next) {
     res.locals.currentUser = req.user;
     next();
 });
-
-function callEntityExtractor(string, callback) {
- var optionsEntityExtractor = {
-    url: 'https://api.rosette.com/rest/v1/entities', 
-    method: 'POST',
-    headers: {
-        'X-RosetteAPI-Key': '554b291cfc61e3f3338b9f02065bd1a5'
-    },
-    'Content-Type': 'application/json',
-    body: JSON.stringify({'content': string})
-  }
-  request(optionsEntityExtractor, function(error, response, body) {
-    if (!error) {
-        return callback(JSON.parse(body));
-    } else {
-      console.log("there was an error in the Rosette extractor: ");
-      return {entities: []};
-    };
-  });     
-}
-
-function submitNote(title, content, entities) {
-  var note = new Note({
-    type: "textInput",
-    title: title,
-    content: content,
-    entities: entities
-  });
-  return note.save();
-};
-
-app.post('/entities', function(req, res) {
-  if (req.body.text.length > 20) {
-    callEntityExtractor(req.body.text, function(response) {
-      submitNote(req.body.title, req.body.text, response.entities)
-      .then(item => {
-          res.send("item saved to database");
-      })
-      .catch(err => {
-          res.status(400).send("unable to save to database");
-      })
-    })
-  }else{
-    res.send("Didn't run entity extractor because the length of the content was too short.")
-  }
-})
-
-app.get('/entities', function(req, res) {
-    db.collection('notes').find({type: "textInput"}).toArray(function(err, result) {
-        if (err) throw err;
-        res.send(result);
-    });
-})
 
 app.post('/login', passport.authenticate('local', {
         successRedirect: '/loggedIn',

@@ -25,7 +25,7 @@ const tab_style = {
 };
 
 class ProjectPage extends Component {
-	componentWillMount = () => {
+	componentDidMount = () => {
 		server.loadEntities()
 			.then((data) => {
 				this.props.dispatch(actions.addEntities(data.entities))
