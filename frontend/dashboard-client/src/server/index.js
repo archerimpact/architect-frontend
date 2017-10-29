@@ -36,8 +36,8 @@ export function register(authInfo) {
 	var options = {
 		method: 'POST',
 		headers: {
-			// 'Content-Type': 'application/x-www-form-urlencoded'
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/x-www-form-urlencoded'
+			// 'Content-Type': 'application/json'
 		},
 		body:
             qs.stringify({
@@ -49,11 +49,10 @@ export function register(authInfo) {
 			// company: authInfo.company
 		})
 	};
-	return new Promise(function(fulfill, reject) {
+    return new Promise(function(fulfill, reject) {
 		fetch(url, options)
 		.then(res => res.json())
 		.then(json => {
-		    console.log("hello NEVER HITS THIS LINE");
 			if (!json.login) {
 				reject('Error: could not authenticate');
 			}

@@ -76,13 +76,25 @@ app.use(function(req, res, next) {
 // });
 app.post('/api/login', function(req, res, next) {
     passport.authenticate('local', function(err, user, info) {
-        if (err) { return next(err); }
+        if (err) {
+            // return next(err);
+            return res.send(err);
+        }
         if (!user) {
-            console.log(info);
-            return res.redirect(frontend_url + '/loginpage'); }
+            console.log("whut");
+            console.log("in !user: " + info.message);
+            return res.send(info);
+            // return res.redirect(frontend_url + '/loginpage');
+            // NOTE: redirects will cause CORS errors.
+        }
+
         req.logIn(user, function(err) {
-            if (err) { return next(err); }
-            return res.redirect(frontend_url + '/');
+            if (err) {
+                return res.send(err);
+                // return res.redirect(frontend_url + '/loginpage');
+            }
+            // return res.redirect(frontend_url + '/');
+            res.send(user);
             // user assigned to req.user
         });
     })(req, res, next)

@@ -1,5 +1,4 @@
 import React from 'react';
-import { configData } from '../config.js';
 
 // import './App.css';
 // import { connect } from 'react-redux';
@@ -7,9 +6,9 @@ import { configData } from '../config.js';
 // import * as actions from '../actions/';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import {register} from "../server/index";
+import { register } from "../server/index";
 // var register = require('../server/index');
-import {registerAccount} from "../server/transport-layer";
+import { registerAccount } from "../server/transport-layer";
 
 class CreateAccount extends React.Component {
     constructor(props) {
@@ -23,7 +22,6 @@ class CreateAccount extends React.Component {
         this.handlePasswordInputChange = this.handlePasswordInputChange.bind(this);
         this.handlePasswordConfInputChange = this.handlePasswordConfInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-
     }
 
     handleEmailInputChange(event) {
@@ -39,14 +37,10 @@ class CreateAccount extends React.Component {
     }
 
     handleSubmit(event) {
-        // check that passwords match etc., validation.
-        // if (this.state.pw1 === this.state.pw2) {
-        //     console.log(event.target);
-        //     const ainfo =2;
-        // }
-        console.log("handleSubmit");
-        // var result = register({username: this.state.email, password: this.state.password});
-        var result = registerAccount({username: this.state.email, password: this.state.password});
+        // TODO: Implement form validation
+        console.log("createAccount - handleSubmit");
+        var result = register({username: this.state.email, password: this.state.password});
+        // var result = registerAccount({username: this.state.email, password: this.state.password});
         console.log(result);
     }
 
