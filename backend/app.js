@@ -1,10 +1,12 @@
 var express = require('express'),
+    session = require('express-session'),
     app = express(),
     mongoose = require('mongoose'),
     bodyParser = require('body-parser'),
     passport = require('passport'),
     LocalStrategy = require('passport-local'),
-    User = require('./models/user');
+    User = require('./models/user'),
+    MongoStore = require('connect-mongo')(session),
     configData = require('./config.js');
     
 app.use(bodyParser.urlencoded({extended: true}));
@@ -49,11 +51,30 @@ app.use(function (req, res, next) {
 });
 ////////////////////////////////////////////////////////////////////////////////
 
-app.use(require('express-session')({
+// app.use(require('express-session')({
+//     secret: configData.express_session_secret,
+//     resave: false,
+//     saveUninitialized: false
+// }));
+
+const sessionOptions = {
+    resave: true,
+    saveUninitialized: true,
     secret: configData.express_session_secret,
-    resave: false,
-    saveUninitialized: false
-}));
+    proxy: false,
+    name: "sessionId",
+    cookie: {
+        httpOnly: true,
+        secure: false,
+        maxAge: 60000
+    },
+    store: new MongoStore({
+        url: configData.db_url,
+        autoReconnect: true
+    })
+};
+
+app.use(session(sessionOptions));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -77,25 +98,26 @@ app.use(function(req, res, next) {
 app.post('/api/login', function(req, res, next) {
     passport.authenticate('local', function(err, user, info) {
         if (err) {
-            // return next(err);
-            return res.send(err);
+            return next(err);
+            // return res.send(err);
         }
         if (!user) {
-            console.log("whut");
-            console.log("in !user: " + info.message);
-            return res.send(info);
+            // console.log("in !user: " + info.message);
+            // return res.send(info)
+            return res.json({ success: false, message: info.message });
             // return res.redirect(frontend_url + '/loginpage');
             // NOTE: redirects will cause CORS errors.
         }
 
         req.logIn(user, function(err) {
             if (err) {
-                return res.send(err);
+                // return res.send(err);
+                return res.json({ success: false, message: err });
                 // return res.redirect(frontend_url + '/loginpage');
             }
             // return res.redirect(frontend_url + '/');
-            res.send(user);
-            // user assigned to req.user
+            // res.send(user);
+            return res.json({ success: true, message: 'authentication succeeded' });
         });
     })(req, res, next)
 });
@@ -112,13 +134,11 @@ app.post('/api/register', function(req, res) {
     var u = {};
     u.username = req.body.username;
     var newUser = new User(u);
-    console.log("LOGGER: received, attempting to register");
     User.register(newUser, req.body.password, function(err, user) {
         if (err) {
-            console.log("LOGGER: first if: " + err);
-            res.send(err);
+            // res.send(err);
+            return res.json({ success: false, name: err.name, message: err.message });
         } else {
-            console.log("LOGGER: past first error if, proceeding to authenticate");
             passport.authenticate('local'
                 // ,{
                 // successRedirect: frontend_url + '/lol',
@@ -126,9 +146,10 @@ app.post('/api/register', function(req, res) {
                 // }
             ) (req, res, function () {
                 console.log("LOGGER: account created");
-                console.log(req._passport.session);
-                console.log(user);
-                res.send('Account created; Log in successful');
+                console.log(req._passport.session); // eg. { user: 'lol12' }
+                console.log(user); // just as user's entry in db appears
+                res.json({ success: true });
+                // res.send('Account created; Log in successful');
                 // res.redirect(frontend_url + '/links');
             });
         }
@@ -138,7 +159,7 @@ app.post('/api/register', function(req, res) {
 
 
 app.get('*', function(req, res) {
-    res.send('page not found');
+    res.status(404).send('Not found');
 });
 
 app.listen(port, process.env.IP, function() {

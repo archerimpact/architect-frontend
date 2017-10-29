@@ -39,8 +39,8 @@ class CreateAccount extends React.Component {
     handleSubmit(event) {
         // TODO: Implement form validation
         console.log("createAccount - handleSubmit");
-        var result = register({username: this.state.email, password: this.state.password});
-        // var result = registerAccount({username: this.state.email, password: this.state.password});
+        // var result = register({username: this.state.email, password: this.state.password});
+        var result = registerAccount({username: this.state.email, password: this.state.password});
         console.log(result);
     }
 
@@ -48,7 +48,7 @@ class CreateAccount extends React.Component {
         // alert('testing!');
         return (
             <div className='rows' style={{textAlign:"center", marginTop:40}} >
-                <p> Please enter your details below to create a new account! </p>
+                <p> Please enter your details below to create a new account. </p>
                 {/*works if you wanna send directly. otherwise handler, pull from state -is this safe?. action={"/register"} method="post" // onSubmit={this.handleSubmit} --- so right now not using the server/index methods */}
                 {/*<form action={configData.backend_url + "/register"} method="post" style={{width: "400px",*/}
                     {/*margin: "4em auto",*/}
