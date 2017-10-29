@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import './style.css'
 
-// import EntitiesTab from '../components/Entity/EntitiesTab';
+// import EntitiesTab from '../../containers/EntityTab/entityTab_unused.js';
 
 import EntitiesTab from '../../containers/EntityTab';
 

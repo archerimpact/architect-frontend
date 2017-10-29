@@ -16,8 +16,9 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import EntitiesList from '../../components/Entity/'
 
-class EntitiesTable extends Component {
+class EntitiesTab extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -40,25 +41,25 @@ class EntitiesTable extends Component {
 		};
 	};
 
-	openEntityDrawer = (row) => {
-		var currentEntity = this.props.savedEntities.entities[row];
-		this.setState({drawerOpen: true, currentEntity: currentEntity});
+	//called from entity with this.props.onEntityClick(entity)
+	openEntityDrawer = (entity) => {
+		this.setState({drawerOpen: true, currentEntity: entity});
 	}
 
 	closeEntityDrawer = () => {
 		this.setState({drawerOpen: false, currentEntity: null});
 	}
 
-	entityDrawer() {
+	renderEntityDrawer() {
 		return (
 			<div style={{textAlign: 'left', paddingLeft: '10px'}}>
 				<div>
-				<p>Name: {this.state.currentEntity.name}</p>
-				<p>Type: {this.state.currentEntity.type}</p>
-				<p>Link: {this.state.currentEntity.link}</p>
-				<p>Chips: {this.state.currentEntity.chips}</p>
-				<p>Sources: {this.state.currentEntity.sources}</p>
-				<p>Qid: {this.state.currentEntity.qid}</p>
+					<b>Name: {this.state.currentEntity.name}</b>
+					<p>Type: {this.state.currentEntity.type}</p>
+					<p>Link: {this.state.currentEntity.link}</p>
+					<p>Chips: {this.state.currentEntity.chips}</p>
+					<p>Sources: {this.state.currentEntity.sources}</p>
+					<p>Qid: {this.state.currentEntity.qid}</p>
 				</div>
 				<div>
 					<br />
@@ -74,41 +75,29 @@ class EntitiesTable extends Component {
 	}
 
 	render() {
-		return(
-			<div>
-				<h3>Entities</h3>
-				<Drawer width={300} containerStyle={{height: 'calc(100% - 64px)', top: 64}} openSecondary={true} open={this.state.drawerOpen} >
-		          	<AppBar onLeftIconButtonTouchTap={this.closeEntityDrawer}
-    						iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-    						title={'Entitiy Details'}
-    						 />                
-		          	{this.state.currentEntity ? this.entityDrawer() : null}
-		        </Drawer>
-				<Table multiSelectable={true} onRowSelection={this.openEntityDrawer}>
-				    <TableHeader enableSelectAll>
-				      <TableRow>
-				        <TableHeaderColumn>Name</TableHeaderColumn>
-				        <TableHeaderColumn>Type</TableHeaderColumn>
-				        <TableHeaderColumn>Document</TableHeaderColumn>
-				        <TableHeaderColumn>Graph</TableHeaderColumn>
-				      </TableRow>
-				    </TableHeader>
-					<TableBody showRowHover={true} displayRowCheckbox={true}>
-						{this.props.savedEntities.entities.map((entity) => {
-				    		return(
-				    			<TableRow>
-				        			<TableRowColumn>{entity.qid && entity.qid.charAt(0) != "T" ? <a href={"https://www.wikidata.org/wiki/" + entity.qid}>{entity.name} </a> : entity.name} </TableRowColumn>
-				        			<TableRowColumn>{entity.type}</TableRowColumn>
-				        			<TableRowColumn>{this.getEntitySource(entity)}</TableRowColumn>
-				        			<TableRowColumn>Go to Graph</TableRowColumn>
-				      			</TableRow>
-				    		);
-				    	})}
-					</TableBody>
-				</Table>
-			</div>
-		);      
-	};
+		if (this.props.status === 'isLoading') {
+    		return (<div className="projects">
+    					<p> Loading ... </p>
+    				</div>
+    			);
+    	} else {
+			return(
+				<div>
+					<h3>Entities</h3>
+					<Drawer width={300} containerStyle={{height: 'calc(100% - 64px)', top: 64}} openSecondary={true} open={this.state.drawerOpen} >
+			          	<AppBar onLeftIconButtonTouchTap={this.closeEntityDrawer}
+	    						iconElementLeft={<IconButton><NavigationClose /></IconButton>}
+	    						title={'Entitiy Details'}
+	    						 />                
+			          	{this.state.drawerOpen ? this.renderEntityDrawer() : null}
+			        </Drawer>
+			        <div>
+			        	<EntitiesList entities={this.props.entities} getSource={this.getEntitySource} onEntityClick={this.openEntityDrawer}/>
+			        </div>
+				</div>
+			);      
+		}
+	}
 }
 
 function mapDispatchToProps(dispatch) {
@@ -118,12 +107,18 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state) {
-	return {
-		savedEntities: state.data.savedEntities,
-		entityNames: state.data.entityNames,
-		projects: state.data.projects,
-		savedSources: state.data.savedSources
-	};
+	if (state.data.savedEntities.status === 'isLoading') {
+		return {
+			status: state.data.savedEntities.status,
+	    }
+	} else {
+	    return {
+			status: state.data.savedEntities.status,
+			entities: state.data.savedEntities.entities,
+			savedSources: state.data.savedSources
+	    }
+	}
 }
- 
-export default connect(mapStateToProps, mapDispatchToProps)(EntitiesTable);
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(EntitiesTab);
