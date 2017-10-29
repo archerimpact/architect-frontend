@@ -4,7 +4,10 @@ import { configData } from '../config.js';
 let api_inst = axios.create({
     baseURL: configData.backend_url,
     timeout: 1000,
-    headers: {}
+    headers: {
+        // cookie: cookie,
+    },
+    withCredentials: true
 });
 
 export const registerAccount = async (dataObj) => {
@@ -28,3 +31,13 @@ export const authenticateAccount = async (dataObj) => {
     console.log(responseData.data, "within transport-layer - authenticateAccount");
     return responseData.data.code;
 };
+
+export const isAuthenticated = async () => {
+    let responseData = await api_inst.get('/checkauth');
+    return responseData;
+};
+
+export const logoutAccount = async () => {
+    let responseData = await api_inst.get('/logout');
+    return responseData;
+}

@@ -10,6 +10,14 @@ var
     // MongoStore = require('connect-mongo')(session),
     // configData = require('./config.js');
 
+exports.isAuthenticated = function(req, res, next) {
+    if (req.user) {
+        // return next();
+        return res.json({success: true});
+    } else {
+        return res.status(401).json({success: false, error: 'User not authenticated'});
+    }
+};
 
 exports.login = function(req, res, next) {
     passport.authenticate('local', function(err, user, info) {
@@ -33,7 +41,7 @@ exports.login = function(req, res, next) {
             }
             // return res.redirect(frontend_url + '/');
             // res.send(user);
-            return res.json({ success: true, message: 'authentication succeeded' });
+            return res.json({ success: true, message: 'authentication success' });
         });
     })(req, res, next)
 };

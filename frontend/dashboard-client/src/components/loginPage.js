@@ -31,7 +31,7 @@ class LoginPage extends React.Component {
         console.log("loginPage - handleSubmit");
         // var result = authenticate({username: this.state.email, password: this.state.password});
         var result = authenticateAccount({username: this.state.email, password: this.state.password});
-        console.log("end of loginPage.handleSubmit: " + result);
+        this.props.history.push('/links');
     }
 
     render() {

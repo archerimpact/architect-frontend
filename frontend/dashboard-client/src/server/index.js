@@ -1,4 +1,3 @@
-'use strict';
 import 'whatwg-fetch';
 import { configData } from '../config.js';
 

@@ -32,6 +32,8 @@ app.post('/findsquirrel', function (req, res) {
     })
 });
 
+---
+
 # In models/squirrel.js:
 var mongoose = require('mongoose');
 
@@ -44,4 +46,8 @@ var SquirrelSchema = new mongoose.Schema({
 
 // module.exports = mongoose.model('Squirrel', SquirrelSchema, 'custom_squirrel'); diff way to force alt name
 module.exports = mongoose.model('Squirrel', SquirrelSchema);
+
+---
+---
+
 

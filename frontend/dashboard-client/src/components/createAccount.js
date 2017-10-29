@@ -42,6 +42,7 @@ class CreateAccount extends React.Component {
         // var result = register({username: this.state.email, password: this.state.password});
         var result = registerAccount({username: this.state.email, password: this.state.password});
         console.log(result);
+
     }
 
     render() {

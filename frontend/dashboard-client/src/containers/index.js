@@ -9,9 +9,23 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CreateAccount from '../components/createAccount';
 import LoginPage from '../components/loginPage';
 // import EnsureLoggedInContainer from '../containers/ensureLoggedInContainer';
+import {isAuthenticated} from "../server/transport-layer";
+
+const requireAuth = (nextState, replace, callback) => {
+    // // const { user: { authenticated } } = store.getState();
+    // if (!authenticated) {
+    //     // Takes a Location object
+    //     // https://github.com/mjackson/history/blob/master/docs/Location.md
+    //     replace({
+    //         pathname: "/login",
+    //         state: { nextPathname: nextState.location.pathname }
+    //     })
+    // }
+    // callback()
+};
 
 export default class Root extends Component {
-	render() {
+    render() {
 		return (
 			<MuiThemeProvider>
 				<Provider store={this.props.store}>
@@ -24,7 +38,7 @@ export default class Root extends Component {
                                 <Route exact path="/loginpage" component={LoginPage} />
 
                                 {/*<Route component={EnsureLoggedInContainer} >*/}
-                                    <Route path="/links" component={SaveLinks} />
+                                    <Route path="/links" component={SaveLinks} /*onEnter={requireAuth}*/ />
                                 {/*</Route>*/}
 							</div>
 						</div>

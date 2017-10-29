@@ -39,7 +39,7 @@ var port = process.env.PORT || 8000;
 // });
 app.use(function (req, res, next) {
     // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     // Request headers you wish to allow
@@ -92,6 +92,10 @@ app.use(function(req, res, next) {
 app.post('/api/login', users_controller.login);
 app.get('/api/logout', users_controller.logout);
 app.post('/api/register', users_controller.register);
+
+app.get('/api/checkauth', users_controller.isAuthenticated, function(req, res) {
+    res.status(200).json({status: 'User authenticated'});
+});
 
 app.get('*', function(req, res) {
     res.status(404).send('Not found');
