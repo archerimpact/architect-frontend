@@ -11,10 +11,10 @@ var
     // configData = require('./config.js');
 
 exports.isAuthenticated = function(req, res, next) {
-    console.log(req.user);
+    console.log("in users/isAuthenticated: " + req.user);
     if (req.user) {
-        // return next();
-        return res.json({success: true});
+        return next();
+        // return res.json({success: true});
     } else {
         return res.status(401).json({success: false, error: 'User not authenticated'});
     }

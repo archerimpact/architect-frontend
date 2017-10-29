@@ -13,6 +13,10 @@ var UserSchema = new mongoose.Schema({
     },
     password: {
         type: String,
+    },
+    test_count : {
+        type: Number,
+        default: 0
     }
 });
 

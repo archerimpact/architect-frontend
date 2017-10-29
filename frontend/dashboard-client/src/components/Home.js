@@ -9,7 +9,6 @@ class Home extends Component {
                <div className="App">
                     <h2>Your Investigation</h2>
                     <Link to="/links" style={{color: 'inherit' }}>View saved links</Link>
-                   wow some words
                 </div>
             </div>
         );

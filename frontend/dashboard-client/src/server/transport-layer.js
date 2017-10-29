@@ -34,10 +34,16 @@ export const authenticateAccount = async (dataObj) => {
 export const isAuthenticated = async () => {
     console.log("isAuthenticated - transport layer");
     let responseData = await api_inst.get('/checkauth');
-    return responseData;
+    // return false; // EVEN SETTING THIS DOESN'T WORK!!!
+    return responseData.success;
 };
 
 export const logoutAccount = async () => {
     let responseData = await api_inst.get('/logout');
+    return responseData;
+}
+
+export const testPost = async () => {
+    let responseData = await api_inst.post('/testpost');
     return responseData;
 }

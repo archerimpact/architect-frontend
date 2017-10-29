@@ -11,6 +11,7 @@ import CreateAccount from '../components/createAccount';
 import LoginPage from '../components/loginPage';
 // import EnsureLoggedInContainer from '../containers/ensureLoggedInContainer';
 import {isAuthenticated} from "../server/transport-layer";
+import {TestPage} from "../components/testPage";
 
 // const requireAuth = (nextState, replace, callback) => {
 //     // // const { user: { authenticated } } = store.getState();
@@ -27,6 +28,25 @@ import {isAuthenticated} from "../server/transport-layer";
 // };
 // note onEnter, browserHistory do not exist in RR4.
 
+
+const DecisionRoute = ({ trueComponent, falseComponent, decisionFunc, ...rest }) => {
+    return (
+        <Route
+            {...rest}
+
+            render={
+                decisionFunc()
+                    ? trueComponent
+                    : falseComponent
+            }
+        />
+    )
+};
+
+const redirectCreateAccount = props => <Redirect to={'/createaccount'} />;
+const redirectLogin = props => <Redirect to={'/loginpage'} />;
+
+
 export default class Root extends Component {
     render() {
 		return (
@@ -35,22 +55,28 @@ export default class Root extends Component {
 				    <Router>
 				    	<div>
 				    		<App/>
-				    		{/*<Route exact path="/" component={Home} />*/}
-				    		<Route exact path="/" render={() => (
-                            isAuthenticated().success ? (
-                                <Redirect to="/links" />
-                            ) : (
-                                <Home />
-                            )
-                            )}/>
+				    		<Route exact path="/" component={Home} />
+				    		{/*<Route exact path="/" render={() => (*/}
+                            {/*isAuthenticated().success ? (*/}
+                                {/*<Redirect to="/links" />*/}
+                            {/*) : (*/}
+                                {/*<Home />*/}
+                            {/*)*/}
+                            {/*)}/>*/}
 
 				    		<div className="Body">
                                 <Route exact path="/createaccount" component={CreateAccount} />
                                 <Route exact path="/loginpage" component={LoginPage} />
+                                <Route exact path="/testpage" component={TestPage} />
 
                                 {/*<Route component={EnsureLoggedInContainer} >*/}
-                                    <Route path="/links" component={SaveLinks} />
+                                    {/*<Route path="/links" component={SaveLinks} />*/}
                                 {/*</Route>*/}
+                                {/*<DecisionRoute path="/links" exact={true}*/}
+                                               {/*trueComponent={redirectCreateAccount}*/}
+                                               {/*falseComponent={redirectLogin}*/}
+                                               {/*decisionFunc={isAuthenticated}*/}
+                                {/*/>*/}
 							</div>
 						</div>
 					</Router>

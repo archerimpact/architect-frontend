@@ -94,7 +94,21 @@ app.get('/api/logout', users_controller.logout);
 app.post('/api/register', users_controller.register);
 
 app.get('/api/checkauth', users_controller.isAuthenticated, function(req, res) {
-    res.status(200).json({status: 'User authenticated'});
+    return res.status(200).json({success: true, message: 'User authenticated'});
+});
+
+app.post('/api/testpost', users_controller.isAuthenticated, function(req, res) {
+    // INCREMENT USER TEST_COUNT FIELD
+    var query = {'username': req.user.username};
+    var newData = {test_count: "lol"};
+    // User.findOneAndUpdate(query, newData, function(err, doc){
+    //     if (err) return res.send(500, { error: err });
+    //     return res.send("succesfully saved");
+    // })
+    User.findOneAndUpdate(query, {$inc: {test_count: 1}}, function(err, doc){
+        if (err) return res.send(500, { error: err });
+        return res.json({success: true});
+    })
 });
 
 app.get('*', function(req, res) {
