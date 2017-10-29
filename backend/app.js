@@ -1,4 +1,5 @@
 var express = require('express'),
+    app = express(),
     mongoose = require('mongoose'),
     bodyParser = require('body-parser'),
     passport = require('passport'),
@@ -14,8 +15,6 @@ var express = require('express'),
 
 module.exports = app;
     
-var app = express();
-
 mongoose.connect('mongodb://michael:archer3@ds115045.mlab.com:15045/uxreceiver');
 
 var db = mongoose.connection;
