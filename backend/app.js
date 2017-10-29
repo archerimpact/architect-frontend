@@ -16,7 +16,6 @@ module.exports = app;
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-//mongoose.connect('mongodb://angelina:archer3@ds115045.mlab.com:15045/uxreceiver');
 mongoose.connect('mongodb://michael:archer3@ds115045.mlab.com:15045/uxreceiver');
 
 var db = mongoose.connection;

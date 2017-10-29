@@ -67,12 +67,12 @@ function mapStateToProps(state) {
 	if (state.data.savedProjects.status === 'isLoading') {
 		return {
 			status: state.data.savedProjects.status,
-	    }
+	    };
 	} else {
 	    return {
 			status: state.data.savedProjects.status,
 	        projects: state.data.savedProjects.projects,
-	    }
+	    };
 	}
 }
 
