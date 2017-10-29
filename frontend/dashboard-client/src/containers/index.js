@@ -6,6 +6,7 @@ import App from '../components/App';
 import SaveLinks from '../components/saveLinks';
 import ProjectList from '../components/projects/projectList';
 import PDFUploader from '../components/pdf_uploader/pdfUploader';
+import Documents from '../components/documents/documents';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
@@ -22,6 +23,7 @@ export default class Root extends Component {
 								<Route path="/links" component={SaveLinks}/>
 								<Route path="/projects" component={ProjectList}/>
 								<Route path="/investigation/pdf-uploader" component={PDFUploader}/>
+								<Route path="/investigation/documents" component={Documents}/>
 							</div>
 						</div>
 					</Router>
