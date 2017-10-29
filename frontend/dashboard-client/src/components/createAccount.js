@@ -7,19 +7,21 @@ import { configData } from '../config.js';
 // import * as actions from '../actions/';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-
+import {register} from "../server/index";
+// var register = require('../server/index');
+import {registerAccount} from "../server/transport-layer";
 
 class CreateAccount extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             email: '',
-            pw1: '',
-            pw2: ''
+            password: '',
+            passwordConf: ''
         };
         this.handleEmailInputChange = this.handleEmailInputChange.bind(this);
-        this.handlePassword1InputChange = this.handlePassword1InputChange.bind(this);
-        this.handlePassword2InputChange = this.handlePassword2InputChange.bind(this);
+        this.handlePasswordInputChange = this.handlePasswordInputChange.bind(this);
+        this.handlePasswordConfInputChange = this.handlePasswordConfInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
 
     }
@@ -28,12 +30,12 @@ class CreateAccount extends React.Component {
         this.setState({email: event.target.value});
     }
 
-    handlePassword1InputChange(event) {
-        this.setState({pw1: event.target.value});
+    handlePasswordInputChange(event) {
+        this.setState({password: event.target.value});
     }
 
-    handlePassword2InputChange(event) {
-        this.setState({pw2: event.target.value});
+    handlePasswordConfInputChange(event) {
+        this.setState({passwordConf: event.target.value});
     }
 
     handleSubmit(event) {
@@ -42,22 +44,31 @@ class CreateAccount extends React.Component {
         //     console.log(event.target);
         //     const ainfo =2;
         // }
-        console.log(event.target);
+        console.log("handleSubmit");
+        // var result = register({username: this.state.email, password: this.state.password});
+        var result = registerAccount({username: this.state.email, password: this.state.password});
+        console.log(result);
     }
 
     render() {
+        // alert('testing!');
         return (
             <div className='rows' style={{textAlign:"center", marginTop:40}} >
                 <p> Please enter your details below to create a new account! </p>
                 {/*works if you wanna send directly. otherwise handler, pull from state -is this safe?. action={"/register"} method="post" // onSubmit={this.handleSubmit} --- so right now not using the server/index methods */}
-                <form action={configData.backend_url + "/register"} method="post" >
+                {/*<form action={configData.backend_url + "/register"} method="post" style={{width: "400px",*/}
+                    {/*margin: "4em auto",*/}
+                    {/*padding: "3em 2em 2em 2em",*/}
+                    {/*background: "#fafafa",*/}
+                    {/*border: "1px solid #ebebeb",*/}
+                    {/*boxShadow: "rgba(0,0,0,0.14902) 0px 1px 1px 0px,rgba(0,0,0,0.09804) 0px 1px 2px 0px"}} >*/}
                     <TextField
                         hintText="alice@investigator.com"
                         floatingLabelText="Enter your email address"
                         fullWidth={false}
-                        // value={this.state.email}
-                        style = {{width: 500, marginRight: 20}}
-                        // onChange={this.handleEmailInputChange}
+                        value={this.state.email}
+                        style = {{width: 380, marginRight: 20}}
+                        onChange={this.handleEmailInputChange}
                         type="text"
                         name={"username"}
                     />
@@ -66,9 +77,9 @@ class CreateAccount extends React.Component {
                         hintText="**********"
                         floatingLabelText="Enter a password"
                         fullWidth={false}
-                        // value={this.state.pw1}
-                        style = {{width: 500, marginRight: 20}}
-                        // onChange={this.handlePassword1InputChange}
+                        value={this.state.password}
+                        style = {{width: 380, marginRight: 20}}
+                        onChange={this.handlePasswordInputChange}
                         type={"password"}
                         name={"password"}
                     />
@@ -77,22 +88,22 @@ class CreateAccount extends React.Component {
                         hintText="**********"
                         floatingLabelText="Confirm password"
                         fullWidth={false}
-                        // value={this.state.pw2}
-                        style = {{width: 500, marginRight: 20}}
-                        // onChange={this.handlePassword2InputChange}
+                        value={this.state.passwordConf}
+                        style = {{width: 380, marginRight: 20}}
+                        onChange={this.handlePasswordConfInputChange}
                         type={"password"}
                         name={"password2"}
                     />
                     <br />
                     <RaisedButton
-                        style={{margin: 12} }
+                        style={{margin: 15} }
                         primary
-                        // onClick={this.handleSubmit}
+                        onClick={this.handleSubmit}
                         label="Create account"
                         type="submit"
                     />
                     <br />
-                </form>
+                {/*</form>*/}
                 <br />
             </div>
         )

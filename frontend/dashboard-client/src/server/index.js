@@ -1,9 +1,10 @@
 'use strict';
 import 'whatwg-fetch';
+import { configData } from '../config.js';
 
 var qs = require('qs');
 
-function authenticate(authInfo) {
+export function authenticate(authInfo) {
 	var url = configData.backend_url + '/login';
 	var options = {
 		method: 'POST',
@@ -30,7 +31,7 @@ function authenticate(authInfo) {
 	})
 }
 
-function register(authInfo) {
+export function register(authInfo) {
 	var url = configData.backend_url + '/register';
 	var options = {
 		method: 'POST',
@@ -42,16 +43,17 @@ function register(authInfo) {
             qs.stringify({
 			username: authInfo.username,
 			password: authInfo.password,
-			name: authInfo.name,
-			email: authInfo.email,
-			zip: authInfo.zip,
-			company: authInfo.company
+			// name: authInfo.name,
+			// email: authInfo.email,
+			// zip: authInfo.zip,
+			// company: authInfo.company
 		})
 	};
 	return new Promise(function(fulfill, reject) {
 		fetch(url, options)
 		.then(res => res.json())
 		.then(json => {
+		    console.log("hello NEVER HITS THIS LINE");
 			if (!json.login) {
 				reject('Error: could not authenticate');
 			}
@@ -63,7 +65,7 @@ function register(authInfo) {
 	})
 }
 
-function addLink(url, label, notes) {
+export function addLink(url, label, notes) {
 	var url = configData.backend_url + '/jobs';
 	var options = {
 		method: 'POST',
@@ -90,8 +92,8 @@ function addLink(url, label, notes) {
 }
 
 
-module.exports = {
-	authenticate,
-	register,
-	addLink
-}
+// module.exports = {
+// 	authenticate,
+// 	register,
+// 	addLink
+// }

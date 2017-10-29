@@ -28,6 +28,27 @@ db.on('error', console.error.bind(console, 'connection error:'));
 // Use environment defined port or 8000
 var port = process.env.PORT || 8000;
 
+////////////////////////////////////////////////////////////////////////////////
+// app.use(function(req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     next();
+// });
+app.use(function (req, res, next) {
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    // Pass to next layer of middleware
+    next();
+});
+////////////////////////////////////////////////////////////////////////////////
+
 app.use(require('express-session')({
     secret: configData.express_session_secret,
     resave: false,
@@ -42,6 +63,7 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+
 app.use(function(req, res, next) {
     res.locals.currentUser = req.user;
     next();
@@ -52,7 +74,7 @@ app.use(function(req, res, next) {
 //         failureRedirect: '/failed',
 //     }), function(req, res) {
 // });
-app.post('/login', function(req, res, next) {
+app.post('/api/login', function(req, res, next) {
     passport.authenticate('local', function(err, user, info) {
         if (err) { return next(err); }
         if (!user) {
@@ -60,44 +82,44 @@ app.post('/login', function(req, res, next) {
             return res.redirect(frontend_url + '/loginpage'); }
         req.logIn(user, function(err) {
             if (err) { return next(err); }
-            return res.redirect(frontend_url + '/links');
+            return res.redirect(frontend_url + '/');
+            // user assigned to req.user
         });
     })(req, res, next)
 });
 
-app.get('/loggedIn', function(req, res) {
-    res.send("Logged in successfully!")
-});
 
-
-app.get('/logout', function(req, res) { // no authentication here, just for testing
+app.get('/api/logout', function(req, res) {
     req.logout();
-    res.send('logged out');
+    return res.json({ success: true });
+    // res.send(res.json({success:true}));
 });
 
 
-app.post('/register', function(req, res) {
+app.post('/api/register', function(req, res) {
     var u = {};
     u.username = req.body.username;
     var newUser = new User(u);
+    console.log("LOGGER: received, attempting to register");
     User.register(newUser, req.body.password, function(err, user) {
         if (err) {
-            console.log(err);
-            // return res.send(err); // form post action - cannot receive response!
-            // implement custom function for this. error message should also be rendered by front-end.
-            res.send(err.name + ": " + err.message + "!");
+            console.log("LOGGER: first if: " + err);
+            res.send(err);
+        } else {
+            console.log("LOGGER: past first error if, proceeding to authenticate");
+            passport.authenticate('local'
+                // ,{
+                // successRedirect: frontend_url + '/lol',
+                // failureRedirect: '/failed',
+                // }
+            ) (req, res, function () {
+                console.log("LOGGER: account created");
+                console.log(req._passport.session);
+                console.log(user);
+                res.send('Account created; Log in successful');
+                // res.redirect(frontend_url + '/links');
+            });
         }
-        // passport.authenticate('local')(req, res, function() {
-        //     return res.redirect(frontend_url + '/links')
-        // });
-
-        passport.authenticate('local', {
-            successRedirect: frontend_url + '/links',
-            failureRedirect: '/failed',
-        })(req, res, function() {
-            res.send('Account created; Log in successful');
-            // res.redirect(frontend_url + '/links');
-        });
    });
 });
 
