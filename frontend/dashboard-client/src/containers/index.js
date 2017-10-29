@@ -1,32 +1,41 @@
 import React, {Component} from 'react';
-import { Provider } from 'react-redux';
+
 import './index.css';
-import Home from '../components/Home';
+
 import App from '../components/App';
-import SaveLinks from '../components/saveLinks';
-import ProjectList from '../components/projects/projectList';
-import PDFUploader from '../components/pdf_uploader/pdfUploader';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
+import Home from '../components/Home';
+import ProjectPage from '../components/ProjectPage/ProjectPage';
+import SourcePage from '../components/SourcePage/SourcePage'
+
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+
+import {BrowserRouter as Router, Route} from 'react-router-dom';
+import { Provider } from 'react-redux';
+
+// Color options: 45AD7C (darker green) or 4CBF88 (lighter green)
+const muiTheme = getMuiTheme({
+	palette: {
+		primary1Color: '#4CBF88',
+		accent1Color: '#2c98f0'
+	}
+});
 
 export default class Root extends Component {
 	render() {
 		return (
-			<MuiThemeProvider>
+			<MuiThemeProvider muiTheme={muiTheme}>
 				<Provider store={this.props.store}>
-				    <Router>
-				    	<div>
-				    		<App/>
-				    		<Route exact path="/" component={Home} />
-				    		<div className="Body">
-								<Route path="/links" component={SaveLinks}/>
-								<Route path="/projects" component={ProjectList}/>
-								<Route path="/pdf-uploader" component={PDFUploader}/>
-							</div>
+					<Router>
+						<div>
+							<App/>
+							<Route exact path="/" component={Home} />
+							<Route exact path="/project/:id" component={ProjectPage} />				    		
+							<Route path="/source/:id" component={SourcePage}/>
 						</div>
 					</Router>
 				</Provider>
 			</MuiThemeProvider>
 		);
-	}
+	};
 }
