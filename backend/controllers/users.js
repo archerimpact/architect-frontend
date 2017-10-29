@@ -11,6 +11,7 @@ var
     // configData = require('./config.js');
 
 exports.isAuthenticated = function(req, res, next) {
+    console.log(req.user);
     if (req.user) {
         // return next();
         return res.json({success: true});

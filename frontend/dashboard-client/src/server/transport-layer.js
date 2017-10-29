@@ -15,7 +15,6 @@ export const registerAccount = async (dataObj) => {
         "username": dataObj.username,
         "password": dataObj.password
     };
-    console.log("pre-sending");
     let responseData = await api_inst.post("/register", payload);
     console.log(responseData.data, "within transport-layer - registerAccount");
     return responseData.data.code;
@@ -33,6 +32,7 @@ export const authenticateAccount = async (dataObj) => {
 };
 
 export const isAuthenticated = async () => {
+    console.log("isAuthenticated - transport layer");
     let responseData = await api_inst.get('/checkauth');
     return responseData;
 };

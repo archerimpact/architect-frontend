@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
+class Home extends Component {
     render() {
         return (
             <div>
@@ -8,6 +9,7 @@ import { Link } from 'react-router-dom';
                <div className="App">
                     <h2>Your Investigation</h2>
                     <Link to="/links" style={{color: 'inherit' }}>View saved links</Link>
+                   wow some words
                 </div>
             </div>
         );

@@ -57,7 +57,6 @@ app.use(function (req, res, next) {
 //     resave: false,
 //     saveUninitialized: false
 // }));
-
 const sessionOptions = {
     resave: true,
     saveUninitialized: true,
@@ -67,7 +66,8 @@ const sessionOptions = {
     cookie: {
         httpOnly: true,
         secure: false,
-        maxAge: 60000
+        maxAge: 10080000, //7*24*60*1000, // note persistent vs session cookies
+        expires: new Date(new Date().getTime() + (1000*60*60*24*365*10)) // ~10y // I think only one of maxAge/expires considered
     },
     store: new MongoStore({
         url: configData.db_url,
