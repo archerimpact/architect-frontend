@@ -28,7 +28,7 @@ export const authenticateAccount = async (dataObj) => {
 
 export const isAuthenticated = async () => {
     let responseData = await api_inst.get('/checkauth');
-    return responseData;
+    return responseData.data;
 };
 
 export function isAuthedBool() {

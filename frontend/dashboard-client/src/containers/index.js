@@ -69,12 +69,12 @@ export default class Root extends Component {
             isAuthed: false
         }
     }
-    componentDidMount() {
+    componentWillMount() {
        var self = this;
        isAuthenticated().then(function(response) {
             self.setState({isAuthed: response.success});
             console.log("in comp will mount: "+ self.state.isAuthed);
-        }); // noooo would have to recall Decision route though..? 
+        }); // noooo would have to recall Decision route though..?
     }
 
     ///////
