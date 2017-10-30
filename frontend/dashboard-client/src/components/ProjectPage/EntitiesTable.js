@@ -11,7 +11,6 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/';
-import * as server from '../../server/';
 
 class EntitiesTable extends Component {
 	constructor(props) {

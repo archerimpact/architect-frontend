@@ -4,9 +4,6 @@ import '../App.css';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as actions from '../../actions/';
 import * as server from '../../server/';
 
 class EntityExtractor extends Component{

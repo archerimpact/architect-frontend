@@ -26,11 +26,7 @@ app.use(multer({
 
 const upload = multer({ storage: storage });
 
-<<<<<<< HEAD
 function saveDoc(text, name, entities) {  
-=======
-function saveDoc(text, name) {  
->>>>>>> c9ae09192669b08415a1dd8cd84165d8636a89a0
     var doc = {
         _id: new mongoose.Types.ObjectId,
         content: text,

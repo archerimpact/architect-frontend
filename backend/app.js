@@ -11,13 +11,10 @@ var express = require('express'),
     fs = require('fs'),
     PDFParser = require("pdf2json");
     
-<<<<<<< HEAD
-=======
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 //mongoose.connect('mongodb://angelina:archer3@ds115045.mlab.com:15045/uxreceiver');
->>>>>>> c9ae09192669b08415a1dd8cd84165d8636a89a0
 mongoose.connect('mongodb://michael:archer3@ds115045.mlab.com:15045/uxreceiver');
 
 var db = mongoose.connection;

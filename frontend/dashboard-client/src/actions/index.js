@@ -1,5 +1,5 @@
-import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES} from '../constants/actionTypes';
-import { ADD_LINK, USER_LOGOUT, STORE_PROJECTS} from '../constants/actionTypes';
+import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES, STORE_PROJECTS} from '../constants/actionTypes';
+
 import * as server_utils from '../server/utils';
 
 export function addLink(link) {

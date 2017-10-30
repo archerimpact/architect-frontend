@@ -5,7 +5,7 @@ WORKDIR /node
 
 ADD package.json /node
 ADD yarn.lock /node
-RUN yarn install >/dev/null 2>/dev/null
+RUN yarn install
 
 RUN yarn global add nodemon
 

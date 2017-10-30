@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-import { ADD_LINK, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES } from '../constants/actionTypes';
-=======
-import { ADD_LINK, STORE_PROJECTS } from '../constants/actionTypes';
->>>>>>> c9ae09192669b08415a1dd8cd84165d8636a89a0
+import { ADD_LINK, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES, STORE_PROJECTS } from '../constants/actionTypes';
+
 import initialState from './initialState';
 
 export default function (state = initialState, action) {
@@ -54,6 +51,7 @@ export default function (state = initialState, action) {
 					status: 'isLoaded',
 					entities: action.payload
 				},
+      }
 		case STORE_PROJECTS:
 			return {
 				...state,
