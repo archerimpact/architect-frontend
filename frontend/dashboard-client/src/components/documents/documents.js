@@ -34,10 +34,6 @@ class Documents extends Component {
 
     render() {
         var docs = [pdf_1, pdf_2, pdf_3];
-        console.log(pdf_1.filename);
-        console.log(pdf_1.name);
-        console.log(pdf_1.title);
-        console.log(pdf_1.src);
         return (
             <div className="sources">
                 <SearchSources />

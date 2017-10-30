@@ -74,7 +74,7 @@ class SearchSources extends Component {
         	<div className="search">
             <form onSubmit={this.searchSubmit}>
         		<TextField
-        			placeholder="Enter source search phrase"
+        			placeholder="Enter search phrase"
         			value={this.state.value}
         			onChange={this.searchPhrase}/>
         		<RaisedButton 
