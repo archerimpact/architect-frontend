@@ -25,4 +25,7 @@ export default {
 		{id: 0, title: 'Venezuela Sanctions 24 Aug 2017', owner: 'Anjali Banerjee', lastAction: 'No latest activity.', entities: [0, 1]},
 		{id: 1, title: 'Syria Archive Project', owner: 'Haley', lastAction: 'No latest activity.', entities: [0, 2]}
 	]
+	savedProjects: {
+		status: 'isLoading'
+	}
 }

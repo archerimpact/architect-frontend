@@ -16,7 +16,7 @@ class ProjectList extends Component {
 		this.projectList = this.projectList.bind(this);
 	}
 
-	addProject(freshProject) {
+  addProject(freshProject) {
 		var projects = this.state.projects;
 		var moreProjects = projects.concat(freshProject);
 		this.setState({projects: moreProjects});
@@ -35,21 +35,21 @@ class ProjectList extends Component {
 		return projectItems;
 	}
 
-    render() {
-        return (
-        	<div>
-                <h3>Projects</h3>
-                <Link to="/project/0" style={{color: 'inherit'}}>Go to Test Project</Link>
-                <p></p>  
-	        	<AddProject
-	        		submit={(freshProject)=>this.addProject(freshProject)}>
-	        	</AddProject>
-	        	<List className="list">
-	        		{this.projectList()}
-	        	</List>
-	        </div>
-        	);
-    }
+  render() {
+    return (
+    	<div>
+        <h3>Projects</h3>
+        <Link to="/project/0" style={{color: 'inherit'}}>Go to Test Project</Link>
+        <p></p>  
+      	<AddProject
+      		submit={(freshProject)=>this.addProject(freshProject)}>
+      	</AddProject>
+      	<List className="list">
+      		{this.projectList()}
+      	</List>
+      </div>
+    );
+  }
 }
 
 export default ProjectList

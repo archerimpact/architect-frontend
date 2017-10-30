@@ -18,8 +18,8 @@ class AddProject extends Component {
 
     projectSubmit(event) {
         this.props.submit(this.state.value);
-        event.preventDefault();
         this.setState({value: ''});
+        event.preventDefault();
     }
 
     render() {

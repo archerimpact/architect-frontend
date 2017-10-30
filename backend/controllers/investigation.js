@@ -26,7 +26,11 @@ app.use(multer({
 
 const upload = multer({ storage: storage });
 
+<<<<<<< HEAD
 function saveDoc(text, name, entities) {  
+=======
+function saveDoc(text, name) {  
+>>>>>>> c9ae09192669b08415a1dd8cd84165d8636a89a0
     var doc = {
         _id: new mongoose.Types.ObjectId,
         content: text,
@@ -142,4 +146,31 @@ app.get('/investigation/entities', function(req, res) {
         res.send(result);
     });
 })
+
+app.post('/investigation/project', function(req, res) {
+    var project = {
+        _id: new mongoose.Types.ObjectId,
+        name: req.body.name
+        //users: // Put in a fake one
+    };
+    var newProject = new Project(project);
+    newProject.save()
+        .then(item => {
+            res.send("New project saved");
+        })
+        .catch(err => {
+            res.status(400).send("Unable to save to database because: " + err);
+        })
+});
+
+app.get('/investigation/projectList', function(req, res) {
+    Project.find(function (err, projects) {
+        var names = [];
+        if (err) return console.error(err);
+        for (var i = 0; i < projects.length; i++) {
+            names = names.concat(projects[i].name)
+        }
+        res.send(names);
+    })
+});
 
