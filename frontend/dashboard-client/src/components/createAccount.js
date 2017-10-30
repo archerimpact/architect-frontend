@@ -1,13 +1,7 @@
 import React from 'react';
-
-// import './App.css';
-// import { connect } from 'react-redux';
-// import { bindActionCreators } from 'redux';
-// import * as actions from '../actions/';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import { register } from "../server/index";
-// var register = require('../server/index');
 import { registerAccount } from "../server/transport-layer";
 
 class CreateAccount extends React.Component {
@@ -41,8 +35,6 @@ class CreateAccount extends React.Component {
         console.log("createAccount - handleSubmit");
         // var result = register({username: this.state.email, password: this.state.password});
         var result = registerAccount({username: this.state.email, password: this.state.password});
-        console.log(result);
-
     }
 
     render() {
@@ -50,13 +42,12 @@ class CreateAccount extends React.Component {
         return (
             <div className='rows' style={{textAlign:"center", marginTop:40}} >
                 <p> Please enter your details below to create a new account. </p>
-                {/*works if you wanna send directly. otherwise handler, pull from state -is this safe?. action={"/register"} method="post" // onSubmit={this.handleSubmit} --- so right now not using the server/index methods */}
-                {/*<form action={configData.backend_url + "/register"} method="post" style={{width: "400px",*/}
-                    {/*margin: "4em auto",*/}
-                    {/*padding: "3em 2em 2em 2em",*/}
-                    {/*background: "#fafafa",*/}
-                    {/*border: "1px solid #ebebeb",*/}
-                    {/*boxShadow: "rgba(0,0,0,0.14902) 0px 1px 1px 0px,rgba(0,0,0,0.09804) 0px 1px 2px 0px"}} >*/}
+                    <div style={{width: "400px",
+                        margin: "4em auto",
+                        padding: "3em 2em 2em 2em",
+                        background: "#fafafa",
+                        border: "1px solid #ebebeb",
+                        boxShadow: "rgba(0,0,0,0.14902) 0px 1px 1px 0px,rgba(0,0,0,0.09804) 0px 1px 2px 0px"}} >
                     <TextField
                         hintText="alice@investigator.com"
                         floatingLabelText="Enter your email address"
@@ -98,7 +89,7 @@ class CreateAccount extends React.Component {
                         type="submit"
                     />
                     <br />
-                {/*</form>*/}
+                    </div>
                 <br />
             </div>
         )
@@ -106,18 +97,4 @@ class CreateAccount extends React.Component {
 }
 
 
-// function mapDispatchToProps(dispatch) {
-//     return {
-//         actions: bindActionCreators(actions, dispatch),
-//         dispatch: dispatch,
-//     };
-// }
-//
-// function mapStateToProps(state) {
-//     return {
-//         createAccount: state.data.createAccount,
-//     };
-// }
-
-// export default connect(mapStateToProps, mapDispatchToProps)(CreateAccount);
 export default CreateAccount;

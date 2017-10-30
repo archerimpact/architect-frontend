@@ -3,10 +3,8 @@ import { configData } from '../config.js';
 
 let api_inst = axios.create({
     baseURL: configData.backend_url,
-    timeout: 1000,
-    headers: {
-        // cookie: cookie,
-    },
+    timeout: 2000,
+    headers: {},
     withCredentials: true
 });
 
@@ -16,8 +14,7 @@ export const registerAccount = async (dataObj) => {
         "password": dataObj.password
     };
     let responseData = await api_inst.post("/register", payload);
-    console.log(responseData.data, "within transport-layer - registerAccount");
-    return responseData.data.code;
+    return responseData.data;
 };
 
 export const authenticateAccount = async (dataObj) => {
@@ -25,25 +22,29 @@ export const authenticateAccount = async (dataObj) => {
         "username": dataObj.username,
         "password": dataObj.password
     };
-    console.log("pre-sending");
     let responseData = await api_inst.post("/login", payload);
-    console.log(responseData.data, "within transport-layer - authenticateAccount");
-    return responseData.data.code;
+    return responseData.data;
 };
 
 export const isAuthenticated = async () => {
-    console.log("isAuthenticated - transport layer");
     let responseData = await api_inst.get('/checkauth');
-    // return false; // EVEN SETTING THIS DOESN'T WORK!!!
-    return responseData.success;
+    return responseData;
 };
+
+export function isAuthedBool() {
+    isAuthenticated().then(function(response) {
+        return response.data.success;
+    }).catch(function(err) {
+        return err;
+    })
+}
 
 export const logoutAccount = async () => {
     let responseData = await api_inst.get('/logout');
     return responseData;
-}
+};
 
 export const testPost = async () => {
     let responseData = await api_inst.post('/testpost');
     return responseData;
-}
+};

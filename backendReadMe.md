@@ -1,5 +1,5 @@
-### Posting to a model in Mongo:
-# In app.js:
+## Posting to a model in Mongo:
+### In app.js:
 app.post('/squirrels', function(req, res) {
     var req_pretty = JSON.stringify(req.body, null, 2);
     // data = {};
@@ -34,7 +34,7 @@ app.post('/findsquirrel', function (req, res) {
 
 ---
 
-# In models/squirrel.js:
+### In models/squirrel.js:
 var mongoose = require('mongoose');
 
 var SquirrelSchema = new mongoose.Schema({
@@ -49,5 +49,25 @@ module.exports = mongoose.model('Squirrel', SquirrelSchema);
 
 ---
 ---
-
-
+## Checking user authentication:
+app.post('/api/testpost', users_controller.isAuthenticated, function(req, res) {
+    // INCREMENT USER TEST_COUNT FIELD
+    var query = {'username': req.user.username};
+    var newData = {test_count: "lol"};
+    // User.findOneAndUpdate(query, newData, function(err, doc){
+    //     if (err) return res.send(500, { error: err });
+    //     return res.send("succesfully saved");
+    // })
+    User.findOneAndUpdate(query, {$inc: {test_count: 1}}, function(err, doc){
+        if (err) return res.send(500, { error: err });
+        return res.json({success: true});
+    })
+});
+---
+can do: 
+passport.authenticate('local'
+                        // ,{
+                        // successRedirect: frontend_url + '/lol',
+                        // failureRedirect: '/failed',
+                        // }
+                    ) (req, res, function ()

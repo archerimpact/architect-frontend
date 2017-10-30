@@ -13,8 +13,6 @@ var express = require('express'),
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-const frontend_url = configData.frontend_url;
-
 const db_url = configData.db_url;
 mongoose.Promise = Promise;
 const db_options = {
@@ -31,12 +29,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 // Use environment defined port or 8000
 var port = process.env.PORT || 8000;
 
-////////////////////////////////////////////////////////////////////////////////
-// app.use(function(req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//     next();
-// });
+//////////// Setting Headers (CORS) ////////////
 app.use(function (req, res, next) {
     // Website you wish to allow to connect
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
@@ -50,13 +43,8 @@ app.use(function (req, res, next) {
     // Pass to next layer of middleware
     next();
 });
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////
 
-// app.use(require('express-session')({
-//     secret: configData.express_session_secret,
-//     resave: false,
-//     saveUninitialized: false
-// }));
 const sessionOptions = {
     resave: true,
     saveUninitialized: true,
@@ -66,8 +54,8 @@ const sessionOptions = {
     cookie: {
         httpOnly: true,
         secure: false,
-        maxAge: 10080000, //7*24*60*1000, // note persistent vs session cookies
-        expires: new Date(new Date().getTime() + (1000*60*60*24*365*10)) // ~10y // I think only one of maxAge/expires considered
+        maxAge: 10080000, // 1000*60*24*7 // Note persistent vs session cookies
+        expires: new Date(new Date().getTime() + (1000*60*60*24*30)) // 30 days
     },
     store: new MongoStore({
         url: configData.db_url,
@@ -89,27 +77,13 @@ app.use(function(req, res, next) {
     next();
 });
 
+//////////// USERS_CONTROLLER ROUTES ////////////
 app.post('/api/login', users_controller.login);
 app.get('/api/logout', users_controller.logout);
 app.post('/api/register', users_controller.register);
+app.get('/api/checkauth', users_controller.isAuthenticated, users_controller.checkAuth);
+/////////////////////////////////////////////////
 
-app.get('/api/checkauth', users_controller.isAuthenticated, function(req, res) {
-    return res.status(200).json({success: true, message: 'User authenticated'});
-});
-
-app.post('/api/testpost', users_controller.isAuthenticated, function(req, res) {
-    // INCREMENT USER TEST_COUNT FIELD
-    var query = {'username': req.user.username};
-    var newData = {test_count: "lol"};
-    // User.findOneAndUpdate(query, newData, function(err, doc){
-    //     if (err) return res.send(500, { error: err });
-    //     return res.send("succesfully saved");
-    // })
-    User.findOneAndUpdate(query, {$inc: {test_count: 1}}, function(err, doc){
-        if (err) return res.send(500, { error: err });
-        return res.json({success: true});
-    })
-});
 
 app.get('*', function(req, res) {
     res.status(404).send('Not found');

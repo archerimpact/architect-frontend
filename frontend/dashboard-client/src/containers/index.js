@@ -9,8 +9,7 @@ import {Redirect} from 'react-router'; //ADDED THIS FOR AUTH ATTEMPT
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CreateAccount from '../components/createAccount';
 import LoginPage from '../components/loginPage';
-// import EnsureLoggedInContainer from '../containers/ensureLoggedInContainer';
-import {isAuthenticated} from "../server/transport-layer";
+import {isAuthedBool, isAuthenticated} from "../server/transport-layer";
 import {TestPage} from "../components/testPage";
 
 // const requireAuth = (nextState, replace, callback) => {
@@ -29,22 +28,55 @@ import {TestPage} from "../components/testPage";
 // note onEnter, browserHistory do not exist in RR4.
 
 
-const DecisionRoute = ({ trueComponent, falseComponent, decisionFunc, ...rest }) => {
-    return (
-        <Route
-            {...rest}
-
-            render={
-                decisionFunc()
-                    ? trueComponent
-                    : falseComponent
-            }
-        />
-    )
+// const DecisionRoute = ({ trueComponent, falseComponent, decisionFunc, ...rest }) => {
+//     return (
+//         <Route
+//             {...rest}
+//
+//             render={
+//                 decisionFunc()
+//                     ? trueComponent
+//                     : falseComponent
+//             }
+//         />
+//     )
+// };
+//
+const DecisionRoute = ({ trueComponent, decisionFunc, ...rest }) => {
+    console.log(trueComponent); // think may be async probs
+    decisionFunc().then(function(response) { // should i be returning this too??? but not async then
+        return (
+            <Route
+                {...rest}
+                render={
+                    response
+                        ? trueComponent
+                        : redirectLogin // vs LoginPage
+                }
+                />
+        )
+    });
+    // return (
+    //     <Route
+    //         {...rest}
+    //         render={
+    //             decisionFunc().then(function(response) {
+    //                 if (response) {
+    //                     return trueComponent;
+    //                 }
+    //                 return redirectLogin;
+    //             })
+    //              // decisionFunc()
+    //              //     ? trueComponent
+    //              //     : redirectLogin
+    //          }
+    //     />
+    // )
 };
 
+
 const redirectCreateAccount = props => <Redirect to={'/createaccount'} />;
-const redirectLogin = props => <Redirect to={'/loginpage'} />;
+const redirectLogin = props => <Redirect to={'/login'} />;
 
 
 export default class Root extends Component {
@@ -66,17 +98,16 @@ export default class Root extends Component {
 
 				    		<div className="Body">
                                 <Route exact path="/createaccount" component={CreateAccount} />
-                                <Route exact path="/loginpage" component={LoginPage} />
+                                <Route exact path="/login" component={LoginPage} />
                                 <Route exact path="/testpage" component={TestPage} />
 
                                 {/*<Route component={EnsureLoggedInContainer} >*/}
-                                    {/*<Route path="/links" component={SaveLinks} />*/}
+                                    <Route path="/links" component={SaveLinks} />
                                 {/*</Route>*/}
-                                {/*<DecisionRoute path="/links" exact={true}*/}
-                                               {/*trueComponent={redirectCreateAccount}*/}
-                                               {/*falseComponent={redirectLogin}*/}
-                                               {/*decisionFunc={isAuthenticated}*/}
-                                {/*/>*/}
+                                <DecisionRoute path="/links" exact={true}
+                                               trueComponent={redirectCreateAccount}
+                                               decisionFunc={isAuthenticated} // ()=>isAuthedBool
+                                />
 							</div>
 						</div>
 					</Router>

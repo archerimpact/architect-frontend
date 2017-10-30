@@ -1,20 +1,21 @@
 import React from 'react';
-import { configData } from '../config.js';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import { authenticate } from "../server/index";
-import {authenticateAccount, logoutAccount, testPost} from "../server/transport-layer";
+import {authenticateAccount, isAuthenticated, logoutAccount, testPost} from "../server/transport-layer";
 
 export class TestPage extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {status: 'a'};
+        this.state = {status: false};
         this.handleClick = this.handleClick.bind(this);
     }
 
     handleClick(event) {
-        // post to server. server func checks auth then executes.
-        this.setState({status: testPost().status})
+        var self = this;
+        testPost().then(function(response) {
+            self.setState({status: response.data.success})
+        })
     }
 
     handleLogout(event) {
@@ -22,20 +23,18 @@ export class TestPage extends React.Component {
         console.log("logged out")
     }
 
-
     render() {
         return (
             <div>
                 <p>ey whaddup</p>
                 <RaisedButton
-                    style={{margin: 15} }
+                    style={{margin: 15}}
                     primary
                     onClick={this.handleClick}
                     label="Number of times you've ever clicked this button "
                     type="button"
                 />
-                <p>the value is {this.state.status}</p>
-
+                <p>the value is {this.state.status.toString()}</p>
 
                 <RaisedButton
                     style={{margin: 15} }
