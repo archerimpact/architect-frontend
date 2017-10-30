@@ -35,21 +35,43 @@ class ProjectList extends Component {
 		return projectItems;
 	}
 
-  render() {
-    return (
-    	<div>
-        <h3>Projects</h3>
-        <Link to="/project/0" style={{color: 'inherit'}}>Go to Test Project</Link>
-        <p></p>  
-      	<AddProject
-      		submit={(freshProject)=>this.addProject(freshProject)}>
-      	</AddProject>
-      	<List className="list">
-      		{this.projectList()}
-      	</List>
-      </div>
-    );
-  }
+    render() {
+    	if (this.props.status === 'isLoading') {
+    		return (<div className="projects">
+    					<p> Loading ... </p>
+    				</div>
+    			);
+    	} else {
+    		return (
+	        	<div className="projects">
+		        	<List className="list">
+		        		{this.projectList(this.props.projects)}
+		        	</List>
+		        	<AddProject submit={(freshProject)=>this.addProject(freshProject)}>
+		        	</AddProject>
+	        	</div>
+	        	);
+    	} 
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(actions, dispatch)
+    };
+}
+
+function mapStateToProps(state) {
+	if (state.data.savedProjects.status === 'isLoading') {
+		return {
+			status: state.data.savedProjects.status,
+	    };
+	} else {
+	    return {
+			status: state.data.savedProjects.status,
+	        projects: state.data.savedProjects.projects,
+	    };
+	}
 }
 
 export default ProjectList
