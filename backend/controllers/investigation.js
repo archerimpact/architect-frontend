@@ -130,7 +130,7 @@ app.get('/investigation/projectList', function(req, res) {
 });
 
 app.post('/investigation/searchSources', function(req, res) {
-    var phrase = req.body.phrase
+    var phrase = req.body.phrase;
     vertex.Vertex.find()
     .populate({
         path: 'source',
