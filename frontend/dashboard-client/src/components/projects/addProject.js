@@ -37,7 +37,6 @@ class AddProject extends Component {
                     New Project
                 </RaisedButton>
         	</form>
-            <p>{this.props.name}</p>
             </div>
         );
     }

@@ -76,7 +76,6 @@ function saveDoc(text, name) {
 app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
     try {
         // TODO: save to google cloud here
-
         var name = req.file.originalname;
         let text_dest = "./files/" + name.substring(0, name.length - 4) + ".txt";
         let pdf_dest = "./files/" + name;
@@ -130,3 +129,28 @@ app.get('/investigation/projectList', function(req, res) {
     })
 });
 
+app.post('/investigation/searchSources', function(req, res) {
+    var phrase = req.body.phrase
+    vertex.Vertex.find()
+    .populate({
+        path: 'source',
+        populate: {
+            path: 'source',
+            model: 'Document'
+        }
+    })
+    //.populate("source.source")
+    .exec(function (err, vertices) {
+        var found = [];
+        if (err) return console.error(err);
+        for (var i = 0; i < vertices.length; i++) {
+            if (vertices[i].source.source.content.search(phrase) != -1) {
+                found = found.concat(vertices[i].name)
+            }
+            //console.log(vertices[i])
+            //console.log(vertices[i].source)
+            //names = names.concat(projects[i].name)
+        }
+        res.send(found);
+    })
+});

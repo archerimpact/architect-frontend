@@ -12,7 +12,12 @@ body {
 
 .docCard {
 	position: relative;
-	margin-top: 150px;
+	margin-top: 100px;
 	margin-left: 20px;
 	margin-right: 20px;	
+}
+
+.search {
+	margin-top: 20px;
+	text-align: center;
 }
