@@ -1,21 +1,43 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+
+import './App.css'
+
+import ProjectList from './projects/projectList.js';
+import EntitiesTable from './ProjectPage/EntitiesTable';
+import SourcesTable from './SourcesTable';
+import PDFUploader from './pdf_uploader/pdfUploader';
+
+import Paper from 'material-ui/Paper'
+import {Tabs, Tab} from 'material-ui/Tabs';
+
+const tab_style = {
+	backgroundColor: '#fafafa',
+	color:'#747474'
+};
+
 class Home extends Component {
-    render() {
-        return (
-            <div>
-                <p style={{ margin: '20px'}}> Michael Murphy </p>
-               <div className="App">
-                    <h2>Your Investigation</h2>
-                    <Link to="/links" style={{color: 'inherit' }}>View saved links</Link>
-                    <p></p>
-                    <Link to="/projects" style={{color: 'inherit' }}>View projects</Link>
-                    <p></p>
-                    <Link to="/pdf-uploader" style={{color: 'inherit' }}>Upload a pdf</Link>
-                </div>
-            </div>
-        );
-    }
+	render() {
+		return (
+			<div style={{height:'100%'}}>
+				<div className="app">
+					<div className="summary">
+						<h1>Homepage</h1>         
+					</div>
+					<div className="tabs" style={{width:'100%', margin:'0 auto'}}>
+						<Tabs >
+							<Tab label="Projects" type="default" style={tab_style}>
+								<div className="column">
+									<Paper className="projects">
+										<ProjectList/>
+									</Paper>
+								</div>
+							</Tab>
+						</Tabs>
+					</div>
+				</div>
+			</div>
+		);
+	};
 }
- 
-export default Home
+
+export default Home;
