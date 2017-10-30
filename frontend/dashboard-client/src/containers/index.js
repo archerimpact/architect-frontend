@@ -27,59 +27,58 @@ import {TestPage} from "../components/testPage";
 // };
 // note onEnter, browserHistory do not exist in RR4.
 
+const DecisionRoute = ({self, trueComponent, decisionFunc, ...rest }) => {
+    // it doesn't like that async..
+    console.log("in decision route: " + self.state.isAuthed);
+    return (
+        <Route
+            {...rest}
+            render={
+                self.state.isAuthed // THIS WORKS FINE!!!! - problem with async call
+                    ? trueComponent
+                    : redirectLogin
+            }
+        />
+    )};
 
-// const DecisionRoute = ({ trueComponent, falseComponent, decisionFunc, ...rest }) => {
-//     return (
-//         <Route
-//             {...rest}
-//
-//             render={
-//                 decisionFunc()
-//                     ? trueComponent
-//                     : falseComponent
-//             }
-//         />
-//     )
+// const DecisionRoute = ({ trueComponent, decisionFunc, ...rest }) => {
+//     console.log(trueComponent); // think may be async probs
+//     decisionFunc().then(function(response) { // should i be returning this too??? but not async then
+//         return (
+//             <Route
+//                 {...rest}
+//                 render={
+//                     response
+//                         ? trueComponent
+//                         : redirectLogin // vs LoginPage
+//                 }
+//                 />
+//         )
+//     });
 // };
-//
-const DecisionRoute = ({ trueComponent, decisionFunc, ...rest }) => {
-    console.log(trueComponent); // think may be async probs
-    decisionFunc().then(function(response) { // should i be returning this too??? but not async then
-        return (
-            <Route
-                {...rest}
-                render={
-                    response
-                        ? trueComponent
-                        : redirectLogin // vs LoginPage
-                }
-                />
-        )
-    });
-    // return (
-    //     <Route
-    //         {...rest}
-    //         render={
-    //             decisionFunc().then(function(response) {
-    //                 if (response) {
-    //                     return trueComponent;
-    //                 }
-    //                 return redirectLogin;
-    //             })
-    //              // decisionFunc()
-    //              //     ? trueComponent
-    //              //     : redirectLogin
-    //          }
-    //     />
-    // )
-};
-
 
 const redirectCreateAccount = props => <Redirect to={'/createaccount'} />;
 const redirectLogin = props => <Redirect to={'/login'} />;
 
 
 export default class Root extends Component {
+    ////// adding for auth reasons
+    constructor(props) {
+        super(props);
+        this.state = {
+            isAuthed: false
+        }
+    }
+    componentDidMount() {
+       var self = this;
+       isAuthenticated().then(function(response) {
+            self.setState({isAuthed: response.success});
+            console.log("in comp will mount: "+ self.state.isAuthed);
+        }); // noooo would have to recall Decision route though..? 
+    }
+
+    ///////
+
     render() {
 		return (
 			<MuiThemeProvider>
@@ -106,7 +105,8 @@ export default class Root extends Component {
                                 {/*</Route>*/}
                                 <DecisionRoute path="/links" exact={true}
                                                trueComponent={redirectCreateAccount}
-                                               decisionFunc={isAuthenticated} // ()=>isAuthedBool
+                                               decisionFunc={isAuthenticated}// ()=>isAuthedBool
+                                                self={this}
                                 />
 							</div>
 						</div>
