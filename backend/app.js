@@ -11,7 +11,6 @@ var express = require('express'),
     fs = require('fs'),
     PDFParser = require("pdf2json");
 
-    
 mongoose.connect('mongodb://michael:archer3@ds115045.mlab.com:15045/uxreceiver');
 
 var db = mongoose.connection;

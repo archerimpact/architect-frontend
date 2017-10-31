@@ -2,14 +2,10 @@ import React, { Component } from 'react';
 
 import './style.css'
 
-// import EntitiesTab from '../../containers/EntityTab/entityTab_unused.js';
-
 import EntitiesTab from '../../containers/EntityTab';
-
 import EntityExtractor from '../../components/EntityExtractor/';
 import NodeGraph from '../../components/NodeGraph';
 import SourcesTab from '../../containers/SourcesTab';
-
 import PDFUploader from '../../components/PDFUploader';
 import AddEntity from '../../components/Entity/AddEntity';
 
@@ -33,9 +29,11 @@ class ProjectPage extends Component {
 	componentDidMount = () => {
 		server.loadEntities()
 			.then((data) => {
-				this.props.dispatch(actions.addEntities(data.entities))
-				this.props.dispatch(actions.addSources(data.documents))
-			}).catch((err) => console.log("There was an error: " + err))
+				debugger
+				this.props.dispatch(actions.addEntities(data.entities));
+				this.props.dispatch(actions.addSources(data.documents));
+			}).catch((err) => {debugger 
+				console.log("There was an error: " + err)})
 	};
 
 	render() {
