@@ -5,7 +5,7 @@ class EntitiesList extends Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			entities: this.getEntityListSortedBy(props.sortBy)
+			entities: this.props.entities
 		}
 		this.getEntityListSortedBy = this.getEntityListSortedBy.bind(this)
 		this.getEntitySort = this.getEntitySort.bind(this)
@@ -23,8 +23,38 @@ class EntitiesList extends Component {
 
 		}
 	}
+
+	// var sorters = {
+	//     byWeight : function(a,b) {
+	//         return (a.weight - b.weight);
+	//     },
+	//     bySpeed : function(a,b) {
+	//         return (a.topSpeed - b.topSpeed);
+	//     },
+	//     byPrice : function(a,b) {
+	//         return (a.price - b.price);
+	//     },
+	//     byModelName : function(a,b) {
+	//         return ((a.model < b.model) ? -1 : ((a.model > b.model) ? 1 : 0));
+	//     },
+	//     byMake : function(a,b) {
+	//         return ((a.make < b.make) ? -1 : ((a.make > b.make) ? 1 : 0));
+	//     }
+	// };
 	getEntitySort(a, b) {
-		return a-b
+		debugger
+		switch(this.props.sortBy.by) {
+			case 'dateAdded':
+				return a-b;
+			case 'type':
+				return ((a.type < b.type) ? -1 : ((a.type > b.type) ? 1 : 0));	
+			case 'source':
+				return a-b;
+			case 'name':
+				return ((a.name < b.name) ? -1 : ((a.name > b.name) ? 1 : 0));	
+			default :
+				return a-b
+		}
 	}
 		
 

@@ -6,6 +6,8 @@ import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import AutoComplete from 'material-ui/AutoComplete';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
 
 import { connect } from 'react-redux';
 import EntitiesList from '../../components/Entity/'
@@ -16,13 +18,14 @@ class EntitiesTab extends Component {
 		this.state = {
 			drawerOpen: false,
 			currentEntity: null,
-			entitySort: {by: 'DateAdded', type: null},
+			entitySort: {by: 'dateAdded', type: null},
 			queryEntity: null
 		};
 		this.getEntitySource = this.getEntitySource.bind(this);
 		this.openEntityDrawer = this.openEntityDrawer.bind(this);
 		this.closeEntityDrawer = this.closeEntityDrawer.bind(this);
 		this.handleEntitySearch = this.handleEntitySearch.bind(this);
+		this.handleChangeSort = this.handleChangeSort.bind(this);
 	};
 
 	getEntitySource(entity) {
@@ -76,6 +79,12 @@ class EntitiesTab extends Component {
 		});
 	};
 
+	handleChangeSort(event, index, value) {
+		this.setState({
+			entitySort: {by: value, type: null},
+		})
+	}
+
 	render() {
 		if (this.props.status === 'isLoding') {
     		return (<div className="projects">
@@ -95,12 +104,22 @@ class EntitiesTab extends Component {
 			        </Drawer>
 			        <div>
 			        	<AutoComplete
-								floatingLabelText="Search for entity"
-								hintText="e.g. Person"
-								dataSource={this.props.entities}
-								onUpdateInput={this.handleEntitySearch}
-								style={{width: 250, marginRight: 20}}
-							/>
+							floatingLabelText="Search for entity name"
+							hintText="e.g. Person"
+							dataSource={this.props.entities}
+							onUpdateInput={this.handleEntitySearch}
+							style={{width: 250, marginRight: 20}}
+						/>
+						<SelectField
+				        	floatingLabelText="Sort By"
+				        	value={this.state.entitySort.by}
+				        	onChange={this.handleChangeSort}
+				        >
+							<MenuItem value={'name'} primaryText="Name" />
+							<MenuItem value={'type'} primaryText="Type" />
+							<MenuItem value={'source'} primaryText="Source" />
+							<MenuItem value={'dateAdded'} primaryText="Date Added" />
+				        </SelectField>
 			        	<EntitiesList entities={this.props.entities} searchTerm={this.state.queryEntity} sortBy={this.state.entitySort} getSource={this.getEntitySource} onEntityClick={this.openEntityDrawer}/>
 			        </div>
 				</div>
