@@ -91,7 +91,7 @@ function addLink(url, label, notes) {
 */
 
 export function submitText(title, text) {
-	var url ='http://localhost:8000/entities';
+	var url ='http://localhost:8000/investigation/entities';
 	var options = {
 		method: 'POST',
 		headers: {
@@ -115,7 +115,7 @@ export function submitText(title, text) {
 export function loadEntities() {
 	/* Gets all entities related to a project. Server returns an object of objects containing all notes. */
 
-	var url ='http://localhost:8000/entities';
+	var url ='http://localhost:8000/investigation/entities';
 	var options = {
 		method: 'GET',
 		headers: {
@@ -139,6 +139,7 @@ export function loadEntities() {
 	return new Promise(function(fulfill, reject) {
 		fetch(url, options)
 		.then(res => {
+      console.log("reached response")
 			return res.json();
 		})
 		.then(json => {
