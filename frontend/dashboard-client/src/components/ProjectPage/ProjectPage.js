@@ -26,20 +26,16 @@ const tab_style = {
 
 class ProjectPage extends Component {
 	componentDidMount = () => {
-    /*server.getProject(this.props.match.params.id)
-      .then((data) => {
-        this.setState({
-          project: data
-        })
-      }).catch((err) => console.log(err));*/
+    this.props.actions.getProject(this.props.match.params.id)
+    this.props.actions.getProjectEntities(this.props.match.params.id)
 		server.loadEntities()
 			.then((data) => {
-				this.props.dispatch(actions.addEntities(data.entities))
 				this.props.dispatch(actions.addSources(data.documents))
 			}).catch((err) => console.log("There was an error: " + err))
 	};
 
 	render() {
+    debugger
     if (this.props.status === 'isLoading') {
       return (<div className="projects">
             <p> Loading ... </p>
@@ -69,7 +65,7 @@ class ProjectPage extends Component {
   						<Tab label="Workspace" type="default" style={tab_style}>
   							<div className="graph-canvas">
   								<Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
-  									<NodeGraph entities={this.props.currentProject.entities} sources={[]}/>
+  									<NodeGraph entities={this.props.savedEntities.entities} sources={[]}/>
   								</Paper>
                   <Paper style={{position: "absolute"}}>
                     <div className="text-container">
@@ -79,10 +75,10 @@ class ProjectPage extends Component {
                   </Paper>
   							</div>
   						</Tab>
-  						<Tab label={"Entities (" + this.props.currentProject.entities.length + ")"} style={tab_style}>
+  						<Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={tab_style}>
   							<div className="column">
   								<Paper className="projects">
-  									<EntitiesTable entities={this.props.currentProject.entities}/>
+  									<EntitiesTable entities={this.props.savedEntities.entities}/>
   								</Paper>
   							</div>
   						</Tab>
@@ -110,17 +106,17 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, props) {
-  if (state.data.savedProjects.status === 'isLoading') {
+  if (state.data.savedEntities.status === 'isLoading' || state.data.savedSources.status === 'isLoading') {
     return {
-      status: state.data.savedProjects.status,
+      status: 'isLoading',
     }
   } else {
     return {
-      status: state.data.savedProjects.status,
+      status: 'isLoaded',
       savedEntities: state.data.savedEntities,
       projects: state.data.projects,
       savedSources: state.data.savedSources,
-      currentProject: state.data.savedProjects.projects.find(function (obj) {return obj._id=== props.match.params.id})
+      currentProject: state.data.currentProject
     }
   }
 }

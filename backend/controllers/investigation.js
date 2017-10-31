@@ -214,6 +214,28 @@ app.get('/investigation/projectList', function(req, res) {
     }) */
 });
 
+app.get('/investigation/project', function(req, res) {
+  console.log("here's req params: ", req.query)
+  var projectid = req.query.project
+  console.log("here's your projectid: " + projectid + " and its type: " + typeof(mongoose.Types.ObjectId(projectid)))
+  db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray(function(err, result) {
+    res.send(result)
+  })
+})
+
+app.get('/investigation/project/entities', function(req, res) {
+  console.log("here's req params: ", req.query)
+  var projectid = req.query.project
+  console.log("here's your projectid: " + projectid + " and its type: " + typeof(mongoose.Types.ObjectId(projectid)))
+  db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray(function(err, results) {
+    console.log("here are the results: ", results)
+    db.collection('vertexes').find({_id: {$in: results[0].entities}}).toArray(function(err, result) {
+      console.log("here's your entity: ", result)
+      res.send(result)
+    });
+  })
+})
+
 app.post('/investigation/entity', function(req, res){
     var sources = []
     var entityid = saveEntity(req.body.name, req.body.type, sources)

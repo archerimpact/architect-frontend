@@ -1,6 +1,7 @@
-import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES, STORE_PROJECTS} from '../constants/actionTypes';
+import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES, STORE_PROJECTS, CURRENT_PROJECT} from '../constants/actionTypes';
 
 import * as server_utils from '../server/utils';
+import * as server from '../server';
 
 export function addLink(link) {
 	return {
@@ -83,6 +84,38 @@ export function retrieveDetails(actionType, res) {
 // 			})
 // 	}
 // }
+
+export function getProjectEntities(projectid) {
+  return function (dispatch, getState) {
+    return server.getProjectEntities(projectid)
+      .then(entities => {
+        debugger
+        dispatch(addEntities(entities))
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+}
+
+export function getProject(projectid) {
+  return function(dispatch, getState) {
+    return server.getProject(projectid)
+      .then(project => {
+        dispatch(setCurrentProject(project[0]))
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+}
+
+export function setCurrentProject(project) {
+  return{
+    type: CURRENT_PROJECT,
+    payload: project
+  }
+}
 
 export function fetchProjects() {
 	return function (dispatch, getState) {

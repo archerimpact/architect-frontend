@@ -28,5 +28,6 @@ export default {
 	savedProjects: {
 		status: 'isLoading',
     projects: []
-	}
+	},
+  currentProject: {name: "Sample"}
 }

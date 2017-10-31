@@ -1,4 +1,4 @@
-import { ADD_LINK, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES, STORE_PROJECTS } from '../constants/actionTypes';
+import { ADD_LINK, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES, STORE_PROJECTS, CURRENT_PROJECT } from '../constants/actionTypes';
 
 import initialState from './initialState';
 
@@ -61,6 +61,11 @@ export default function (state = initialState, action) {
 					projects: action.payload
 				}
 			}
+    case CURRENT_PROJECT:
+      return {
+        ...state,
+        currentProject: action.payload
+      }
 		default:
 			return state;
 	}
