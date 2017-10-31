@@ -29,11 +29,9 @@ class ProjectPage extends Component {
 	componentDidMount = () => {
 		server.loadEntities()
 			.then((data) => {
-				debugger
 				this.props.dispatch(actions.addEntities(data.entities));
 				this.props.dispatch(actions.addSources(data.documents));
-			}).catch((err) => {debugger 
-				console.log("There was an error: " + err)})
+			}).catch((err) => console.log("There was an error: " + err))
 	};
 
 	render() {
