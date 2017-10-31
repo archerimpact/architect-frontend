@@ -15,7 +15,7 @@ class Source extends Component {
 	render() {
 		return (
 			<Paper style={container_style} zDepth={3}>
-				<img src='http://www.webdomain.com.hk/gif/sampledoc/comhk.gif' style={{width: "90%"}}/>
+				<img alt='Source' src='http://www.webdomain.com.hk/gif/sampledoc/comhk.gif' style={{width: "90%"}}/>
 			</Paper>
 		);
 	};

@@ -1,12 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
+
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import TextField from 'material-ui/TextField';
@@ -14,8 +7,6 @@ import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-
 import EntitiesList from '../../components/Entity/'
 
 class EntitiesTab extends Component {
@@ -38,7 +29,7 @@ class EntitiesTab extends Component {
 			return source.content;
 		} else {
 			return "";
-		};
+		}
 	};
 
 	//called from entity with this.props.onEntityClick(entity)

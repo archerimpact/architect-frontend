@@ -10,10 +10,10 @@ class EntitiesList extends Component {
 						<div className="entityList">
 							<EntityCard onEntityClick={this.props.onEntityClick} entity={entity} getSource={this.props.getSource}/>
 						</div>
-					)
+					);
 				})}
 			</div>
-		)
+		);
 	}
 }
 export default EntitiesList

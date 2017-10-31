@@ -54,7 +54,7 @@ class NodeGraph extends Component {
 			return document.entities.map((entity) => {
 				return {"source": entity.normalized, "target": document._id};
 			});
-		};
+		}
 	};
 
 	getNodeColor(node) {

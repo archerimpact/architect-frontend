@@ -32,9 +32,9 @@ class SourcesTable extends Component {
 					<TableBody
 						showRowHover={true}
 					>
-						{this.props.savedSources.documents.map((document) => {
+						{this.props.savedSources.documents.map((document, id) => {
 							return(
-								<TableRow>
+								<TableRow key={id}>
 									<TableRowColumn>{document.title}</TableRowColumn>
 									<TableRowColumn>{document.content}</TableRowColumn>
 									<TableRowColumn>{document.entities.length}</TableRowColumn>
