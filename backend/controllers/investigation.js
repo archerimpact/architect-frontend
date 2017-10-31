@@ -215,7 +215,7 @@ app.get('/investigation/projectList', function(req, res) {
 });
 
 app.get('/investigation/project', function(req, res) {
-  console.log("here's req params: ", req.query)
+  console.log("getting a project, here's req params: ", req.query)
   var projectid = req.query.project
   console.log("here's your projectid: " + projectid + " and its type: " + typeof(mongoose.Types.ObjectId(projectid)))
   db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray(function(err, result) {
@@ -224,7 +224,7 @@ app.get('/investigation/project', function(req, res) {
 })
 
 app.get('/investigation/project/entities', function(req, res) {
-  console.log("here's req params: ", req.query)
+  console.log("getting project entities, here's req params: ", req.query)
   var projectid = req.query.project
   console.log("here's your projectid: " + projectid + " and its type: " + typeof(mongoose.Types.ObjectId(projectid)))
   db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray(function(err, results) {

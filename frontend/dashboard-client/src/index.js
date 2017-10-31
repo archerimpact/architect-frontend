@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import configureStore from './store/configureStore';
-import Root from './containers/';
+import configureStore from './redux/store/configureStore';
+import Root from './containers/Root/';
 import registerServiceWorker from './registerServiceWorker';
 
 const store = configureStore();
