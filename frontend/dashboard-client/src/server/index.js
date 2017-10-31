@@ -153,25 +153,26 @@ export function loadEntities() {
 	});
 }
 
-export function getProject(projectid) {
-  var url = 'http://localhost:8000/investigation/project';
-  var options = {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  };
-  return new Promise(function(fulfill, reject) {
-      fetch(url, options)
-      .then(res => {
-        console.log("reached response")
-        return res.json();
-      })
-      .then(json => {
-        fulfill(json)
-      })
-      .catch(err => {
-        reject('Error: could not return project because ' + err);
-      });
+export function addEntity(name, type, sources, project) {
+    var url = 'http://localhost:8000/investigation/entity';
+    var options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: qs.stringify({
+            name: name,
+            type: type,
+            sources: sources,
+            project: project
+        })
+    };
+    fetch(url, options)
+    .then(response => {
+        // TODO: depending on the response, give user information about project add
+        console.log(response);
+    })
+    .catch(err => {
+        console.log('Error: could not add entity because: ' + err);
     });
 }

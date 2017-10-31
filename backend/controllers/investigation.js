@@ -76,6 +76,42 @@ function saveDoc(text, name, entities) {
         })
 }
 
+function saveEntity(name, type, sources) {  
+    console.log("type of sources: " + typeof(sources))
+    var entity = {
+        _id: new mongoose.Types.ObjectId,
+        name: name,
+        type: type,
+        sources: sources
+    }
+    var newEntity = new vertex.Entity(entity);
+    newEntity.save()
+        .then(item => {
+            console.log("Successful save 1/2");
+        })
+        .catch(err => {
+            console.log("Unable to save to database because: " + err);
+        })
+        
+    var vert = {
+        _id: new mongoose.Types.ObjectId,
+        name: name,
+        type: "Entity", // Must be Source or Entity
+        date_added: Date.now(),
+        entity: entity._id
+    }
+
+    var newVert = new vertex.Vertex(vert);
+    newVert.save()
+        .then(item => {
+            console.log("Successful save 2/2");
+        })
+        .catch(err => {
+            res.status(400).send("Unable to save to database because: " + err);
+        })
+    return vert._id
+}
+
 app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
     try {
         // TODO: save to google cloud here
@@ -146,7 +182,8 @@ app.get('/investigation/entities', function(req, res) {
 app.post('/investigation/project', function(req, res) {
     var project = {
         _id: new mongoose.Types.ObjectId,
-        name: req.body.name
+        name: req.body.name,
+        entities: []
         //users: // Put in a fake one
     };
     var newProject = new Project(project);
@@ -176,3 +213,14 @@ app.get('/investigation/projectList', function(req, res) {
         })
     }) */
 });
+
+app.post('/investigation/entity', function(req, res){
+    var sources = []
+    var entityid = saveEntity(req.body.name, req.body.type, sources)
+    console.log("this is the entity id: " + entityid + "and its type is: " + typeof(entityid))
+    console.log('this is the project id: ' + req.body.project + "and its type is: " + typeof(projectid))
+    db.collection('projects').update(
+      {_id : mongoose.Types.ObjectId(req.body.project)},
+      {$push: {entities: entityid}}
+    )
+})

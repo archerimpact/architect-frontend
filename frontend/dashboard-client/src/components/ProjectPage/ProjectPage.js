@@ -40,7 +40,6 @@ class ProjectPage extends Component {
 	};
 
 	render() {
-    debugger
     if (this.props.status === 'isLoading') {
       return (<div className="projects">
             <p> Loading ... </p>
@@ -70,20 +69,20 @@ class ProjectPage extends Component {
   						<Tab label="Workspace" type="default" style={tab_style}>
   							<div className="graph-canvas">
   								<Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
-  									<NodeGraph entities={this.props.savedEntities.entities} sources={this.props.savedSources.documents}/>
+  									<NodeGraph entities={this.props.currentProject.entities} sources={[]}/>
   								</Paper>
                   <Paper style={{position: "absolute"}}>
                     <div className="text-container">
                       <EntityExtractor/>
                     </div>
-                    <AddEntity sourceid={0}/>
+                    <AddEntity sourceid={0} projectid={this.props.match.params.id}/>
                   </Paper>
   							</div>
   						</Tab>
-  						<Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={tab_style}>
+  						<Tab label={"Entities (" + this.props.currentProject.entities.length + ")"} style={tab_style}>
   							<div className="column">
   								<Paper className="projects">
-  									<EntitiesTable />
+  									<EntitiesTable entities={this.props.currentProject.entities}/>
   								</Paper>
   							</div>
   						</Tab>

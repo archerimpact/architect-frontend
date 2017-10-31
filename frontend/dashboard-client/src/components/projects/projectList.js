@@ -7,6 +7,7 @@ import { List, ListItem} from 'material-ui/List';
 import {red500, blue500} from 'material-ui/styles/colors';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Link } from 'react-router-dom';
 
 class ProjectList extends Component {
   constructor(props) {
@@ -28,12 +29,13 @@ class ProjectList extends Component {
     const projectItems = projects.map((project) => {
       console.log("project: " + project)
       return (
+      <Link to={"/project/" + project._id}>
         <ListItem 
           className="projectName" 
           key={project._id} primaryText={project.name} 
-          href={"http://localhost:3000/project/" + project._id}
           leftIcon={<ActionHome color={blue500} hoverColor={red500}/>}
         />
+      </Link>
         );
       });
     return projectItems;

@@ -7,6 +7,7 @@ import AutoComplete from 'material-ui/AutoComplete';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/';
+import * as server from '../../server/';
 
 class AddEntity extends Component {
 	constructor(props){
@@ -24,6 +25,7 @@ class AddEntity extends Component {
 
 	handleSubmit = (event) => {
 		event.preventDefault();
+    server.addEntity(this.state.nameFieldValue, this.state.typeFieldValue, [], this.props.projectid)
 		this.props.dispatch(actions.addEntity({name: this.state.nameFieldValue, type: this.state.typeFieldValue, link: "", tags: [this.state.tagFieldValue], sources: [this.props.sourceid]}));
 		this.setState({
 			nameFieldValue: '',

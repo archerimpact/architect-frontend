@@ -47,7 +47,7 @@ class EntitiesTable extends Component {
 					<TableBody
 						showRowHover={true}
 					>
-						{this.props.savedEntities.entities.map((entity) => {
+						{this.props.entities.map((entity) => {
 							return(
 								<TableRow>
 									<TableRowColumn><a href={"https://www.wikidata.org/wiki/" + entity.qid}>{entity.name} </a></TableRowColumn>

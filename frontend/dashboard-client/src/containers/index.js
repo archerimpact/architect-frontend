@@ -30,7 +30,7 @@ export default class Root extends Component {
 						<div>
 							<App/>
 							<Route exact path="/" component={Home} />
-							<Route exact path="/project/:id" component={ProjectPage} />				    		
+							<Route path="/project/:id" component={ProjectPage} />				    		
 							<Route path="/source/:id" component={SourcePage}/>
 						</div>
 					</Router>
