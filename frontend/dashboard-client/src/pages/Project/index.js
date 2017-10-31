@@ -74,7 +74,7 @@ class ProjectPage extends Component {
 						</Tab>
 						<Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={tab_style}>
 							<div className="column">
-								<Paper className="projects">
+								<Paper className="projects" style={{padding: '10px'}}>
 									<EntitiesTab />
 								</Paper>
 							</div>
