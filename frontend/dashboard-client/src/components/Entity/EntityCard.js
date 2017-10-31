@@ -13,11 +13,14 @@ const iconStyles = {
     width: 56,
     height: 56,
 }
+
 class EntityCard extends Component {
+    
     constructor(props) {
-        super(props)
-        this.renderSourceLink = this.renderSourceLink.bind(this)
+        super(props);
+        this.renderSourceLink = this.renderSourceLink.bind(this);
     }
+
     renderIcon(entity) {
         if (entity.type === "Person" || entity.type === "PERSON") {
           return <Person style={iconStyles}/>
