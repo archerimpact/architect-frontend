@@ -160,13 +160,19 @@ app.post('/investigation/project', function(req, res) {
 });
 
 app.get('/investigation/projectList', function(req, res) {
-    Project.find(function (err, projects) {
+    db.collection('projects').find({}).toArray(function(err, result) {
+      if (err) throw err;
+      res.send(result);
+    });
+    /*Project.find(function (err, projects) {
         var names = [];
         if (err) return console.error(err);
         for (var i = 0; i < projects.length; i++) {
             names = names.concat(projects[i].name)
         }
-        res.send(names);
-    })
+        projects.toArray(function(err, result) {
+          if (err) throw err;
+          res.send(result)
+        })
+    }) */
 });
-

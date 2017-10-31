@@ -152,3 +152,26 @@ export function loadEntities() {
 		});
 	});
 }
+
+export function getProject(projectid) {
+  var url = 'http://localhost:8000/investigation/project';
+  var options = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+  return new Promise(function(fulfill, reject) {
+      fetch(url, options)
+      .then(res => {
+        console.log("reached response")
+        return res.json();
+      })
+      .then(json => {
+        fulfill(json)
+      })
+      .catch(err => {
+        reject('Error: could not return project because ' + err);
+      });
+    });
+}

@@ -26,6 +26,7 @@ export default {
 		{id: 1, title: 'Syria Archive Project', owner: 'Haley', lastAction: 'No latest activity.', entities: [0, 2]}
 	],
 	savedProjects: {
-		status: 'isLoading'
+		status: 'isLoading',
+    projects: []
 	}
 }
