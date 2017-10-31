@@ -5,6 +5,7 @@ import AppBar from 'material-ui/AppBar';
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
+import AutoComplete from 'material-ui/AutoComplete';
 
 import { connect } from 'react-redux';
 import EntitiesList from '../../components/Entity/'
@@ -14,11 +15,14 @@ class EntitiesTab extends Component {
 		super(props);
 		this.state = {
 			drawerOpen: false,
-			currentEntity: null
+			currentEntity: null,
+			entitySort: {by: 'DateAdded', type: null},
+			queryEntity: null
 		};
 		this.getEntitySource = this.getEntitySource.bind(this);
 		this.openEntityDrawer = this.openEntityDrawer.bind(this);
 		this.closeEntityDrawer = this.closeEntityDrawer.bind(this);
+		this.handleEntitySearch = this.handleEntitySearch.bind(this);
 	};
 
 	getEntitySource(entity) {
@@ -65,8 +69,15 @@ class EntitiesTab extends Component {
 		);
 	}
 
+
+	handleEntitySearch(event) {
+		this.setState({
+			queryEntity: event
+		});
+	};
+
 	render() {
-		if (this.props.status === 'isLoading') {
+		if (this.props.status === 'isLoding') {
     		return (<div className="projects">
     					<p> Loading ... </p>
     				</div>
@@ -83,7 +94,14 @@ class EntitiesTab extends Component {
 			          	{this.state.drawerOpen ? this.renderEntityDrawer() : null}
 			        </Drawer>
 			        <div>
-			        	<EntitiesList entities={this.props.entities} getSource={this.getEntitySource} onEntityClick={this.openEntityDrawer}/>
+			        	<AutoComplete
+								floatingLabelText="Search for entity"
+								hintText="e.g. Person"
+								dataSource={this.props.entities}
+								onUpdateInput={this.handleEntitySearch}
+								style={{width: 250, marginRight: 20}}
+							/>
+			        	<EntitiesList entities={this.props.entities} searchTerm={this.state.queryEntity} sortBy={this.state.entitySort} getSource={this.getEntitySource} onEntityClick={this.openEntityDrawer}/>
 			        </div>
 				</div>
 			);      
@@ -97,8 +115,8 @@ function mapDispatchToProps(dispatch) {
 	};
 }
 
-function mapStateToProps(state) {
-	if (state.data.savedEntities.status === 'isLoading') {
+function mapStateToProps(state, ownProps) {
+	if (state.data.savedEntities.status === 'isLoding') {
 		return {
 			status: state.data.savedEntities.status,
 	    }
