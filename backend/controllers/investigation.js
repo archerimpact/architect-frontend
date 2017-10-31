@@ -27,7 +27,6 @@ app.use(multer({
 const upload = multer({ storage: storage });
 
 function saveDoc(text, name, entities) {  
-    console.log("saving pdf here and the entities are: " + entities)
     var doc = {
         _id: new mongoose.Types.ObjectId,
         content: text,
