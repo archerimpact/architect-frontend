@@ -24,19 +24,19 @@ class EntityCard extends Component {
     renderIcon(entity) {
         if (entity.type === "Person" || entity.type === "PERSON") {
           return <Person style={iconStyles}/>
-        };
+        }
         if ( entity.type === "DOCUMENT") {
           return <Document style={iconStyles}/>
-        };
+        }
         if (entity.type ==="ORGANIZATION" || entity.type === "Company") {
           return <Entity style={iconStyles}/>
-        };
+        }
         if (entity.type === "Location" || entity.type === "LOCATION") {
           return <Location style={iconStyles}/>
-        };
+        }
         if (entity.type === "NATIONALITY") {
           return <Nationality style={iconStyles}/>
-        };
+        }
     }
 
     renderSourceLink(entity, getSource) {
