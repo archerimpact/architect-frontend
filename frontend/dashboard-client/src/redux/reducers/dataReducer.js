@@ -52,7 +52,6 @@ export default function (state = initialState, action) {
 				},
       }
 		case STORE_PROJECTS:
-      debugger
 			return {
 				...state,
 				savedProjects: {

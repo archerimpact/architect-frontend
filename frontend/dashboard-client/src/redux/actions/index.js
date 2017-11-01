@@ -130,10 +130,8 @@ export function setCurrentProject(project) {
 
 export function fetchProjects() {
 	return function (dispatch, getState) {
-    debugger
 		return server_utils.getProjectList()
 			.then(projects => {
-        debugger
 				dispatch(storeProjects(projects));
 			})
 			.catch(err => {

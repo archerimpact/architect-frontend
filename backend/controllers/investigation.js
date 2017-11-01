@@ -295,6 +295,9 @@ app.get('/investigation/project/sources', function(req, res) {
 
 
       })*/
+      if (vertexes.length === 0) {
+        res.send([])
+      }
       vertexesToResponse(vertexes, "Source", function(response) {
         console.log("Here's your response in 295: ", response)
         if (response.length === vertexes.length) {
