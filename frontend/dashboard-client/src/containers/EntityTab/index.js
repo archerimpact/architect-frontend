@@ -116,7 +116,7 @@ class EntitiesTab extends Component {
 					        	floatingLabelText="Sort By"
 					        	value={this.state.entitySortBy.property}
 					        	onChange={this.handleChangeSortBy}
-					        	style={{all: 'revert', width: 200, marginRight: 24}}
+					        	style={{textAlign: 'left', marginRight: 24}}
 					        	autoWidth={true}
 					        >
 								<MenuItem value={'name'} primaryText="Name" />
