@@ -124,7 +124,7 @@ class NodeGraph extends Component {
 			.attr('display', "block")
 			.attr('margin', "auto")
 			.attr('id', 'svg1')
-      .call(d3.zoom().on("zoom", redraw))
+      //.call(d3.zoom().on("zoom", redraw))
 
 		const linkElements = svg.selectAll('line')
 			.data(data.links)
