@@ -5,13 +5,24 @@ import AppBar from 'material-ui/AppBar';
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
-import AutoComplete from 'material-ui/AutoComplete';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import UpArrow from 'material-ui/svg-icons/navigation/arrow-upward';
+
+import DownArrow from 'material-ui/svg-icons/navigation/arrow-downward';
 
 import { connect } from 'react-redux';
 import EntitiesList from '../../components/Entity/'
 import './style.css';
+
+const iconStyles = {
+    marginRight: 8,
+    width: 16,
+    height: 16,
+    paddingTop: 32
+}
+
+
 class EntitiesTab extends Component {
 	constructor(props) {
 		super(props);
@@ -26,6 +37,7 @@ class EntitiesTab extends Component {
 		this.closeEntityDrawer = this.closeEntityDrawer.bind(this);
 		this.handleEntitySearch = this.handleEntitySearch.bind(this);
 		this.handleChangeSortBy = this.handleChangeSortBy.bind(this);
+		this.reverseList = this.reverseList.bind(this);
 	};
 
 	getEntitySource(entity) {
@@ -81,7 +93,13 @@ class EntitiesTab extends Component {
 
 	handleChangeSortBy(event, index, value) {
 		this.setState({
-			entitySortBy: {property: value, reverse: false},
+			entitySortBy: {property: value, reverse: this.state.entitySortBy.reverse},
+		})
+	}
+
+	reverseList() {
+		this.setState({
+			entitySortBy: {property: this.state.entitySortBy.property, reverse: !this.state.entitySortBy.reverse},
 		})
 	}
 
@@ -115,7 +133,7 @@ class EntitiesTab extends Component {
 					        	floatingLabelText="Sort By"
 					        	value={this.state.entitySortBy.property}
 					        	onChange={this.handleChangeSortBy}
-					        	style={{textAlign: 'left', marginRight: 24}}
+					        	style={{textAlign: 'left', marginRight: 8}}
 					        	autoWidth={true}
 					        >
 								<MenuItem value={'name'} primaryText="Name" />
@@ -123,6 +141,9 @@ class EntitiesTab extends Component {
 								<MenuItem value={'source'} primaryText="Source" />
 								<MenuItem value={'dateAdded'} primaryText="Date Added" />
 					        </SelectField>
+					        <div onClick={this.reverseList}>
+					        	{this.state.entitySortBy.reverse ? <UpArrow style={iconStyles}/> : <DownArrow style={iconStyles}/>}
+					        </div>
 					    </div>
 			        	<EntitiesList entities={this.props.entities} searchTerm={this.state.queryEntity} sortBy={this.state.entitySortBy} getSource={this.getEntitySource} onEntityClick={this.openEntityDrawer}/>
 			        </div>

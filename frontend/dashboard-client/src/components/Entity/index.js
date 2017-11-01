@@ -26,10 +26,10 @@ class EntitiesList extends Component {
 	sortByProperty(prop, reverse) {
 	  	return function(a, b) {
 		    if (prop === null || typeof a[prop] !== 'string') {
-		     	return (a - b);
+		     	return reverse ? (b - a): (a - b);
 		    }
 		    if (typeof a[prop] === 'number') {
-		     	return (a[prop] - b[prop]);
+		     	return reverse ? (b[prop] - a[prop]): (a[prop] - b[prop]);
 		    }
 		    if (a[prop] < b[prop]) {
 		     	return reverse ? 1 : -1;
