@@ -3,6 +3,7 @@ var passport = require('passport'),
 
 exports.isAuthenticated = function(req, res, next) {
     console.log("in users/isAuthenticated: " + req.user);
+    console.log(req.isAuthenticated()); // TODO: this is some passport builtin?? vs req.user?
     if (req.user) {
         return next();
     } else {

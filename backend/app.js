@@ -17,7 +17,11 @@ const db_url = configData.db_url;
 mongoose.Promise = Promise;
 const db_options = {
     useMongoClient: true,
-    promiseLibrary: global.Promise
+    promiseLibrary: global.Promise,
+    keepAlive: 1,
+    connectTimeoutMS: 30000,
+    reconnectTries: Number.MAX_VALUE,
+    reconnectInterval: 1000, // delay between every retry (milliseconds)
 };
 
 mongoose.connect(db_url,
@@ -67,6 +71,7 @@ app.use(session(sessionOptions));
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(passport.authenticate()); // TODO: use this or self defined one?
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -82,6 +87,8 @@ app.post('/api/login', users_controller.login);
 app.get('/api/logout', users_controller.logout);
 app.post('/api/register', users_controller.register);
 app.get('/api/checkauth', users_controller.isAuthenticated, users_controller.checkAuth);
+// app.get('/api/checkauth', passport.authenticate, users_controller.checkAuth);
+
 /////////////////////////////////////////////////
 
 
