@@ -4,43 +4,9 @@ import './style.css';
 class EntitiesList extends Component {
 	constructor(props){
 		super(props);
-		this.state = {
-			entities: this.props.entities
-		}
-		this.getEntityListSortedBy = this.getEntityListSortedBy.bind(this)
-		this.getEntitySort = this.getEntitySort.bind(this)
+		this.sortByProperty = this.sortByProperty.bind(this)
 	}
 
-	getEntityListSortedBy(sortBy) {
-		switch(sortBy.by) {
-			case 'dateAdded':
-				return this.props.entities
-			case 'type':
-				console.log(sortBy.type);
-				return
-			default :
-				return this.props.entities
-
-		}
-	}
-
-	// var sorters = {
-	//     byWeight : function(a,b) {
-	//         return (a.weight - b.weight);
-	//     },
-	//     bySpeed : function(a,b) {
-	//         return (a.topSpeed - b.topSpeed);
-	//     },
-	//     byPrice : function(a,b) {
-	//         return (a.price - b.price);
-	//     },
-	//     byModelName : function(a,b) {
-	//         return ((a.model < b.model) ? -1 : ((a.model > b.model) ? 1 : 0));
-	//     },
-	//     byMake : function(a,b) {
-	//         return ((a.make < b.make) ? -1 : ((a.make > b.make) ? 1 : 0));
-	//     }
-	// };
 	getEntitySort(a, b) {
 		debugger
 		switch(this.props.sortBy.by) {
@@ -56,18 +22,39 @@ class EntitiesList extends Component {
 				return a-b
 		}
 	}
+
+	sortByProperty(prop, reverse) {
+	  	return function(a, b) {
+		    if (prop === null || typeof a[prop] !== 'string') {
+		     	return (a - b);
+		    }
+		    if (typeof a[prop] === 'number') {
+		     	return (a[prop] - b[prop]);
+		    }
+		    if (a[prop] < b[prop]) {
+		     	return reverse ? 1 : -1;
+		    }
+		    if (a[prop] > b[prop]) {
+		      	return reverse ? -1 : 1;
+		    }
+	    	return 0;
+	  	}
+	}
 		
 
 	render() {
 		return (
 			<div>
-				{this.state.entities.slice().reverse().sort(this.getEntitySort).filter(entity => this.props.searchTerm === null || entity.name.includes(this.props.searchTerm)).map((entity, id) => {
-					return (
-						<div className="entityList" key={id}>
-							<EntityCard onEntityClick={this.props.onEntityClick} entity={entity} getSource={this.props.getSource}/>
-						</div>
-					);
-				})}
+				{this.props.entities.slice().reverse()
+					.sort(this.sortByProperty(this.props.sortBy.property, this.props.sortBy.reverse))
+					.filter(entity => this.props.searchTerm === null || entity.name.includes(this.props.searchTerm))
+					.map((entity, id) => {
+						return (
+							<div className="entityList" key={id}>
+								<EntityCard onEntityClick={this.props.onEntityClick} entity={entity} getSource={this.props.getSource}/>
+							</div>
+						);
+					})}
 			</div>
 		);
 	}
