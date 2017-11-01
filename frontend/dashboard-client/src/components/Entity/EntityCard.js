@@ -41,7 +41,12 @@ class EntityCard extends Component {
 
     renderSourceLink(entity, getSource) {
         var docText = getSource(entity);
-        var docText15words = docText.replace(/(([^\s]+\s\s*){15})(.*)/,"$1…");
+        var docText15words;
+        if (typeof(docText) === "undefined") {
+          docText15words = "";
+        } else {
+          docText15words = docText.replace(/(([^\s]+\s\s*){15})(.*)/,"$1…");
+        }
         return (
             <div>
                 <span className="type"><Link to={"/source/"+entity.sources}><b>Source:</b></Link>{" " +docText15words}</span>

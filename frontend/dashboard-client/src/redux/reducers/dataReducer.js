@@ -1,4 +1,4 @@
-import { ADD_LINK, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES, STORE_PROJECTS, CURRENT_PROJECT } from '../actions/actionTypes';
+import { ADD_LINK, ADD_ENTITY, ADD_TAG, STORE_ENTITIES, STORE_SOURCES, STORE_PROJECTS, CURRENT_PROJECT } from '../actions/actionTypes';
 import initialState from './initialState';
 
 export default function (state = initialState, action) {
@@ -22,7 +22,7 @@ export default function (state = initialState, action) {
 				},
 				entityNames: state.entityNames.concat(action.payload.name)
 			}
-		case ADD_ENTITIES:
+		case STORE_ENTITIES:
 			return {
 				...state,
 				savedEntities: {
@@ -32,7 +32,7 @@ export default function (state = initialState, action) {
 				},
 				entityNames: action.payload.map((entity) => {return entity.name})
 			}
-		case ADD_SOURCES:
+		case STORE_SOURCES:
 			return {
 				...state,
 				savedSources: {

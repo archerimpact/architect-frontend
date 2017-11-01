@@ -27,12 +27,9 @@ const tab_style = {
 
 class ProjectPage extends Component {
 	componentDidMount = () => {
-    this.props.actions.getProject(this.props.match.params.id)
-    this.props.actions.getProjectEntities(this.props.match.params.id)
-		server.loadEntities()
-			.then((data) => {
-				this.props.dispatch(actions.addSources(data.documents))
-			}).catch((err) => console.log("There was an error: " + err))
+    this.props.actions.getProject(this.props.match.params.id);
+    this.props.actions.getProjectEntities(this.props.match.params.id);
+    this.props.actions.getProjectSources(this.props.match.params.id);
 	};
 
 	render() {
@@ -69,7 +66,7 @@ class ProjectPage extends Component {
   								</Paper>
                   <Paper style={{position: "absolute"}}>
                     <div className="text-container">
-                      <EntityExtractor/>
+                      <EntityExtractor projectid={this.props.match.params.id}/>
                     </div>
                     <AddEntity sourceid={0} projectid={this.props.match.params.id}/>
                   </Paper>

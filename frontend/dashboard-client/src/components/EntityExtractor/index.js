@@ -27,7 +27,7 @@ class EntityExtractor extends Component{
 
 	handleSubmit(event) {
 		event.preventDefault();
-		server.submitText(this.state.title, this.state.text)
+		server.submitText(this.state.title, this.state.text, this.props.projectid)
 		.then((data) => {
 			this.setState({text: ""});
 		})

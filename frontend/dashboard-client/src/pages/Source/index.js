@@ -17,8 +17,7 @@ class SourcePage extends Component {
 	componentDidMount = () => {
 		server.loadEntities()
 			.then((data) => {
-				this.props.dispatch(actions.addEntities(data.entities));          
-				this.props.dispatch(actions.addSources(data.documents));
+				this.props.dispatch(actions.storeSources(data.documents));
 		}).catch((err) => console.log(err));
 	};
 

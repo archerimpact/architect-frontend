@@ -1,4 +1,4 @@
-import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES, STORE_PROJECTS, CURRENT_PROJECT} from './actionTypes';
+import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, STORE_ENTITIES, STORE_SOURCES, STORE_PROJECTS, CURRENT_PROJECT} from './actionTypes';
 
 import * as server_utils from '../../server/utils';
 import * as server from '../../server';
@@ -17,16 +17,16 @@ export function addEntity(entity) {
 	};
 }
 
-export function addEntities(entities){
+export function storeEntities(entities){
 	return {
-		type: ADD_ENTITIES,
+		type: STORE_ENTITIES,
 		payload: entities
 	};
 }
 
-export function addSources(sources){
+export function storeSources(sources){
 	return {
-		type: ADD_SOURCES,
+		type: STORE_SOURCES,
 		payload: sources
 	};
 }
@@ -89,8 +89,19 @@ export function getProjectEntities(projectid) {
   return function (dispatch, getState) {
     return server.getProjectEntities(projectid)
       .then(entities => {
-        debugger
-        dispatch(addEntities(entities))
+        dispatch(storeEntities(entities))
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+}
+
+export function getProjectSources(projectid) {
+  return function (dispatch, getState) {
+    return server.getProjectSources(projectid)
+      .then(sources => {
+        dispatch(storeSources(sources))
       })
       .catch(err => {
         console.log(err)

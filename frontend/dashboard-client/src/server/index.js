@@ -89,7 +89,7 @@ function addLink(url, label, notes) {
 }
 */
 
-export function submitText(title, text) {
+export function submitText(title, text, projectid) {
 	var url ='http://localhost:8000/investigation/entities';
 	var options = {
 		method: 'POST',
@@ -98,6 +98,7 @@ export function submitText(title, text) {
 		body: JSON.stringify({
 			'title': title,
 			'text': text,
+      'project': projectid
 		})
 	};
 	return new Promise(function(fulfill, reject) {
@@ -204,6 +205,27 @@ export function getProjectEntities(projectid) {
       reject('Error: could not return entities because ' + err);
     });
   });*/
+}
+
+export function getProjectSources(projectid) {
+  /* Gets all entities related to a project. Server returns an object of objects containing all notes. */
+
+  var url ='http://localhost:8000/investigation/project/sources';
+
+  return new Promise(function(fulfill, reject) {
+    axios.get(url, {
+      params: {
+        project: projectid
+      }
+    })
+    .then(response => {
+      var sources = Object.values(response.data)
+      fulfill(sources)
+    })
+    .catch(function(error) {
+      console.log(error);
+    })
+  });
 }
 
 export function addEntity(name, type, sources, project) {
