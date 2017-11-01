@@ -12,11 +12,11 @@ class SaveLinks extends Component {
         super(props);
         this.state = {
             link: {url: '', label: ''},
-        }
+        };
         this.handleLinkInputChange = this.handleLinkInputChange.bind(this);
         this.handleLabelInputChange = this.handleLabelInputChange.bind(this);
         this.addLink = this.addLink.bind(this);
-    }
+    };
 
     handleLinkInputChange(event) {
         this.setState({
@@ -24,8 +24,8 @@ class SaveLinks extends Component {
                 ...this.state.link,
                 url: event.target.value,
             }
-        })
-    }
+        });
+    };
 
     handleLabelInputChange(event) {
         this.setState({
@@ -33,8 +33,8 @@ class SaveLinks extends Component {
                 ...this.state.link,
                 label: event.target.value,
             }
-        })
-    }
+        });
+    };
 
     addLink() {
         this.props.dispatch(actions.addLink(this.state.link))
@@ -43,8 +43,8 @@ class SaveLinks extends Component {
                 url: '',
                 label: '',
             }
-        })
-    }
+        });
+    };
 
     render() {
         return (
@@ -84,7 +84,7 @@ class SaveLinks extends Component {
                 })}
           </div>
         );
-    }
+    };
 }
 
 function mapDispatchToProps(dispatch) {

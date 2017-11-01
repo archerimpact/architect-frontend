@@ -8,8 +8,15 @@ var express = require('express'),
     User = require('./models/user'),
     MongoStore = require('connect-mongo')(session),
     users_controller = require('./controllers/users'),
-    configData = require('./config.js');
-    
+    configData = require('./config.js'),
+    multer = require('multer'),
+    path = require('path'),
+    util = require('util'),
+    fs = require('fs'),
+    PDFParser = require("pdf2json");
+
+app.use('/investigation', require('./controllers/investigation'));
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
@@ -21,7 +28,7 @@ const db_options = {
     keepAlive: 1,
     connectTimeoutMS: 30000,
     reconnectTries: Number.MAX_VALUE,
-    reconnectInterval: 1000, // delay between every retry (milliseconds)
+    reconnectInterval: 1000,
 };
 
 mongoose.connect(db_url,
@@ -30,8 +37,21 @@ mongoose.connect(db_url,
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
+module.exports = {
+  app,
+  db
+};
+
 // Use environment defined port or 8000
 var port = process.env.PORT || 8000;
+app.set('port', port)
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+
+app.listen(app.get('port'), function() {
+    console.log("Node app is running at localhost:" + app.get('port'))
+});
 
 //////////// Setting Headers (CORS) ////////////
 app.use(function (req, res, next) {
@@ -69,9 +89,16 @@ const sessionOptions = {
 
 app.use(session(sessionOptions));
 
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+})
+
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(passport.authenticate()); // TODO: use this or self defined one?
+// app.use(passport.authenticate()); // TODO: use this or self-defined one?
+
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -88,7 +115,6 @@ app.get('/api/logout', users_controller.logout);
 app.post('/api/register', users_controller.register);
 app.get('/api/checkauth', users_controller.isAuthenticated, users_controller.checkAuth);
 // app.get('/api/checkauth', passport.authenticate, users_controller.checkAuth);
-
 /////////////////////////////////////////////////
 
 

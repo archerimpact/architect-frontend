@@ -1,0 +1,38 @@
+#summary, .table, .addentity{
+  text-align:center;
+}
+
+.centered{
+  text-align:center;
+  padding: 10px;
+}
+
+.document-entities, .entity-box{
+  display: flex;
+  flex-direction: row;
+}
+
+.left-column{
+  width: 30%;
+  margin-right: 20px;
+}
+
+.middle-column{
+  width:30%;
+  padding: 20px;
+
+}
+.right-column{
+  width: 35%;
+}
+
+.avatar{
+  width:20px;
+  height:20px;
+}
+
+.tags{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
