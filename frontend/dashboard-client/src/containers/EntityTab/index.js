@@ -73,9 +73,9 @@ class EntitiesTab extends Component {
 	}
 
 
-	handleEntitySearch(event) {
+	handleEntitySearch(event, value) {
 		this.setState({
-			queryEntity: event
+			queryEntity: value
 		});
 	};
 
@@ -104,11 +104,10 @@ class EntitiesTab extends Component {
 			        </Drawer>
 			        <div>
 			        	<div className="entitiesListHeader">
-				        	<AutoComplete
+				        	<TextField
 								floatingLabelText="Search for entity name"
 								hintText="e.g. Person"
-								dataSource={this.props.entities}
-								onUpdateInput={this.handleEntitySearch}
+								onChange={this.handleEntitySearch}
 								style={{marginRight: 16, marginLeft: 24}}
 								fullWidth={true}
 							/>
