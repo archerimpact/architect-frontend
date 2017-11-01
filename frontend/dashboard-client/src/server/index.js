@@ -1,9 +1,7 @@
-'use strict';
 import 'whatwg-fetch';
 
 var qs = require('qs');
-
-function authenticate(authInfo) {
+export function authenticate(authInfo) {
 	var url = 'https://localhost:8000/login';
 	var options = {
 		method: 'POST',
@@ -31,7 +29,7 @@ function authenticate(authInfo) {
 	});
 }
 
-function register(authInfo) {
+export function register(authInfo) {
 	var url = 'https://localhost:8000/register'
 	var options = {
 		method: 'POST',
@@ -139,7 +137,6 @@ export function loadEntities() {
 	return new Promise(function(fulfill, reject) {
 		fetch(url, options)
 		.then(res => {
-      console.log("reached response")
 			return res.json();
 		})
 		.then(json => {

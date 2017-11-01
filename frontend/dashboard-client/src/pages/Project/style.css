@@ -1,0 +1,46 @@
+.header{
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+}
+
+.header-text{
+  width:100%;
+  position: absolute;
+}
+
+#notifications{
+  width:100%;
+  text-align:right;
+}
+
+.table{
+  width:80%;
+  margin: 0 auto;
+}
+
+.add-text{
+  width:50%;
+  height: 200px;
+}
+
+.text-container{
+  margin: 0 auto;
+  width:80%;
+  height: 250px;
+  display:inline-block;
+}
+
+.graph-canvas{
+  width:90%;
+  margin:15px auto;
+  text-align: center;
+}
+
+.column{
+  width:70%;
+  margin:15px auto;
+  text-align: center;
+  position: relative;
+
+}
