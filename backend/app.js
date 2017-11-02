@@ -21,7 +21,7 @@ module.exports = {
   db
 };
 
-// Use environment defined port or 8000
+// Use environment defined port on 8000
 var port = process.env.PORT || 8000;
 app.set('port', port)
 

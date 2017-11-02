@@ -15,7 +15,7 @@ const iconStyles = {
 }
 
 class EntityCard extends Component {
-    
+
     constructor(props) {
         super(props);
         this.renderSourceLink = this.renderSourceLink.bind(this);
