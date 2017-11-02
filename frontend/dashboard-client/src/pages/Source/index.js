@@ -17,11 +17,14 @@ class SourcePage extends Component {
 	componentDidMount = () => {
 		server.loadEntities()
 			.then((data) => {
+        debugger
+        this.props.dispatch(actions.storeEntities(data.entities))
 				this.props.dispatch(actions.storeSources(data.documents));
 		}).catch((err) => console.log(err));
 	};
 
 	render() {
+    debugger
 		return (
 			<div>  
 				<div className="centered">

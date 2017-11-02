@@ -178,10 +178,39 @@ app.post('/investigation/entities', function(req, res) {
 })
 
 app.get('/investigation/entities', function(req, res) {
-    db.collection('documents').find({}).toArray(function(err, result) {
-        if (err) throw err;
-        res.send(result);
-    });
+  db.collection('vertexes').find({type: "Source"}).toArray()
+    .then((vertexes) => {
+      console.log("here's your vertexes: ", vertexes)
+      /*vertexes = vertexes.map((vertex) => {
+        return db.collection('sources').find({_id: vertex.source}).toArray()
+          .then((source) => {
+            return db.collection('documents').find({_id: source[0].source}).toArray()
+            .then((document) => {
+              console.log("Here's your vertex: ", vertex);
+              console.log("Here's your source: ", source);
+              console.log("Here's your document: ", document);
+              vertex.sourceType = source.type;
+              vertex.content = document.content;
+              vertex.entities = document.entities;
+              return vertex
+            })
+            .catch((err)=> {console.log(err)})
+          })
+          .catch((err)=> {console.log(err)})
+
+
+      })*/
+      if (vertexes.length === 0) {
+        res.send([])
+      }
+      vertexesToResponse(vertexes, "Source", function(response) {
+        console.log("Here's your response in 207: ", response)
+        if (response.length === vertexes.length) {
+          res.send(response)
+        }
+      })
+    })
+    .catch((err)=>{console.log(err)})
 })
 
 app.post('/investigation/project', function(req, res) {
@@ -229,11 +258,9 @@ app.get('/investigation/project', function(req, res) {
 })
 
 app.get('/investigation/project/entities', function(req, res) {
-  console.log("getting project entities, here's req params: ", req.query)
   var projectid = req.query.project
-  console.log("here's your projectid: " + projectid + " and its type: " + typeof(mongoose.Types.ObjectId(projectid)))
   db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray(function(err, results) {
-    console.log("here are the results: ", results)
+    console.log("here are the results in line 265: ", results)
     db.collection('vertexes').find({_id: {$in: results[0].entities}}).toArray(function(err, result) {
       console.log("here's your entity: ", result)
       res.send(result)
@@ -248,9 +275,6 @@ function vertexesToResponse(vertexes, type, callback) {
       .then((source) => {
         return db.collection('documents').find({_id: source[0].source}).toArray()
         .then((document) => {
-          console.log("Here's your vertex: ", vertex);
-          console.log("Here's your source: ", source);
-          console.log("Here's your document: ", document);
           vertex.sourceType = source[0].type;
           vertex.content = document[0].content;
           vertex.entities = document[0].entities;
@@ -267,34 +291,13 @@ function vertexesToResponse(vertexes, type, callback) {
 
 app.get('/investigation/project/sources', function(req, res) {
   var response = [];
-  console.log("getting project sources, here's req params: ", req.query)
   var projectid = req.query.project
-  console.log("here's your projectid: " + projectid + " and its type: " + typeof(mongoose.Types.ObjectId(projectid)))
   db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
   .then((projects) => {
-    console.log("here are the results: ", projects)
+    console.log("here are the projects: ", projects)
     db.collection('vertexes').find({_id: {$in: projects[0].sources}, type: "Source"}).toArray()
     .then((vertexes) => {
       console.log("here's your sources: ", vertexes.sources)
-      /*vertexes = vertexes.map((vertex) => {
-        return db.collection('sources').find({_id: vertex.source}).toArray()
-          .then((source) => {
-            return db.collection('documents').find({_id: source[0].source}).toArray()
-            .then((document) => {
-              console.log("Here's your vertex: ", vertex);
-              console.log("Here's your source: ", source);
-              console.log("Here's your document: ", document);
-              vertex.sourceType = source.type;
-              vertex.content = document.content;
-              vertex.entities = document.entities;
-              return vertex
-            })
-            .catch((err)=> {console.log(err)})
-          })
-          .catch((err)=> {console.log(err)})
-
-
-      })*/
       if (vertexes.length === 0) {
         res.send([])
       }
@@ -304,7 +307,6 @@ app.get('/investigation/project/sources', function(req, res) {
           res.send(response)
         }
       })
-      console.log("Here's your vertexes in 277: ", vertexes)
       //res.send(vertexes)
     })
     .catch((err) => {console.log(err)})
