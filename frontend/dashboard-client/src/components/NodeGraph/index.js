@@ -4,7 +4,19 @@ import * as d3 from 'd3';
 class NodeGraph extends Component {
 /* Takes as props a list of entities and a list of sources */
 
-	createNodes(entities, documents) {
+	uniqueNodes(nodes) {
+    var obj = {};
+
+    for ( var i=0, len=nodes.length; i < len; i++ )
+        obj[nodes[i]['id']] = nodes[i];
+
+    nodes = new Array();
+    for ( var key in obj )
+        nodes.push(obj[key]);
+    return nodes;
+  }
+
+  createNodes(entities, documents) {
 		/* Takes in a list of entities and documents and maps it to a 
 			list of nodes for the d3 simulation */
 
@@ -12,9 +24,9 @@ class NodeGraph extends Component {
 			return {"id": entity.name, "name": entity.name, "type": entity.type};
 		});
 		var documentNodes = documents.map((document) => {
-			return {"id": document._id, "name": document.title, "type": "DOCUMENT"};
+			return {"id": document._id, "name": document.name, "type": "DOCUMENT"};
 		});
-		return documentNodes.concat(entityNodes);
+		return documentNodes.concat(this.uniqueNodes(entityNodes));
 	};
 
 	createLinks(entities, documents) {
@@ -60,7 +72,7 @@ class NodeGraph extends Component {
 	getNodeColor(node) {
 		/* returns the color of the node based on the type of the entity */
 
-		if (node.type === "Person" || node.type === "PERSON") {
+		/*if (node.type === "Person" || node.type === "PERSON") {
 			return "#FFB7A0";
 		};
 		if ( node.type === "DOCUMENT") {
@@ -74,7 +86,31 @@ class NodeGraph extends Component {
 		};
 		if (node.type === "NATIONALITY") {
 			return "#95FF6F";
-		};
+		};*/
+    if (node.type === "PERSON") {
+      return "#83DFFF"
+    }
+    if (node.type === "ORGANIZATION") {
+      return "#76C9E5"
+    }
+    if (node.type === "LOCATION" || node.type === "NATIONALITY") {
+      return "#62A8BF"
+    }
+    if (node.type === "DOCUMENT") {
+      return "#49FFB7"
+    }
+    if (node.type === "Person") {
+      return "#11FFEC"
+    }
+    if (node.type === "Company") {
+      return "#0FE5D5"
+    }
+    if (node.type === "Location") {
+      return "#0DBFB1"
+    }
+    else {
+      return "#41707F"
+    }
 	};
 
   getImage(node) {

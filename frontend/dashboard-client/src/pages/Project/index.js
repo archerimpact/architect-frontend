@@ -51,7 +51,7 @@ class ProjectPage extends Component {
   			<div>
   				<div className="header">
   					<div className="header-text">
-  						<h3>{this.props.currentProject.name}</h3>
+  						<h3>{"Projects  >  " + this.props.currentProject.name}</h3>
   					</div>
   					<div id="notifications">
   						{/*<Badge
@@ -78,6 +78,7 @@ class ProjectPage extends Component {
   						</Tab>
   						<Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={tab_style}>
   							<div className="column">
+                  <h3>Your Entities</h3>
   								<Paper className="projects">
   									<EntitiesTab entities={this.props.savedEntities.entities}/>
   								</Paper>

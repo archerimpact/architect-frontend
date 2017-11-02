@@ -79,7 +79,7 @@ class AddInformation extends Component {
             targetOrigin={{horizontal: 'left', vertical: 'top'}}
             onRequestClose={this.handleRequestClose}
           >
-          <Paper >
+          <Paper className="add-container">
             <div className="text-container">
               <EntityExtractor projectid={this.props.projectid} onTextSubmit ={this.onTextSubmit}/>
             </div>

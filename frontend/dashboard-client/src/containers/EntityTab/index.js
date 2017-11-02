@@ -64,6 +64,7 @@ class EntitiesTab extends Component {
 		return (
 			<div style={{textAlign: 'left', paddingLeft: '10px'}}>
 				<div>
+          <p></p>
 					<b>Name: {this.state.currentEntity.name}</b>
 					<p>Type: {this.state.currentEntity.type}</p>
 					<p>Link: {this.state.currentEntity.link}</p>
@@ -73,6 +74,7 @@ class EntitiesTab extends Component {
 				</div>
 				<div>
 					<br />
+          <b>Source:</b>
 					<p>{this.getEntitySource(this.state.currentEntity)}</p>
 				</div>
 				<TextField
@@ -112,11 +114,10 @@ class EntitiesTab extends Component {
     	} else {
 			return(
 				<div>
-					<h3>Entities</h3>
 					<Drawer width={300} containerStyle={{height: 'calc(100% - 64px)', top: 64}} openSecondary={true} open={this.state.drawerOpen} >
 			          	<AppBar onLeftIconButtonTouchTap={this.closeEntityDrawer}
 	    						iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-	    						title={'Entitiy Details'}
+	    						title={'Entity Details'}
 	    						 />                
 			          	{this.state.drawerOpen ? this.renderEntityDrawer() : null}
 			        </Drawer>

@@ -5,9 +5,10 @@ import './style.css';
 import AddProject from '../../components/Project/addProject';
 
 import { Link } from 'react-router-dom';
-import ActionHome from 'material-ui/svg-icons/action/home';
+import Folder from 'material-ui/svg-icons/file/folder';
 import { List, ListItem} from 'material-ui/List';
 import {red500, blue500} from 'material-ui/styles/colors';
+import Divider from 'material-ui/Divider';
 
 import * as server_utils from '../../server/utils';
 import * as actions from '../../redux/actions/';
@@ -38,7 +39,7 @@ class ProjectList extends Component {
         <ListItem 
           className="projectName" 
           key={project._id} primaryText={project.name} 
-          leftIcon={<ActionHome color={blue500} hoverColor={red500}/>}
+          leftIcon={<Folder color={blue500} hoverColor={red500}/>}
         />
       </Link>
         );
@@ -54,15 +55,20 @@ class ProjectList extends Component {
           );
       } else {
         return (
-        	<div>
-                <h3>Projects</h3>
-                <Link to="/project/0" style={{color: 'inherit'}}>Go to Test Project</Link>
-                <p></p>  
-	        	<AddProject submit={(freshProject)=>this.addProject(freshProject)} />
+        <div>
+          <div>
+        	   <div className="header">
+                <AddProject submit={(freshProject)=>this.addProject(freshProject)} />
+                <h1>Projects</h1>
+              </div>
+            <Divider />
+          </div>
+          <div>
 	        	<List className="list">
 	        		{this.projectList(this.props.projects)}
 	        	</List>
 	        </div>
+        </div>
         );
       }
     }

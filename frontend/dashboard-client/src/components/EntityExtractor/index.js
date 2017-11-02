@@ -38,15 +38,15 @@ class EntityExtractor extends Component{
 					hintText="Include a title for your text"
 					value={this.state.title}
 					onChange={this.handleTitleChange}
+          style={{width: 250, marginRight: 20}}
 				/>
 				<TextField 
-					className="add-text" 
 					multiLine={true} 
-					rows={5} 
 					rowsMax={10}
 					hintText="Submit text to extract entities" 
 					value={this.state.text} 
 					onChange={this.handleTextChange} 
+          style={{width: 250, marginRight: 20}}
 				/>
 				<RaisedButton label="Extract" onClick={this.handleSubmit}/>
 			</div>

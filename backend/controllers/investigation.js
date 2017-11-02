@@ -114,7 +114,7 @@ function saveEntity(name, type, sources) {
 }
 
 app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
-    try {
+    try {
         // TODO: save to google cloud here
         var name = req.file.originalname;
         let text_dest = "./files/" + name.substring(0, name.length - 4) + ".txt";
@@ -124,7 +124,6 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
         pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError) );
         pdfParser.on("pdfParser_dataReady", pdfData => {
             var text = pdfParser.getRawTextContent();
-            })
             fs.writeFile(text_dest, text, (error) => { console.error(error) });
         });
         pdfParser.loadPDF(pdf_dest);
@@ -140,9 +139,9 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
             })
 
         // TODO: delete pdf after done with it
-    } catch (err) {
-        res.sendStatus(400);
-    };
+    } catch (err) {
+        res.sendStatus(400);
+    };
 })
 
 function callEntityExtractor(string, callback) {
