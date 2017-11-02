@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import AddProject from './addProject';
+
 import './style.css';
+
+import AddProject from '../../components/Project/addProject';
 
 import { Link } from 'react-router-dom';
 import ActionHome from 'material-ui/svg-icons/action/home';
@@ -61,7 +63,7 @@ class ProjectList extends Component {
 	        		{this.projectList(this.props.projects)}
 	        	</List>
 	        </div>
-        	);
+        );
       }
     }
 }

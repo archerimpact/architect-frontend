@@ -116,7 +116,6 @@ function saveEntity(name, type, sources) {
 app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
     try {
         // TODO: save to google cloud here
-
         var name = req.file.originalname;
         let text_dest = "./files/" + name.substring(0, name.length - 4) + ".txt";
         let pdf_dest = "./files/" + name;
@@ -125,12 +124,20 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
         pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError) );
         pdfParser.on("pdfParser_dataReady", pdfData => {
             var text = pdfParser.getRawTextContent();
-            callEntityExtractor(text, function(response){
-              saveDoc(text, name, response.entities)
             })
             fs.writeFile(text_dest, text, (error) => { console.error(error) });
         });
         pdfParser.loadPDF(pdf_dest);
+
+        callEntityExtractor(fs.readFileSync(text_dest, "utf8"), function(response) {
+          saveDoc(fs.readFileSync(text_dest, "utf8"), name, response.entities)
+        })
+            .then(item => {
+                res.send("PDF Converted To Text Success");
+            })
+            .catch(err => {
+                res.sendStatus(400);
+            })
 
         // TODO: delete pdf after done with it
     } catch (err) {
@@ -318,3 +325,25 @@ app.post('/investigation/entity', function(req, res){
       {$push: {entities: entityid}}
     )
 })
+
+app.post('/investigation/searchSources', function(req, res) {
+    var phrase = req.body.phrase;
+    vertex.Vertex.find()
+    .populate({
+        path: 'source',
+        populate: {
+            path: 'source',
+            model: 'Document'
+        }
+    })
+    .exec(function (err, vertices) {
+        var found = [];
+        if (err) return console.error(err);
+        for (var i = 0; i < vertices.length; i++) {
+            if (vertices[i].source.source.content.search(phrase) != -1) {
+                found = found.concat(vertices[i].name)
+            }
+        }
+        res.send(found);
+    })
+});

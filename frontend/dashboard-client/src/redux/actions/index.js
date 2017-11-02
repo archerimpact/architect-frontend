@@ -1,7 +1,12 @@
+<<<<<<< HEAD
 import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, STORE_ENTITIES, STORE_PENDING_ENTITIES, STORE_SOURCES, STORE_PROJECTS, CURRENT_PROJECT} from './actionTypes';
 
 import * as server_utils from '../../server/utils';
 import * as server from '../../server';
+=======
+import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES, STORE_PROJECTS} from './actionTypes';
+import * as server_utils from '../../server/utils';
+>>>>>>> ac4b0011706673b21cfd4276b3e16d991d8e8632
 
 export function addLink(link) {
 	return {
