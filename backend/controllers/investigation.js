@@ -125,17 +125,12 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
         pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError) );
         pdfParser.on("pdfParser_dataReady", pdfData => {
             var text = pdfParser.getRawTextContent();
+            callEntityExtractor(text, function(response){
+              saveDoc(text, name, response.entities)
+            })
             fs.writeFile(text_dest, text, (error) => { console.error(error) });
         });
         pdfParser.loadPDF(pdf_dest);
-
-        saveDoc(fs.readFileSync(text_dest, "utf8"), name, [])
-            .then(item => {
-                res.send("PDF Converted To Text Success");
-            })
-            .catch(err => {
-                res.sendStatus(400);
-            })
 
         // TODO: delete pdf after done with it
     } catch (err) {
