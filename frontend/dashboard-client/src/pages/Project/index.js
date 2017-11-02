@@ -30,6 +30,7 @@ class ProjectPage extends Component {
     this.props.actions.getProject(this.props.match.params.id);
     this.props.actions.getProjectEntities(this.props.match.params.id);
     this.props.actions.getProjectSources(this.props.match.params.id);
+    this.props.actions.getPendingEntities(this.props.match.params.id);
 	};
 
 	render() {
@@ -62,7 +63,7 @@ class ProjectPage extends Component {
   						<Tab label="Workspace" type="default" style={tab_style}>
   							<div className="graph-canvas">
   								<Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
-  									<NodeGraph entities={this.props.savedEntities.entities} sources={[]}/>
+  									<NodeGraph entities={this.props.allEntities} sources={this.props.savedSources.documents}/>
   								</Paper>
                   <Paper style={{position: "absolute"}}>
                     <div className="text-container">
@@ -77,6 +78,10 @@ class ProjectPage extends Component {
   								<Paper className="projects">
   									<EntitiesTab entities={this.props.savedEntities.entities}/>
   								</Paper>
+                  <h3>Pending Entities</h3>
+                  <Paper className="projects">
+                    <EntitiesTab entities={this.props.pendingEntities.entities}/>
+                  </Paper>
   							</div>
   						</Tab>
   						<Tab label="Sources" style={tab_style}>
@@ -113,7 +118,9 @@ function mapStateToProps(state, props) {
       savedEntities: state.data.savedEntities,
       projects: state.data.projects,
       savedSources: state.data.savedSources,
-      currentProject: state.data.currentProject
+      currentProject: state.data.currentProject,
+      pendingEntities: state.data.pendingEntities,
+      allEntities: state.data.pendingEntities.entities.concat(state.data.savedEntities.entities)
     }
   }
 }

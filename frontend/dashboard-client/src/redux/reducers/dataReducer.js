@@ -1,4 +1,4 @@
-import { ADD_LINK, ADD_ENTITY, ADD_TAG, STORE_ENTITIES, STORE_SOURCES, STORE_PROJECTS, CURRENT_PROJECT } from '../actions/actionTypes';
+import { ADD_LINK, ADD_ENTITY, ADD_TAG, STORE_ENTITIES, STORE_PENDING_ENTITIES, STORE_SOURCES, STORE_PROJECTS, CURRENT_PROJECT } from '../actions/actionTypes';
 import initialState from './initialState';
 
 export default function (state = initialState, action) {
@@ -22,6 +22,16 @@ export default function (state = initialState, action) {
 				},
 				entityNames: state.entityNames.concat(action.payload.name)
 			}
+    case STORE_PENDING_ENTITIES:
+      return {
+        ...state,
+        pendingEntities: {
+          ...state.pendingEntities,
+          status: 'isLoaded',
+          entities: action.payload.map((entity) => {return {name: entity.name, type: entity.type, link: '', tags: [], sources:[entity.sourceid], qid: entity.qid}})
+        },
+        entityNames: action.payload.map((entity) => {return entity.name})
+      }
 		case STORE_ENTITIES:
 			return {
 				...state,

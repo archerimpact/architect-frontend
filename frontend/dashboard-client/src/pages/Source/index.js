@@ -15,16 +15,10 @@ import * as server from '../../server/';
 
 class SourcePage extends Component {
 	componentDidMount = () => {
-		server.loadEntities()
-			.then((data) => {
-        debugger
-        this.props.dispatch(actions.storeEntities(data.entities))
-				this.props.dispatch(actions.storeSources(data.documents));
-		}).catch((err) => console.log(err));
+    this.props.actions.getPendingEntities();
 	};
 
 	render() {
-    debugger
 		return (
 			<div>  
 				<div className="centered">
@@ -63,7 +57,7 @@ function mapStateToProps(state, props) {
 	return {
 		savedEntities: state.data.savedEntities,
 		savedSources: state.data.savedSources,
-		sourceEntities: state.data.savedEntities.entities.filter(function (obj) {return obj.sources[0]=== sourceid}),
+		sourceEntities: state.data.pendingEntities.entities.filter(function (obj) {return obj.sources[0]=== sourceid}),
 		currentSource: state.data.savedSources.documents.find((document) => {return document._id === sourceid}),
 	};
 }

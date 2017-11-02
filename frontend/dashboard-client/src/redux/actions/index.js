@@ -1,4 +1,4 @@
-import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, STORE_ENTITIES, STORE_SOURCES, STORE_PROJECTS, CURRENT_PROJECT} from './actionTypes';
+import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, STORE_ENTITIES, STORE_PENDING_ENTITIES, STORE_SOURCES, STORE_PROJECTS, CURRENT_PROJECT} from './actionTypes';
 
 import * as server_utils from '../../server/utils';
 import * as server from '../../server';
@@ -22,6 +22,13 @@ export function storeEntities(entities){
 		type: STORE_ENTITIES,
 		payload: entities
 	};
+}
+
+export function storePendingEntities(entities){
+  return {
+    type: STORE_PENDING_ENTITIES,
+    payload: entities
+  }
 }
 
 export function storeSources(sources){
@@ -94,6 +101,16 @@ export function getProjectEntities(projectid) {
       .catch(err => {
         console.log(err)
       })
+  }
+}
+
+export function getPendingEntities() {
+  return function(dispatch, getState) {
+    server.loadEntities()
+      .then((data) => {
+        dispatch(storePendingEntities(data.entities))
+        dispatch(storeSources(data.documents));
+    }).catch((err) => console.log(err));
   }
 }
 

@@ -105,7 +105,6 @@ function mapStateToProps(state) {
 	} else {
 	    return {
 			status: state.data.savedEntities.status,
-			entities: state.data.savedEntities.entities,
 			savedSources: state.data.savedSources
 	    }
 	}
