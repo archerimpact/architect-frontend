@@ -20,7 +20,6 @@ var sourceSchema = new mongoose.Schema({
         // TODO: fill in metadata
 	},
 	// TODO: possibly change this to be entitySchema rather than String later on
-    entities: [String],
     type: String, // Must be "Document", "Image", or "Video"
     source: { type: Schema.Types.ObjectId } // Must be documentSchema, imageSchema, or VideoSchema
 })
@@ -34,6 +33,7 @@ var entitySchema = new mongoose.Schema({
 var documentSchema = new mongoose.Schema({
 	_id: Schema.Types.ObjectId,
 	content: String,
+  entities: Array
 });
 
 var imageSchema = new mongoose.Schema({

@@ -5,9 +5,11 @@ var multer = require('multer'),
     vertex = require('../models/vertex'),
     Project = require('../models/project'),
     mongoose = require('mongoose'),
+    request = require('request'),
     PDFParser = require("pdf2json");
 
-const app = require('../app');
+const app = require('../app').app;
+const db = require('../app').db;
 
 const storage = multer.diskStorage({
     destination: './files/',
@@ -24,10 +26,11 @@ app.use(multer({
 
 const upload = multer({ storage: storage });
 
-function saveDoc(text, name) {  
+function saveDoc(text, name, entities) {  
     var doc = {
         _id: new mongoose.Types.ObjectId,
-        content: text
+        content: text,
+        entities: entities
     }
     var newDoc = new vertex.Document(doc);
     newDoc.save()
@@ -35,15 +38,15 @@ function saveDoc(text, name) {
             console.log("Successful save 1/3");
         })
         .catch(err => {
-            res.status(400).send("Unable to save to database because: " + err);
+            console.log("Unable to save to database because: " + err);
         })
-
+        
     var source = {
         _id: new mongoose.Types.ObjectId, 
         // TODO: cloudReference: String,
         // entities: TODO: Alice fill this in with the extracted entities as a String array
         type: "Document",
-        source: doc._id // Must be documentSchema, imageSchema, or VideoSchema
+        source: doc._id, // Must be documentSchema, imageSchema, or VideoSchema
     }
 
     var newSource = new vertex.Source(source);
@@ -88,7 +91,9 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
         });
         pdfParser.loadPDF(pdf_dest);
 
-        saveDoc(fs.readFileSync(text_dest, "utf8"), name)
+        callEntityExtractor(fs.readFileSync(text_dest, "utf8"), function(response) {
+          saveDoc(fs.readFileSync(text_dest, "utf8"), name, response.entities)
+        })
             .then(item => {
                 res.send("PDF Converted To Text Success");
             })
@@ -96,10 +101,55 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
                 res.sendStatus(400);
             })
 
+        // saveDoc(fs.readFileSync(text_dest, "utf8"), name, [])
+        //     .then(item => {
+        //         res.send("PDF Converted To Text Success");
+        //     })
+        //     .catch(err => {
+        //         res.sendStatus(400);
+        //     })
+
         // TODO: delete pdf after done with it
     } catch (err) {
         res.sendStatus(400);
-    }
+    };
+})
+
+function callEntityExtractor(string, callback) {
+ var optionsEntityExtractor = {
+    url: 'https://api.rosette.com/rest/v1/entities', 
+    method: 'POST',
+    headers: {
+        'X-RosetteAPI-Key': '554b291cfc61e3f3338b9f02065bd1a5'
+    },
+    'Content-Type': 'application/json',
+    body: JSON.stringify({'content': string})
+  }
+  request(optionsEntityExtractor, function(error, response, body) {
+    if (!error) {
+        return callback(JSON.parse(body));
+    } else {
+      console.log("there was an error in the Rosette extractor: ");
+      return {entities: []};
+    };
+  });     
+}
+
+app.post('/investigation/entities', function(req, res) {
+  if (req.body.text.length > 20) {
+    callEntityExtractor(req.body.text, function(response) {
+      saveDoc(req.body.text, req.body.title, response.entities)
+    })
+  }else{
+    res.send("Didn't run entity extractor because the length of the content was too short.")
+  };
+})
+
+app.get('/investigation/entities', function(req, res) {
+    db.collection('documents').find({}).toArray(function(err, result) {
+        if (err) throw err;
+        res.send(result);
+    });
 })
 
 app.post('/investigation/project', function(req, res) {
@@ -139,7 +189,6 @@ app.post('/investigation/searchSources', function(req, res) {
             model: 'Document'
         }
     })
-    //.populate("source.source")
     .exec(function (err, vertices) {
         var found = [];
         if (err) return console.error(err);
@@ -147,9 +196,6 @@ app.post('/investigation/searchSources', function(req, res) {
             if (vertices[i].source.source.content.search(phrase) != -1) {
                 found = found.concat(vertices[i].name)
             }
-            //console.log(vertices[i])
-            //console.log(vertices[i].source)
-            //names = names.concat(projects[i].name)
         }
         res.send(found);
     })

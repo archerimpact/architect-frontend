@@ -1,9 +1,7 @@
-'use strict';
 import 'whatwg-fetch';
 
 var qs = require('qs');
-
-function authenticate(authInfo) {
+export function authenticate(authInfo) {
 	var url = 'https://localhost:8000/login';
 	var options = {
 		method: 'POST',
@@ -15,6 +13,7 @@ function authenticate(authInfo) {
 			password: authInfo.password
 		})
 	};
+	
 	return new Promise(function(fulfill, reject) {
 		fetch(url, options)
 		.then(res => res.json())
@@ -26,11 +25,11 @@ function authenticate(authInfo) {
 		})
 		.catch(err => {
 			reject('Error: could not authenticate');
-		})
-	})
+		});
+	});
 }
 
-function register(authInfo) {
+export function register(authInfo) {
 	var url = 'https://localhost:8000/register'
 	var options = {
 		method: 'POST',
@@ -53,14 +52,15 @@ function register(authInfo) {
 			if (!json.login) {
 				reject('Error: could not authenticate');
 			}
-			fulfill(json)
+			fulfill(json);
 		})
 		.catch(err => {
 			reject('Error: could not register');
-		})
+		});
 	})
 }
 
+/* Sample method for adding links
 function addLink(url, label, notes) {
 	var url ='http://localhost:8000/jobs';
 	var options = {
@@ -86,9 +86,66 @@ function addLink(url, label, notes) {
 		})
 	})
 }
+*/
 
-module.exports = {
-	authenticate,
-	register,
-	addLink
+export function submitText(title, text) {
+	var url ='http://localhost:8000/investigation/entities';
+	var options = {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json' },
+		body: JSON.stringify({
+			'title': title,
+			'text': text,
+		})
+	};
+	return new Promise(function(fulfill, reject) {
+		fetch(url, options)
+		.then(res => {
+			fulfill(res);
+		})
+		.catch(err => {
+			reject('Error: could not add entity because: ' + err);
+		});
+	});
+}
+
+export function loadEntities() {
+	/* Gets all entities related to a project. Server returns an object of objects containing all notes. */
+
+	var url ='http://localhost:8000/investigation/entities';
+	var options = {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	};
+
+	function documentsToEntities(documents) {
+		/* map over all notes, then map over all entities in each note, and build a new array entities 
+		   which contains all entities of all notes */
+
+		var entities = documents.map((document) => {
+			return document.entities.map((entity) => {
+				return {"name": entity.normalized, "type": entity.type, "qid": entity.entityId, "sourceid": document._id}
+			});
+		});
+		return [].concat.apply([], entities);
+	}
+
+	let newEntities = null;
+	return new Promise(function(fulfill, reject) {
+		fetch(url, options)
+		.then(res => {
+			return res.json();
+		})
+		.then(json => {
+			var documents = Object.values(json);
+			newEntities = documentsToEntities(documents);
+			fulfill({entities: newEntities, documents: documents})
+		})
+		.catch(err => {
+			reject('Error: could not return entities because ' + err);
+		});
+	});
 }
