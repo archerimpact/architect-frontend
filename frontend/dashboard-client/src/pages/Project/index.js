@@ -8,12 +8,18 @@ import NodeGraph from '../../components/NodeGraph';
 import SourcesTab from '../../containers/SourcesTab';
 import PDFUploader from '../../components/PDFUploader';
 import AddEntity from '../../components/Entity/AddEntity';
+import AddInformation from '../../components/Entity/AddInformation';
 
 import Badge from 'material-ui/Badge';
 import IconButton from 'material-ui/IconButton';
 import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
 import Paper from 'material-ui/Paper';
 import {Tabs, Tab} from 'material-ui/Tabs';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import Popover from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
+import MenuItem from 'material-ui/MenuItem';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -26,6 +32,7 @@ const tab_style = {
 };
 
 class ProjectPage extends Component {
+
 	componentDidMount = () => {
     this.props.actions.getProject(this.props.match.params.id);
     this.props.actions.getProjectEntities(this.props.match.params.id);
@@ -47,7 +54,7 @@ class ProjectPage extends Component {
   						<h3>{this.props.currentProject.name}</h3>
   					</div>
   					<div id="notifications">
-  						<Badge
+  						{/*<Badge
   						  badgeContent={10}
   						  secondary={true}
   						  badgeStyle={{top: 12, right: 12}}
@@ -55,7 +62,8 @@ class ProjectPage extends Component {
   						  <IconButton tooltip="Notifications">
   							<NotificationsIcon />
   						  </IconButton>
-  						</Badge>
+  						</Badge>*/}
+              <AddInformation projectid={this.props.match.params.id}/>
   					</div>
   				</div>
   				<div className="tabs" style={{width:'100%', margin:'0 auto'}}>
@@ -65,12 +73,7 @@ class ProjectPage extends Component {
   								<Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
   									<NodeGraph entities={this.props.allEntities} sources={this.props.savedSources.documents}/>
   								</Paper>
-                  <Paper style={{position: "absolute"}}>
-                    <div className="text-container">
-                      <EntityExtractor projectid={this.props.match.params.id}/>
-                    </div>
-                    <AddEntity sourceid={0} projectid={this.props.match.params.id}/>
-                  </Paper>
+
   							</div>
   						</Tab>
   						<Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={tab_style}>
@@ -78,7 +81,7 @@ class ProjectPage extends Component {
   								<Paper className="projects">
   									<EntitiesTab entities={this.props.savedEntities.entities}/>
   								</Paper>
-                  <h3>Pending Entities</h3>
+                  <h3>Suggested Entities</h3>
                   <Paper className="projects">
                     <EntitiesTab entities={this.props.pendingEntities.entities}/>
                   </Paper>
