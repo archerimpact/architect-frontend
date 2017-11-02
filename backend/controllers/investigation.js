@@ -101,14 +101,6 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
                 res.sendStatus(400);
             })
 
-        // saveDoc(fs.readFileSync(text_dest, "utf8"), name, [])
-        //     .then(item => {
-        //         res.send("PDF Converted To Text Success");
-        //     })
-        //     .catch(err => {
-        //         res.sendStatus(400);
-        //     })
-
         // TODO: delete pdf after done with it
     } catch (err) {
         res.sendStatus(400);

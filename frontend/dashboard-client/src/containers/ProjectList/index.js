@@ -9,7 +9,7 @@ import {red500, blue500} from 'material-ui/styles/colors';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import './index.css';
+import './style.css';
 
 class ProjectList extends Component {
 	constructor(props) {

@@ -45,4 +45,4 @@ class Sources extends Component {
     }
 }
 
-export default Sources
+export default Sources;
