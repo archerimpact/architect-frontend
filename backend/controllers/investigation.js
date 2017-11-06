@@ -91,8 +91,10 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
         });
         pdfParser.loadPDF(pdf_dest);
 
-        callEntityExtractor(fs.readFileSync(text_dest, "utf8"), function(response) {
-          saveDoc(fs.readFileSync(text_dest, "utf8"), name, response.entities)
+        var content = fs.readFileSync(text_dest, "utf8")
+
+        callEntityExtractor(content, function(response) {
+          saveDoc(content, name, response.entities)
         })
             .then(item => {
                 res.send("PDF Converted To Text Success");
