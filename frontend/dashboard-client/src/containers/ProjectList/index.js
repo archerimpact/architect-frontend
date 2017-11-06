@@ -28,7 +28,8 @@ class ProjectList extends Component {
 	}
 
 	projectList(projects) {
-		const projectItems = projects.map((project) => {
+		const projectItems = Object.keys(projects).map((project) => {
+			console.log(project)
 			return (
 				<ListItem 
 					className="projectName" 
