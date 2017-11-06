@@ -175,7 +175,9 @@ app.get('/investigation/projectList', function(req, res) {
 
 app.post('/investigation/searchSources', function(req, res) {
     var phrase = req.body.phrase;
-    vertex.Vertex.find()
+    vertex.Vertex.find({
+        type: 'Source',
+    })
     .populate({
         path: 'source',
         populate: {
@@ -187,10 +189,11 @@ app.post('/investigation/searchSources', function(req, res) {
         var found = [];
         if (err) return console.error(err);
         for (var i = 0; i < vertices.length; i++) {
-            if (vertices[i].source.source.content.search(phrase) != -1) {
+            if (vertices[i].source.source.content && vertices[i].source.source.content.search(phrase) != -1) {
                 found = found.concat(vertices[i].name)
             }
         }
+        console.log(found);
         res.send(found);
     })
 });

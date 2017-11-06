@@ -35,7 +35,7 @@ class Sources extends Component {
     render() {
         var docs = [pdf_1, pdf_2, pdf_3];
         return (
-            <div className="sources">
+            <div>
                 <SearchSources />
                 <div className="documentList">
                     {this.documentList(docs)}
