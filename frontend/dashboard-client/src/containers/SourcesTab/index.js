@@ -15,16 +15,6 @@ import Sources from '../../components/Source'
 import SearchSources from '../../components/Source/search';
 import './style.css';
 
-const styles = {
-  block: {
-    maxWidth: 250,
-  },
-  toggle: {
-    marginBottom: 16,
-    maxWidth: 150,
-  },
-};
-
 class SourcesTable extends Component {
 	constructor(props) {
 		super(props);
@@ -77,7 +67,9 @@ class SourcesTable extends Component {
 				<Toggle className="toggle"
 			      label="Source View"
 			      labelPosition = "right"
-			      style={styles.toggle}
+			      style={
+			      	{marginBottom: 16, maxWidth: 150}
+			      }
 			      onToggle={this.toggleViews}
 			      toggle={this.state.Toggled}
 			    />
