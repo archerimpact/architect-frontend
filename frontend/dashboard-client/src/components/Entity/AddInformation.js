@@ -16,6 +16,8 @@ import EntityExtractor from '../../components/EntityExtractor/';
 
 import * as server from '../../server/';
 import * as actions from '../../redux/actions/';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 const add_style = {
   marginRight: 20,
@@ -50,12 +52,11 @@ class AddInformation extends Component {
   onTextSubmit(title, text, projectid) {
     server.submitText(title, text, projectid)
     .then((data) => {
-
       this.setState({text: ""});
-      actions.getProject(this.props.projectid);
-      actions.getProjectEntities(this.props.projectid);
-      actions.getProjectSources(this.props.projectid);
-      actions.getPendingEntities(this.props.projectid);
+      this.props.actions.getProject(this.props.projectid);
+      this.props.actions.getProjectEntities(this.props.projectid);
+      this.props.actions.getProjectSources(this.props.projectid);
+      this.props.actions.getPendingEntities(this.props.projectid);
     })
     .catch((error) => {
         console.log(error)
@@ -91,5 +92,23 @@ class AddInformation extends Component {
   }
 }
 
-export default AddInformation;
-          
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(actions, dispatch)
+    };
+}
+
+function mapStateToProps(state) {
+  if (state.data.savedProjects.status === 'isLoading') {
+    return {
+      status: state.data.savedProjects.status,
+      }
+  } else {
+      return {
+      status: state.data.savedProjects.status,
+          projects: state.data.savedProjects.projects,
+      }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddInformation)          

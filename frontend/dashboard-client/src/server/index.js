@@ -112,31 +112,29 @@ export function submitText(title, text, projectid) {
 	});
 }
 
-export function loadEntities() {
+export function loadEntities(projectid) {
 	/* Gets all entities related to a project. Server returns an object of objects containing all notes. */
 
 	var url ='http://localhost:8000/investigation/entities';
-	var options = {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json'
-		}
-	};
-
-	function documentsToEntities(documents) {
-		/* map over all notes, then map over all entities in each note, and build a new array entities 
-		   which contains all entities of all notes */
-
-		var entities = documents.map((document) => {
-			return document.entities.map((entity) => {
-				return {"name": entity.normalized, "type": entity.type, "qid": entity.entityId, "sourceid": document._id}
-			});
-		});
-		return [].concat.apply([], entities);
-	}
 
 	let newEntities = null;
-	return new Promise(function(fulfill, reject) {
+
+  return new Promise(function(fulfill, reject) {
+    axios.get(url, {
+      params: {
+        project: projectid
+      }
+    })
+    .then(function (documents) {
+      console.log("here's the response in server 147: ", documents)
+      newEntities = documentsToEntities(documents.data);
+      fulfill({entities: newEntities, documents: documents.data})
+    })
+    .catch(function(error) {
+      console.log(error);
+    })
+  });
+	/*return new Promise(function(fulfill, reject) {
 		fetch(url, options)
 		.then(res => {
 			return res.json();
@@ -149,7 +147,55 @@ export function loadEntities() {
 		.catch(err => {
 			reject('Error: could not return entities because ' + err);
 		});
-	});
+	});*/
+}
+
+function documentsToEntities(documents) {
+    /* map over all notes, then map over all entities in each note, and build a new array entities 
+       which contains all entities of all notes */
+
+    var entities = documents.map((document) => {
+      return document.entities.map((entity) => {
+        return {"name": entity.normalized, "type": entity.type, "qid": entity.entityId, "sourceid": document._id}
+      });
+    });
+    return [].concat.apply([], entities);
+  }
+
+export function getSource(sourceid) {
+  /* Gets all entities related to a project. Server returns an object of objects containing all notes. */
+
+  var url ='http://localhost:8000/investigation/source';
+
+  let newEntities = null;
+  return new Promise(function(fulfill, reject) {
+    axios.get(url, {
+      params: {
+        source: sourceid
+      }
+    })
+    .then(function (documents) {
+      newEntities = documentsToEntities(documents.data);
+      fulfill({entities: newEntities, documents: documents.data})
+    })
+    .catch(function(error) {
+      console.log(error);
+    })
+  });
+  /*return new Promise(function(fulfill, reject) {
+    fetch(url, options)
+    .then(res => {
+      return res.json();
+    })
+    .then(json => {
+      var documents = Object.values(json);
+      newEntities = documentsToEntities(documents);
+      fulfill({entities: newEntities, documents: documents})
+    })
+    .catch(err => {
+      reject('Error: could not return entities because ' + err);
+    });
+  });*/
 }
 
 export function getProject(projectid) {

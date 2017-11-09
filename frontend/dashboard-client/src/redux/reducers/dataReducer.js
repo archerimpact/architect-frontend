@@ -71,6 +71,11 @@ export default function (state = initialState, action) {
 				}
 			}
     case CURRENT_PROJECT:
+      if (state.currentProject._id != action.payload._id) {
+        state.savedSources.status = 'isLoading';
+        state.savedEntities.status = 'isLoading';
+        state.pendingEntities.status = 'isLoading';
+      }
       return {
         ...state,
         currentProject: action.payload

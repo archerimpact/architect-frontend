@@ -35,7 +35,7 @@ class EntityExtractor extends Component{
 		return(
 			<div>
 				<TextField
-					hintText="Include a title for your text"
+					hintText="Title"
 					value={this.state.title}
 					onChange={this.handleTitleChange}
           style={{width: 250, marginRight: 20}}
@@ -43,7 +43,7 @@ class EntityExtractor extends Component{
 				<TextField 
 					multiLine={true} 
 					rowsMax={10}
-					hintText="Submit text to extract entities" 
+					hintText="Submit text for suggested entities" 
 					value={this.state.text} 
 					onChange={this.handleTextChange} 
           style={{width: 250, marginRight: 20}}
