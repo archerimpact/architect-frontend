@@ -173,8 +173,8 @@ app.get('/investigation/projectList', function(req, res) {
     })
 });
 
-app.post('/investigation/searchSources', function(req, res) {
-    var phrase = req.body.phrase;
+app.get('/investigation/searchSources', function(req, res) {
+    var phrase = req.query.phrase;
     vertex.Vertex.find({
         type: 'Source',
     })
@@ -193,7 +193,6 @@ app.post('/investigation/searchSources', function(req, res) {
                 found = found.concat(vertices[i].name)
             }
         }
-        console.log(found);
         res.send(found);
     })
 });

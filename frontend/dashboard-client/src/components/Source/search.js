@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import { List, ListItem} from 'material-ui/List';
+import axios from 'axios';
 import './style.css';
 import 'whatwg-fetch';
 var qs = require('qs');
@@ -22,23 +23,20 @@ class SearchSources extends Component {
 
     searchSubmit(event) {
         var url = 'http://localhost:8000/investigation/searchSources';
-        var options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: qs.stringify({
+        axios.get(url, {
+            params: {
                 phrase: this.state.value
-            })
-        };
-        fetch(url, options)
-        .then(res => res.json())
-        .then(json => {
-            this.setState({found: json, searched: 1});
+            }
         })
-        .catch(err => {
-            console.log('Error: could not add project because: ' + err);
-        });
+        .then(function(res) {
+            return res.data;
+        })
+        .then(data => {
+            this.setState({found: data, searched:1});
+        })
+        .catch(function (error) {
+            console.log('Error: could not search phrase because: ' + error);
+        })
 
         this.setState({value: ''});
         event.preventDefault();
