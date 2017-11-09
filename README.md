@@ -26,6 +26,5 @@ With Docker, all of your containers are basically running on a virtual linux mac
 (Note - timestamps displayed in UTC - container's default timezone.)
 
 ### Some reference documents
-
--Schema organization: https://docs.google.com/document/d/1KAHugkCjzoh1-G-FfDljJjswe48g6w6oxeMiKCyLVJo/edit
+- Schema organization: https://docs.google.com/document/d/1KAHugkCjzoh1-G-FfDljJjswe48g6w6oxeMiKCyLVJo/edit
 - Routes API: https://docs.google.com/document/d/1yE-oxyeGPGvXth3nnrQnyXMz6Ly9hl1u-gLx7EeNVFk/edit

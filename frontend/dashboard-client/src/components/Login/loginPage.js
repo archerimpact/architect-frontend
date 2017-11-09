@@ -2,7 +2,7 @@ import React from 'react';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 // import { authenticate } from "../server/index";
-import {authenticateAccount} from "../server/transport-layer";
+import {authenticateAccount} from "../../server/transport-layer";
 
 class LoginPage extends React.Component {
     constructor(props) {
@@ -31,6 +31,7 @@ class LoginPage extends React.Component {
         var isAuthed = authenticateAccount({username: this.state.email, password: this.state.password});
         isAuthed.then(function(response) {
             if (response.success) {
+                // TODO: Route to correct place
                 self.props.history.push('/links');
             } else {
                 self.props.history.push('/login');

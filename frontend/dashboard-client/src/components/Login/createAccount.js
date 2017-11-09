@@ -1,8 +1,8 @@
 import React from 'react';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import { register } from "../server/index";
-import { registerAccount } from "../server/transport-layer";
+import { register } from "../../server/index";
+import { registerAccount } from "../../server/transport-layer";
 
 class CreateAccount extends React.Component {
     constructor(props) {
@@ -32,13 +32,10 @@ class CreateAccount extends React.Component {
 
     handleSubmit(event) {
         // TODO: Implement form validation
-        console.log("createAccount - handleSubmit");
-        // var result = register({username: this.state.email, password: this.state.password});
         var result = registerAccount({username: this.state.email, password: this.state.password});
     }
 
     render() {
-        // alert('testing!');
         return (
             <div className='rows' style={{textAlign:"center", marginTop:40}} >
                 <p> Please enter your details below to create a new account. </p>

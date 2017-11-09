@@ -15,43 +15,28 @@ var express = require('express'),
     fs = require('fs'),
     PDFParser = require("pdf2json");
 
-app.use('/investigation', require('./controllers/investigation'));
-
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
-
-const db_url = configData.db_url;
 mongoose.Promise = Promise;
-const db_options = {
-    useMongoClient: true,
-    promiseLibrary: global.Promise,
-    keepAlive: 1,
-    connectTimeoutMS: 30000,
-    reconnectTries: Number.MAX_VALUE,
-    reconnectInterval: 1000,
-};
-
-mongoose.connect(db_url,
-    db_options);
+mongoose.connect(configData.db_url, configData.db_options);
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
 module.exports = {
-  app,
-  db
+    app,
+    db
 };
 
 // Use environment defined port or 8000
 var port = process.env.PORT || 8000;
-app.set('port', port)
+app.set('port', port);
+app.listen(app.get('port'), function() {
+    console.log("Node app is running at localhost:" + app.get('port'))
+});
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-app.listen(app.get('port'), function() {
-    console.log("Node app is running at localhost:" + app.get('port'))
-});
+app.use('/investigation', require('./controllers/investigation'));
 
 //////////// Setting Headers (CORS) ////////////
 app.use(function (req, res, next) {
@@ -122,6 +107,6 @@ app.get('*', function(req, res) {
     res.status(404).send('Not found');
 });
 
-app.listen(port, process.env.IP, function() {
-    console.log("Server has started on port: "+ port);
-});
+// app.listen(port, process.env.IP, function() {
+//     console.log("Server has started on port: " + port);
+// });
