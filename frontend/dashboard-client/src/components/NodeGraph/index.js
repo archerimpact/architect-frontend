@@ -1,10 +1,39 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
+import Checkbox from 'material-ui/Checkbox';
+
+const styles = {
+  block: {
+    maxWidth: 250,
+  },
+  checkbox: {
+    marginBottom: 16,
+  },
+};
 
 class NodeGraph extends Component {
 /* Takes as props a list of entities and a list of sources */
 
-	createNodes(entities, documents) {
+	constructor(props) {
+    super(props);
+    this.state = {
+      text: true
+    }
+  }
+
+  uniqueNodes(nodes) {
+    var obj = {};
+
+    for ( var i=0, len=nodes.length; i < len; i++ )
+        obj[nodes[i]['id']] = nodes[i];
+
+    nodes = [];
+    for ( var key in obj )
+        nodes.push(obj[key]);
+    return nodes;
+  }
+
+  createNodes(entities, documents) {
 		/* Takes in a list of entities and documents and maps it to a 
 			list of nodes for the d3 simulation */
 
@@ -12,9 +41,9 @@ class NodeGraph extends Component {
 			return {"id": entity.name, "name": entity.name, "type": entity.type};
 		});
 		var documentNodes = documents.map((document) => {
-			return {"id": document._id, "name": document.title, "type": "DOCUMENT"};
+			return {"id": document._id, "name": document.name, "type": "DOCUMENT"};
 		});
-		return documentNodes.concat(entityNodes);
+		return documentNodes.concat(this.uniqueNodes(entityNodes));
 	};
 
 	createLinks(entities, documents) {
@@ -58,23 +87,35 @@ class NodeGraph extends Component {
 	};
 
 	getNodeColor(node) {
-		/* returns the color of the node based on the type of the entity */
+		/* returns the color of the node based on the type of the entity.
+        All caps refers to an entity-extractor generated entity, lowercase
+        is user-defined. TO-DO: refactor this to make more sense later.
+     */
 
-		if (node.type === "Person" || node.type === "PERSON") {
-			return "#FFB7A0";
-		};
-		if ( node.type === "DOCUMENT") {
-			return "#3EE8D3";
-		};
-		if (node.type ==="ORGANIZATION" || node.type === "Company") {
-			return "#FAAAFF";
-		};
-		if (node.type === "Location" || node.type === "LOCATION") {
-			return "#5163FF";
-		};
-		if (node.type === "NATIONALITY") {
-			return "#95FF6F";
-		};
+    if (node.type === "PERSON") {
+      return "#83DFFF"
+    }
+    if (node.type === "ORGANIZATION") {
+      return "#76C9E5"
+    }
+    if (node.type === "LOCATION" || node.type === "NATIONALITY") {
+      return "#62A8BF"
+    }
+    if (node.type === "DOCUMENT") {
+      return "#49FFB7"
+    }
+    if (node.type === "Person") {
+      return "#DA5DFF"
+    }
+    if (node.type === "Company") {
+      return "#A346BF"
+    }
+    if (node.type === "Location") {
+      return "#C454E5"
+    }
+    else {
+      return "#41707F"
+    }
 	};
 
   getImage(node) {
@@ -95,7 +136,17 @@ class NodeGraph extends Component {
     };
   }
 
-	generateNetworkCanvas(entities, sources) {
+  getCollide(node) {
+    if (node.type==="DOCUMENT") {
+      return 60
+    }
+    else {
+      return 20
+    }
+
+  }
+
+	generateNetworkCanvas(entities, sources, includeText) {
 		/* The entire logic for generating a d3 forceSimulation graph */
 		if (typeof(sources[0]) === "undefined") {
 			sources = [];
@@ -115,7 +166,10 @@ class NodeGraph extends Component {
 		const simulation = d3.forceSimulation(data.nodes)
 			.force("center", d3.forceCenter(width/2, height/2))
 			.force("charge", d3.forceManyBody())
-			.force("link", d3.forceLink().distance(60).id(function(d) { return d.id; }));
+			.force("link", d3.forceLink(linkNodes).id(function(d) { return d.id; }))
+      /* Commented this out because it doesn't function well for large graphs
+      .force("collide", d3.forceCollide((d) => this.getCollide(d))); 
+      */
 
 		const svg = d3.select(this.refs.mountPoint)
 			.append('svg')
@@ -124,7 +178,9 @@ class NodeGraph extends Component {
 			.attr('display', "block")
 			.attr('margin', "auto")
 			.attr('id', 'svg1')
+      /* Commented this out because we don't need the zoom function now
       .call(d3.zoom().on("zoom", redraw))
+      */
 
 		const linkElements = svg.selectAll('line')
 			.data(data.links)
@@ -146,19 +202,23 @@ class NodeGraph extends Component {
 			.style('stroke-width', 1.5)
 			.style('fill', (d) => this.getNodeColor(d));
 
+    /* Commented this out because it's for adding images to the graph and it's too cluttered
+
     nodeElements.append('image')
       .attr("xlink:href", (d) => this.getImage(d))
       .attr("height", 20)
-      .attr("width", 20);
+      .attr("width", 20);*/
     
 		svg.selectAll('g').call(d3.drag()
 			.on("start", dragstarted)
 			.on("drag", dragged)
 			.on("end", dragended));
 
-		nodeElements.append('text')
+		if (this.state.text === true) {
+      nodeElements.append('text')
 			.style("font-size", "12px")
 			.text((d) => d.name);
+    }
 
 		simulation.on('tick', () => {
 			linkElements
@@ -170,14 +230,14 @@ class NodeGraph extends Component {
 				.attr('transform', (d) => {return 'translate(' + d.x + ',' + d.y + ')'});
 		});
 
-		simulation.force("link").links(data.links);
+		//simulation.force("link").links(data.links);
 
 		function dragstarted(d) {
 			if (!d3.event.active) {
 				simulation.alphaTarget(0.3).restart();
-				d.fx = d.x;
-				d.fy = d.y;
 			};
+      d.fx = d.x;
+      d.fy = d.y;
 		};
 
 		function dragged(d) {
@@ -188,23 +248,29 @@ class NodeGraph extends Component {
 		function dragended(d) {
 			if (!d3.event.active) {
 				simulation.alphaTarget(0);
-				d.fx = null;
-				d.fy = null;
 			};
+      d.fx = null;
+      d.fy = null;
 		};
 
+    /* Commented out because it's part of the zoom functionality that we don't need
     function redraw() {
       svg.attr("transform", d3.event.transform);
     }
+    */
 	};
+
+  updateGraph(entities, sources) {
+    const mountPoint = d3.select('#svgdiv');
+    mountPoint.selectAll("svg").remove();
+    this.generateNetworkCanvas(entities, sources);
+  }
 
   componentWillReceiveProps(nextProps) {		
 		/* When the props update (aka when there's a new entity or relationship), 
 			delete the old graph and create a new one */
 
-		const mountPoint = d3.select('#svgdiv');
-		mountPoint.selectAll("svg").remove();
-		this.generateNetworkCanvas(nextProps.entities, nextProps.sources);
+		this.updateGraph(nextProps.entities, nextProps.sources);
 	};
 
 	componentDidMount = () => {
@@ -213,9 +279,26 @@ class NodeGraph extends Component {
 		this.generateNetworkCanvas(this.props.entities, this.props.sources);
 	};
 
+  updateCheck() {
+    this.setState((oldState) => {
+      return {
+        text: !oldState.text,
+      };
+    });
+    this.updateGraph(this.props.entities, this.props.sources);
+  }
+
 	render() {
 		return (
 			<div>
+        <div style={{position:"absolute"}}>
+          <Checkbox
+            label="Include Text"
+            checked={this.state.text}
+            onCheck={this.updateCheck.bind(this)}
+            style={styles.checkbox}
+          />
+        </div>
 				<div id="svgdiv" ref="mountPoint" />
 			</div>
 		);
