@@ -74,6 +74,7 @@ class NodeGraph extends Component {
 		});
 	};
 
+
 	/* TO-DO: refactor so that this method takes entities and maps a connection
 		 to sources if and only if the source appears in this graph */
 	sourceToLinks(document) {
