@@ -7,7 +7,6 @@ import {
 	TableRow,
 	TableRowColumn,
 } from 'material-ui/Table';
-
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
