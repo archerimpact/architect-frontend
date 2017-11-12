@@ -3,10 +3,10 @@ services:
   backend:
     build: backend
     restart: always
-    command: nodemon --inspect=5858 # change back to node app.js when not for nodemon
+    command: nodemon --inspect=5858 # change back to `node app.js` when not for nodemon
     volumes:
       - ./backend:/node
-      - /node/node_modules
+      - backend_node_modules:/node/node_modules
     ports:
       - "8000:8000"
       - "5858:5858"
@@ -16,8 +16,11 @@ services:
     command: yarn start
     volumes:
       - ./frontend/dashboard-client:/code
-      - /code/node_modules
+      - frontend_node_modules:/code/node_modules
     ports:
       - "3000:3000"
     depends_on:
       - backend
+volumes:
+  backend_node_modules:
+  frontend_node_modules:

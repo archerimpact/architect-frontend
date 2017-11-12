@@ -1,4 +1,4 @@
-import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES} from './actionTypes';
+import { ADD_LINK, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES, USER_LOGIN } from './actionTypes';
 
 export function addLink(link) {
 	return {
@@ -29,10 +29,10 @@ export function addSources(sources){
 }
 
 export function addTag(entities, name, tag) {
-	let entity = entities.find(x => x.name === name)
-	const index = entities.indexOf(entity)
-	entities[index] = Object.assign({}, entities[index])
-	entities[index].tags = entities[index].tags.concat([tag])	
+	let entity = entities.find(x => x.name === name);
+	const index = entities.indexOf(entity);
+	entities[index] = Object.assign({}, entities[index]);
+	entities[index].tags = entities[index].tags.concat([tag]);
 	return {
 		type: ADD_TAG,
 		payload: entities
@@ -82,8 +82,3 @@ export function retrieveDetails(actionType, res) {
 // 	}
 // }
 
-export function logOutUser() {
-	return {
-		type: USER_LOGOUT,
-	};
-}

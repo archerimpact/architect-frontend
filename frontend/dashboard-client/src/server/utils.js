@@ -1,10 +1,11 @@
 import 'whatwg-fetch';
+import { configData } from '../config.js';
 
 export function saveDocument(file) {
     const data = new FormData();
     data.append('file', file);
     data.append('originalname', 'random_file_name');
-    var url = 'http://localhost:8000/investigation/pdf';
+    var url = configData.backend_url + '/investigation/pdf';
     var options = {
         method: 'POST',
         body: data

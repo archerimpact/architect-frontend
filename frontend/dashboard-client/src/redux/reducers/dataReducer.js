@@ -1,4 +1,4 @@
-import { ADD_LINK, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES } from '../actions/actionTypes';
+import { ADD_LINK, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES, USER_LOGIN } from '../actions/actionTypes';
 import initialState from './initialState';
 
 export default function (state = initialState, action) {
@@ -11,7 +11,7 @@ export default function (state = initialState, action) {
 					status: 'isLoaded',
 					links: state.savedLinks.links.concat(action.payload)
 				}
-			}
+			};
 		case ADD_ENTITY:
 			return {
 				...state,
@@ -21,7 +21,7 @@ export default function (state = initialState, action) {
 					entities: state.savedEntities.entities.concat(action.payload)
 				},
 				entityNames: state.entityNames.concat(action.payload.name)
-			}
+			};
 		case ADD_ENTITIES:
 			return {
 				...state,
@@ -31,7 +31,7 @@ export default function (state = initialState, action) {
 					entities: action.payload.map((entity) => {return {name: entity.name, type: entity.type, link: '', tags: [], sources:[entity.sourceid], qid: entity.qid}})
 				},
 				entityNames: action.payload.map((entity) => {return entity.name})
-			}
+			};
 		case ADD_SOURCES:
 			return {
 				...state,
@@ -40,7 +40,7 @@ export default function (state = initialState, action) {
 					status: 'isLoaded',
 					documents: action.payload
 				},
-			}				
+			};
 
 		case ADD_TAG:
 			return {
@@ -50,7 +50,7 @@ export default function (state = initialState, action) {
 					status: 'isLoaded',
 					entities: action.payload
 				},
-			}
+			};
 		default:
 			return state;
 	}
