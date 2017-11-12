@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
+import { isAuthenticated as isAuthed} from '../../server/transport-layer.js';
 
 //Mock of an Auth method, can be replaced with an async call to the backend. Must return true or false
-const isAuthenticated = () => true;
+const isAuthenticated = () => {
+  isAuthed().then(() => {
+    console.log('authed')})
+  .catch(err => console.log(err))
+};
 
 const PRIVATE_ROOT = '/private';
 const PUBLIC_ROOT = '/login';
