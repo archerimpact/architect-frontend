@@ -91,7 +91,11 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
         });
         pdfParser.loadPDF(pdf_dest);
 
+<<<<<<< HEAD
         var content = fs.readFileSync(text_dest, "utf8")
+=======
+        var content = fs.readFileSync(text_dest, "utf8");
+>>>>>>> 6fe97e73f2cb1e122c2815becd0a0de2eb211c63
 
         callEntityExtractor(content, function(response) {
           saveDoc(content, name, response.entities)
@@ -164,17 +168,17 @@ app.post('/investigation/project', function(req, res) {
 
 app.get('/investigation/projectList', function(req, res) {
     Project.find(function (err, projects) {
-        var names = [];
+        var project_dict = {};
         if (err) return console.error(err);
         for (var i = 0; i < projects.length; i++) {
-            names = names.concat(projects[i].name)
+            project_dict[projects[i].name] = projects[i];
         }
-        res.send(names);
+        res.send(project_dict);
     })
 });
 
-app.post('/investigation/searchSources', function(req, res) {
-    var phrase = req.body.phrase;
+app.get('/investigation/searchSources', function(req, res) {
+    var phrase = req.query.phrase;
     vertex.Vertex.find({
         type: 'Source',
     })
