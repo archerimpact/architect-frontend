@@ -179,7 +179,7 @@ class NodeGraph extends Component {
 		const simulation = d3.forceSimulation(data.nodes)
 			.force("center", d3.forceCenter(width/2, height/2))
 			.force("charge", d3.forceManyBody())
-      .force("collide", d3.forceCollide((d) => this.getCollide(d)))
+      //.force("collide", d3.forceCollide((d) => this.getCollide(d)))
 			.force("link", d3.forceLink(linkNodes).id(function(d) { return d.id; }));
 
 		const svg = d3.select(this.refs.mountPoint)
