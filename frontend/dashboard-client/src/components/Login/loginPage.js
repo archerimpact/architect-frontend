@@ -38,9 +38,10 @@ class LoginPage extends React.Component {
         .then(data => {
             if (data.success) {
                 self.props.dispatch(actions.userLogIn());
-                this.setState({username: null, password: null, redirectToReferrer: true})
+                self.setState({email: '', password: '', redirectToReferrer: true})
             } else {
-                this.setState({username: null, password: null, error: true})
+                debugger
+                self.setState({password: '', error: true})
             }
         })
         .catch(err => console.log('Couldnt authenticate'))
