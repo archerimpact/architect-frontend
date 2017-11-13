@@ -91,11 +91,7 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
         });
         pdfParser.loadPDF(pdf_dest);
 
-<<<<<<< HEAD
         var content = fs.readFileSync(text_dest, "utf8")
-=======
-        var content = fs.readFileSync(text_dest, "utf8");
->>>>>>> 6fe97e73f2cb1e122c2815becd0a0de2eb211c63
 
         callEntityExtractor(content, function(response) {
           saveDoc(content, name, response.entities)
