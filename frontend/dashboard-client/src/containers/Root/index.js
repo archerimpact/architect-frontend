@@ -1,15 +1,12 @@
 import React, {Component} from 'react';
-import {BrowserRouter as Router} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom';
 import { Provider } from 'react-redux';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import { PersistGate } from 'redux-persist/es/integration/react'
 
-import Route from '../Login/AuthRoute';
-import Home from '../../pages/Home/';
-import Project from '../../pages/Project/';
-import Source from '../../pages/Source/';
-import NavBar from '../../components/NavBar/';
-
+// import { isAuthenticated as isAuthed} from '../../server/transport-layer.js';
+import App from '../App/'
 import './index.css';
 // Color options: 45AD7C (darker green) or 4CBF88 (lighter green)
 const muiTheme = getMuiTheme({
@@ -19,19 +16,45 @@ const muiTheme = getMuiTheme({
 	}
 });
 
+// // const PrivateRoute = ({ component: Component, ...rest }) => (
+// //   <Route {...rest} render={props => (
+// //     auth.isAuthenticated ? (
+// //       <Component {...props}/>
+// //     ) : (
+// //       <Redirect to={{
+// //         pathname: '/login',
+// //         state: { from: props.location }
+// //       }}/>
+// //     )
+// //   )}/>
+// // )
+
+// const auth = {
+//   isAuthenticated: false,
+//   authenticate(cb) {
+//     // this.isAuthenticated = true
+//     isAuthed().then(res =>
+//     	this.isAuthenticated = res)
+//     .catch(err => console.log(err))
+//   },
+//   signout(cb) {
+//     this.isAuthenticated = false
+//     setTimeout(cb, 100)
+//   }
+// }
+
 export default class Root extends Component {
 	render() {
 		return (
 			<MuiThemeProvider muiTheme={muiTheme}>
 				<Provider store={this.props.store}>
-					<Router>
-						<div>
-							<NavBar />
-							<Route exact path="/" component={Home} />
-							<Route exact path="/project/:id" component={Project} />				    		
-							<Route path="/source/:id" component={Source}/>
-						</div>
-					</Router>
+					<PersistGate loading={<div> Loading... </div>} persistor={this.props.persistor}>
+						<Router>
+							<div>
+								<App/>
+							</div>
+						</Router>
+					</PersistGate>
 				</Provider>
 			</MuiThemeProvider>
 		);

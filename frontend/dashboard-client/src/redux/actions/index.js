@@ -1,4 +1,4 @@
-import { ADD_LINK, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES, USER_LOGIN } from './actionTypes';
+import { ADD_LINK, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES, USER_LOGIN, USER_LOGOUT } from './actionTypes';
 
 export function addLink(link) {
 	return {
@@ -81,4 +81,14 @@ export function retrieveDetails(actionType, res) {
 // 			})
 // 	}
 // }
+export function userLogIn() {
+	return {
+		type: USER_LOGIN,
+	};
+}
 
+export function userLogOut() {
+	return {
+		type: USER_LOGOUT,
+	};
+}

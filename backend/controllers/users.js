@@ -7,7 +7,8 @@ exports.isAuthenticated = function(req, res, next) {
     if (req.user) {
         return next();
     } else {
-        return res.status(401).json({success: false, error: 'User not authenticated'});
+        return res.redirect('http://localhost:3000/login');
+        // return res.status(200).json({success: false, error: 'User not authenticated'});
     }
 };
 
@@ -34,7 +35,9 @@ exports.login = function(req, res, next) {
 
 exports.logout = function(req, res) {
     req.logout();
-    return res.json({ success: true });
+    // return res.json({ success: true });
+    return res.redirect('http://localhost:3000/login');
+
 };
 
 exports.register = function(req, res) {

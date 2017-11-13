@@ -21,10 +21,7 @@ mongoose.connect(configData.db_url, configData.db_options);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
-module.exports = {
-    app,
-    db
-};
+
 
 // Use environment defined port on 8000
 var port = process.env.PORT || 8000;
@@ -35,8 +32,6 @@ app.listen(app.get('port'), function() {
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-
-app.use('/investigation', require('./controllers/investigation'));
 
 //////////// Setting Headers (CORS) ////////////
 app.use(function (req, res, next) {
@@ -74,11 +69,11 @@ const sessionOptions = {
 
 app.use(session(sessionOptions));
 
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-})
+// app.use(function(req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     next();
+// })
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -110,3 +105,11 @@ app.get('*', function(req, res) {
 // app.listen(port, process.env.IP, function() {
 //     console.log("Server has started on port: " + port);
 // });
+
+module.exports = {
+    app,
+    db
+};
+
+app.use('/investigation', require('./controllers/investigation'));
+

@@ -1,40 +1,62 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 import { isAuthenticated as isAuthed} from '../../server/transport-layer.js';
 
 //Mock of an Auth method, can be replaced with an async call to the backend. Must return true or false
-const isAuthenticated = () => {
-  isAuthed().then(() => {
-    console.log('authed')})
-  .catch(err => console.log(err))
-};
+// const isAuthenticated = () => {
+//   isAuthed().then(res => {
+//     return res.success
+//   })
+//   .catch(err => {
+//     return false
+//   })
+// };
 
-const PRIVATE_ROOT = '/private';
+const PRIVATE_ROOT = '/';
 const PUBLIC_ROOT = '/login';
 
-const AuthRoute = ({component, ...props}) => {
-  const { isPrivate } = component;
-  if (isAuthenticated()) {
-    //User is Authenticated
-    if (isPrivate === true) {
-      //If the route is private the user may proceed.
-      return <Route { ...props } component={ component } />;
-    }
-    else {
-      //If the route is public, the user is redirected to the app's private root.
-      return <Redirect to={ PRIVATE_ROOT } />;
+class AuthRoute extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      isAuthenticated : false,
+      isPublic : props.component.isPublic,
     }
   }
-  else {
-    //User is not Authenticated
-    if (isPrivate === true) {
-      //If the route is private the user is redirected to the app's public root.
-      return <Redirect to={ PUBLIC_ROOT } />;
-    }
-    else {
-      //If the route is public, the user may proceed.
-      return <Route { ...props } component={ component } />;
+
+  componentDidMount() {
+    var self = this
+    isAuthed().then(res => {
+      debugger
+      self.setState({
+        isAuthenticated: res.success
+      })
+    })
+    .catch(err => {
+      debugger
+      self.setState({
+        isAuthenticated: false
+      })
+    })
+  }
+
+  render() {
+    debugger
+    if (this.state.isAuthenticated) {
+      //User is Authenticated
+      return <Route { ...this.props } component={this.props.component} />;
+    } else {
+      //User is not Authenticated
+      if (this.state.isPublic === true) {
+        //If the route is private the user is redirected to the app's public root.
+        return <Route { ...this.props } component={ this.props.component } />;
+      }
+      else {
+        //If the route is public, the user may proceed.
+        return <Redirect to={ PUBLIC_ROOT } />;
+      }
     }
   }
 };

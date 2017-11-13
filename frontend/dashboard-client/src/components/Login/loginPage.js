@@ -1,20 +1,25 @@
 import React from 'react';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import {Redirect, withRouter} from 'react-router-dom';
 // import { authenticate } from "../server/index";
 import {authenticateAccount} from "../../server/transport-layer";
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as actions from '../../redux/actions/';
 
 class LoginPage extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {
             email: '',
-            password: ''
+            password: '',
+            redirectToReferrer: false
         };
         this.handleEmailInputChange = this.handleEmailInputChange.bind(this);
         this.handlePasswordInputChange = this.handlePasswordInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-
     }
 
     handleEmailInputChange(event) {
@@ -28,19 +33,36 @@ class LoginPage extends React.Component {
     handleSubmit(event) {
         // TODO: Implement form validation
         var self = this;
-        var isAuthed = authenticateAccount({username: this.state.email, password: this.state.password});
-        isAuthed.then(function(response) {
-            if (response.success) {
-                // TODO: Route to correct place
-                self.props.history.push('/links');
-            } else {
-                self.props.history.push('/login');
-            }
+        authenticateAccount({username: this.state.email, password: this.state.password})
+        .then(data => {
+            this.setState({username: null, password: null, redirectToReferrer: true})
+            self.props.dispatch(actions.userLogIn());
         })
+        .catch(err => console.log('Couldnt authenticate'))
+        // isAuthed.then(function(response) {
+        //     if (response.success) {
+                
+        //         // TODO: Route to correct place
+        //         // <Redirect to={'/'}/>;
+        //     } else {
+        //         console.log('err')
+        //     }
+        // })
 
     }
 
     render() {
+
+        const { from } = this.props.location.state || { from: { pathname: '/' } }
+        const { redirectToReferrer } = this.state
+
+        if (redirectToReferrer) {
+            debugger
+          return (
+            <Redirect to={from}/>
+          )
+        }
+
         return (
             <div className='rows' style={{textAlign:"center", marginTop:40}}>
                 <p>Welcome back! Please login to access your investigations.</p>
@@ -65,7 +87,7 @@ class LoginPage extends React.Component {
                         hintText="**********"
                         floatingLabelText="Enter your password"
                         fullWidth={false}
-                        value={this.state.pw1}
+                        value={this.state.password}
                         style = {{width: 380, marginRight: 20}}
                         onChange={this.handlePasswordInputChange}
                         type={"password"}
@@ -86,4 +108,18 @@ class LoginPage extends React.Component {
     }
 }
 
-export default LoginPage;
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(actions, dispatch),
+        dispatch: dispatch,
+    };
+}
+
+function mapStateToProps(state) {
+    return {
+        savedEntities: state.data.savedEntities,
+        savedSources: state.data.savedSources
+    };
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LoginPage));

@@ -7,6 +7,7 @@ import AutoComplete from 'material-ui/AutoComplete';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
+import { withRouter } from 'react-router-dom';
 
 class AddEntity extends Component {
 	constructor(props){
@@ -93,4 +94,4 @@ function mapStateToProps(state) {
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddEntity);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddEntity));

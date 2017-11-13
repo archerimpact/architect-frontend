@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
 import * as server from '../../server/';
+import { withRouter } from 'react-router-dom';
 
 class SourcePage extends Component {
 	componentDidMount = () => {
@@ -66,4 +67,4 @@ function mapStateToProps(state, props) {
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SourcePage);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SourcePage));

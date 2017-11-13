@@ -5,6 +5,7 @@ import './App.css';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../actions/';
+import { withRouter } from 'react-router-dom';
 
 class SaveLinks extends Component {
 
@@ -100,4 +101,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SaveLinks);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SaveLinks));

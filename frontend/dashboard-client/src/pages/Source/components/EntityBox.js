@@ -8,6 +8,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../../redux/actions/';
+import { withRouter } from 'react-router-dom';
 
 const container_style = {
 	width: "100%",
@@ -105,4 +106,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EntityBox);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EntityBox));

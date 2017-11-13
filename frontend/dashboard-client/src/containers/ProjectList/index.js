@@ -8,8 +8,8 @@ import AddProject from './addProject';
 import './style.css';
 
 class ProjectList extends Component {
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
 		this.state = {
 			projects: [],
 		};

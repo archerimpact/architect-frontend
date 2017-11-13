@@ -44,7 +44,7 @@ class EntityCard extends Component {
         var docText15words = docText.replace(/(([^\s]+\s\s*){15})(.*)/,"$1…");
         return (
             <div>
-                <span className="type"><Link to={"/source/"+entity.sources}><b>Source:</b></Link>{" " +docText15words}</span>
+                <span className="type"><Link replace to={"/source/"+entity.sources}><b>Source:</b></Link>{" " +docText15words}</span>
             </div>
         );
     }
