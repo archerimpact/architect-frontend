@@ -5,7 +5,6 @@
   "main": "app.js",
   "author": "",
   "dependencies": {
-    "axios": "^0.17.0",
     "body-parser": "^1.18.2",
     "express": "^3.21.2",
     "express-session": "^1.15.6",

@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import { List, ListItem} from 'material-ui/List';
+import { List, ListItem } from 'material-ui/List';
 import axios from 'axios';
 import './style.css';
-import 'whatwg-fetch';
-var qs = require('qs');
 
 class SearchSources extends Component {
 	constructor(props) {

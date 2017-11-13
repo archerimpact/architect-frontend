@@ -4,8 +4,8 @@ import * as server_utils from '../../server/utils';
 import * as actions from '../../redux/actions/';
 import { Link } from 'react-router-dom';
 import ActionHome from 'material-ui/svg-icons/action/home';
-import { List, ListItem} from 'material-ui/List';
-import {red500, blue500} from 'material-ui/styles/colors';
+import { List, ListItem } from 'material-ui/List';
+import { red500, blue500 } from 'material-ui/styles/colors';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
