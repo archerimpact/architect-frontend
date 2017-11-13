@@ -15,7 +15,8 @@ class LoginPage extends React.Component {
         this.state = {
             email: '',
             password: '',
-            redirectToReferrer: false
+            redirectToReferrer: false,
+            error: false
         };
         this.handleEmailInputChange = this.handleEmailInputChange.bind(this);
         this.handlePasswordInputChange = this.handlePasswordInputChange.bind(this);
@@ -35,8 +36,12 @@ class LoginPage extends React.Component {
         var self = this;
         authenticateAccount({username: this.state.email, password: this.state.password})
         .then(data => {
-            this.setState({username: null, password: null, redirectToReferrer: true})
-            self.props.dispatch(actions.userLogIn());
+            if (data.success) {
+                self.props.dispatch(actions.userLogIn());
+                this.setState({username: null, password: null, redirectToReferrer: true})
+            } else {
+                this.setState({username: null, password: null, error: true})
+            }
         })
         .catch(err => console.log('Couldnt authenticate'))
         // isAuthed.then(function(response) {
@@ -66,6 +71,7 @@ class LoginPage extends React.Component {
         return (
             <div className='rows' style={{textAlign:"center", marginTop:40}}>
                 <p>Welcome back! Please login to access your investigations.</p>
+                {this.state.error ? <p> Error! Invalid login or password. Please try again. </p>:[]}
                     <div style={{width: "400px",
                         margin: "4em auto",
                         padding: "3em 2em 2em 2em",
