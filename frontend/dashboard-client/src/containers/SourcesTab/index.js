@@ -10,13 +10,14 @@ import {
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import Sources from '../../components/Source'
 
 class SourcesTable extends Component {
 	render() {
 		return(
 			<div>
 				<h3>Sources</h3>
-				<Link to="/links" style={{color: 'inherit' }}>View saved links</Link>
+				<Sources/>
 				<p></p>  
 				<Table
 					multiSelectable={true}

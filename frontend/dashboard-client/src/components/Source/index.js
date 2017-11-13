@@ -1,24 +1,48 @@
 import React, { Component } from 'react';
-import Paper from 'material-ui/Paper';
+import { Document, Page } from 'react-pdf/build/entry.webpack';
+import pdf_1 from './sample_files/a_dirks_news.pdf';
+import pdf_2 from './sample_files/a_news_pdf.pdf';
+import pdf_3 from './sample_files/a_pdf.pdf';
+import {Card, CardMedia, CardTitle} from 'material-ui/Card';
+import SearchSources from './search';
+import './style.css';
 
-const container_style = {
-	height:"100%",
-	width: "100%",
-	margin: 20,
-	textAlign: 'center',
-	display: 'inline-block',
-	padding: 10
-};
+class Sources extends Component {
 
-//shows just a jpg
-class Source extends Component {
-	render() {
-		return (
-			<Paper style={container_style} zDepth={3}>
-				<img alt='Source' src='http://www.webdomain.com.hk/gif/sampledoc/comhk.gif' style={{width: "90%"}}/>
-			</Paper>
-		);
-	};
+    documentList(documents) {
+        const documentItems = documents.map((document, i) => {
+            return (
+                <Card className="docCard" key={i}>
+                    <CardMedia>
+                        <Document file={document}>
+                        {
+                            <Page 
+                                className="page" 
+                                key={1} 
+                                pageNumber={1} 
+                                width={125}
+                            />
+                        }
+                        </Document>
+                    </CardMedia>
+                    <CardTitle title={document.substring(14).slice(0, -13)} subtitle="Some comments" />
+                </Card>
+                );
+            });
+        return documentItems;
+    }
+
+    render() {
+        var docs = [pdf_1, pdf_2, pdf_3];
+        return (
+            <div>
+                <SearchSources />
+                <div className="documentList">
+                    {this.documentList(docs)}
+                </div>
+            </div>
+        );
+    }
 }
 
-export default Source;
+export default Sources;

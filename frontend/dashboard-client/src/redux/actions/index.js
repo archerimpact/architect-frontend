@@ -1,4 +1,5 @@
-import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES} from './actionTypes';
+import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES, STORE_PROJECTS} from './actionTypes';
+import * as server_utils from '../../server/utils';
 
 export function addLink(link) {
 	return {
@@ -81,6 +82,25 @@ export function retrieveDetails(actionType, res) {
 // 			})
 // 	}
 // }
+
+export function fetchProjects() {
+	return function (dispatch, getState) {
+		return server_utils.getProjectList()
+			.then(projects => {
+				dispatch(storeProjects(projects));
+			})
+			.catch(err => {
+				console.log(err)
+			});
+	};
+}
+
+export function storeProjects(projects) {
+	return {
+		type: STORE_PROJECTS,
+		payload: projects
+	};
+}
 
 export function logOutUser() {
 	return {
