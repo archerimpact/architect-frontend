@@ -43,15 +43,6 @@ class ProjectPage extends Component {
   						<h3>{"Projects  >  " + this.props.currentProject.name}</h3>
   					</div>
   					<div id="notifications">
-  						{/*<Badge
-  						  badgeContent={10}
-  						  secondary={true}
-  						  badgeStyle={{top: 12, right: 12}}
-  						>
-  						  <IconButton tooltip="Notifications">
-  							<NotificationsIcon />
-  						  </IconButton>
-  						</Badge>*/}
               <AddInformation projectid={this.props.match.params.id}/>
   					</div>
   				</div>
