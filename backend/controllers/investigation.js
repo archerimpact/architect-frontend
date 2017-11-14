@@ -128,8 +128,10 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
         });
         pdfParser.loadPDF(pdf_dest);
 
-        callEntityExtractor(fs.readFileSync(text_dest, "utf8"), function(response) {
-          saveDoc(fs.readFileSync(text_dest, "utf8"), name, response.entities)
+        var content = fs.readFileSync(text_dest, "utf8");
+
+        callEntityExtractor(content, function(response) {
+          saveDoc(content, name, response.entities)
         })
             .then(item => {
                 res.send("PDF Converted To Text Success");
@@ -181,24 +183,6 @@ app.get('/investigation/source', function(req,res) {
     })
     .catch((err)=>{console.log(err)})
 })
-
-app.get('/investigation/projectList', function(req, res) {
-    db.collection('projects').find({}).toArray(function(err, result) {
-      if (err) throw err;
-      res.send(result);
-    });
-    /*Project.find(function (err, projects) {
-        var names = [];
-        if (err) return console.error(err);
-        for (var i = 0; i < projects.length; i++) {
-            names = names.concat(projects[i].name)
-        }
-        projects.toArray(function(err, result) {
-          if (err) throw err;
-          res.send(result)
-        })
-    }) */
-});
 
 app.post('/investigation/project', function(req, res) {
     var project = {
@@ -309,21 +293,34 @@ app.get('/investigation/project/sources', function(req, res) {
 
       /* if the project's array of sources doesn't exist, return an empty array */
       if (vertexes.length === 0) {
-        res.send([])
+        res.send([]);
       }
       vertexesToResponse(vertexes, "Source", function(response) {
         if (response.length === vertexes.length) {
-          res.send(response)
+          res.send(response);
+        };
+      });
+    });
+  });
+
+app.get('/investigation/projectList', function(req, res) {
+    Project.find(function (err, projects) {
+        var project_dict = {};
+        if (err) return console.error(err);
+        for (var i = 0; i < projects.length; i++) {
+            project_dict[projects[i].name] = projects[i];
         }
-      })
+        res.send(project_dict);
     })
     .catch((err) => {console.log(err)})
   })
 })
 
-app.post('/investigation/searchSources', function(req, res) {
-    var phrase = req.body.phrase;
-    vertex.Vertex.find()
+app.get('/investigation/searchSources', function(req, res) {
+    var phrase = req.query.phrase;
+    vertex.Vertex.find({
+        type: 'Source',
+    })
     .populate({
         path: 'source',
         populate: {
@@ -335,7 +332,7 @@ app.post('/investigation/searchSources', function(req, res) {
         var found = [];
         if (err) return console.error(err);
         for (var i = 0; i < vertices.length; i++) {
-            if (vertices[i].source.source.content.search(phrase) != -1) {
+            if (vertices[i].source.source.content && vertices[i].source.source.content.search(phrase) != -1) {
                 found = found.concat(vertices[i].name)
             }
         }
