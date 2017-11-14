@@ -6,7 +6,7 @@ import EntitiesTab from '../../containers/EntityTab';
 import NodeGraph from '../../components/NodeGraph';
 import SourcesTab from '../../containers/SourcesTab';
 import PDFUploader from '../../components/PDFUploader';
-import AddInformation from '../../components/Entity/AddInformation';
+import AddInformation from '../../containers/AddInformation';
 
 import Paper from 'material-ui/Paper';
 import {Tabs, Tab} from 'material-ui/Tabs';

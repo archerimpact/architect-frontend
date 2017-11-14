@@ -97,7 +97,6 @@ export function createEntity(entity) {
     return server.addEntity(entity.name, entity.type, entity.sources, entity.projectid)
       .then(data => {
         dispatch(addEntity(entity));
-        debugger
       })
       .catch(err => {
         console.log(err);

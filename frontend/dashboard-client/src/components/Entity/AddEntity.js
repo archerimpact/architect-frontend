@@ -26,7 +26,7 @@ class AddEntity extends Component {
 
 	handleSubmit = (event) => {
 		event.preventDefault();
-		this.props.actions.createEntity({name: this.state.nameFieldValue, type: this.state.typeFieldValue, link: "", tags: [this.state.tagFieldValue], sources: [this.props.sourceid], projectid: this.props.projectid});
+		this.props.onEntitySubmit({name: this.state.nameFieldValue, type: this.state.typeFieldValue, link: "", tags: [this.state.tagFieldValue], sources: [this.props.sourceid], projectid: this.props.projectid});
 		this.setState({
 			nameFieldValue: '',
 			typeFieldValue: '',
