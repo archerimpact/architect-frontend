@@ -242,12 +242,15 @@ export function addEntity(name, type, sources, project) {
             project: project
         })
     };
-    fetch(url, options)
-    .then(response => {
-        // TODO: depending on the response, give user information about project add
-        console.log(response);
-    })
-    .catch(err => {
-        console.log('Error: could not add entity because: ' + err);
+
+    return new Promise(function(fulfill, reject) {
+      fetch(url, options)
+      .then(response => {
+          // TODO: depending on the response, give user information about project add
+          fulfill(response);
+      })
+      .catch(err => {
+          console.log('Error: could not add entity because: ' + err);
+      });
     });
 }

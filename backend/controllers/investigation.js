@@ -216,6 +216,10 @@ app.post('/investigation/entity', function(req, res){
       {_id : mongoose.Types.ObjectId(req.body.project)},
       {$push: {entities: entityid}}
     )
+    .then(data => {
+      res.send("Finished creating entity.")
+    })
+    .catch((err) => {console.log(err)});
 })
 
 function vertexesToResponse(vertexes, type, callback) {

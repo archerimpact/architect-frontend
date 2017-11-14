@@ -92,16 +92,29 @@ export function retrieveDetails(actionType, res) {
 // 	}
 // }
 
+export function createEntity(entity) {
+  return function (dispatch, getState) {
+    return server.addEntity(entity.name, entity.type, entity.sources, entity.projectid)
+      .then(data => {
+        dispatch(addEntity(entity));
+        debugger
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+}
+
 export function fetchSource(sourceid) {
   return function (dispatch, getState) {
     return server.getSource(sourceid)
       .then(data => {
-        dispatch(storePendingEntities(data.entities))
-        dispatch(storeSources(data.documents))
+        dispatch(storePendingEntities(data.entities));
+        dispatch(storeSources(data.documents));
       })
       .catch(err => {
         console.log(err)
-      })
+      });
   }
 }
 
@@ -109,24 +122,26 @@ export function fetchProjectEntities(projectid) {
   return function (dispatch, getState) {
     return server.getProjectEntities(projectid)
       .then(entities => {
-        dispatch(storeEntities(entities))
+        dispatch(storeEntities(entities));
       })
       .catch(err => {
         console.log(err)
-      })
+      });
   }
 }
 
-export function fetchSuggestedEntities(projectid) {
+export function fetchProjectSources(projectid) {
   return function(dispatch, getState) {
-    server.getSuggestedEntities(projectid)
+    return server.getSuggestedEntities(projectid)
       .then((data) => {
         dispatch(storePendingEntities(data.entities))
-        //dispatch(storeSources(data.documents));
-    }).catch((err) => console.log(err));
+        dispatch(storeSources(data.documents));
+      })
+      .catch((err) => console.log(err));
   }
 }
 
+/*
 export function fetchProjectSources(projectid) {
   return function (dispatch, getState) {
     return server.getProjectSources(projectid)
@@ -138,6 +153,7 @@ export function fetchProjectSources(projectid) {
       })
   }
 }
+*/
 
 export function fetchProject(projectid) {
   return function(dispatch, getState) {

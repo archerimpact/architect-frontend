@@ -27,7 +27,6 @@ class ProjectPage extends Component {
     this.props.actions.fetchProject(this.props.match.params.id);
     this.props.actions.fetchProjectEntities(this.props.match.params.id);
     this.props.actions.fetchProjectSources(this.props.match.params.id);
-    this.props.actions.fetchSuggestedEntities(this.props.match.params.id);
 	};
 
 	render() {

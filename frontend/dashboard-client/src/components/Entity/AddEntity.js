@@ -26,8 +26,7 @@ class AddEntity extends Component {
 
 	handleSubmit = (event) => {
 		event.preventDefault();
-    server.addEntity(this.state.nameFieldValue, this.state.typeFieldValue, [], this.props.projectid)
-		this.props.dispatch(actions.addEntity({name: this.state.nameFieldValue, type: this.state.typeFieldValue, link: "", tags: [this.state.tagFieldValue], sources: [this.props.sourceid]}));
+		this.props.actions.createEntity({name: this.state.nameFieldValue, type: this.state.typeFieldValue, link: "", tags: [this.state.tagFieldValue], sources: [this.props.sourceid], projectid: this.props.projectid});
 		this.setState({
 			nameFieldValue: '',
 			typeFieldValue: '',
