@@ -92,7 +92,7 @@ export function retrieveDetails(actionType, res) {
 // 	}
 // }
 
-export function getSource(sourceid) {
+export function fetchSource(sourceid) {
   return function (dispatch, getState) {
     return server.getSource(sourceid)
       .then(data => {
@@ -105,7 +105,7 @@ export function getSource(sourceid) {
   }
 }
 
-export function getProjectEntities(projectid) {
+export function fetchProjectEntities(projectid) {
   return function (dispatch, getState) {
     return server.getProjectEntities(projectid)
       .then(entities => {
@@ -117,9 +117,9 @@ export function getProjectEntities(projectid) {
   }
 }
 
-export function getPendingEntities(projectid) {
+export function fetchSuggestedEntities(projectid) {
   return function(dispatch, getState) {
-    server.loadEntities(projectid)
+    server.getSuggestedEntities(projectid)
       .then((data) => {
         dispatch(storePendingEntities(data.entities))
         //dispatch(storeSources(data.documents));
@@ -127,7 +127,7 @@ export function getPendingEntities(projectid) {
   }
 }
 
-export function getProjectSources(projectid) {
+export function fetchProjectSources(projectid) {
   return function (dispatch, getState) {
     return server.getProjectSources(projectid)
       .then(sources => {
@@ -139,7 +139,7 @@ export function getProjectSources(projectid) {
   }
 }
 
-export function getProject(projectid) {
+export function fetchProject(projectid) {
   return function(dispatch, getState) {
     return server.getProject(projectid)
       .then(project => {

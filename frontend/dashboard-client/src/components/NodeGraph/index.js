@@ -18,18 +18,18 @@ class NodeGraph extends Component {
     super(props);
     this.state = {
       text: true
-    }
+    };
   }
 
   uniqueNodes(nodes) {
     var obj = {};
 
     for ( var i=0, len=nodes.length; i < len; i++ )
-        obj[nodes[i]['id']] = nodes[i];
+      obj[nodes[i]['id']] = nodes[i];
 
-    nodes = new Array();
+    nodes = [];
     for ( var key in obj )
-        nodes.push(obj[key]);
+      nodes.push(obj[key]);
     return nodes;
   }
 
@@ -89,48 +89,33 @@ class NodeGraph extends Component {
 
 	getNodeColor(node) {
 		/* returns the color of the node based on the type of the entity */
-
-		/*if (node.type === "Person" || node.type === "PERSON") {
-			return "#FFB7A0";
-		};
-		if ( node.type === "DOCUMENT") {
-			return "#3EE8D3";
-		};
-		if (node.type ==="ORGANIZATION" || node.type === "Company") {
-			return "#FAAAFF";
-		};
-		if (node.type === "Location" || node.type === "LOCATION") {
-			return "#5163FF";
-		};
-		if (node.type === "NATIONALITY") {
-			return "#95FF6F";
-		};*/
     if (node.type === "PERSON") {
-      return "#83DFFF"
+      return "#83DFFF";
     }
     if (node.type === "ORGANIZATION") {
-      return "#76C9E5"
+      return "#76C9E5";
     }
     if (node.type === "LOCATION" || node.type === "NATIONALITY") {
-      return "#62A8BF"
+      return "#62A8BF";
     }
     if (node.type === "DOCUMENT") {
-      return "#49FFB7"
+      return "#49FFB7";
     }
     if (node.type === "Person") {
-      return "#DA5DFF"
+      return "#DA5DFF";
     }
     if (node.type === "Company") {
-      return "#A346BF"
+      return "#A346BF";
     }
     if (node.type === "Location") {
-      return "#C454E5"
+      return "#C454E5";
     }
     else {
-      return "#41707F"
+      return "#41707F";
     }
 	};
 
+  /* For getting an image for node types
   getImage(node) {
     if (node.type === "Person" || node.type === "PERSON") {
       return "https://www.materialui.co/materialIcons/social/person_grey_192x192.png";
@@ -147,16 +132,15 @@ class NodeGraph extends Component {
     if (node.type === "NATIONALITY") {
       return "https://cdn0.iconfinder.com/data/icons/buntu-trade/100/flag_glyph_convert-512.png";
     };
-  }
+  } */
 
   getCollide(node) {
     if (node.type==="DOCUMENT") {
-      return 60
+      return 60;
     }
     else {
-      return 20
+      return 20;
     }
-
   }
 
 	generateNetworkCanvas(entities, sources, includeText) {
@@ -189,7 +173,8 @@ class NodeGraph extends Component {
 			.attr('display', "block")
 			.attr('margin', "auto")
 			.attr('id', 'svg1')
-      //.call(d3.zoom().on("zoom", redraw))
+      /* Code for enabling zoom.
+      .call(d3.zoom().on("zoom", redraw)) */
 
 		const linkElements = svg.selectAll('line')
 			.data(data.links)
@@ -211,10 +196,12 @@ class NodeGraph extends Component {
 			.style('stroke-width', 1.5)
 			.style('fill', (d) => this.getNodeColor(d));
 
-    /*nodeElements.append('image')
+    /* Code for attaching an image to each node.
+
+    nodeElements.append('image')
       .attr("xlink:href", (d) => this.getImage(d))
       .attr("height", 20)
-      .attr("width", 20);*/
+      .attr("width", 20); */
     
 		svg.selectAll('g').call(d3.drag()
 			.on("start", dragstarted)
@@ -237,8 +224,6 @@ class NodeGraph extends Component {
 				.attr('transform', (d) => {return 'translate(' + d.x + ',' + d.y + ')'});
 		});
 
-		//simulation.force("link").links(data.links);
-
 		function dragstarted(d) {
 			if (!d3.event.active) {
 				simulation.alphaTarget(0.3).restart();
@@ -260,9 +245,11 @@ class NodeGraph extends Component {
       d.fy = null;
 		};
 
+    /* for zoom 
     function redraw() {
       svg.attr("transform", d3.event.transform);
     }
+    */
 	};
 
   updateGraph(entities, sources) {
