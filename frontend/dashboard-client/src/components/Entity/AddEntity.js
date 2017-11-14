@@ -4,12 +4,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import AutoComplete from 'material-ui/AutoComplete';
 
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-
-import * as actions from '../../redux/actions/';
-import * as server from '../../server/';
-
 class AddEntity extends Component {
 	constructor(props){
 		super(props);
@@ -81,18 +75,4 @@ class AddEntity extends Component {
 	};
 };
 
-function mapDispatchToProps(dispatch) {
-	return {
-		actions: bindActionCreators(actions, dispatch),
-		dispatch: dispatch,
-	};
-};
-
-function mapStateToProps(state) {
-	return {
-		savedEntities: state.data.savedEntities,
-		entityTypes: state.data.entityTypes,
-	};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddEntity);
+export default AddEntity;
