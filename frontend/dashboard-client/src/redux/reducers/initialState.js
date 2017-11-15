@@ -34,5 +34,5 @@ export default {
 		status: 'isLoading',
     projects: []
 	},
-  currentProject: {name: "Sample"}
+  currentProject: {_id: 0, name: "Sample"}
 }

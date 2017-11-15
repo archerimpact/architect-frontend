@@ -306,8 +306,9 @@ app.get('/investigation/project/sources', function(req, res) {
       });
     });
   });
+});
 
-app.get('/investigation/projectList', function(req, res) {
+/*app.get('/investigation/projectList', function(req, res) {
     Project.find(function (err, projects) {
         var project_dict = {};
         if (err) return console.error(err);
@@ -318,7 +319,25 @@ app.get('/investigation/projectList', function(req, res) {
     })
     .catch((err) => {console.log(err)})
   })
-})
+})*/
+
+ app.get('/investigation/projectList', function(req, res) {
+      db.collection('projects').find({}).toArray(function(err, result) {
+        if (err) throw err;
+       res.send(result);
+     });
+     /*Project.find(function (err, projects) {
+         var names = [];
+         if (err) return console.error(err);
+         for (var i = 0; i < projects.length; i++) {
+             names = names.concat(projects[i].name)
+         }
+         projects.toArray(function(err, result) {
+           if (err) throw err;
+           res.send(result)
+         })
+      }) */
+  });
 
 app.get('/investigation/searchSources', function(req, res) {
     var phrase = req.query.phrase;

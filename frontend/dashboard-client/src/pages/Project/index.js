@@ -23,7 +23,7 @@ const tab_style = {
 
 class ProjectPage extends Component {
 
-	componentDidMount = () => {
+  componentDidMount = () => {
     this.props.actions.fetchProject(this.props.match.params.id);
     this.props.actions.fetchProjectEntities(this.props.match.params.id);
     this.props.actions.fetchProjectSources(this.props.match.params.id);
@@ -95,6 +95,7 @@ function mapStateToProps(state, props) {
   if (state.data.savedEntities.status === 'isLoading' || state.data.savedSources.status === 'isLoading' || state.data.pendingEntities.status === 'isLoading') {
     return {
       status: 'isLoading',
+      currentProject: state.data.currentProject
     }
   } else {
     return {
