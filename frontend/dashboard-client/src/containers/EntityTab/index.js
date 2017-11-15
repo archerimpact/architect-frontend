@@ -106,7 +106,7 @@ class EntitiesTab extends Component {
 	}
 
 	render() {
-		if (this.props.status === 'isLoaing') {
+		if (this.props.status === 'isLoading') {
     		return (<div className="projects">
     					<p> Loading ... </p>
     				</div>

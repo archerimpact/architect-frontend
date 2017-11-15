@@ -3,23 +3,13 @@ import React, { Component } from 'react';
 import './style.css'
 
 import EntitiesTab from '../../containers/EntityTab';
-import EntityExtractor from '../../components/EntityExtractor/';
 import NodeGraph from '../../components/NodeGraph';
 import SourcesTab from '../../containers/SourcesTab';
 import PDFUploader from '../../components/PDFUploader';
-import AddEntity from '../../components/Entity/AddEntity';
-import AddInformation from '../../components/Entity/AddInformation';
+import AddInformation from '../../containers/AddInformation';
 
-import Badge from 'material-ui/Badge';
-import IconButton from 'material-ui/IconButton';
-import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
 import Paper from 'material-ui/Paper';
 import {Tabs, Tab} from 'material-ui/Tabs';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import Popover from 'material-ui/Popover';
-import Menu from 'material-ui/Menu';
-import MenuItem from 'material-ui/MenuItem';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -33,11 +23,10 @@ const tab_style = {
 
 class ProjectPage extends Component {
 
-	componentDidMount = () => {
-    this.props.actions.getProject(this.props.match.params.id);
-    this.props.actions.getProjectEntities(this.props.match.params.id);
-    this.props.actions.getProjectSources(this.props.match.params.id);
-    this.props.actions.getPendingEntities(this.props.match.params.id);
+  componentDidMount = () => {
+    this.props.actions.fetchProject(this.props.match.params.id);
+    this.props.actions.fetchProjectEntities(this.props.match.params.id);
+    this.props.actions.fetchProjectSources(this.props.match.params.id);
 	};
 
 	render() {
@@ -54,15 +43,6 @@ class ProjectPage extends Component {
   						<h3>{"Projects  >  " + this.props.currentProject.name}</h3>
   					</div>
   					<div id="notifications">
-  						{/*<Badge
-  						  badgeContent={10}
-  						  secondary={true}
-  						  badgeStyle={{top: 12, right: 12}}
-  						>
-  						  <IconButton tooltip="Notifications">
-  							<NotificationsIcon />
-  						  </IconButton>
-  						</Badge>*/}
               <AddInformation projectid={this.props.match.params.id}/>
   					</div>
   				</div>
@@ -115,6 +95,7 @@ function mapStateToProps(state, props) {
   if (state.data.savedEntities.status === 'isLoading' || state.data.savedSources.status === 'isLoading' || state.data.pendingEntities.status === 'isLoading') {
     return {
       status: 'isLoading',
+      currentProject: state.data.currentProject
     }
   } else {
     return {

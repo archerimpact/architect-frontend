@@ -128,8 +128,10 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
         });
         pdfParser.loadPDF(pdf_dest);
 
-        callEntityExtractor(fs.readFileSync(text_dest, "utf8"), function(response) {
-          saveDoc(fs.readFileSync(text_dest, "utf8"), name, response.entities)
+        var content = fs.readFileSync(text_dest, "utf8");
+
+        callEntityExtractor(content, function(response) {
+          saveDoc(content, name, response.entities)
         })
             .then(item => {
                 res.send("PDF Converted To Text Success");
@@ -163,42 +165,6 @@ function callEntityExtractor(string, callback) {
     };
   });     
 }
-
-app.post('/investigation/entities', function(req, res) {
-  if (req.body.text.length > 20) {
-    callEntityExtractor(req.body.text, function(response) {
-      var vertid = saveDoc(req.body.text, req.body.title, response.entities)
-      db.collection('projects').update(
-        {_id : mongoose.Types.ObjectId(req.body.project)},
-        {$push: {sources: vertid}}
-      )
-      .then((data) => {res.send(200)})
-    })
-  }else{
-    res.send("Didn't run entity extractor because the length of the content was too short.")
-  };
-})
-
-app.get('/investigation/entities', function(req, res) {
-  var projectid = req.query.project
-  db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray(function(err, projects) {
-    console.log("Here's the projects: ", projects)
-    db.collection('vertexes').find({_id: {$in: projects[0].sources}, type: "Source"}).toArray()
-      .then((vertexes) => {
-        console.log("here's your vertexes: ", vertexes)
-        if (vertexes.length === 0) {
-          res.send([])
-        }
-        vertexesToResponse(vertexes, "Source", function(response) {
-          console.log("Here's your response in 207: ", response)
-          if (response.length === vertexes.length) {
-            res.send(response)
-          }
-        })
-      })
-      .catch((err)=>{console.log(err)})
-  });
-})
 
 app.get('/investigation/source', function(req,res) {
   var sourceid = req.query.source
@@ -235,49 +201,25 @@ app.post('/investigation/project', function(req, res) {
         })
 });
 
-app.get('/investigation/projectList', function(req, res) {
-    db.collection('projects').find({}).toArray(function(err, result) {
-      if (err) throw err;
-      res.send(result);
-    });
-    /*Project.find(function (err, projects) {
-        var names = [];
-        if (err) return console.error(err);
-        for (var i = 0; i < projects.length; i++) {
-            names = names.concat(projects[i].name)
-        }
-        projects.toArray(function(err, result) {
-          if (err) throw err;
-          res.send(result)
-        })
-    }) */
-});
-
 app.get('/investigation/project', function(req, res) {
-  console.log("getting a project, here's req params: ", req.query)
   var projectid = req.query.project
-  console.log("here's your projectid: " + projectid + " and its type: " + typeof(mongoose.Types.ObjectId(projectid)))
   db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray(function(err, result) {
     res.send(result)
   })
 })
 
-app.get('/investigation/project/entities', function(req, res) {
-  var projectid = req.query.project
-  db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray(function(err, results) {
-    console.log("here are the results in line 265: ", results)
-    db.collection('vertexes').find({_id: {$in: results[0].entities}}).toArray(function(err, vertexes) {
-      if (vertexes.length === 0) {
-        res.send([])
-      }
-      vertexesToResponse(vertexes, "Entity", function(response) {
-        console.log("Here's your response in 295: ", response)
-        if (response.length === vertexes.length) {
-          res.send(response)
-        }
-      })
-    });
-  })
+app.post('/investigation/entity', function(req, res){
+    var entityid = saveEntity(req.body.name, req.body.type, [])
+
+    /* Updates the project document to include this entity in its list of entities. */
+    db.collection('projects').update(
+      {_id : mongoose.Types.ObjectId(req.body.project)},
+      {$push: {entities: entityid}}
+    )
+    .then(data => {
+      res.send("Finished creating entity.")
+    })
+    .catch((err) => {console.log(err)});
 })
 
 function vertexesToResponse(vertexes, type, callback) {
@@ -291,7 +233,6 @@ function vertexesToResponse(vertexes, type, callback) {
             vertex.sourceType = source[0].type;
             vertex.content = document[0].content;
             vertex.entities = document[0].entities;
-            console.log("Here's your new vertex entities: " + typeof(vertex.entities))
             response.push(vertex)
             return callback(response)
           })
@@ -305,55 +246,104 @@ function vertexesToResponse(vertexes, type, callback) {
       return db.collection('entities').find({_id: vertex.entity}).toArray()
         .then((entities) => {
           vertex.type = entities[0].type;
-          console.log("Here's your new vertex entities: " + typeof(vertex.entities))
           response.push(vertex)
           return callback(response)
         })
         .catch((err)=> {console.log(err)})
     }) 
   }
-
-  //return callback(vertexes)
 }
+
+app.post('/investigation/project/entityExtractor', function(req, res) {
+  if (req.body.text.length > 20) {
+    callEntityExtractor(req.body.text, function(response) {
+      var vertid = saveDoc(req.body.text, req.body.title, response.entities)
+      db.collection('projects').update(
+        {_id : mongoose.Types.ObjectId(req.body.project)},
+        {$push: {sources: vertid}}
+      )
+      .then((data) => {res.send(200)})
+    })
+  }else{
+    res.send("Didn't run entity extractor because the length of the content was too short.")
+  };
+})
+
+app.get('/investigation/project/entities', function(req, res) {
+  var projectid = req.query.project
+  db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray(function(err, projects) {
+    db.collection('vertexes').find({_id: {$in: projects[0].entities}, type: "Entity"}).toArray()
+      .then((vertexes) => {
+        if (vertexes.length === 0) {
+          res.send([])
+        }
+        vertexesToResponse(vertexes, "Entity", function(response) {
+          if (response.length === vertexes.length) {
+            res.send(response)
+          }
+        })
+      })
+      .catch((err)=>{console.log(err)})
+  });
+})
 
 app.get('/investigation/project/sources', function(req, res) {
   var response = [];
   var projectid = req.query.project
   db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
   .then((projects) => {
-    console.log("here are the projects: ", projects)
     db.collection('vertexes').find({_id: {$in: projects[0].sources}, type: "Source"}).toArray()
     .then((vertexes) => {
-      console.log("here's your sources: ", vertexes.sources)
+
+      /* if the project's array of sources doesn't exist, return an empty array */
       if (vertexes.length === 0) {
-        res.send([])
+        res.send([]);
       }
       vertexesToResponse(vertexes, "Source", function(response) {
-        console.log("Here's your response in 295: ", response)
         if (response.length === vertexes.length) {
-          res.send(response)
+          res.send(response);
+        };
+      });
+    });
+  });
+});
+
+/*app.get('/investigation/projectList', function(req, res) {
+    Project.find(function (err, projects) {
+        var project_dict = {};
+        if (err) return console.error(err);
+        for (var i = 0; i < projects.length; i++) {
+            project_dict[projects[i].name] = projects[i];
         }
-      })
-      //res.send(vertexes)
+        res.send(project_dict);
     })
     .catch((err) => {console.log(err)})
   })
-})
+})*/
 
-app.post('/investigation/entity', function(req, res){
-    var sources = []
-    var entityid = saveEntity(req.body.name, req.body.type, sources)
-    console.log("this is the entity id: " + entityid + "and its type is: " + typeof(entityid))
-    console.log('this is the project id: ' + req.body.project + "and its type is: " + typeof(projectid))
-    db.collection('projects').update(
-      {_id : mongoose.Types.ObjectId(req.body.project)},
-      {$push: {entities: entityid}}
-    )
-})
+ app.get('/investigation/projectList', function(req, res) {
+      db.collection('projects').find({}).toArray(function(err, result) {
+        if (err) throw err;
+       res.send(result);
+     });
+     /*Project.find(function (err, projects) {
+         var names = [];
+         if (err) return console.error(err);
+         for (var i = 0; i < projects.length; i++) {
+             names = names.concat(projects[i].name)
+         }
+         projects.toArray(function(err, result) {
+           if (err) throw err;
+           res.send(result)
+         })
+      }) */
+  });
 
-app.post('/investigation/searchSources', function(req, res) {
-    var phrase = req.body.phrase;
-    vertex.Vertex.find()
+app.get('/investigation/searchSources', function(req, res) {
+    var phrase = req.query.phrase;
+    vertex.Vertex.find({
+        type: 'Source',
+    })
     .populate({
         path: 'source',
         populate: {
@@ -365,7 +355,7 @@ app.post('/investigation/searchSources', function(req, res) {
         var found = [];
         if (err) return console.error(err);
         for (var i = 0; i < vertices.length; i++) {
-            if (vertices[i].source.source.content.search(phrase) != -1) {
+            if (vertices[i].source.source.content && vertices[i].source.source.content.search(phrase) != -1) {
                 found = found.concat(vertices[i].name)
             }
         }

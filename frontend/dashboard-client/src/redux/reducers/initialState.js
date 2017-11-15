@@ -24,9 +24,6 @@ export default {
 			{_id: 0, name: 'A test document', content: "A lot of test content", entities: []}
 		]
 	},
-	savedProjects: {
-		status: 'isLoading'
-	},
 	entityTypes: ["Company", "Person", "Location"],
 	entityNames: ["Alice Ma", "Daryus Medora", "Angelina Wang"],
 	projects: [
@@ -37,5 +34,5 @@ export default {
 		status: 'isLoading',
     projects: []
 	},
-  currentProject: {name: "Sample"}
+  currentProject: {_id: 0, name: "Sample"}
 }

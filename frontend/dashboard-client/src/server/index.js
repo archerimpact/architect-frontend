@@ -90,7 +90,7 @@ function addLink(url, label, notes) {
 */
 
 export function submitText(title, text, projectid) {
-	var url ='http://localhost:8000/investigation/entities';
+	var url ='http://localhost:8000/investigation/entityExtractor';
 	var options = {
 		method: 'POST',
 		headers: {
@@ -112,12 +112,12 @@ export function submitText(title, text, projectid) {
 	});
 }
 
-export function loadEntities(projectid) {
+export function getSuggestedEntities(projectid) {
 	/* Gets all entities related to a project. Server returns an object of objects containing all notes. */
 
-	var url ='http://localhost:8000/investigation/entities';
+	var url ='http://localhost:8000/investigation/project/sources';
 
-	let newEntities = null;
+	let suggestedEntities = null;
 
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
@@ -126,28 +126,13 @@ export function loadEntities(projectid) {
       }
     })
     .then(function (documents) {
-      console.log("here's the response in server 147: ", documents)
-      newEntities = documentsToEntities(documents.data);
-      fulfill({entities: newEntities, documents: documents.data})
+      suggestedEntities = documentsToEntities(documents.data);
+      fulfill({entities: suggestedEntities, documents: documents.data})
     })
     .catch(function(error) {
       console.log(error);
     })
   });
-	/*return new Promise(function(fulfill, reject) {
-		fetch(url, options)
-		.then(res => {
-			return res.json();
-		})
-		.then(json => {
-			var documents = Object.values(json);
-			newEntities = documentsToEntities(documents);
-			fulfill({entities: newEntities, documents: documents})
-		})
-		.catch(err => {
-			reject('Error: could not return entities because ' + err);
-		});
-	});*/
 }
 
 function documentsToEntities(documents) {
@@ -182,20 +167,6 @@ export function getSource(sourceid) {
       console.log(error);
     })
   });
-  /*return new Promise(function(fulfill, reject) {
-    fetch(url, options)
-    .then(res => {
-      return res.json();
-    })
-    .then(json => {
-      var documents = Object.values(json);
-      newEntities = documentsToEntities(documents);
-      fulfill({entities: newEntities, documents: documents})
-    })
-    .catch(err => {
-      reject('Error: could not return entities because ' + err);
-    });
-  });*/
 }
 
 export function getProject(projectid) {
@@ -220,7 +191,6 @@ export function getProjectEntities(projectid) {
 
   var url ='http://localhost:8000/investigation/project/entities';
 
-  let newEntities = null;
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
       params: {
@@ -235,26 +205,14 @@ export function getProjectEntities(projectid) {
       console.log(error);
     })
   });
-  /*return new Promise(function(fulfill, reject) {
-    fetch(url, options)
-    .then(res => {
-      console.log("reached response")
-      debugger
-      return res.json();
-    })
-    .then(json => {
-      debugger
-      var documents = Object.values(json);
-      fulfill({entities: [], documents: documents})
-    })
-    .catch(err => {
-      reject('Error: could not return entities because ' + err);
-    });
-  });*/
 }
 
+
+/* For if you only want project sources and not suggested entities,
+    currently not being used.
+    
 export function getProjectSources(projectid) {
-  /* Gets all entities related to a project. Server returns an object of objects containing all notes. */
+  // Gets all entities related to a project. Server returns an object of objects containing all notes. 
 
   var url ='http://localhost:8000/investigation/project/sources';
 
@@ -273,6 +231,7 @@ export function getProjectSources(projectid) {
     })
   });
 }
+*/
 
 export function addEntity(name, type, sources, project) {
     var url = 'http://localhost:8000/investigation/entity';
@@ -288,12 +247,15 @@ export function addEntity(name, type, sources, project) {
             project: project
         })
     };
-    fetch(url, options)
-    .then(response => {
-        // TODO: depending on the response, give user information about project add
-        console.log(response);
-    })
-    .catch(err => {
-        console.log('Error: could not add entity because: ' + err);
+
+    return new Promise(function(fulfill, reject) {
+      fetch(url, options)
+      .then(response => {
+          // TODO: depending on the response, give user information about project add
+          fulfill(response);
+      })
+      .catch(err => {
+          console.log('Error: could not add entity because: ' + err);
+      });
     });
 }

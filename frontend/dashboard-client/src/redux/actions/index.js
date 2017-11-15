@@ -92,42 +92,58 @@ export function retrieveDetails(actionType, res) {
 // 	}
 // }
 
-export function getSource(sourceid) {
+export function createEntity(entity) {
+  return function (dispatch, getState) {
+    return server.addEntity(entity.name, entity.type, entity.sources, entity.projectid)
+      .then(data => {
+        dispatch(addEntity(entity));
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+}
+
+export function fetchSource(sourceid) {
   return function (dispatch, getState) {
     return server.getSource(sourceid)
       .then(data => {
-        dispatch(storePendingEntities(data.entities))
-        dispatch(storeSources(data.documents))
+        dispatch(storePendingEntities(data.entities));
+        dispatch(storeSources(data.documents));
       })
       .catch(err => {
         console.log(err)
-      })
+      });
   }
 }
 
-export function getProjectEntities(projectid) {
+export function fetchProjectEntities(projectid) {
   return function (dispatch, getState) {
     return server.getProjectEntities(projectid)
       .then(entities => {
-        dispatch(storeEntities(entities))
+        dispatch(storeEntities(entities));
       })
       .catch(err => {
         console.log(err)
-      })
+      });
   }
 }
 
-export function getPendingEntities(projectid) {
+export function fetchProjectSources(projectid) {
   return function(dispatch, getState) {
-    server.loadEntities(projectid)
+    return server.getSuggestedEntities(projectid)
       .then((data) => {
         dispatch(storePendingEntities(data.entities))
-        //dispatch(storeSources(data.documents));
-    }).catch((err) => console.log(err));
+        dispatch(storeSources(data.documents));
+      })
+      .catch((err) => console.log(err));
   }
 }
 
-export function getProjectSources(projectid) {
+/* For if you only want project sources and not suggested entities,
+    currently not being used.
+    
+export function fetchProjectSources(projectid) {
   return function (dispatch, getState) {
     return server.getProjectSources(projectid)
       .then(sources => {
@@ -138,8 +154,9 @@ export function getProjectSources(projectid) {
       })
   }
 }
+*/
 
-export function getProject(projectid) {
+export function fetchProject(projectid) {
   return function(dispatch, getState) {
     return server.getProject(projectid)
       .then(project => {
