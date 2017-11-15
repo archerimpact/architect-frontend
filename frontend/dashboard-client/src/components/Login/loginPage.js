@@ -66,7 +66,6 @@ class LoginPage extends React.Component {
         const { redirectToReferrer } = this.state;
 
         if (redirectToReferrer) {
-            // debugger
           return (
             <Redirect to={from}/>
           )
