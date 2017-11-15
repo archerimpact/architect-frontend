@@ -224,7 +224,22 @@ app.post('/investigation/entity', function(req, res){
 
 app.delete('/investigation/suggestedEntity', function(req, res) {
   console.log("Made it to delete for suggested entity")
-  res.send("Finished deleting entity.")
+  var sourceid = req.query.sourceid
+  console.log("here's your req params: ", req.query)
+  db.collection('vertexes').find({_id: mongoose.Types.ObjectId(sourceid)}).toArray()
+    .then((vertex) => {
+        return db.collection('sources').find({_id: vertex[0].source}).toArray()
+        .then((source) => {
+          return db.collection('documents').update(
+            {_id: source[0].source},
+            {$pull: {entities: {normalized: req.query.name}}}                                     
+          )
+          .then(data => {
+            res.send("Finished deleting suggested entity.")
+          })
+          .catch((err) => {console.log(err)})
+        })
+    })
 })
 
 function vertexesToResponse(vertexes, type, callback) {
