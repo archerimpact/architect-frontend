@@ -78,7 +78,7 @@ function saveDoc(text, name, entities) {
 }
 
 function saveEntity(name, type, sources) {  
-    console.log("type of sources: " + typeof(sources))
+    console.log("type of sources: " + typeof(sources), "value of sources: ", sources)
     var entity = {
         _id: new mongoose.Types.ObjectId,
         name: name,
@@ -209,7 +209,7 @@ app.get('/investigation/project', function(req, res) {
 })
 
 app.post('/investigation/entity', function(req, res){
-    var entityid = saveEntity(req.body.name, req.body.type, [])
+    var entityid = saveEntity(req.body.name, req.body.type, req.body.sources)
 
     /* Updates the project document to include this entity in its list of entities. */
     db.collection('projects').update(
@@ -220,6 +220,11 @@ app.post('/investigation/entity', function(req, res){
       res.send("Finished creating entity.")
     })
     .catch((err) => {console.log(err)});
+})
+
+app.delete('/investigation/suggestedEntity', function(req, res) {
+  console.log("Made it to delete for suggested entity")
+  res.send("Finished deleting entity.")
 })
 
 function vertexesToResponse(vertexes, type, callback) {
@@ -246,6 +251,7 @@ function vertexesToResponse(vertexes, type, callback) {
       return db.collection('entities').find({_id: vertex.entity}).toArray()
         .then((entities) => {
           vertex.type = entities[0].type;
+          vertex.sources = entities[0].sources;
           response.push(vertex)
           return callback(response)
         })

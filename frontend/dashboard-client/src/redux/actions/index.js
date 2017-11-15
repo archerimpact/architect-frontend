@@ -1,4 +1,15 @@
-import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, STORE_ENTITIES, STORE_PENDING_ENTITIES, STORE_SOURCES, STORE_PROJECTS, CURRENT_PROJECT} from './actionTypes';
+import { 
+  ADD_LINK, 
+  USER_LOGOUT, 
+  ADD_ENTITY,
+  REMOVE_SUGGESTED_ENTITY, 
+  ADD_TAG, 
+  STORE_ENTITIES, 
+  STORE_PENDING_ENTITIES, 
+  STORE_SOURCES, 
+  STORE_PROJECTS, 
+  CURRENT_PROJECT,
+  } from './actionTypes';
 
 import * as server_utils from '../../server/utils';
 import * as server from '../../server';
@@ -15,6 +26,13 @@ export function addEntity(entity) {
 		type: ADD_ENTITY,
 		payload: entity
 	};
+}
+
+export function removeSuggestedEntity(suggestedEntity, sourceid) {
+  return {
+    type: REMOVE_SUGGESTED_ENTITY,
+    payload: {entity: suggestedEntity, sourceid: sourceid}
+  };
 }
 
 export function storeEntities(entities){
@@ -101,6 +119,19 @@ export function createEntity(entity) {
       .catch(err => {
         console.log(err);
       })
+  }
+}
+
+export function deleteSuggestedEntity(suggestedEntity, sourceid) {
+  return function (dispatch, getState) {
+    return server.deleteSuggestedEntity(suggestedEntity, sourceid) 
+      .then(data => {
+        dispatch(removeSuggestedEntity(suggestedEntity, sourceid));
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    
   }
 }
 

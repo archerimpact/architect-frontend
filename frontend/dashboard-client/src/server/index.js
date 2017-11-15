@@ -259,3 +259,22 @@ export function addEntity(name, type, sources, project) {
       });
     });
 }
+
+export function deleteSuggestedEntity(suggestedEntity, sourceid) {
+  var url = 'http://localhost:8000/investigation/suggestedEntity';
+
+  return new Promise(function(fulfill, reject) {
+    axios.delete(url, {
+      params: {
+        name: suggestedEntity.name,
+        sourceid: sourceid
+      }
+    })
+    .then(response => {
+      fulfill(response)
+    })
+    .catch(function(error) {
+      console.log(error);
+    })
+  });
+}

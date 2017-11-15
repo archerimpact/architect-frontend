@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+import EntitiesList from '../../components/Entity/'
+import './style.css';
+
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import TextField from 'material-ui/TextField';
@@ -12,8 +15,8 @@ import UpArrow from 'material-ui/svg-icons/navigation/arrow-upward';
 import DownArrow from 'material-ui/svg-icons/navigation/arrow-downward';
 
 import { connect } from 'react-redux';
-import EntitiesList from '../../components/Entity/'
-import './style.css';
+import { bindActionCreators } from 'redux';
+import * as actions from '../../redux/actions/';
 
 const iconStyles = {
     marginRight: 8,
@@ -32,6 +35,7 @@ class EntitiesTab extends Component {
 			entitySortBy: {property: null, reverse: false},
 			queryEntity: null
 		};
+    this.createEntity = this.createEntity.bind(this);
 		this.getEntitySource = this.getEntitySource.bind(this);
 		this.openEntityDrawer = this.openEntityDrawer.bind(this);
 		this.closeEntityDrawer = this.closeEntityDrawer.bind(this);
@@ -40,9 +44,22 @@ class EntitiesTab extends Component {
 		this.reverseList = this.reverseList.bind(this);
 	};
 
-	getEntitySource(entity) {
+	createEntity(suggestedEntity) {
+    var entity = {
+      name: suggestedEntity.name,
+      type: suggestedEntity.type.toLowerCase(),
+      sources: suggestedEntity.sources,
+      projectid: this.props.projectid,
+      tags: []
+    }
+    this.props.actions.createEntity(entity);
+    this.props.actions.deleteSuggestedEntity(entity, suggestedEntity.sources[0]);
+  }
+
+  getEntitySource(entity) {
 		//TODO: refactor to account for entities having multiple sources
 		var sourceid = entity.sources[0];
+    console.log("This is the name of the entity: ", entity, "and this is the sources: ", entity.sources)
 		var source = this.props.savedSources.documents.find(function (obj) {return obj._id=== sourceid});
 		if (typeof(source) !== "undefined"){
 			return source.content;
@@ -146,7 +163,15 @@ class EntitiesTab extends Component {
 					        	{this.state.entitySortBy.reverse ? <UpArrow style={iconStyles}/> : <DownArrow style={iconStyles}/>}
 					        </div>
 					    </div>
-			        	<EntitiesList entities={this.props.entities} searchTerm={this.state.queryEntity} sortBy={this.state.entitySortBy} getSource={this.getEntitySource} onEntityClick={this.openEntityDrawer}/>
+			        	<EntitiesList 
+                  listType={this.props.listType} 
+                  entities={this.props.entities} 
+                  searchTerm={this.state.queryEntity} 
+                  sortBy={this.state.entitySortBy} 
+                  getSource={this.getEntitySource} 
+                  onEntityClick={this.openEntityDrawer} 
+                  onCreateEntity={this.createEntity}
+                />
 			        </div>
 				</div>
 			);      
@@ -156,6 +181,7 @@ class EntitiesTab extends Component {
 
 function mapDispatchToProps(dispatch) {
 	return {
+    actions: bindActionCreators(actions, dispatch),
 		dispatch: dispatch,
 	};
 }

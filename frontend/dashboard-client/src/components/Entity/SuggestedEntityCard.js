@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './style.css'
 
+import RaisedButton from 'material-ui/RaisedButton';
 import Person from 'material-ui/svg-icons/social/person';
 import Entity from 'material-ui/svg-icons/social/domain';
 import Location from 'material-ui/svg-icons/communication/location-on';
@@ -14,7 +15,7 @@ const iconStyles = {
     height: 56,
 }
 
-class EntityCard extends Component {
+class SuggestedEntityCard extends Component {
 
     constructor(props) {
         super(props);
@@ -22,19 +23,19 @@ class EntityCard extends Component {
     }
 
     renderIcon(entity) {
-        if (entity.type.toLowerCase() === "person") {
+        if (entity.type === "Person" || entity.type === "PERSON") {
           return <Person style={iconStyles}/>
         }
-        if ( entity.type.toLowerCase() === "document") {
+        if ( entity.type === "DOCUMENT") {
           return <Document style={iconStyles}/>
         }
-        if (entity.type.toLowerCase() ==="organization" || entity.type.toLowerCase() === "company") {
+        if (entity.type ==="ORGANIZATION" || entity.type === "Company") {
           return <Entity style={iconStyles}/>
         }
-        if (entity.type.toLowerCase() === "location") {
+        if (entity.type === "Location" || entity.type === "LOCATION") {
           return <Location style={iconStyles}/>
         }
-        if (entity.type.toLowerCase() === "nationality") {
+        if (entity.type === "NATIONALITY") {
           return <Nationality style={iconStyles}/>
         }
     }
@@ -61,6 +62,7 @@ class EntityCard extends Component {
                 <div className="cardHeaderText">
                     <span className="title"> {this.props.entity.qid && this.props.entity.qid.charAt(0) !== "T" ? <a href={"https://www.wikidata.org/wiki/" + this.props.entity.qid}>{this.props.entity.name} </a> : this.props.entity.name}</span>
                     <span className="type">{this.props.entity.type}</span>
+                    <RaisedButton label="Create Entity" onClick={()=>this.props.onCreateEntity(this.props.entity)} />
                 </div>
             </div>
             <div className="cardBody">
@@ -71,4 +73,4 @@ class EntityCard extends Component {
   }
 }
 
-export default EntityCard;
+export default SuggestedEntityCard;

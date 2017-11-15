@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import './style.css'
 
 import EntitiesTab from '../../containers/EntityTab';
+import SuggestedEntitiesTab from '../../containers/SuggestedEntityTab';
 import NodeGraph from '../../components/NodeGraph';
 import SourcesTab from '../../containers/SourcesTab';
 import PDFUploader from '../../components/PDFUploader';
@@ -60,11 +61,11 @@ class ProjectPage extends Component {
   							<div className="column">
                   <h3>Your Entities</h3>
   								<Paper className="projects">
-  									<EntitiesTab entities={this.props.savedEntities.entities}/>
+  									<EntitiesTab listType={"entities"} entities={this.props.savedEntities.entities} projectid={this.props.match.params.id}/>
   								</Paper>
                   <h3>Suggested Entities</h3>
                   <Paper className="projects">
-                    <EntitiesTab entities={this.props.pendingEntities.entities}/>
+                    <EntitiesTab listType={"suggested_entities"} entities={this.props.pendingEntities.entities} projectid={this.props.match.params.id}/>
                   </Paper>
   							</div>
   						</Tab>
