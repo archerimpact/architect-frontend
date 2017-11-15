@@ -8,6 +8,7 @@ exports.isAuthenticated = function(req, res, next) {
         return next();
     } else {
         return res.redirect('http://localhost:3000/login');
+        // TODO: Refactor so that this is handled by frontend, rather than doing server-side redirect
         // return res.status(200).json({success: false, error: 'User not authenticated'});
     }
 };
@@ -35,8 +36,8 @@ exports.login = function(req, res, next) {
 
 exports.logout = function(req, res) {
     req.logout();
-    // return res.json({ success: true });
-    return res.redirect('http://localhost:3000/login');
+    return res.json({ success: true });
+    // return res.redirect('http://localhost:3000/login');
 
 };
 

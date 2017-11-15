@@ -1,12 +1,13 @@
 import React from 'react';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import {Redirect, withRouter} from 'react-router-dom';
+import { Redirect, withRouter, Link } from 'react-router-dom';
 // import { authenticate } from "../server/index";
-import {authenticateAccount} from "../../server/transport-layer";
+import {authenticateAccount} from "../../server/auth_routes";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
+import CreateAccount from "./createAccount";
 
 class LoginPage extends React.Component {
 
@@ -44,7 +45,7 @@ class LoginPage extends React.Component {
                 self.setState({password: '', error: true})
             }
         })
-        .catch(err => console.log('Couldnt authenticate'))
+        .catch(err => console.log('Could not authenticate'))
         // isAuthed.then(function(response) {
         //     if (response.success) {
                 
@@ -57,13 +58,15 @@ class LoginPage extends React.Component {
 
     }
 
+
+
     render() {
 
-        const { from } = this.props.location.state || { from: { pathname: '/' } }
-        const { redirectToReferrer } = this.state
+        const { from } = this.props.location.state || { from: { pathname: '/' } };
+        const { redirectToReferrer } = this.state;
 
         if (redirectToReferrer) {
-            debugger
+            // debugger
           return (
             <Redirect to={from}/>
           )
@@ -109,6 +112,16 @@ class LoginPage extends React.Component {
                         type="submit"
                     />
                     <br />
+                        <br />
+                        <br />
+                        <Link to={'/create_account'}> <RaisedButton
+                            style={{margin: 15} }
+                            primary
+                            label="New? Create an Account!"
+                            type="button"
+                        />
+                        </Link>
+
                     </div>
             </div>
         );

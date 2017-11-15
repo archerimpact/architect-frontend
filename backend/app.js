@@ -58,8 +58,8 @@ const sessionOptions = {
     cookie: {
         httpOnly: true,
         secure: false,
-        maxAge: 10080000, // 1000*60*24*7 // Note persistent vs session cookies
-        expires: new Date(new Date().getTime() + (1000*60*60*24*30)) // 30 days
+        maxAge: 10080000, // 1000*60*60*24*7 // Note persistent vs session cookies
+        expires: new Date(new Date().getTime() + (1000*60*60*24*7)) // 7 days
     },
     store: new MongoStore({
         url: configData.db_url,

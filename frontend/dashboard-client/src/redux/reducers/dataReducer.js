@@ -1,5 +1,7 @@
 import { ADD_LINK, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES, USER_LOGIN, USER_LOGOUT } from '../actions/actionTypes';
 import initialState from './initialState';
+import { logoutAccount } from "../../server/auth_routes";
+
 
 export default function (state = initialState, action) {
 	switch(action.type) {
@@ -9,14 +11,16 @@ export default function (state = initialState, action) {
 	    		user: {
 	    			isAuthenticated: true
 	    		}
-	    	}
-	    case USER_LOGOUT:
+	    	};
+        case USER_LOGOUT:
+	    	logoutAccount();
+	    	// TODO: refuse to logout if do not receive success response
 	    	return {
 	    		...state,
 	    		user: {
 	    			isAuthenticated: false
 	    		}
-	    	}
+	    	};
 		case ADD_LINK:
 			return {
 				...state,

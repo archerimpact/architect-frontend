@@ -14,6 +14,7 @@ export const registerAccount = async (dataObj) => {
         "password": dataObj.password
     };
     let responseData = await api_inst.post("/register", payload);
+    console.log('helo');
     return responseData.data;
 };
 

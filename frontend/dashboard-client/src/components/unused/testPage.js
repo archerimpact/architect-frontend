@@ -2,7 +2,7 @@ import React from 'react';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import { authenticate } from "../../server/index";
-import {authenticateAccount, isAuthenticated, logoutAccount, testPost} from "../../server/transport-layer";
+import {authenticateAccount, isAuthenticated, logoutAccount, testPost} from "../../server/auth_routes";
 
 export class TestPage extends React.Component {
     constructor(props) {

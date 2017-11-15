@@ -2,7 +2,12 @@ import React from 'react';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import { register } from "../../server/index";
-import { registerAccount } from "../../server/transport-layer";
+import { registerAccount } from "../../server/auth_routes";
+import { Redirect, withRouter, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as actions from '../../redux/actions/';
+
 
 class CreateAccount extends React.Component {
     constructor(props) {
@@ -10,7 +15,9 @@ class CreateAccount extends React.Component {
         this.state = {
             email: '',
             password: '',
-            passwordConf: ''
+            passwordConf: '',
+            error_message: '',
+            redirectToReferrer: false
         };
         this.handleEmailInputChange = this.handleEmailInputChange.bind(this);
         this.handlePasswordInputChange = this.handlePasswordInputChange.bind(this);
@@ -32,13 +39,38 @@ class CreateAccount extends React.Component {
 
     handleSubmit(event) {
         // TODO: Implement form validation
-        var result = registerAccount({username: this.state.email, password: this.state.password});
+        var self = this;
+        registerAccount({username: this.state.email, password: this.state.password})
+            .then(
+            data => {
+                if (data.success) {
+                    self.props.dispatch(actions.userLogIn());
+                    self.setState({email: '', password: '', redirectToReferrer: true})
+                } else {
+                    // debugger
+                    self.setState({password: '', error: true, error_message: data.message})
+                }
+            }).catch(err => console.log('Could not create account'))
+        // return (
+        //     <Redirect to={'/'}/>
+        // )
     }
 
     render() {
+
+        const { from } = this.props.location.state || { from: { pathname: '/' } };
+        const { redirectToReferrer } = this.state;
+
+        if (redirectToReferrer) {
+            return (
+                <Redirect to={from}/>
+            )
+        }
+
         return (
             <div className='rows' style={{textAlign:"center", marginTop:40}} >
                 <p> Please enter your details below to create a new account. </p>
+                {this.state.error ? <p> Error! {this.state.error_message}. Please try again. </p>:[]}
                     <div style={{width: "400px",
                         margin: "4em auto",
                         padding: "3em 2em 2em 2em",
@@ -94,4 +126,18 @@ class CreateAccount extends React.Component {
 }
 
 
-export default CreateAccount;
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(actions, dispatch),
+        dispatch: dispatch,
+    };
+}
+
+function mapStateToProps(state) {
+    return {
+        savedEntities: state.data.savedEntities,
+        savedSources: state.data.savedSources
+    };
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CreateAccount));

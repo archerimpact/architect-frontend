@@ -5,7 +5,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { PersistGate } from 'redux-persist/es/integration/react'
 
-// import { isAuthenticated as isAuthed} from '../../server/transport-layer.js';
+// import { isAuthenticated as isAuthed} from '../../server/auth_routes.js';
 import App from '../App/'
 import './index.css';
 // Color options: 45AD7C (darker green) or 4CBF88 (lighter green)
