@@ -47,11 +47,20 @@ class EntitiesList extends Component {
   getCardType(entity) {
     if (this.props.listType === "suggested_entities") {
       return(
-        <SuggestedEntityCard onCreateEntity={this.props.onCreateEntity} onEntityClick={this.props.onEntityClick} entity={entity} getSource={this.props.getSource}/>
+        <SuggestedEntityCard 
+        onCreateEntity={this.props.onCreateEntity} 
+        onDeleteEntity={this.props.onDeleteEntity}
+        onEntityClick={this.props.onEntityClick} 
+        entity={entity} 
+        getSource={this.props.getSource}
+      />
       );
     } else {
       return (
-        <EntityCard onEntityClick={this.props.onEntityClick} entity={entity} getSource={this.props.getSource}/>
+        <EntityCard 
+        onDeleteEntity={this.props.onDeleteEntity}
+        onEntityClick={this.props.onEntityClick} 
+        entity={entity} getSource={this.props.getSource}/>
       );
     }
   }

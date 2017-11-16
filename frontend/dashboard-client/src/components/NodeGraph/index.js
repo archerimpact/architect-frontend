@@ -101,13 +101,13 @@ class NodeGraph extends Component {
     if (node.type === "DOCUMENT") {
       return "#49FFB7";
     }
-    if (node.type === "Person") {
+    if (node.type === "Person" || node.type === "person") {
       return "#DA5DFF";
     }
-    if (node.type === "Company") {
+    if (node.type === "Company" || node.type === "organization") {
       return "#A346BF";
     }
-    if (node.type === "Location") {
+    if (node.type === "Location" || node.type==="location") {
       return "#C454E5";
     }
     else {

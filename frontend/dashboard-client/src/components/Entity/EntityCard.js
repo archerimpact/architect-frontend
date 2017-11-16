@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './style.css'
 
+import RaisedButton from 'material-ui/RaisedButton';
 import Person from 'material-ui/svg-icons/social/person';
 import Entity from 'material-ui/svg-icons/social/domain';
 import Location from 'material-ui/svg-icons/communication/location-on';
@@ -61,6 +62,7 @@ class EntityCard extends Component {
                 <div className="cardHeaderText">
                     <span className="title"> {this.props.entity.qid && this.props.entity.qid.charAt(0) !== "T" ? <a href={"https://www.wikidata.org/wiki/" + this.props.entity.qid}>{this.props.entity.name} </a> : this.props.entity.name}</span>
                     <span className="type">{this.props.entity.type}</span>
+                    <RaisedButton label="Delete" onClick={()=>this.props.onDeleteEntity(this.props.entity)} />
                 </div>
             </div>
             <div className="cardBody">

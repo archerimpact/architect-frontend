@@ -2,6 +2,7 @@ import {
   ADD_LINK, 
   USER_LOGOUT, 
   ADD_ENTITY,
+  REMOVE_ENTITY,
   REMOVE_SUGGESTED_ENTITY, 
   ADD_TAG, 
   STORE_ENTITIES, 
@@ -26,6 +27,13 @@ export function addEntity(entity) {
 		type: ADD_ENTITY,
 		payload: entity
 	};
+}
+
+export function removeEntity(entity) {
+  return {
+    type: REMOVE_ENTITY,
+    payload: entity
+  };
 }
 
 export function removeSuggestedEntity(suggestedEntity, sourceid) {
@@ -119,6 +127,19 @@ export function createEntity(entity) {
       .catch(err => {
         console.log(err);
       })
+  }
+}
+
+export function deleteEntity(entity, projectid) {
+  return function (dispatch, getState) {
+    return server.deleteEntity(entity, projectid) 
+      .then(data => {
+        dispatch(removeEntity(entity));
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    
   }
 }
 

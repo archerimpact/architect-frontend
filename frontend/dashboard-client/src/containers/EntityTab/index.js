@@ -36,6 +36,7 @@ class EntitiesTab extends Component {
 			queryEntity: null
 		};
     this.createEntity = this.createEntity.bind(this);
+    this.deleteEntity = this.deleteEntity.bind(this);
 		this.getEntitySource = this.getEntitySource.bind(this);
 		this.openEntityDrawer = this.openEntityDrawer.bind(this);
 		this.closeEntityDrawer = this.closeEntityDrawer.bind(this);
@@ -53,7 +54,16 @@ class EntitiesTab extends Component {
       tags: []
     }
     this.props.actions.createEntity(entity);
-    this.props.actions.deleteSuggestedEntity(entity, suggestedEntity.sources[0]);
+    this.props.actions.deleteSuggestedEntity(suggestedEntity, suggestedEntity.sources[0]);
+  }
+
+  deleteEntity(entity) {
+    if (this.props.listType === "suggested_entities") {
+      this.props.actions.deleteSuggestedEntity(entity, entity.sources[0])
+    }
+    if (this.props.listType === "entities") {
+      this.props.actions.deleteEntity(entity, this.props.projectid)
+    }
   }
 
   getEntitySource(entity) {
@@ -171,6 +181,7 @@ class EntitiesTab extends Component {
                   getSource={this.getEntitySource} 
                   onEntityClick={this.openEntityDrawer} 
                   onCreateEntity={this.createEntity}
+                  onDeleteEntity={this.deleteEntity}
                 />
 			        </div>
 				</div>

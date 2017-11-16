@@ -260,6 +260,25 @@ export function addEntity(name, type, sources, project) {
     });
 }
 
+export function deleteEntity(entity, projectid) {
+  var url = 'http://localhost:8000/investigation/entity';
+
+  return new Promise(function(fulfill, reject) {
+    axios.delete(url, {
+      params: {
+        entityid: entity._id,
+        projectid: projectid
+      }
+    })
+    .then(response => {
+      fulfill(response)
+    })
+    .catch(function(error) {
+      console.log(error);
+    })
+  });
+}
+
 export function deleteSuggestedEntity(suggestedEntity, sourceid) {
   var url = 'http://localhost:8000/investigation/suggestedEntity';
 

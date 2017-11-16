@@ -222,6 +222,33 @@ app.post('/investigation/entity', function(req, res){
     .catch((err) => {console.log(err)});
 })
 
+app.delete('/investigation/entity', function(req, res) {
+  console.log("Made it to delete for entity")
+  var entityid = mongoose.Types.ObjectId(req.query.entityid)
+  console.log("Querying for this vertex id: ", entityid)
+  db.collection('vertexes').find({_id: entityid}).toArray()
+    .then((vertex) => {
+      console.log("These are the vertexes: ", vertex)
+        return db.collection('entities').remove({_id: vertex[0].entity})
+          .then((data) => {
+            console.log("Removed 1/2")
+            return db.collection('vertexes').remove({_id: entityid})
+            .then((data) => {
+              console.log("Removed 2/2")
+              return db.collection('projects').update(
+                {_id : mongoose.Types.ObjectId(req.body.projectid)},
+                {$pull: {entities: entityid}}                                     
+              )
+              .then(data => {
+                console.log("Updated project entities.")
+                res.send("Finished deleting entity.")
+              })
+              .catch((err) => {console.log(err)})            
+            })
+          })
+    })
+})
+
 app.delete('/investigation/suggestedEntity', function(req, res) {
   console.log("Made it to delete for suggested entity")
   var sourceid = req.query.sourceid
