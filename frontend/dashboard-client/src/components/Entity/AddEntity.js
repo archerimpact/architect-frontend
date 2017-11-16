@@ -55,7 +55,7 @@ class AddEntity extends Component {
 					hintText="e.g. Alice Ma"
 					onChange={this.handleNameFieldChange}
 					style={{width: 250, marginRight: 20}}/>
-				<AutoComplete
+				<TextField
 					floatingLabelText="Type"
 					hintText="e.g. Person"
 					dataSource={this.props.entityTypes}

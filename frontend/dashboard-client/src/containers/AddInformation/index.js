@@ -46,10 +46,10 @@ class AddInformation extends Component {
   onTextSubmit(title, text, projectid) {
     server.submitText(title, text, projectid)
     .then((data) => {
-      this.setState({text: ""});
-      this.props.actions.getProject(this.props.projectid);
-      this.props.actions.getProjectSources(this.props.projectid);
-      this.props.actions.getPendingEntities(this.props.projectid);
+    this.setState({text: ""});
+    this.props.actions.fetchProject(this.props.projectid);
+    this.props.actions.fetchProjectSources(this.props.projectid);
+    this.props.actions.fetchPendingEntities(this.props.projectid);
     })
     .catch((error) => {
         console.log(error)
