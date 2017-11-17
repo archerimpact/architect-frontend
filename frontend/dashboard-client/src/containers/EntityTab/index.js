@@ -104,7 +104,7 @@ class EntitiesTab extends Component {
 	}
 
 	render() {
-		if (this.props.status === 'isLoaing') {
+		if (this.props.status === 'isLoading') {
     		return (<div className="projects">
     					<p> Loading ... </p>
     				</div>
@@ -160,7 +160,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, ownProps) {
-	if (state.data.savedEntities.status === 'isLoding') {
+	if (state.data.savedEntities.status === 'isLoading') {
 		return {
 			status: state.data.savedEntities.status,
 	    }
