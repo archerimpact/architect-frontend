@@ -90,7 +90,7 @@ function addLink(url, label, notes) {
 */
 
 export function submitText(title, text, projectid) {
-	var url ='http://localhost:8000/investigation/entityExtractor';
+	var url ='http://localhost:8000/investigation/project/entityExtractor';
 	var options = {
 		method: 'POST',
 		headers: {
@@ -111,6 +111,7 @@ export function submitText(title, text, projectid) {
 		});
 	});
 }
+
 
 export function getSuggestedEntities(projectid) {
 	/* Gets all entities related to a project. Server returns an object of objects containing all notes. */

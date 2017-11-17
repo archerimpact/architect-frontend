@@ -69,7 +69,6 @@ class EntitiesTab extends Component {
   getEntitySource(entity) {
 		//TODO: refactor to account for entities having multiple sources
 		var sourceid = entity.sources[0];
-    console.log("This is the name of the entity: ", entity, "and this is the sources: ", entity.sources)
 		var source = this.props.savedSources.documents.find(function (obj) {return obj._id=== sourceid});
 		if (typeof(source) !== "undefined"){
 			return source.content;

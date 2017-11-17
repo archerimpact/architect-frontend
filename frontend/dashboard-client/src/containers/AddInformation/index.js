@@ -49,7 +49,7 @@ class AddInformation extends Component {
     this.setState({text: ""});
     this.props.actions.fetchProject(this.props.projectid);
     this.props.actions.fetchProjectSources(this.props.projectid);
-    this.props.actions.fetchPendingEntities(this.props.projectid);
+    this.props.actions.fetchProjectEntities(this.props.projectid);
     })
     .catch((error) => {
         console.log(error)
