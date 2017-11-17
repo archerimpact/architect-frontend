@@ -113,12 +113,7 @@ class LoginPage extends React.Component {
                     <br />
                         <br />
                         <br />
-                        <Link to={'/create_account'}> <RaisedButton
-                            style={{margin: 15} }
-                            primary
-                            label="New? Create an Account!"
-                            type="button"
-                        />
+                        <Link to={'/create_account'} style={{color: 'inherit'}}> New around here? Create an Account!
                         </Link>
 
                     </div>

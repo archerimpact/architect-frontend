@@ -15,6 +15,7 @@ import * as server from '../../server/';
 import { withRouter } from 'react-router-dom';
 
 class SourcePage extends Component {
+	
 	componentDidMount = () => {
 		server.loadEntities()
 			.then((data) => {

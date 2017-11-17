@@ -1,4 +1,5 @@
 import { ADD_LINK, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES, USER_LOGIN, USER_LOGOUT } from './actionTypes';
+import { logoutAccount } from "../../server/auth_routes";
 
 export function addLink(link) {
 	return {
@@ -87,8 +88,20 @@ export function userLogIn() {
 	};
 }
 
-export function userLogOut() {
+export function userLogOutDispatch() {
 	return {
 		type: USER_LOGOUT,
 	};
+}
+
+export function userLogOut() {
+	return function (dispatch, getState) {
+		return logoutAccount()
+			.then(res => {
+				dispatch(userLogOutDispatch());
+			})
+			.catch(err => {
+				console.log(err)
+			})
+	}
 }

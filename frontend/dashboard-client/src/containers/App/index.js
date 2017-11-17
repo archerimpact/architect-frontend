@@ -18,7 +18,7 @@ class App extends Component {
 	}
 
 	logOut() {
-		return this.props.dispatch(actions.userLogOut());
+		return this.props.actions.userLogOut();
 	}
 
 	logIn() {
