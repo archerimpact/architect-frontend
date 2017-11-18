@@ -10,22 +10,7 @@ class EntitiesList extends Component {
     this.getCardType = this.getCardType.bind(this)
 	}
 
-	getEntitySort(a, b) {
-		debugger
-		switch(this.props.sortBy.by) {
-			case 'dateAdded':
-				return a-b;
-			case 'type':
-				return ((a.type < b.type) ? -1 : ((a.type > b.type) ? 1 : 0));	
-			case 'source':
-				return a-b;
-			case 'name':
-				return ((a.name < b.name) ? -1 : ((a.name > b.name) ? 1 : 0));	
-			default :
-				return a-b
-		}
-	}
-
+	/* pass in the property you want to sort by of the entity, and whether or not to reverse the list as a boolean */
 	sortByProperty(prop, reverse) {
 	  	return function(a, b) {
 		    if (prop === null || typeof a[prop] !== 'string') {

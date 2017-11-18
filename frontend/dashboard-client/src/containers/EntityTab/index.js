@@ -197,7 +197,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, ownProps) {
-	if (state.data.savedEntities.status === 'isLoding') {
+	if (state.data.savedEntities.status === 'isLoading') {
 		return {
 			status: state.data.savedEntities.status,
 	    }
