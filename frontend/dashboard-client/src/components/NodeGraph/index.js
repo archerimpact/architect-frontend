@@ -241,8 +241,6 @@ class NodeGraph extends Component {
 			if (!d3.event.active) {
 				simulation.alphaTarget(0);
 			};
-     // d.fx = null;
-     // d.fy = null;
 		};
 
     /* for zoom 
