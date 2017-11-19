@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import './style.css'
 
 import EntitiesTab from '../../containers/EntityTab';
-import SuggestedEntitiesTab from '../../containers/SuggestedEntityTab';
 import NodeGraph from '../../components/NodeGraph';
 import SourcesTab from '../../containers/SourcesTab';
 import PDFUploader from '../../components/PDFUploader';

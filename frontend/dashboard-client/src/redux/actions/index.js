@@ -119,7 +119,6 @@ export function retrieveDetails(actionType, res) {
 // }
 
 export function createEntity(entity) {
-  debugger
   return function (dispatch, getState) {
     return server.addEntity(entity.name, entity.type, entity.sources, entity.projectid)
       .then(data => {

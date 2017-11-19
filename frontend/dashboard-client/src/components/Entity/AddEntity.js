@@ -36,7 +36,7 @@ class AddEntity extends Component {
 
 	handleTypeFieldChange(event) {
 		this.setState({
-			typeFieldValue: event
+			typeFieldValue: event.target.value
 		});
 	};
 
@@ -59,7 +59,7 @@ class AddEntity extends Component {
 					floatingLabelText="Type"
 					hintText="e.g. Person"
 					dataSource={this.props.entityTypes}
-					onUpdateInput={this.handleTypeFieldChange}
+					onChange={this.handleTypeFieldChange}
 					style={{width: 250, marginRight: 20}}
 				/>
 				<TextField 
