@@ -123,7 +123,7 @@ export function getSuggestedEntities(projectid) {
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
       params: {
-        project: projectid
+        projectid: projectid
       }
     })
     .then(function (documents) {
@@ -157,7 +157,7 @@ export function getSource(sourceid) {
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
       params: {
-        source: sourceid
+        sourceid: sourceid
       }
     })
     .then(function (documents) {
@@ -175,7 +175,7 @@ export function getProject(projectid) {
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
       params: {
-        project: projectid
+        projectid: projectid
       }
     })
     .then(function (response) {
@@ -195,7 +195,7 @@ export function getProjectEntities(projectid) {
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
       params: {
-        project: projectid
+        projectid: projectid
       }
     })
     .then(response => {
