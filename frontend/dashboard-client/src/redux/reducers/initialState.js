@@ -21,7 +21,6 @@ export default {
 	savedSources: {
 		status: 'isLoading',
 		documents: [
-			{_id: 0, name: 'A test document', content: "A lot of test content", entities: []}
 		]
 	},
 	entityTypes: ["Company", "Person", "Location"],

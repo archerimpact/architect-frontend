@@ -39,7 +39,7 @@ class EntityCard extends Component {
           return <Nationality style={iconStyles}/>
         }
     }
-
+    
     renderSourceLink(entity, getSource) {
         var docText = getSource(entity);
         var docText15words;
