@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import EntityCard from './EntityCard';
 import './style.css';
+
 class EntitiesList extends Component {
+
 	constructor(props){
 		super(props);
 		this.sortByProperty = this.sortByProperty.bind(this)
@@ -26,7 +28,6 @@ class EntitiesList extends Component {
 	  	}
 	}
 		
-
 	render() {
 		return (
 			<div>
