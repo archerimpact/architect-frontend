@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import TextField from 'material-ui/TextField';
@@ -8,11 +7,10 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import UpArrow from 'material-ui/svg-icons/navigation/arrow-upward';
-
 import DownArrow from 'material-ui/svg-icons/navigation/arrow-downward';
-
+import EntitiesList from '../../components/Entity/';
 import { connect } from 'react-redux';
-import EntitiesList from '../../components/Entity/'
+
 import './style.css';
 
 const iconStyles = {
@@ -142,7 +140,7 @@ class EntitiesTab extends Component {
 								<MenuItem value={'dateAdded'} primaryText="Date Added" />
 					        </SelectField>
 					        <div onClick={this.reverseList}>
-					        	{this.state.entitySortBy.reverse ? <UpArrow style={iconStyles}/> : <DownArrow style={iconStyles}/>}
+					        	{this.state.entitySortBy.reverse ? <UpArrow className="icon" style={iconStyles}/> : <DownArrow className="icon" style={iconStyles}/>}
 					        </div>
 					    </div>
 			        	<EntitiesList entities={this.props.entities} searchTerm={this.state.queryEntity} sortBy={this.state.entitySortBy} getSource={this.getEntitySource} onEntityClick={this.openEntityDrawer}/>
