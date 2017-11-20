@@ -79,7 +79,6 @@ function saveDoc(text, name, entities) {
 app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
     try {
         // TODO: save to google cloud here
-
         var name = req.file.originalname;
         let text_dest = "./files/" + name.substring(0, name.length - 4) + ".txt";
         let pdf_dest = "./files/" + name;
@@ -92,7 +91,11 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
         });
         pdfParser.loadPDF(pdf_dest);
 
-        saveDoc(fs.readFileSync(text_dest, "utf8"), name, [])
+        var content = fs.readFileSync(text_dest, "utf8");
+
+        callEntityExtractor(content, function(response) {
+          saveDoc(content, name, response.entities)
+        })
             .then(item => {
                 res.send("PDF Converted To Text Success");
             })
@@ -143,3 +146,53 @@ app.get('/investigation/entities', function(req, res) {
     });
 })
 
+app.post('/investigation/project', function(req, res) {
+    var project = {
+        _id: new mongoose.Types.ObjectId,
+        name: req.body.name
+        //users: // Put in a fake one
+    };
+    var newProject = new Project(project);
+    newProject.save()
+        .then(item => {
+            res.send("New project saved");
+        })
+        .catch(err => {
+            res.status(400).send("Unable to save to database because: " + err);
+        })
+});
+
+app.get('/investigation/projectList', function(req, res) {
+    Project.find(function (err, projects) {
+        var project_dict = {};
+        if (err) return console.error(err);
+        for (var i = 0; i < projects.length; i++) {
+            project_dict[projects[i].name] = projects[i];
+        }
+        res.send(project_dict);
+    })
+});
+
+app.get('/investigation/searchSources', function(req, res) {
+    var phrase = req.query.phrase;
+    vertex.Vertex.find({
+        type: 'Source',
+    })
+    .populate({
+        path: 'source',
+        populate: {
+            path: 'source',
+            model: 'Document'
+        }
+    })
+    .exec(function (err, vertices) {
+        var found = [];
+        if (err) return console.error(err);
+        for (var i = 0; i < vertices.length; i++) {
+            if (vertices[i].source.source.content && vertices[i].source.source.content.search(phrase) != -1) {
+                found = found.concat(vertices[i].name)
+            }
+        }
+        res.send(found);
+    })
+});

@@ -8,12 +8,6 @@ import Nationality from 'material-ui/svg-icons/content/flag';
 import Document from 'material-ui/svg-icons/av/note';
 import {Link} from 'react-router-dom';
 
-const iconStyles = {
-    marginRight: 8,
-    width: 56,
-    height: 56,
-}
-
 class EntityCard extends Component {
 
     constructor(props) {
@@ -23,19 +17,19 @@ class EntityCard extends Component {
 
     renderIcon(entity) {
         if (entity.type === "Person" || entity.type === "PERSON") {
-          return <Person style={iconStyles}/>
+          return <Person className="icon" />
         }
         if ( entity.type === "DOCUMENT") {
-          return <Document style={iconStyles}/>
+          return <Document className="icon" />
         }
         if (entity.type ==="ORGANIZATION" || entity.type === "Company") {
-          return <Entity style={iconStyles}/>
+          return <Entity className="icon" />
         }
         if (entity.type === "Location" || entity.type === "LOCATION") {
-          return <Location style={iconStyles}/>
+          return <Location className="icon" />
         }
         if (entity.type === "NATIONALITY") {
-          return <Nationality style={iconStyles}/>
+          return <Nationality className="icon" />
         }
     }
 
