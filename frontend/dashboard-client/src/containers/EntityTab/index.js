@@ -157,7 +157,7 @@ function mapDispatchToProps(dispatch) {
 	};
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
 	if (state.data.savedEntities.status === 'isLoading') {
 		return {
 			status: state.data.savedEntities.status,
