@@ -1,4 +1,4 @@
-import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES, STORE_PROJECTS} from './actionTypes';
+import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES, STORE_PROJECTS, STORE_VERTICES} from './actionTypes';
 import * as server_utils from '../../server/utils';
 
 export function addLink(link) {
@@ -98,6 +98,25 @@ export function fetchProjects() {
 export function storeProjects(projects) {
 	return {
 		type: STORE_PROJECTS,
+		payload: projects
+	};
+}
+
+export function fetchVertices() {
+	return function (dispatch, getState) {
+		return server_utils.getVertexList()
+			.then(vertices => {
+				dispatch(storeVertices(vertices));
+			})
+			.catch(err => {
+				console.log(err)
+			});
+	};
+}
+
+export function storeVertices(projects) {
+	return {
+		type: STORE_VERTICES,
 		payload: projects
 	};
 }

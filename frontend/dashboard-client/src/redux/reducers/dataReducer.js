@@ -60,6 +60,15 @@ export default function (state = initialState, action) {
 					projects: action.payload
 				}
 			}
+		case STORE_VERTICES:
+			return {
+				...state,
+				savedVertices: {
+					...state.savedVertices,
+					status: 'isLoaded',
+					vertices: action.payload
+				}
+			}
 		default:
 			return state;
 	}

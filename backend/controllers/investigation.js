@@ -173,6 +173,17 @@ app.get('/investigation/projectList', function(req, res) {
     })
 });
 
+app.get('/investigation/vertexList', function(req, res) {
+    vertex.Vertex.find(function (err, vertices) {
+        var vertex_dict = {};
+        if (err) return console.error(err);
+        for (var i = 0; i < vertices.length; i++) {
+            vertex_dict[vertices[i].name] = vertices[i];
+        }
+        res.send(vertex_dict);
+    })
+});
+
 app.get('/investigation/searchSources', function(req, res) {
     var phrase = req.query.phrase;
     vertex.Vertex.find({

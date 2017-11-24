@@ -22,6 +22,9 @@ export default {
 	savedProjects: {
 		status: 'isLoading'
 	},
+	savedVertices: {
+		status: 'isLoading'
+	},
 	entityTypes: ["Company", "Person", "Location"],
 	entityNames: ["Alice Ma", "Daryus Medora", "Angelina Wang"],
 	projects: [
