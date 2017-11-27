@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
+<<<<<<< HEAD
 
 import EntitiesList from '../../components/Entity/'
 import './style.css';
 
+=======
+>>>>>>> ba6d3d79be92f0b21e0a214bab8be83413cac380
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import TextField from 'material-ui/TextField';
@@ -11,12 +14,16 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import UpArrow from 'material-ui/svg-icons/navigation/arrow-upward';
-
 import DownArrow from 'material-ui/svg-icons/navigation/arrow-downward';
-
+import EntitiesList from '../../components/Entity/';
 import { connect } from 'react-redux';
+<<<<<<< HEAD
 import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
+=======
+
+import './style.css';
+>>>>>>> ba6d3d79be92f0b21e0a214bab8be83413cac380
 
 const iconStyles = {
     marginRight: 8,
@@ -169,7 +176,7 @@ class EntitiesTab extends Component {
 								<MenuItem value={'dateAdded'} primaryText="Date Added" />
 					        </SelectField>
 					        <div onClick={this.reverseList}>
-					        	{this.state.entitySortBy.reverse ? <UpArrow style={iconStyles}/> : <DownArrow style={iconStyles}/>}
+					        	{this.state.entitySortBy.reverse ? <UpArrow className="icon" style={iconStyles}/> : <DownArrow className="icon" style={iconStyles}/>}
 					        </div>
 					    </div>
 			        	<EntitiesList 
@@ -196,7 +203,7 @@ function mapDispatchToProps(dispatch) {
 	};
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
 	if (state.data.savedEntities.status === 'isLoading') {
 		return {
 			status: state.data.savedEntities.status,

@@ -33,7 +33,7 @@ var entitySchema = new mongoose.Schema({
 var documentSchema = new mongoose.Schema({
 	_id: Schema.Types.ObjectId,
 	content: String,
-  entities: Array
+  	entities: Array
 });
 
 var imageSchema = new mongoose.Schema({

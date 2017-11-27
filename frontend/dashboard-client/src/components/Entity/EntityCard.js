@@ -9,12 +9,6 @@ import Nationality from 'material-ui/svg-icons/content/flag';
 import Document from 'material-ui/svg-icons/av/note';
 import {Link} from 'react-router-dom';
 
-const iconStyles = {
-    marginRight: 8,
-    width: 56,
-    height: 56,
-}
-
 class EntityCard extends Component {
 
     constructor(props) {

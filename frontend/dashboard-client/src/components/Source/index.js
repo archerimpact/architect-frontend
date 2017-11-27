@@ -5,7 +5,6 @@ import pdf_2 from './sample_files/a_news_pdf.pdf';
 import pdf_3 from './sample_files/a_pdf.pdf';
 import pdf_4 from './sample_files/trump.pdf'
 import {Card, CardMedia, CardTitle} from 'material-ui/Card';
-import SearchSources from './search';
 import './style.css';
 
 class Sources extends Component {
@@ -36,8 +35,7 @@ class Sources extends Component {
     render() {
         var docs = [pdf_1, pdf_2, pdf_3, pdf_4];
         return (
-            <div>
-                <SearchSources />
+            <div className="sources">
                 <div className="documentList">
                     {this.documentList(docs)}
                 </div>

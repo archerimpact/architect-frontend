@@ -3,15 +3,17 @@ import EntityCard from './EntityCard';
 import SuggestedEntityCard from './SuggestedEntityCard';
 
 import './style.css';
+
 class EntitiesList extends Component {
+
 	constructor(props){
 		super(props);
 		this.sortByProperty = this.sortByProperty.bind(this)
     this.getCardType = this.getCardType.bind(this)
 	}
 
-	/* pass in the property you want to sort by of the entity, and whether or not to reverse the list as a boolean */
 	sortByProperty(prop, reverse) {
+	/* pass in the property you want to sort by of the entity, and whether or not to reverse the list as a boolean */
 	  	return function(a, b) {
 		    if (prop === null || typeof a[prop] !== 'string') {
 		     	return reverse ? (b - a): (a - b);
