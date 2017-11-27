@@ -18,19 +18,19 @@ class EntityCard extends Component {
 
     renderIcon(entity) {
         if (entity.type.toLowerCase() === "person") {
-          return <Person style={iconStyles}/>
+          return <Person className="icon"/>
         }
         if ( entity.type.toLowerCase() === "document") {
-          return <Document style={iconStyles}/>
+          return <Document className="icon"/>
         }
         if (entity.type.toLowerCase() ==="organization" || entity.type.toLowerCase() === "company") {
-          return <Entity style={iconStyles}/>
+          return <Entity className="icon"/>
         }
         if (entity.type.toLowerCase() === "location") {
-          return <Location style={iconStyles}/>
+          return <Location className="icon"/>
         }
         if (entity.type.toLowerCase() === "nationality") {
-          return <Nationality style={iconStyles}/>
+          return <Nationality className="icon"/>
         }
     }
     

@@ -159,7 +159,7 @@ function callEntityExtractor(string, callback) {
     if (!error) {
         return callback(JSON.parse(body));
     } else {
-      console.log("there was an error in the Rosette extractor: ");
+      console.log(error);
       return {entities: []};
     };
   });     

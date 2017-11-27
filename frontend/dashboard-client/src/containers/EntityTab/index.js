@@ -1,11 +1,5 @@
-import React, { Component } from 'react';
-<<<<<<< HEAD
+import React, { Component } from 'react'; 
 
-import EntitiesList from '../../components/Entity/'
-import './style.css';
-
-=======
->>>>>>> ba6d3d79be92f0b21e0a214bab8be83413cac380
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import TextField from 'material-ui/TextField';
@@ -16,14 +10,11 @@ import MenuItem from 'material-ui/MenuItem';
 import UpArrow from 'material-ui/svg-icons/navigation/arrow-upward';
 import DownArrow from 'material-ui/svg-icons/navigation/arrow-downward';
 import EntitiesList from '../../components/Entity/';
+
 import { connect } from 'react-redux';
-<<<<<<< HEAD
 import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
-=======
-
 import './style.css';
->>>>>>> ba6d3d79be92f0b21e0a214bab8be83413cac380
 
 const iconStyles = {
     marginRight: 8,

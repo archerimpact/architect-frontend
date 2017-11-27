@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import AutoComplete from 'material-ui/AutoComplete';
 
 class AddEntity extends Component {
 	constructor(props){
