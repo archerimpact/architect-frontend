@@ -9,7 +9,13 @@ import Nationality from 'material-ui/svg-icons/content/flag';
 import Document from 'material-ui/svg-icons/av/note';
 import {Link} from 'react-router-dom';
 
-class EntityCard extends Component {
+const iconStyles = {
+    marginRight: 8,
+    width: 56,
+    height: 56,
+}
+
+class SuggestedEntityCard extends Component {
 
     constructor(props) {
         super(props);
@@ -17,23 +23,23 @@ class EntityCard extends Component {
     }
 
     renderIcon(entity) {
-        if (entity.type.toLowerCase() === "person") {
-          return <Person className="icon"/>
+        if (entity.type === "Person" || entity.type === "PERSON") {
+          return <Person style={iconStyles}/>
         }
-        if ( entity.type.toLowerCase() === "document") {
-          return <Document className="icon"/>
+        if ( entity.type === "DOCUMENT") {
+          return <Document style={iconStyles}/>
         }
-        if (entity.type.toLowerCase() ==="organization" || entity.type.toLowerCase() === "company") {
-          return <Entity className="icon"/>
+        if (entity.type ==="ORGANIZATION" || entity.type === "Company") {
+          return <Entity style={iconStyles}/>
         }
-        if (entity.type.toLowerCase() === "location") {
-          return <Location className="icon"/>
+        if (entity.type === "Location" || entity.type === "LOCATION") {
+          return <Location style={iconStyles}/>
         }
-        if (entity.type.toLowerCase() === "nationality") {
-          return <Nationality className="icon"/>
+        if (entity.type === "NATIONALITY") {
+          return <Nationality style={iconStyles}/>
         }
     }
-    
+
     renderSourceLink(entity, getSource) {
         var docText = getSource(entity);
         var docText15words;
@@ -56,6 +62,7 @@ class EntityCard extends Component {
                 <div className="cardHeaderText">
                     <span className="title"> {this.props.entity.qid && this.props.entity.qid.charAt(0) !== "T" ? <a href={"https://www.wikidata.org/wiki/" + this.props.entity.qid}>{this.props.entity.name} </a> : this.props.entity.name}</span>
                     <span className="type">{this.props.entity.type}</span>
+                    <RaisedButton label="Create Entity" onClick={()=>this.props.onCreateEntity(this.props.entity)} />
                     <RaisedButton label="Delete" onClick={()=>this.props.onDeleteEntity(this.props.entity)} />
                 </div>
             </div>
@@ -67,4 +74,4 @@ class EntityCard extends Component {
   }
 }
 
-export default EntityCard;
+export default SuggestedEntityCard;

@@ -2,11 +2,6 @@ import React, { Component } from 'react';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import AutoComplete from 'material-ui/AutoComplete';
-
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as actions from '../../redux/actions/';
 
 class AddEntity extends Component {
 	constructor(props){
@@ -24,7 +19,7 @@ class AddEntity extends Component {
 
 	handleSubmit = (event) => {
 		event.preventDefault();
-		this.props.dispatch(actions.addEntity({name: this.state.nameFieldValue, type: this.state.typeFieldValue, link: "", tags: [this.state.tagFieldValue], sources: [this.props.sourceid]}));
+		this.props.onEntitySubmit({name: this.state.nameFieldValue, type: this.state.typeFieldValue, link: "", tags: [this.state.tagFieldValue], sources: [], projectid: this.props.projectid});
 		this.setState({
 			nameFieldValue: '',
 			typeFieldValue: '',
@@ -40,7 +35,7 @@ class AddEntity extends Component {
 
 	handleTypeFieldChange(event) {
 		this.setState({
-			typeFieldValue: event
+			typeFieldValue: event.target.value
 		});
 	};
 
@@ -59,11 +54,11 @@ class AddEntity extends Component {
 					hintText="e.g. Alice Ma"
 					onChange={this.handleNameFieldChange}
 					style={{width: 250, marginRight: 20}}/>
-				<AutoComplete
+				<TextField
 					floatingLabelText="Type"
 					hintText="e.g. Person"
-					dataSource={this.props.entityTypes}
-					onUpdateInput={this.handleTypeFieldChange}
+					//dataSource={this.props.entityTypes}
+					onChange={this.handleTypeFieldChange}
 					style={{width: 250, marginRight: 20}}
 				/>
 				<TextField 
@@ -79,18 +74,4 @@ class AddEntity extends Component {
 	};
 };
 
-function mapDispatchToProps(dispatch) {
-	return {
-		actions: bindActionCreators(actions, dispatch),
-		dispatch: dispatch,
-	};
-};
-
-function mapStateToProps(state) {
-	return {
-		savedEntities: state.data.savedEntities,
-		entityTypes: state.data.entityTypes,
-	};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddEntity);
+export default AddEntity;

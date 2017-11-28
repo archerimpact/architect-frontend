@@ -48,7 +48,7 @@ class SourcesTable extends Component {
 						{this.props.savedSources.documents.map((document, id) => {
 							return(
 								<TableRow key={id}>
-									<TableRowColumn>{document.title}</TableRowColumn>
+									<TableRowColumn>{document.name}</TableRowColumn>
 									<TableRowColumn>{document.content}</TableRowColumn>
 									<TableRowColumn>{document.entities.length}</TableRowColumn>
 									<TableHeaderColumn><a href={"/source/" + document._id}>View Details</a></TableHeaderColumn>

@@ -12,10 +12,7 @@ class Home extends Component {
         return (
             <div style={{height:'100%'}}>
                 <div className="app">
-                    <div>
-                        <h1>Homepage</h1>         
-                    </div>
-                    <div className="tabs" style={{width:'100%', margin:'0 auto', top: 64}}>
+                    <div style={{width:'100%', margin:'0 auto', top: 64}}>
                         <ProjectList/>                        
                     </div>
                 </div>

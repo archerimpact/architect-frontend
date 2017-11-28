@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import EntityCard from './EntityCard';
+import SuggestedEntityCard from './SuggestedEntityCard';
+
 import './style.css';
 
 class EntitiesList extends Component {
@@ -7,6 +9,7 @@ class EntitiesList extends Component {
 	constructor(props){
 		super(props);
 		this.sortByProperty = this.sortByProperty.bind(this)
+    this.getCardType = this.getCardType.bind(this)
 	}
 
 	sortByProperty(prop, reverse) {
@@ -28,6 +31,27 @@ class EntitiesList extends Component {
 	  	}
 	}
 		
+  getCardType(entity) {
+    if (this.props.listType === "suggested_entities") {
+      return(
+        <SuggestedEntityCard 
+        onCreateEntity={this.props.onCreateEntity} 
+        onDeleteEntity={this.props.onDeleteEntity}
+        onEntityClick={this.props.onEntityClick} 
+        entity={entity} 
+        getSource={this.props.getSource}
+      />
+      );
+    } else {
+      return (
+        <EntityCard 
+        onDeleteEntity={this.props.onDeleteEntity}
+        onEntityClick={this.props.onEntityClick} 
+        entity={entity} getSource={this.props.getSource}/>
+      );
+    }
+  }
+
 	render() {
 		return (
 			<div>
@@ -37,7 +61,7 @@ class EntitiesList extends Component {
 					.map((entity, id) => {
 						return (
 							<div className="entityList" key={id}>
-								<EntityCard onEntityClick={this.props.onEntityClick} entity={entity} getSource={this.props.getSource}/>
+								{this.getCardType(entity)}
 							</div>
 						);
 					})}

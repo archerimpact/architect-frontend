@@ -12,9 +12,10 @@ import NavBar from '../../components/NavBar/';
 import './index.css';
 // Color options: 45AD7C (darker green) or 4CBF88 (lighter green)
 const muiTheme = getMuiTheme({
+  fontFamily: "'Open Sans', sans-serif",
 	palette: {
 		primary1Color: '#4CBF88',
-		accent1Color: '#2c98f0'
+		accent1Color: '#2c98f0',
 	}
 });
 
@@ -27,7 +28,7 @@ export default class Root extends Component {
 						<div>
 							<NavBar />
 							<Route exact path="/" component={Home} />
-							<Route exact path="/project/:id" component={Project} />				    		
+							<Route path="/project/:id" component={Project} />				    		
 							<Route path="/source/:id" component={Source}/>
 						</div>
 					</Router>

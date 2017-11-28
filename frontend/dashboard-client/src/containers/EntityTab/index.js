@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'; 
+
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import TextField from 'material-ui/TextField';
@@ -9,8 +10,10 @@ import MenuItem from 'material-ui/MenuItem';
 import UpArrow from 'material-ui/svg-icons/navigation/arrow-upward';
 import DownArrow from 'material-ui/svg-icons/navigation/arrow-downward';
 import EntitiesList from '../../components/Entity/';
-import { connect } from 'react-redux';
 
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as actions from '../../redux/actions/';
 import './style.css';
 
 const iconStyles = {
@@ -30,6 +33,8 @@ class EntitiesTab extends Component {
 			entitySortBy: {property: null, reverse: false},
 			queryEntity: null
 		};
+    this.createEntity = this.createEntity.bind(this);
+    this.deleteEntity = this.deleteEntity.bind(this);
 		this.getEntitySource = this.getEntitySource.bind(this);
 		this.openEntityDrawer = this.openEntityDrawer.bind(this);
 		this.closeEntityDrawer = this.closeEntityDrawer.bind(this);
@@ -38,7 +43,28 @@ class EntitiesTab extends Component {
 		this.reverseList = this.reverseList.bind(this);
 	};
 
-	getEntitySource(entity) {
+	createEntity(suggestedEntity) {
+    var entity = {
+      name: suggestedEntity.name,
+      type: suggestedEntity.type.toLowerCase(),
+      sources: suggestedEntity.sources,
+      projectid: this.props.projectid,
+      tags: []
+    }
+    this.props.actions.createEntity(entity);
+    this.props.actions.deleteSuggestedEntity(suggestedEntity, suggestedEntity.sources[0]);
+  }
+
+  deleteEntity(entity) {
+    if (this.props.listType === "suggested_entities") {
+      this.props.actions.deleteSuggestedEntity(entity, entity.sources[0])
+    }
+    if (this.props.listType === "entities") {
+      this.props.actions.deleteEntity(entity, this.props.projectid)
+    }
+  }
+
+  getEntitySource(entity) {
 		//TODO: refactor to account for entities having multiple sources
 		var sourceid = entity.sources[0];
 		var source = this.props.savedSources.documents.find(function (obj) {return obj._id=== sourceid});
@@ -62,6 +88,7 @@ class EntitiesTab extends Component {
 		return (
 			<div style={{textAlign: 'left', paddingLeft: '10px'}}>
 				<div>
+          <p></p>
 					<b>Name: {this.state.currentEntity.name}</b>
 					<p>Type: {this.state.currentEntity.type}</p>
 					<p>Link: {this.state.currentEntity.link}</p>
@@ -71,6 +98,7 @@ class EntitiesTab extends Component {
 				</div>
 				<div>
 					<br />
+          <b>Source:</b>
 					<p>{this.getEntitySource(this.state.currentEntity)}</p>
 				</div>
 				<TextField
@@ -110,11 +138,10 @@ class EntitiesTab extends Component {
     	} else {
 			return(
 				<div>
-					<h3>Entities</h3>
 					<Drawer width={300} containerStyle={{height: 'calc(100% - 64px)', top: 64}} openSecondary={true} open={this.state.drawerOpen} >
 			          	<AppBar onLeftIconButtonTouchTap={this.closeEntityDrawer}
 	    						iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-	    						title={'Entitiy Details'}
+	    						title={'Entity Details'}
 	    						 />                
 			          	{this.state.drawerOpen ? this.renderEntityDrawer() : null}
 			        </Drawer>
@@ -143,7 +170,16 @@ class EntitiesTab extends Component {
 					        	{this.state.entitySortBy.reverse ? <UpArrow className="icon" style={iconStyles}/> : <DownArrow className="icon" style={iconStyles}/>}
 					        </div>
 					    </div>
-			        	<EntitiesList entities={this.props.entities} searchTerm={this.state.queryEntity} sortBy={this.state.entitySortBy} getSource={this.getEntitySource} onEntityClick={this.openEntityDrawer}/>
+			        	<EntitiesList 
+                  listType={this.props.listType} 
+                  entities={this.props.entities} 
+                  searchTerm={this.state.queryEntity} 
+                  sortBy={this.state.entitySortBy} 
+                  getSource={this.getEntitySource} 
+                  onEntityClick={this.openEntityDrawer} 
+                  onCreateEntity={this.createEntity}
+                  onDeleteEntity={this.deleteEntity}
+                />
 			        </div>
 				</div>
 			);      
@@ -153,6 +189,7 @@ class EntitiesTab extends Component {
 
 function mapDispatchToProps(dispatch) {
 	return {
+    actions: bindActionCreators(actions, dispatch),
 		dispatch: dispatch,
 	};
 }
@@ -165,7 +202,6 @@ function mapStateToProps(state) {
 	} else {
 	    return {
 			status: state.data.savedEntities.status,
-			entities: state.data.savedEntities.entities,
 			savedSources: state.data.savedSources
 	    }
 	}

@@ -15,11 +15,7 @@ import * as server from '../../server/';
 
 class SourcePage extends Component {
 	componentDidMount = () => {
-		server.loadEntities()
-			.then((data) => {
-				this.props.dispatch(actions.addEntities(data.entities));          
-				this.props.dispatch(actions.addSources(data.documents));
-		}).catch((err) => console.log(err));
+    this.props.actions.getSource(this.props.match.params.id);
 	};
 
 	render() {
@@ -61,7 +57,7 @@ function mapStateToProps(state, props) {
 	return {
 		savedEntities: state.data.savedEntities,
 		savedSources: state.data.savedSources,
-		sourceEntities: state.data.savedEntities.entities.filter(function (obj) {return obj.sources[0]=== sourceid}),
+		sourceEntities: state.data.pendingEntities.entities.filter(function (obj) {return obj.sources[0]=== sourceid}),
 		currentSource: state.data.savedSources.documents.find((document) => {return document._id === sourceid}),
 	};
 }

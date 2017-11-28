@@ -1,5 +1,21 @@
-import { ADD_LINK, USER_LOGOUT, ADD_ENTITY, ADD_TAG, ADD_ENTITIES, ADD_SOURCES, STORE_PROJECTS, STORE_VERTICES} from './actionTypes';
+import { 
+  ADD_LINK, 
+  USER_LOGOUT, 
+  ADD_ENTITY,
+  REMOVE_ENTITY,
+  REMOVE_SUGGESTED_ENTITY, 
+  ADD_TAG, 
+  STORE_ENTITIES, 
+  STORE_PENDING_ENTITIES, 
+  STORE_SOURCES, 
+  STORE_PROJECTS, 
+  CURRENT_PROJECT,
+  STORE_VERTICES,
+  ADD_CONNECTION
+  } from './actionTypes';
+
 import * as server_utils from '../../server/utils';
+import * as server from '../../server';
 
 export function addLink(link) {
 	return {
@@ -15,16 +31,44 @@ export function addEntity(entity) {
 	};
 }
 
-export function addEntities(entities){
+export function removeEntity(entity) {
+  return {
+    type: REMOVE_ENTITY,
+    payload: entity
+  };
+}
+
+export function removeSuggestedEntity(suggestedEntity, sourceid) {
+  return {
+    type: REMOVE_SUGGESTED_ENTITY,
+    payload: {entity: suggestedEntity, sourceid: sourceid}
+  };
+}
+
+export function addConnection(connection) {
 	return {
-		type: ADD_ENTITIES,
+		type: ADD_CONNECTION,
+		payload: connection
+	};
+}
+
+export function storeEntities(entities){
+	return {
+		type: STORE_ENTITIES,
 		payload: entities
 	};
 }
 
-export function addSources(sources){
+export function storePendingEntities(entities){
+  return {
+    type: STORE_PENDING_ENTITIES,
+    payload: entities
+  }
+}
+
+export function storeSources(sources){
 	return {
-		type: ADD_SOURCES,
+		type: STORE_SOURCES,
 		payload: sources
 	};
 }
@@ -83,6 +127,127 @@ export function retrieveDetails(actionType, res) {
 // 	}
 // }
 
+export function createEntity(entity) {
+  return function (dispatch, getState) {
+    return server.addEntity(entity.name, entity.type, entity.sources, entity.projectid)
+      .then(data => {
+        dispatch(addEntity(entity));
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+}
+
+export function deleteEntity(entity, projectid) {
+  return function (dispatch, getState) {
+    return server.deleteEntity(entity, projectid) 
+      .then(data => {
+        dispatch(removeEntity(entity));
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    
+  }
+}
+
+export function deleteSuggestedEntity(suggestedEntity, sourceid) {
+  return function (dispatch, getState) {
+    return server.deleteSuggestedEntity(suggestedEntity, sourceid) 
+      .then(data => {
+        dispatch(removeSuggestedEntity(suggestedEntity, sourceid));
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    
+  }
+}
+
+export function createConnection(connection) {
+  return function (dispatch, getState) {
+    return server.addConnection(connection.idOne, connection.idTwo, connection.description, connection.projectid)
+      .then(data => {
+        dispatch(addConnection(connection));
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+}
+
+export function fetchSource(sourceid) {
+  return function (dispatch, getState) {
+    return server.getSource(sourceid)
+      .then(data => {
+        dispatch(storePendingEntities(data.entities));
+        dispatch(storeSources(data.documents));
+      })
+      .catch(err => {
+        console.log(err)
+      });
+  }
+}
+
+export function fetchProjectEntities(projectid) {
+  return function (dispatch, getState) {
+    return server.getProjectEntities(projectid)
+      .then(entities => {
+        dispatch(storeEntities(entities));
+      })
+      .catch(err => {
+        console.log(err)
+      });
+  }
+}
+
+export function fetchProjectSources(projectid) {
+  return function(dispatch, getState) {
+    return server.getSuggestedEntities(projectid)
+      .then((data) => {
+        dispatch(storePendingEntities(data.entities))
+        dispatch(storeSources(data.documents));
+      })
+      .catch((err) => console.log(err));
+  }
+}
+
+/* For if you only want project sources and not suggested entities,
+    currently not being used.
+    
+export function fetchProjectSources(projectid) {
+  return function (dispatch, getState) {
+    return server.getProjectSources(projectid)
+      .then(sources => {
+        dispatch(storeSources(sources))
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+}
+*/
+
+export function fetchProject(projectid) {
+  return function(dispatch, getState) {
+    return server.getProject(projectid)
+      .then(project => {
+        dispatch(setCurrentProject(project[0]))
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+}
+
+export function setCurrentProject(project) {
+  return{
+    type: CURRENT_PROJECT,
+    payload: project
+  }
+}
+
 export function fetchProjects() {
 	return function (dispatch, getState) {
 		return server_utils.getProjectList()
@@ -114,10 +279,10 @@ export function fetchVertices() {
 	};
 }
 
-export function storeVertices(projects) {
+export function storeVertices(vertices) {
 	return {
 		type: STORE_VERTICES,
-		payload: projects
+		payload: vertices
 	};
 }
 

@@ -3,9 +3,6 @@ import React, { Component } from 'react';
 import './App.css'
 
 import ProjectList from './projects/projectList.js';
-import EntitiesTable from './ProjectPage/EntitiesTable';
-import SourcesTable from './SourcesTable';
-import PDFUploader from './pdf_uploader/pdfUploader';
 
 import Paper from 'material-ui/Paper'
 import {Tabs, Tab} from 'material-ui/Tabs';
