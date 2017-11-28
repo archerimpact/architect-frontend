@@ -379,22 +379,6 @@ app.get('/investigation/project/sources', function(req, res) {
   });
 });
 
-/* Commented this out because this is how it was implemented before,
-  but I think the new way is cleaner. Wanted to check with everyone.
-
-app.get('/investigation/projectList', function(req, res) {
-    Project.find(function (err, projects) {
-        var project_dict = {};
-        if (err) return console.error(err);
-        for (var i = 0; i < projects.length; i++) {
-            project_dict[projects[i].name] = projects[i];
-        }
-        res.send(project_dict);
-    })
-    .catch((err) => {console.log(err)})
-  })
-})*/
-
  app.get('/investigation/projectList', function(req, res) {
     /* Gets all the projects */
       db.collection('projects').find({}).toArray(function(err, result) {
