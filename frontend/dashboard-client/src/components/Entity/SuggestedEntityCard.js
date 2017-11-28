@@ -23,20 +23,20 @@ class SuggestedEntityCard extends Component {
     }
 
     renderIcon(entity) {
-        if (entity.type === "Person" || entity.type === "PERSON") {
-          return <Person style={iconStyles}/>
+        if (entity.type.toLowerCase() === "person") {
+          return <Person className="icon"/>
         }
-        if ( entity.type === "DOCUMENT") {
-          return <Document style={iconStyles}/>
+        if ( entity.type.toLowerCase() === "document") {
+          return <Document className="icon"/>
         }
-        if (entity.type ==="ORGANIZATION" || entity.type === "Company") {
-          return <Entity style={iconStyles}/>
+        if (entity.type.toLowerCase() ==="organization" || entity.type.toLowerCase() === "company") {
+          return <Entity className="icon"/>
         }
-        if (entity.type === "Location" || entity.type === "LOCATION") {
-          return <Location style={iconStyles}/>
+        if (entity.type.toLowerCase() === "location") {
+          return <Location className="icon"/>
         }
-        if (entity.type === "NATIONALITY") {
-          return <Nationality style={iconStyles}/>
+        if (entity.type.toLowerCase() === "nationality") {
+          return <Nationality className="icon"/>
         }
     }
 

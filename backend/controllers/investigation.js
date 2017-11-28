@@ -146,6 +146,7 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
 })
 
 function callEntityExtractor(string, callback) {
+  /* Calls the entity extractor on a string */
  var optionsEntityExtractor = {
     url: 'https://api.rosette.com/rest/v1/entities', 
     method: 'POST',
@@ -166,6 +167,8 @@ function callEntityExtractor(string, callback) {
 }
 
 app.get('/investigation/source', function(req,res) {
+  /* Gets a particular source */
+
   var sourceid = req.query.sourceid
   db.collection('vertexes').find({_id: mongoose.Types.ObjectId(sourceid)}).toArray()
     .then((vertexes) => {
@@ -187,6 +190,8 @@ app.get('/investigation/source', function(req,res) {
 })
 
 app.post('/investigation/project', function(req, res) {
+    /* Creates a project */
+
     var project = {
         _id: new mongoose.Types.ObjectId,
         name: req.body.name,
@@ -204,6 +209,8 @@ app.post('/investigation/project', function(req, res) {
 });
 
 app.get('/investigation/project', function(req, res) {
+  /* Gets a project */
+
   var projectid = req.query.projectid
   db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray(function(err, result) {
     res.send(result)
@@ -226,6 +233,8 @@ app.post('/investigation/entity', function(req, res){
 })
 
 app.delete('/investigation/entity', function(req, res) {
+  /* Deletes an entity from a project */
+
   var entityid = mongoose.Types.ObjectId(req.query.entityid);
   db.collection('vertexes').find({_id: entityid}).toArray()
     .then((vertex) => {
@@ -312,6 +321,9 @@ function vertexesToResponse(vertexes, type, callback) {
 }
 
 app.post('/investigation/project/entityExtractor', function(req, res) {
+  /* Submits a string that is saved as a source and calls the entity 
+      extractor on it */
+
   callEntityExtractor(req.body.text, function(response) {
     var vertid = saveDoc(req.body.text, req.body.title, response.entities)
     db.collection('projects').update(
@@ -324,6 +336,8 @@ app.post('/investigation/project/entityExtractor', function(req, res) {
 })
 
 app.get('/investigation/project/entities', function(req, res) {
+  /* Gets all the entities from a project */
+
   var projectid = mongoose.Types.ObjectId(req.query.projectid)
   db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
     .then((projects) => {
@@ -344,6 +358,8 @@ app.get('/investigation/project/entities', function(req, res) {
 })
 
 app.get('/investigation/project/sources', function(req, res) {
+  /* Gets all the sources from a project */
+
   var projectid = req.query.projectid
   db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
   .then((projects) => {
@@ -380,6 +396,7 @@ app.get('/investigation/projectList', function(req, res) {
 })*/
 
  app.get('/investigation/projectList', function(req, res) {
+    /* Gets all the projects */
       db.collection('projects').find({}).toArray(function(err, result) {
         if (err) throw err;
        res.send(result);
