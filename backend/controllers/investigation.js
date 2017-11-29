@@ -130,11 +130,13 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
         let pdf_dest = "./files/" + name;
         let pdfParser = new PDFParser(this,1);
 
-        pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError) );
+        // For saving the text file, unnecessary at the moment
+        /* pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError) );
         pdfParser.on("pdfParser_dataReady", pdfData => {
             var text = pdfParser.getRawTextContent();
             fs.writeFile(text_dest, text, (error) => { console.error(error) });
-        });
+        });*/ 
+
         pdfParser.loadPDF(pdf_dest);
 
         var content = pdfParser.getRawTextContent();
@@ -145,7 +147,6 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
           }
           else {
             fs.unlinkSync(pdf_dest);
-            fs.unlinkSync(text_dest);
           }
         });
 

@@ -5,7 +5,6 @@ var qs = require('qs');
 export function saveDocument(file) {
     const data = new FormData();
     data.append('file', file);
-    data.append('originalname', 'random_file_name');
     var url = 'http://localhost:8000/investigation/pdf';
     var options = {
         method: 'POST',
