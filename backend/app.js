@@ -84,6 +84,8 @@ app.post('/register', function(req, res) {
 
 app.use('/investigation', require('./controllers/investigation'))
 
+app.use('/cloud', require('./controllers/cloud'))
+
 app.get('*', function(req, res) {
     res.send('page not found');
 });

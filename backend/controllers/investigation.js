@@ -7,10 +7,13 @@ var multer = require('multer'),
     Connection = require('../models/connection'),
     mongoose = require('mongoose'),
     request = require('request'),
-    PDFParser = require("pdf2json");
+    cloud = require('./cloud'),
+    PDFParser = require('pdf2json');
 
 const app = require('../app').app;
 const db = require('../app').db;
+
+const bucket_name = 'dashboard-userdocs';
 
 const storage = multer.diskStorage({
     destination: './files/',
@@ -26,6 +29,13 @@ app.use(multer({
      }).single('file'));
 
 const upload = multer({ storage: storage });
+
+app.get('/investigation/cloud_test', function(req, res){
+  console.log("CLOUDBACK");
+  fs.unlink('./files/a_pdf.pdf');
+  //cloud.uploadFile(bucket_name, './files/a_pdf.pdf');
+  cloud.listFiles(bucket_name);
+})
 
 function saveDoc(text, name, entities) {  
     var doc = {
@@ -115,7 +125,6 @@ function saveEntity(name, type, sources) {
 
 app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
     try {
-        // TODO: save to google cloud here
         var name = req.file.originalname;
         let text_dest = "./files/" + name.substring(0, name.length - 4) + ".txt";
         let pdf_dest = "./files/" + name;
@@ -128,7 +137,17 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
         });
         pdfParser.loadPDF(pdf_dest);
 
-        var content = fs.readFileSync(text_dest, "utf8");
+        var content = pdfParser.getRawTextContent();
+
+        cloud.uploadFile(bucket_name, pdf_dest, function(error) {
+          if (error) {
+            throw error;
+          }
+          else {
+            fs.unlinkSync(pdf_dest);
+            fs.unlinkSync(text_dest);
+          }
+        });
 
         callEntityExtractor(content, function(response) {
           saveDoc(content, name, response.entities)
@@ -140,7 +159,6 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
                 res.sendStatus(400);
             })
 
-        // TODO: delete pdf after done with it
     } catch (err) {
         res.sendStatus(400);
     };
