@@ -2,9 +2,10 @@ import 'whatwg-fetch';
 
 var qs = require('qs');
 
-export function saveDocument(file) {
+export function saveDocument(file, projectid) {
     const data = new FormData();
     data.append('file', file);
+    data.append('projectid', projectid);
     var url = 'http://localhost:8000/investigation/pdf';
     var options = {
         method: 'POST',

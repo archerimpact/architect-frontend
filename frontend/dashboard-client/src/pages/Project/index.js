@@ -70,7 +70,7 @@ class ProjectPage extends Component {
   						</Tab>
   						<Tab label="Sources" style={tab_style}>
   							<div className="column">
-  								<PDFUploader />
+  								<PDFUploader projectid={this.props.match.params.id}/>
   								<Paper className="projects">
   									<SourcesTab />
   								</Paper>

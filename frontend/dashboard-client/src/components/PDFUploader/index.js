@@ -32,7 +32,7 @@ class PDFUploader extends Component {
 
     onFileChange(event) {
         this.setState({ fileUploaded: event.target.files[0].name + " uploaded"});
-        server_utils.saveDocument(event.target.files[0]);
+        server_utils.saveDocument(event.target.files[0], this.props.projectid);
     }
 
 	onDocumentLoadSuccess({numPages}) {

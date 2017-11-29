@@ -126,6 +126,8 @@ function saveEntity(name, type, sources) {
 app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
     try {
         var name = req.file.originalname;
+        var projectid = req.body.projectid;
+        console.log(projectid);
         let text_dest = "./files/" + name.substring(0, name.length - 4) + ".txt";
         let pdf_dest = "./files/" + name;
         let pdfParser = new PDFParser(this,1);
@@ -151,7 +153,11 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
         });
 
         callEntityExtractor(content, function(response) {
-          saveDoc(content, name, response.entities)
+          var vertid = saveDoc(content, name, response.entities);
+          db.collection('projects').update(
+              {_id : mongoose.Types.ObjectId(projectid)},
+              {$push: {sources: vertid}}
+            )
         })
             .then(item => {
                 res.send("PDF Converted To Text Success");

@@ -10,12 +10,6 @@ const storage = new Storage({
 });
 
 function listFiles(bucketName) {
-  // [START storage_list_files]
-
-  /**
-   * TODO(developer): Uncomment the following line before running the sample.
-   */
-  // const bucketName = 'dashboard-userdocs';
 
   // Lists files in the bucket
   storage
@@ -32,18 +26,9 @@ function listFiles(bucketName) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END storage_list_files]
 }
 
 function listFilesByPrefix(bucketName, prefix, delimiter) {
-  // [START storage_list_files_with_prefix]
-
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  const bucketName = 'dashboard-userdocs';
-  const prefix = 'public/';
-  const delimiter = '/';
 
   /**
    * This can be used to list all blobs in a "folder", e.g. "public/".
@@ -87,17 +72,9 @@ function listFilesByPrefix(bucketName, prefix, delimiter) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END storage_list_files_with_prefix]
 }
 
 function uploadFile(bucketName, filename, callback) {
-  // [START storage_upload_file]
-
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  // const bucketName = 'dashboard-userdocs';
-  // const filename = 'waterbottle.txt';
 
   // Uploads a local file to the bucket
   storage
@@ -110,18 +87,9 @@ function uploadFile(bucketName, filename, callback) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END storage_upload_file]
 }
 
 function downloadFile(bucketName, srcFilename, destFilename) {
-  // [START storage_download_file]
-
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  const bucketName = 'dashboard-userdocs';
-  const srcFilename = 'file1.html';
-  const destFilename = 'otherbottle.html';
 
   const options = {
     // The path to which the file should be downloaded, e.g. "./file.txt"
@@ -141,17 +109,9 @@ function downloadFile(bucketName, srcFilename, destFilename) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END storage_download_file]
 }
 
 function deleteFile(bucketName, filename) {
-  // [START storage_delete_file]
-
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  const bucketName = 'dashboard-userdocs';
-  const filename = 'file.txt';
 
   // Deletes the file from the bucket
   storage
@@ -164,17 +124,9 @@ function deleteFile(bucketName, filename) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END storage_delete_file]
 }
 
 function getMetadata(bucketName, filename) {
-  // [START storage_get_metadata]
-
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  const bucketName = 'dashboard-userdocs';
-  const filename = 'file1.html';
 
   // Gets the metadata for the file
   storage
@@ -209,18 +161,9 @@ function getMetadata(bucketName, filename) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END storage_get_metadata]
 }
 
 function moveFile(bucketName, srcFilename, destFilename) {
-  // [START storage_move_file]
-
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  const bucketName = 'dashboard-userdocs';
-  const srcFilename = 'file1.html';
-  const destFilename = 'movedfile1.html';
 
   // Moves the file within the bucket
   storage
@@ -237,19 +180,9 @@ function moveFile(bucketName, srcFilename, destFilename) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END storage_move_file]
 }
 
 function copyFile(srcBucketName, srcFilename, destBucketName, destFilename) {
-  // [START storage_copy_file]
-
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  const srcBucketName = 'dashboard-userdocs';
-  const srcFilename = 'file1.html';
-  const destBucketName = 'dashboard-userdocs';
-  const destFilename = 'copiedfile1.html';
 
   // Copies the file to the other bucket
   storage
@@ -266,7 +199,6 @@ function copyFile(srcBucketName, srcFilename, destBucketName, destFilename) {
     .catch(err => {
       console.error('ERROR:', err);
     });
-  // [END storage_copy_file]
 }
 
 app.get('/cloud/testing', function(req, res){
