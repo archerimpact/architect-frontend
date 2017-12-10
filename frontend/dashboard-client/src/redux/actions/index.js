@@ -185,6 +185,7 @@ export function fetchProjectSources(projectid) {
   return function(dispatch, getState) {
     return server.getSuggestedEntities(projectid)
       .then((data) => {
+        debugger
         dispatch(storePendingEntities(data.entities))
         dispatch(storeSources(data.documents));
       })

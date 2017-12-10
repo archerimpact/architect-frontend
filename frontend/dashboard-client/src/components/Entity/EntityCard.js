@@ -34,8 +34,9 @@ class EntityCard extends Component {
         }
     }
     
-    renderSourceLink(entity, getSource) {
-        var docText = getSource(entity);
+    renderSourceLink(vertex, getSource) {
+      debugger
+        var docText = getSource(vertex);
         var docText15words;
         if (typeof(docText) === "undefined") {
           docText15words = "";
@@ -44,11 +45,12 @@ class EntityCard extends Component {
         }
         return (
             <div>
-                <span className="type"><Link to={"/source/"+entity.sources}><b>Source:</b></Link>{" " +docText15words}</span>
+                <span className="type"><Link to={"/source/"+vertex.entity.sources}><b>Source:</b></Link>{" " +docText15words}</span>
             </div>
         );
     }
   render() {
+    debugger
     return (
         <div className="entityCard" onClick={() => this.props.onEntityClick(this.props.entity)}>
             <div className="cardHeader">

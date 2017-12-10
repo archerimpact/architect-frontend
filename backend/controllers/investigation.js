@@ -296,8 +296,8 @@ function vertexesToResponse(vertexes, type, callback) {
           return db.collection('documents').find({_id: sources[0].source}).toArray()
           .then((document) => {
             vertex.sourceType = sources[0].type;
-            vertex.content = document[0].content;
-            vertex.entities = document[0].entities;
+            vertex.source = sources[0];
+            vertex.source.document = document[0];
             updatedVertexes.push(vertex);
             return callback(updatedVertexes);
           })
@@ -310,8 +310,7 @@ function vertexesToResponse(vertexes, type, callback) {
     vertexes = vertexes.map((vertex) => {
       return db.collection('entities').find({_id: vertex.entity}).toArray()
         .then((entities) => {
-          vertex.type = entities[0].type;
-          vertex.sources = entities[0].sources;
+          vertex.entity = entities[0];
           updatedVertexes.push(vertex);
           return callback(updatedVertexes);
         })
