@@ -3,15 +3,11 @@ import React, { Component } from 'react';
 import './style.css'
 
 import EntitiesTab from '../../containers/EntityTab';
-import EntityExtractor from '../../components/EntityExtractor/';
 import NodeGraph from '../../components/NodeGraph';
 import SourcesTab from '../../containers/SourcesTab';
 import PDFUploader from '../../components/PDFUploader';
-import AddEntity from '../../components/Entity/AddEntity';
+import AddInformation from '../../containers/AddInformation';
 
-import Badge from 'material-ui/Badge';
-import IconButton from 'material-ui/IconButton';
-import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
 import Paper from 'material-ui/Paper';
 import {Tabs, Tab} from 'material-ui/Tabs';
 
@@ -26,67 +22,65 @@ const tab_style = {
 };
 
 class ProjectPage extends Component {
-	componentDidMount = () => {
-		server.loadEntities()
-			.then((data) => {
-				this.props.dispatch(actions.addEntities(data.entities));
-				this.props.dispatch(actions.addSources(data.documents));
-			}).catch((err) => console.log("There was an error: " + err))
+
+  componentDidMount = () => {
+    this.props.actions.fetchProject(this.props.match.params.id);
+    this.props.actions.fetchProjectEntities(this.props.match.params.id);
+    this.props.actions.fetchProjectSources(this.props.match.params.id);
 	};
 
 	render() {
-		return (
-			<div>
-				<div className="header">
-					<div className="header-text">
-						<h3>{this.props.currentProject.title}</h3>
-					</div>
-					<div id="notifications">
-						<Badge
-						  badgeContent={10}
-						  secondary={true}
-						  badgeStyle={{top: 12, right: 12}}
-						>
-						  <IconButton tooltip="Notifications">
-							<NotificationsIcon />
-						  </IconButton>
-						</Badge>
-					</div>
-				</div>
-				<div className="tabs" style={{width:'100%', margin:'0 auto'}}>
-					<Tabs >
-						<Tab label="Workspace" type="default" style={tab_style}>
-							<div className="graph-canvas">
-								<Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
-									<NodeGraph entities={this.props.savedEntities.entities} sources={this.props.savedSources.documents}/>
-								</Paper>
-				                <Paper style={{position: "absolute"}}>
-					                <div className="text-container">
-					                    <EntityExtractor/>
-					                </div>
-					                <AddEntity sourceid={0}/>
-				                </Paper>
-							</div>
-						</Tab>
-						<Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={tab_style}>
-							<div className="column">
-								<Paper className="projects" style={{padding: '10px'}}>
-									<EntitiesTab />
-								</Paper>
-							</div>
-						</Tab>
-						<Tab label="Sources" style={tab_style}>
-							<div className="column">
-								<PDFUploader />
-								<Paper className="projects">
-									<SourcesTab />
-								</Paper>
-							</div>
-						</Tab>
-					</Tabs>
-				</div>
-			</div>
-		);
+    if (this.props.status === 'isLoading') {
+      return (<div className="projects">
+            <p> Loading ... </p>
+          </div>
+        );
+    } else {
+      return (
+  			<div>
+  				<div className="header">
+  					<div className="header-text">
+  						<h3>{"Projects  >  " + this.props.currentProject.name}</h3>
+  					</div>
+  					<div id="notifications">
+              <AddInformation projectid={this.props.match.params.id}/>
+  					</div>
+  				</div>
+  				<div className="tabs" style={{width:'100%', margin:'0 auto'}}>
+  					<Tabs >
+  						<Tab label="Workspace" type="default" style={tab_style}>
+  							<div className="graph-canvas">
+  								<Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
+  									<NodeGraph entities={this.props.allEntities} sources={this.props.savedSources.documents}/>
+  								</Paper>
+
+  							</div>
+  						</Tab>
+  						<Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={tab_style}>
+  							<div className="column">
+                  <h3>Your Entities</h3>
+  								<Paper className="projects">
+  									<EntitiesTab listType={"entities"} entities={this.props.savedEntities.entities} projectid={this.props.match.params.id}/>
+  								</Paper>
+                  <h3>Suggested Entities</h3>
+                  <Paper className="projects">
+                    <EntitiesTab listType={"suggested_entities"} entities={this.props.pendingEntities.entities} projectid={this.props.match.params.id}/>
+                  </Paper>
+  							</div>
+  						</Tab>
+  						<Tab label="Sources" style={tab_style}>
+  							<div className="column">
+  								<PDFUploader />
+  								<Paper className="projects">
+  									<SourcesTab />
+  								</Paper>
+  							</div>
+  						</Tab>
+  					</Tabs>
+  				</div>
+  			</div>
+      );
+    };
 	};
 }
 
@@ -98,12 +92,22 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, props) {
-	return {
-		savedEntities: state.data.savedEntities,
-		projects: state.data.projects,
-		savedSources: state.data.savedSources,
-		currentProject: state.data.projects[props.match.params.id]
-	};
+  if (state.data.savedEntities.status === 'isLoading' || state.data.savedSources.status === 'isLoading' || state.data.pendingEntities.status === 'isLoading') {
+    return {
+      status: 'isLoading',
+      currentProject: state.data.currentProject
+    }
+  } else {
+    return {
+      status: 'isLoaded',
+      savedEntities: state.data.savedEntities,
+      projects: state.data.projects,
+      savedSources: state.data.savedSources,
+      currentProject: state.data.currentProject,
+      pendingEntities: state.data.pendingEntities,
+      allEntities: state.data.pendingEntities.entities.concat(state.data.savedEntities.entities)
+    }
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectPage);

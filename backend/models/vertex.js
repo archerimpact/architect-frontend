@@ -21,7 +21,7 @@ var sourceSchema = new mongoose.Schema({
 	},
 	// TODO: possibly change this to be entitySchema rather than String later on
     type: String, // Must be "Document", "Image", or "Video"
-    source: { type: Schema.Types.ObjectId } // Must be documentSchema, imageSchema, or VideoSchema
+    document: { type: Schema.Types.ObjectId } // Must be documentSchema, imageSchema, or VideoSchema
 })
 
 var entitySchema = new mongoose.Schema({

@@ -11,8 +11,7 @@ var express = require('express'),
     fs = require('fs'),
     PDFParser = require("pdf2json");
 
-//mongoose.connect('mongodb://michael:archer3@ds115045.mlab.com:15045/uxreceiver');
-mongoose.connect('mongodb://admin:admin1@ds243085.mlab.com:43085/angelina_db');
+mongoose.connect('mongodb://alice:archer@ds143245.mlab.com:43245/uxreceiverdev');
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -42,6 +41,7 @@ app.use(require('express-session')({
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
     next();
 })
 

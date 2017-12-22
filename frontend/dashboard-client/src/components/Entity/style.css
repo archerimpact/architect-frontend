@@ -61,6 +61,11 @@
 	padding-right: 5px;
 }
 
+
+.add-container {
+  padding: 15px;
+}
+
 .icon {
     margin-right: 8px;
     width: 56px;

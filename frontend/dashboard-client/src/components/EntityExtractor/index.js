@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import * as server from '../../server/';
 
 class EntityExtractor extends Component{
 	constructor(props) {
@@ -26,31 +25,26 @@ class EntityExtractor extends Component{
 
 	handleSubmit(event) {
 		event.preventDefault();
-		server.submitText(this.state.title, this.state.text)
-		.then((data) => {
-			this.setState({text: ""});
-		})
-		.catch((error) => {
-				console.log(error)
-		});
+		this.props.onTextSubmit(this.state.title, this.state.text, this.props.projectid)
+		this.setState({text:""})
 	};
 
 	render() {
 		return(
 			<div>
 				<TextField
-					hintText="Include a title for your text"
+					hintText="Title"
 					value={this.state.title}
 					onChange={this.handleTitleChange}
+          style={{width: 250, marginRight: 20}}
 				/>
 				<TextField 
-					className="add-text" 
 					multiLine={true} 
-					rows={5} 
 					rowsMax={10}
-					hintText="Submit text to extract entities" 
+					hintText="Submit text for suggested entities" 
 					value={this.state.text} 
 					onChange={this.handleTextChange} 
+          style={{width: 250, marginRight: 20}}
 				/>
 				<RaisedButton label="Extract" onClick={this.handleSubmit}/>
 			</div>

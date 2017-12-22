@@ -68,9 +68,8 @@ class SearchSources extends Component {
         		<RaisedButton 
                     primary={true} 
                     className="submit" 
-                    type="submit">
-                    Search
-                </RaisedButton>
+                    type="submit"
+                    label="Search" />
         	</form>
             <List>
                 {this.searchResponses()}

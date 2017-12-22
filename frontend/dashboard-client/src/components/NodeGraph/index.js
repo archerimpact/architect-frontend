@@ -18,18 +18,18 @@ class NodeGraph extends Component {
     super(props);
     this.state = {
       text: true
-    }
+    };
   }
 
   uniqueNodes(nodes) {
     var obj = {};
 
     for ( var i=0, len=nodes.length; i < len; i++ )
-        obj[nodes[i]['id']] = nodes[i];
+      obj[nodes[i]['id']] = nodes[i];
 
     nodes = [];
     for ( var key in obj )
-        nodes.push(obj[key]);
+      nodes.push(obj[key]);
     return nodes;
   }
 
@@ -54,7 +54,7 @@ class NodeGraph extends Component {
 			return this.sourceToLinks(document);
 		}));
 		var entityLinks= [].concat.apply([], entities.map((entity) => {
-			return this.tagsToLinks(entity);
+			return this.connectionsToLinks(entity);
 		}));
 		if (typeof(documentLinks) === "undefined"){
 			documentLinks=[];
@@ -65,59 +65,56 @@ class NodeGraph extends Component {
 		return entityLinks.concat(documentLinks);
 	};
 
-	tagsToLinks(entity) {
+	connectionsToLinks(entity) {
 		/* Takes all of the tags of one entity and returns an array of all
 			 the links of that one entity */
-
-		return entity.tags.map((tag) => {
+		return entity.connections.map((tag) => {
 			return {"source": entity.name, "target": tag};
 		});
 	};
 
+
 	/* TO-DO: refactor so that this method takes entities and maps a connection
 		 to sources if and only if the source appears in this graph */
-	sourceToLinks(document) {
-		if (document.length === 0) {
+	sourceToLinks(vertex) {
+		if (vertex.length === 0) {
 			return;
 		}else{
-			return document.entities.map((entity) => {
+			return vertex.source.document.entities.map((entity) => {
 				return {"source": entity.normalized, "target": document._id};
 			});
 		}
 	};
 
 	getNodeColor(node) {
-		/* returns the color of the node based on the type of the entity.
-        All caps refers to an entity-extractor generated entity, lowercase
-        is user-defined. TO-DO: refactor this to make more sense later.
-     */
-
+		/* returns the color of the node based on the type of the entity */
     if (node.type === "PERSON") {
-      return "#83DFFF"
+      return "#83DFFF";
     }
     if (node.type === "ORGANIZATION") {
-      return "#76C9E5"
+      return "#76C9E5";
     }
     if (node.type === "LOCATION" || node.type === "NATIONALITY") {
-      return "#62A8BF"
+      return "#62A8BF";
     }
     if (node.type === "DOCUMENT") {
-      return "#49FFB7"
+      return "#49FFB7";
     }
-    if (node.type === "Person") {
-      return "#DA5DFF"
+    if (node.type === "Person" || node.type === "person") {
+      return "#DA5DFF";
     }
-    if (node.type === "Company") {
-      return "#A346BF"
+    if (node.type === "Company" || node.type === "organization") {
+      return "#A346BF";
     }
-    if (node.type === "Location") {
-      return "#C454E5"
+    if (node.type === "Location" || node.type==="location") {
+      return "#C454E5";
     }
     else {
-      return "#41707F"
+      return "#41707F";
     }
 	};
 
+  /* For getting an image for node types
   getImage(node) {
     if (node.type === "Person" || node.type === "PERSON") {
       return "https://www.materialui.co/materialIcons/social/person_grey_192x192.png";
@@ -134,16 +131,15 @@ class NodeGraph extends Component {
     if (node.type === "NATIONALITY") {
       return "https://cdn0.iconfinder.com/data/icons/buntu-trade/100/flag_glyph_convert-512.png";
     };
-  }
+  } */
 
   getCollide(node) {
     if (node.type==="DOCUMENT") {
-      return 60
+      return 60;
     }
     else {
-      return 20
+      return 20;
     }
-
   }
 
 	generateNetworkCanvas(entities, sources, includeText) {
@@ -166,10 +162,8 @@ class NodeGraph extends Component {
 		const simulation = d3.forceSimulation(data.nodes)
 			.force("center", d3.forceCenter(width/2, height/2))
 			.force("charge", d3.forceManyBody())
-			.force("link", d3.forceLink(linkNodes).id(function(d) { return d.id; }))
-      /* Commented this out because it doesn't function well for large graphs
-      .force("collide", d3.forceCollide((d) => this.getCollide(d))); 
-      */
+      //.force("collide", d3.forceCollide((d) => this.getCollide(d)))
+			.force("link", d3.forceLink(linkNodes).id(function(d) { return d.id; }));
 
 		const svg = d3.select(this.refs.mountPoint)
 			.append('svg')
@@ -178,9 +172,8 @@ class NodeGraph extends Component {
 			.attr('display', "block")
 			.attr('margin', "auto")
 			.attr('id', 'svg1')
-      /* Commented this out because we don't need the zoom function now
-      .call(d3.zoom().on("zoom", redraw))
-      */
+      /* Code for enabling zoom.
+      .call(d3.zoom().on("zoom", redraw)) */
 
 		const linkElements = svg.selectAll('line')
 			.data(data.links)
@@ -202,12 +195,12 @@ class NodeGraph extends Component {
 			.style('stroke-width', 1.5)
 			.style('fill', (d) => this.getNodeColor(d));
 
-    /* Commented this out because it's for adding images to the graph and it's too cluttered
+    /* Code for attaching an image to each node.
 
     nodeElements.append('image')
       .attr("xlink:href", (d) => this.getImage(d))
       .attr("height", 20)
-      .attr("width", 20);*/
+      .attr("width", 20); */
     
 		svg.selectAll('g').call(d3.drag()
 			.on("start", dragstarted)
@@ -230,8 +223,6 @@ class NodeGraph extends Component {
 				.attr('transform', (d) => {return 'translate(' + d.x + ',' + d.y + ')'});
 		});
 
-		//simulation.force("link").links(data.links);
-
 		function dragstarted(d) {
 			if (!d3.event.active) {
 				simulation.alphaTarget(0.3).restart();
@@ -249,11 +240,9 @@ class NodeGraph extends Component {
 			if (!d3.event.active) {
 				simulation.alphaTarget(0);
 			};
-      d.fx = null;
-      d.fy = null;
 		};
 
-    /* Commented out because it's part of the zoom functionality that we don't need
+    /* for zoom 
     function redraw() {
       svg.attr("transform", d3.event.transform);
     }

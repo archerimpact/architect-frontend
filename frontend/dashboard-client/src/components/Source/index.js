@@ -3,6 +3,7 @@ import { Document, Page } from 'react-pdf/build/entry.webpack';
 import pdf_1 from './sample_files/a_dirks_news.pdf';
 import pdf_2 from './sample_files/a_news_pdf.pdf';
 import pdf_3 from './sample_files/a_pdf.pdf';
+import pdf_4 from './sample_files/trump.pdf'
 import {Card, CardMedia, CardTitle} from 'material-ui/Card';
 import './style.css';
 
@@ -32,7 +33,7 @@ class Sources extends Component {
     }
 
     render() {
-        var docs = [pdf_1, pdf_2, pdf_3];
+        var docs = [pdf_1, pdf_2, pdf_3, pdf_4];
         return (
             <div className="sources">
                 <div className="documentList">

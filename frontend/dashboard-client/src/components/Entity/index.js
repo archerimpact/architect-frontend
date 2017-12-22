@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import EntityCard from './EntityCard';
+
 import './style.css';
 
 class EntitiesList extends Component {
@@ -27,7 +28,7 @@ class EntitiesList extends Component {
 	    	return 0;
 	  	}
 	}
-		
+
 	render() {
 		return (
 			<div>
@@ -37,7 +38,14 @@ class EntitiesList extends Component {
 					.map((entity, id) => {
 						return (
 							<div className="entityList" key={id}>
-								<EntityCard onEntityClick={this.props.onEntityClick} entity={entity} getSource={this.props.getSource}/>
+          			<EntityCard 
+                  onCreateEntity={this.props.onCreateEntity} 
+
+                  onDeleteEntity={this.props.onDeleteEntity}
+                  onEntityClick={this.props.onEntityClick} 
+                  entity={entity} 
+                  getSource={this.props.getSource}
+                />
 							</div>
 						);
 					})}
