@@ -4,6 +4,11 @@ const app = require('../app').app;
 
 const Storage = require('@google-cloud/storage');
 
+/* TODO Disclaimer: this file has a ton of stuff right now
+that will be reduced in a later PR, just keeping all
+the functionalities for now until we determine which we
+will use and which we won't */
+
 // Creates a client
 const storage = new Storage({
   keyFilename: './Flagship-90618a5e2e34.json'
