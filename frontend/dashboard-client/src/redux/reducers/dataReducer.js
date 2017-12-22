@@ -62,7 +62,7 @@ export default function (state = initialState, action) {
 				savedEntities: {
 					...state.savedEntities,
 					status: 'isLoaded',
-					entities: action.payload.map((entity) => {return {_id: entity._id, name: entity.name, type: entity.type, link: '', tags: [], sources: entity.sources, qid: entity.qid}})
+					entities: action.payload
 				},
 				entityNames: action.payload.map((entity) => {return entity.name})
 			}

@@ -172,6 +172,7 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
 })
 
 function callEntityExtractor(string, callback) {
+  /* Calls the entity extractor on a string */
  var optionsEntityExtractor = {
     url: 'https://api.rosette.com/rest/v1/entities', 
     method: 'POST',
@@ -192,6 +193,8 @@ function callEntityExtractor(string, callback) {
 }
 
 app.get('/investigation/source', function(req,res) {
+  /* Gets a particular source */
+
   var sourceid = req.query.sourceid
   db.collection('vertexes').find({_id: mongoose.Types.ObjectId(sourceid)}).toArray()
     .then((vertexes) => {
@@ -213,6 +216,8 @@ app.get('/investigation/source', function(req,res) {
 })
 
 app.post('/investigation/project', function(req, res) {
+    /* Creates a project */
+
     var project = {
         _id: new mongoose.Types.ObjectId,
         name: req.body.name,
@@ -230,6 +235,8 @@ app.post('/investigation/project', function(req, res) {
 });
 
 app.get('/investigation/project', function(req, res) {
+  /* Gets a project */
+
   var projectid = req.query.projectid
   db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray(function(err, result) {
     res.send(result)
@@ -252,6 +259,8 @@ app.post('/investigation/entity', function(req, res){
 })
 
 app.delete('/investigation/entity', function(req, res) {
+  /* Deletes an entity from a project */
+
   var entityid = mongoose.Types.ObjectId(req.query.entityid);
   db.collection('vertexes').find({_id: entityid}).toArray()
     .then((vertex) => {
@@ -329,9 +338,8 @@ function vertexesToResponse(vertexes, type, callback) {
         .then((sources) => {
           return db.collection('documents').find({_id: sources[0].source}).toArray()
           .then((document) => {
-            vertex.sourceType = sources[0].type;
-            vertex.content = document[0].content;
-            vertex.entities = document[0].entities;
+            vertex.source = sources[0];
+            vertex.source.document = document[0];
             updatedVertexes.push(vertex);
             return callback(updatedVertexes);
           })
@@ -344,8 +352,7 @@ function vertexesToResponse(vertexes, type, callback) {
     vertexes = vertexes.map((vertex) => {
       return db.collection('entities').find({_id: vertex.entity}).toArray()
         .then((entities) => {
-          vertex.type = entities[0].type;
-          vertex.sources = entities[0].sources;
+          vertex.entity = entities[0];
           updatedVertexes.push(vertex);
           return callback(updatedVertexes);
         })
@@ -355,6 +362,9 @@ function vertexesToResponse(vertexes, type, callback) {
 }
 
 app.post('/investigation/project/entityExtractor', function(req, res) {
+  /* Submits a string that is saved as a source and calls the entity 
+      extractor on it */
+
   callEntityExtractor(req.body.text, function(response) {
     var vertid = saveDoc(req.body.text, req.body.title, response.entities)
     db.collection('projects').update(
@@ -367,6 +377,8 @@ app.post('/investigation/project/entityExtractor', function(req, res) {
 })
 
 app.get('/investigation/project/entities', function(req, res) {
+  /* Gets all the entities from a project */
+
   var projectid = mongoose.Types.ObjectId(req.query.projectid)
   db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
     .then((projects) => {
@@ -387,6 +399,8 @@ app.get('/investigation/project/entities', function(req, res) {
 })
 
 app.get('/investigation/project/sources', function(req, res) {
+  /* Gets all the sources from a project */
+
   var projectid = req.query.projectid
   db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
   .then((projects) => {
@@ -406,23 +420,8 @@ app.get('/investigation/project/sources', function(req, res) {
   });
 });
 
-/* Commented this out because this is how it was implemented before,
-  but I think the new way is cleaner. Wanted to check with everyone.
-
-app.get('/investigation/projectList', function(req, res) {
-    Project.find(function (err, projects) {
-        var project_dict = {};
-        if (err) return console.error(err);
-        for (var i = 0; i < projects.length; i++) {
-            project_dict[projects[i].name] = projects[i];
-        }
-        res.send(project_dict);
-    })
-    .catch((err) => {console.log(err)})
-  })
-})*/
-
  app.get('/investigation/projectList', function(req, res) {
+    /* Gets all the projects */
       db.collection('projects').find({}).toArray(function(err, result) {
         if (err) throw err;
        res.send(result);
