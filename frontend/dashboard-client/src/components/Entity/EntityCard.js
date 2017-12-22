@@ -49,13 +49,15 @@ class EntityCard extends Component {
         );
     }
   render() {
-    return (
+    if (this.props.listType === "suggested_entities") {
+      return (
         <div className="entityCard" onClick={() => this.props.onEntityClick(this.props.entity)}>
             <div className="cardHeader">
                 {this.renderIcon(this.props.entity)}
                 <div className="cardHeaderText">
                     <span className="title"> {this.props.entity.qid && this.props.entity.qid.charAt(0) !== "T" ? <a href={"https://www.wikidata.org/wiki/" + this.props.entity.qid}>{this.props.entity.name} </a> : this.props.entity.name}</span>
                     <span className="type">{this.props.entity.type}</span>
+                    <RaisedButton label="Create Entity" onClick={()=>this.props.onCreateEntity(this.props.entity)} />
                     <RaisedButton label="Delete" onClick={()=>this.props.onDeleteEntity(this.props.entity)} />
                 </div>
             </div>
@@ -64,6 +66,24 @@ class EntityCard extends Component {
             </div>
         </div>
     );
+    }
+    else {
+      return (
+          <div className="entityCard" onClick={() => this.props.onEntityClick(this.props.entity)}>
+              <div className="cardHeader">
+                  {this.renderIcon(this.props.entity)}
+                  <div className="cardHeaderText">
+                      <span className="title"> {this.props.entity.qid && this.props.entity.qid.charAt(0) !== "T" ? <a href={"https://www.wikidata.org/wiki/" + this.props.entity.qid}>{this.props.entity.name} </a> : this.props.entity.name}</span>
+                      <span className="type">{this.props.entity.type}</span>
+                      <RaisedButton label="Delete" onClick={()=>this.props.onDeleteEntity(this.props.entity)} />
+                  </div>
+              </div>
+              <div className="cardBody">
+                  {this.renderSourceLink(this.props.entity, this.props.getSource)}
+              </div>
+          </div>
+      );
+    }
   }
 }
 
