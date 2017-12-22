@@ -54,7 +54,7 @@ class NodeGraph extends Component {
 			return this.sourceToLinks(document);
 		}));
 		var entityLinks= [].concat.apply([], entities.map((entity) => {
-			return this.tagsToLinks(entity);
+			return this.connectionsToLinks(entity);
 		}));
 		if (typeof(documentLinks) === "undefined"){
 			documentLinks=[];
@@ -65,11 +65,10 @@ class NodeGraph extends Component {
 		return entityLinks.concat(documentLinks);
 	};
 
-	tagsToLinks(entity) {
+	connectionsToLinks(entity) {
 		/* Takes all of the tags of one entity and returns an array of all
 			 the links of that one entity */
-
-		return entity.tags.map((tag) => {
+		return entity.connections.map((tag) => {
 			return {"source": entity.name, "target": tag};
 		});
 	};
@@ -77,11 +76,11 @@ class NodeGraph extends Component {
 
 	/* TO-DO: refactor so that this method takes entities and maps a connection
 		 to sources if and only if the source appears in this graph */
-	sourceToLinks(document) {
-		if (document.length === 0) {
+	sourceToLinks(vertex) {
+		if (vertex.length === 0) {
 			return;
 		}else{
-			return document.entities.map((entity) => {
+			return vertex.source.document.entities.map((entity) => {
 				return {"source": entity.normalized, "target": document._id};
 			});
 		}

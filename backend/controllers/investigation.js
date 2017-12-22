@@ -295,7 +295,6 @@ function vertexesToResponse(vertexes, type, callback) {
         .then((sources) => {
           return db.collection('documents').find({_id: sources[0].source}).toArray()
           .then((document) => {
-            vertex.sourceType = sources[0].type;
             vertex.source = sources[0];
             vertex.source.document = document[0];
             updatedVertexes.push(vertex);

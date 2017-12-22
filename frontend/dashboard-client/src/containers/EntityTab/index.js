@@ -66,13 +66,12 @@ class EntitiesTab extends Component {
 
   getEntitySource(vertex) {
 		//TODO: refactor to account for entities having multiple sources
-		debugger
     var sourceid = vertex.entity.sources[0];
 		var source = this.props.savedSources.documents.find(function (obj) {return obj._id=== sourceid});
 		if (typeof(source) !== "undefined"){
 			return source.content;
 		} else {
-			return "";
+			return;
 		}
 	};
 

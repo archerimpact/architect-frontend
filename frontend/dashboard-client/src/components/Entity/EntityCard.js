@@ -35,7 +35,6 @@ class EntityCard extends Component {
     }
     
     renderSourceLink(vertex, getSource) {
-      debugger
         var docText = getSource(vertex);
         var docText15words;
         if (typeof(docText) === "undefined") {
@@ -50,7 +49,6 @@ class EntityCard extends Component {
         );
     }
   render() {
-    debugger
     return (
         <div className="entityCard" onClick={() => this.props.onEntityClick(this.props.entity)}>
             <div className="cardHeader">

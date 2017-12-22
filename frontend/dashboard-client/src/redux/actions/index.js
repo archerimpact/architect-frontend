@@ -13,7 +13,7 @@ import {
   } from './actionTypes';
 
 import * as server_utils from '../../server/utils';
-import * as server from '../../server';
+import * as server from '../../server/index.js';
 
 export function addLink(link) {
 	return {
@@ -185,7 +185,6 @@ export function fetchProjectSources(projectid) {
   return function(dispatch, getState) {
     return server.getSuggestedEntities(projectid)
       .then((data) => {
-        debugger
         dispatch(storePendingEntities(data.entities))
         dispatch(storeSources(data.documents));
       })
