@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
-import * as server from '../../server/';
-
 class EntityExtractor extends Component{
 	constructor(props) {
 		super(props);
