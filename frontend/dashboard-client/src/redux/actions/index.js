@@ -15,7 +15,7 @@ import {
   } from './actionTypes';
 
 import * as server_utils from '../../server/utils';
-import * as server from '../../server';
+import * as server from '../../server/index.js';
 
 export function addLink(link) {
 	return {

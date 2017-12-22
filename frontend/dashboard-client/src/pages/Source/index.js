@@ -15,7 +15,7 @@ import * as server from '../../server/';
 
 class SourcePage extends Component {
 	componentDidMount = () => {
-    this.props.actions.getSource(this.props.match.params.id);
+    this.props.actions.fetchSource(this.props.match.params.id);
 	};
 
 	render() {

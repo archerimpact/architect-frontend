@@ -136,12 +136,12 @@ export function getSuggestedEntities(projectid) {
   });
 }
 
-function documentsToEntities(documents) {
+function documentsToEntities(vertexes) {
     /* map over all notes, then map over all entities in each note, and build a new array entities 
        which contains all entities of all notes */
 
-    var entities = documents.map((document) => {
-      return document.entities.map((entity) => {
+    var entities = vertexes.map((vertex) => {
+      return vertex.source.document.entities.map((entity) => {
         return {"name": entity.normalized, "type": entity.type, "qid": entity.entityId, "sourceid": document._id}
       });
     });

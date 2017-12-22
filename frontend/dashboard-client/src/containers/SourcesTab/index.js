@@ -45,13 +45,13 @@ class SourcesTable extends Component {
 					<TableBody
 						showRowHover={true}
 					>
-						{this.props.savedSources.documents.map((document, id) => {
+						{this.props.savedSources.documents.map((vertex, id) => {
 							return(
 								<TableRow key={id}>
-									<TableRowColumn>{document.name}</TableRowColumn>
-									<TableRowColumn>{document.content}</TableRowColumn>
-									<TableRowColumn>{document.entities.length}</TableRowColumn>
-									<TableHeaderColumn><a href={"/source/" + document._id}>View Details</a></TableHeaderColumn>
+									<TableRowColumn>{vertex.name}</TableRowColumn>
+									<TableRowColumn>{vertex.source.document.content}</TableRowColumn>
+									<TableRowColumn>{vertex.source.document.entities.length}</TableRowColumn>
+									<TableHeaderColumn><a href={"/source/" + vertex._id}>View Details</a></TableHeaderColumn>
 								</TableRow>
 							);
 						})}
