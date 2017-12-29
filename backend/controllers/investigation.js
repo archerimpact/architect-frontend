@@ -30,13 +30,6 @@ app.use(multer({
 
 const upload = multer({ storage: storage });
 
-app.get('/investigation/cloud_test', function(req, res){
-  console.log("CLOUDBACK");
-  fs.unlink('./files/a_pdf.pdf');
-  //cloud.uploadFile(bucket_name, './files/a_pdf.pdf');
-  cloud.listFiles(bucket_name);
-})
-
 function saveDoc(text, name, entities) {  
     var doc = {
         _id: new mongoose.Types.ObjectId,
