@@ -13,6 +13,12 @@ import * as actions from '../../redux/actions/';
 import './style.css';
 
 class AddConnection extends Component {
+	const styles = {
+		customWidth: {
+			width: 200,
+		},
+	};
+
 	constructor(props){
 		super(props);
 		this.state = {
@@ -61,11 +67,6 @@ class AddConnection extends Component {
 	};
 
 	render() {
-		const styles = {
-			customWidth: {
-				width: 200,
-			},
-		};
 
 		let vertexItems = [];
 		if (this.props.status !== 'isLoading') {
@@ -73,7 +74,6 @@ class AddConnection extends Component {
 				return <MenuItem value={vertex} primaryText={vertex.name} />;
 			})
 		}
-		console.log(this.state.vertexOne);
 
 		return(
 			<span className="addConnection">	
