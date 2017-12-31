@@ -4,6 +4,7 @@ var multer = require('multer'),
     fs = require('fs'),
     vertex = require('../models/vertex'),
     Project = require('../models/project'),
+    Connection = require('../models/connection'),
     mongoose = require('mongoose'),
     request = require('request'),
     PDFParser = require("pdf2json");
@@ -283,6 +284,23 @@ app.delete('/investigation/suggestedEntity', function(req, res) {
     })
 })
 
+app.post('/investigation/connection', function(req, res){
+  var connection = {
+    _id: new mongoose.Types.ObjectId,
+    description: req.body.description,
+    vertices: [req.body.idOne, req.body.idTwo],
+    confidence: 1 //TODO: decide how we want to deal with confidence level of connections
+  };
+  var newConnection = new Connection(connection);
+  newConnection.save()
+    .then(item => {
+      res.send("New connection saved");
+    })
+    .catch(err => {
+      res.status(400).send("Unable to save to database because: " + err);
+    })
+})
+
 function vertexesToResponse(vertexes, type, callback) {
   /* Takes in a set of vertexes in array format and gathers the 
     relevant information to add to the vertex in order to use the 
@@ -384,6 +402,13 @@ app.get('/investigation/project/sources', function(req, res) {
        res.send(result);
      });
   });
+
+app.get('/investigation/vertexList', function(req, res) {
+    db.collection('vertexes').find({}).toArray(function(err, result) {
+        if (err) throw err;
+        res.send(result);
+    });
+});
 
 app.get('/investigation/searchSources', function(req, res) {
     var phrase = req.query.phrase;

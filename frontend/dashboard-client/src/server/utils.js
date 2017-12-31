@@ -58,3 +58,20 @@ export function getProjectList() {
         });
     })
 }
+
+export function getVertexList() {
+    var url = 'http://localhost:8000/investigation/vertexList';
+    var options = {
+        method: 'GET',
+    };
+    return new Promise((fulfill, reject) => {
+        fetch(url, options)
+        .then(res => res.json())
+        .then(json => {
+            fulfill(json);
+        })
+        .catch(err => {
+            reject('Error: could not return vertex list because: ' + err);
+        });
+    })
+}

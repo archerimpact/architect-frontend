@@ -57,7 +57,6 @@ class AddEntity extends Component {
 				<TextField
 					floatingLabelText="Type"
 					hintText="e.g. Person"
-					dataSource={this.props.entityTypes}
 					onChange={this.handleTypeFieldChange}
 					style={{width: 250, marginRight: 20}}
 				/>

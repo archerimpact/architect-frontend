@@ -6,6 +6,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import Popover from 'material-ui/Popover';
 
 import AddEntity from '../../components/Entity/AddEntity';
+import AddConnection from '../../components/AddConnection';
 import EntityExtractor from '../../components/EntityExtractor/';
 
 import * as server from '../../server/';
@@ -22,6 +23,7 @@ class AddInformation extends Component {
     super(props);
     this.onTextSubmit = this.onTextSubmit.bind(this);
     this.onEntitySubmit = this.onEntitySubmit.bind(this);
+    this.onConnectionSubmit = this.onConnectionSubmit.bind(this);
     this.state = {
       open: false,
     };
@@ -60,6 +62,10 @@ class AddInformation extends Component {
     this.props.actions.createEntity(entity);
   }
 
+  onConnectionSubmit(connection) {
+    this.props.actions.createConnection(connection);
+  }
+
   render() {
     return(
       <div>
@@ -78,6 +84,7 @@ class AddInformation extends Component {
               <EntityExtractor projectid={this.props.projectid} onTextSubmit ={this.onTextSubmit}/>
             </div>
             <AddEntity sourceid={0} projectid={this.props.projectid} onEntitySubmit ={this.onEntitySubmit}/>
+            <AddConnection sourceid={0} projectid={this.props.projectid} onConnectionSubmit ={this.onConnectionSubmit}/>
           </Paper>
         </Popover>
       </div>

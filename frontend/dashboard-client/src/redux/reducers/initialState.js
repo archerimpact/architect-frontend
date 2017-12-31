@@ -23,6 +23,10 @@ export default {
 		documents: [
 		]
 	},
+	savedVertices: {
+		status: 'isLoading',
+		vertices: []
+	},
 	entityTypes: ["Company", "Person", "Location"],
 	entityNames: ["Alice Ma", "Daryus Medora", "Angelina Wang"],
 	projects: [

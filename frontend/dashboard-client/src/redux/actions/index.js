@@ -10,6 +10,8 @@ import {
   STORE_SOURCES, 
   STORE_PROJECTS, 
   CURRENT_PROJECT,
+  STORE_VERTICES,
+  ADD_CONNECTION
   } from './actionTypes';
 
 import * as server_utils from '../../server/utils';
@@ -41,6 +43,13 @@ export function removeSuggestedEntity(suggestedEntity, sourceid) {
     type: REMOVE_SUGGESTED_ENTITY,
     payload: {entity: suggestedEntity, sourceid: sourceid}
   };
+}
+
+export function addConnection(connection) {
+	return {
+		type: ADD_CONNECTION,
+		payload: connection
+	};
 }
 
 export function storeEntities(entities){
@@ -156,6 +165,18 @@ export function deleteSuggestedEntity(suggestedEntity, sourceid) {
   }
 }
 
+export function createConnection(connection) {
+  return function (dispatch, getState) {
+    return server.addConnection(connection.idOne, connection.idTwo, connection.description, connection.projectid)
+      .then(data => {
+        dispatch(addConnection(connection));
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+}
+
 export function fetchSource(sourceid) {
   return function (dispatch, getState) {
     return server.getSource(sourceid)
@@ -243,6 +264,25 @@ export function storeProjects(projects) {
 	return {
 		type: STORE_PROJECTS,
 		payload: projects
+	};
+}
+
+export function fetchVertices() {
+	return function (dispatch, getState) {
+		return server_utils.getVertexList()
+			.then(vertices => {
+				dispatch(storeVertices(vertices));
+			})
+			.catch(err => {
+				console.log(err)
+			});
+	};
+}
+
+export function storeVertices(vertices) {
+	return {
+		type: STORE_VERTICES,
+		payload: vertices
 	};
 }
 

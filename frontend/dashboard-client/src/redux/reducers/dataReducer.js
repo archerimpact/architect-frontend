@@ -1,4 +1,4 @@
-import { ADD_LINK, ADD_ENTITY, REMOVE_ENTITY, REMOVE_SUGGESTED_ENTITY, ADD_TAG, STORE_ENTITIES, STORE_PENDING_ENTITIES, STORE_SOURCES, STORE_PROJECTS, CURRENT_PROJECT } from '../actions/actionTypes';
+import { ADD_LINK, ADD_ENTITY, REMOVE_ENTITY, REMOVE_SUGGESTED_ENTITY, ADD_TAG, STORE_ENTITIES, STORE_PENDING_ENTITIES, STORE_SOURCES, STORE_PROJECTS, CURRENT_PROJECT, STORE_VERTICES} from '../actions/actionTypes';
 import initialState from './initialState';
 
 export default function (state = initialState, action) {
@@ -91,6 +91,15 @@ export default function (state = initialState, action) {
 					...state.savedProjects,
 					status: 'isLoaded',
 					projects: action.payload
+				}
+			}
+		case STORE_VERTICES:
+			return {
+				...state,
+				savedVertices: {
+					...state.savedVertices,
+					status: 'isLoaded',
+					vertices: action.payload
 				}
 			}
     case CURRENT_PROJECT:
