@@ -12,12 +12,13 @@ import * as actions from '../../redux/actions/';
 
 import './style.css';
 
-class AddConnection extends Component {
-	const styles = {
+const styles = {
 		customWidth: {
 			width: 200,
 		},
 	};
+		
+class AddConnection extends Component {
 
 	constructor(props){
 		super(props);
@@ -33,6 +34,8 @@ class AddConnection extends Component {
 		this.handleVertexTwoChange = this.handleVertexTwoChange.bind(this);
 		this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
 	};
+
+
 
 	componentDidMount() {
 		this.props.actions.fetchVertices();
