@@ -15,8 +15,12 @@ var express = require('express'),
     fs = require('fs'),
     PDFParser = require("pdf2json");
 
+<<<<<<< HEAD
 mongoose.Promise = Promise;
 mongoose.connect(configData.db_url, configData.db_options);
+=======
+mongoose.connect('mongodb://alice:archer@ds143245.mlab.com:43245/uxreceiverdev');
+>>>>>>> 9d1a4023e2047653aa8530e4a03aa6dadabe8865
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -69,11 +73,20 @@ const sessionOptions = {
 
 app.use(session(sessionOptions));
 
+<<<<<<< HEAD
 // app.use(function(req, res, next) {
 //     res.header("Access-Control-Allow-Origin", "*");
 //     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 //     next();
 // })
+=======
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+    next();
+})
+>>>>>>> 9d1a4023e2047653aa8530e4a03aa6dadabe8865
 
 app.use(passport.initialize());
 app.use(passport.session());

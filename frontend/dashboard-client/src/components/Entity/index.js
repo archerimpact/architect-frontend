@@ -1,29 +1,17 @@
 import React, { Component } from 'react';
 import EntityCard from './EntityCard';
+
 import './style.css';
+
 class EntitiesList extends Component {
+
 	constructor(props){
 		super(props);
 		this.sortByProperty = this.sortByProperty.bind(this)
 	}
 
-	getEntitySort(a, b) {
-		debugger
-		switch(this.props.sortBy.by) {
-			case 'dateAdded':
-				return a-b;
-			case 'type':
-				return ((a.type < b.type) ? -1 : ((a.type > b.type) ? 1 : 0));	
-			case 'source':
-				return a-b;
-			case 'name':
-				return ((a.name < b.name) ? -1 : ((a.name > b.name) ? 1 : 0));	
-			default :
-				return a-b
-		}
-	}
-
 	sortByProperty(prop, reverse) {
+	/* pass in the property you want to sort by of the entity, and whether or not to reverse the list as a boolean */
 	  	return function(a, b) {
 		    if (prop === null || typeof a[prop] !== 'string') {
 		     	return reverse ? (b - a): (a - b);
@@ -40,7 +28,6 @@ class EntitiesList extends Component {
 	    	return 0;
 	  	}
 	}
-		
 
 	render() {
 		return (
@@ -51,7 +38,13 @@ class EntitiesList extends Component {
 					.map((entity, id) => {
 						return (
 							<div className="entityList" key={id}>
-								<EntityCard onEntityClick={this.props.onEntityClick} entity={entity} getSource={this.props.getSource}/>
+			          			<EntityCard 
+				                  onCreateEntity={this.props.onCreateEntity} 
+				                  onDeleteEntity={this.props.onDeleteEntity}
+				                  onEntityClick={this.props.onEntityClick} 
+				                  entity={entity} 
+				                  getSource={this.props.getSource}
+				                />
 							</div>
 						);
 					})}

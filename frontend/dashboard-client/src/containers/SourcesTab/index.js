@@ -7,17 +7,30 @@ import {
 	TableRow,
 	TableRowColumn,
 } from 'material-ui/Table';
+import Toggle from 'material-ui/Toggle';
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import Sources from '../../components/Source'
+import SearchSources from '../../components/Source/search';
+import './style.css';
 
 class SourcesTable extends Component {
-	render() {
-		return(
-			<div>
-				<h3>Sources</h3>
-				<Link to="/links" style={{color: 'inherit' }}>View saved links</Link>
-				<p></p>  
+	constructor(props) {
+		super(props);
+		this.state = {Toggled: true};
+		this.toggleViews = this.toggleViews.bind(this);
+	}
+
+	toggleViews() {
+		this.setState({Toggled: !this.state.Toggled});
+	}
+
+	getViews(thumbnailView) {
+		if (thumbnailView) {
+			return <Sources/>;
+		} else {
+			return (
 				<Table
 					multiSelectable={true}
 				>
@@ -32,18 +45,38 @@ class SourcesTable extends Component {
 					<TableBody
 						showRowHover={true}
 					>
-						{this.props.savedSources.documents.map((document, id) => {
+						{this.props.savedSources.documents.map((vertex, id) => {
 							return(
 								<TableRow key={id}>
-									<TableRowColumn>{document.title}</TableRowColumn>
-									<TableRowColumn>{document.content}</TableRowColumn>
-									<TableRowColumn>{document.entities.length}</TableRowColumn>
-									<TableHeaderColumn><a href={"/source/" + document._id}>View Details</a></TableHeaderColumn>
+									<TableRowColumn>{vertex.name}</TableRowColumn>
+									<TableRowColumn>{vertex.source.document.content}</TableRowColumn>
+									<TableRowColumn>{vertex.source.document.entities.length}</TableRowColumn>
+									<TableHeaderColumn><a href={"/source/" + vertex._id}>View Details</a></TableHeaderColumn>
 								</TableRow>
 							);
 						})}
 					</TableBody>
 				</Table>
+			);
+		}
+	}
+
+	render() {
+		return(
+			<div>
+				<Toggle className="toggle"
+			      label="Source View"
+			      labelPosition = "right"
+			      style={
+			      	{marginBottom: 16, maxWidth: 150}
+			      }
+			      onToggle={this.toggleViews}
+			      toggle={this.state.Toggled}
+			    />
+			    <SearchSources />
+			    <p></p>
+				<h3>Sources</h3>
+				{this.getViews(this.state.Toggled)}
 			</div>
 		);
 	};

@@ -9,3 +9,5 @@ __pycache__
 
 # Node Modules - run npm install locally instead
 frontend/node_modules
+backend/node_modules
+node_modules

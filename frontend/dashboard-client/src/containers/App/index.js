@@ -30,16 +30,21 @@ class App extends Component {
         	<div>
     			<NavBar isAuthenticated={this.props.isAuthenticated} logOut={this.logOut.bind(this)} logIn={this.logIn.bind(this)} />
     			<Switch>
-				<PrivateRoute exact path="/" component={Home} />
-				<Route path="/login" component={Login} />
-                <Route path="/create_account" component={CreateAccount} />
-				<PrivateRoute path="/project/:id" component={Project} />				    		
-				<PrivateRoute path="/source/:id" component={Source}/>
+    				<PrivateRoute exact path="/" component={Home} />
+    				<Route path="/login" component={Login} />
+                    <Route path="/create_account" component={CreateAccount} />
+    				<PrivateRoute path="/project/:id" component={Project} />				    		
+    				<PrivateRoute path="/source/:id" component={Source}/>
 				</Switch>
         	</div>
         );
     }
 }
+
+<NavBar />
+<Route exact path="/" component={Home} />
+<Route path="/project/:id" component={Project} />                           
+<Route path="/source/:id" component={Source}/>
 
 function mapDispatchToProps(dispatch) {
     return {
