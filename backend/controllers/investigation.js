@@ -397,8 +397,6 @@ app.get('/investigation/project/sources', function(req, res) {
 
  app.get('/investigation/projectList', function(req, res) {
     /* Gets all the projects */
-    console.log('hereo')
-    console.log(req)
       db.collection('projects').find({}).toArray(function(err, result) {
         if (err) throw err;
        res.send(result);

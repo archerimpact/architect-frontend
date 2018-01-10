@@ -37,8 +37,6 @@ exports.login = function(req, res, next) {
 exports.logout = function(req, res) {
     req.logout();
     return res.json({ success: true });
-    // return res.redirect('http://localhost:3000/login');
-
 };
 
 exports.register = function(req, res) {

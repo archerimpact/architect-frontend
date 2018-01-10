@@ -3,12 +3,6 @@ import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
-// import { connect } from 'react-redux';
-// import { bindActionCreators } from 'redux';
-// import * as actions from '../../redux/actions/';
-// import { withRouter } from 'react-router-dom';
-
-
 class AddEntity extends Component {
 	constructor(props){
 		super(props);
@@ -79,21 +73,4 @@ class AddEntity extends Component {
 	};
 };
 
-// <<<<<<< HEAD
-// function mapDispatchToProps(dispatch) {
-// 	return {
-// 		actions: bindActionCreators(actions, dispatch),
-// 		dispatch: dispatch,
-// 	};
-// };
-
-// function mapStateToProps(state) {
-// 	return {
-// 		savedEntities: state.data.savedEntities,
-// 		entityTypes: state.data.entityTypes,
-// 	};
-// };
-
-// export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddEntity));
-// =======
 export default AddEntity;
