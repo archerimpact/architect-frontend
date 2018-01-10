@@ -15,19 +15,18 @@ var express = require('express'),
     fs = require('fs'),
     PDFParser = require("pdf2json");
 
-<<<<<<< HEAD
 mongoose.Promise = Promise;
-mongoose.connect(configData.db_url, configData.db_options);
-=======
+// mongoose.connect(configData.db_url, configData.db_options);
 mongoose.connect('mongodb://alice:archer@ds143245.mlab.com:43245/uxreceiverdev');
->>>>>>> 9d1a4023e2047653aa8530e4a03aa6dadabe8865
-
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
 
+module.exports = {
+    app,
+    db
+};
 
-// Use environment defined port on 8000
 var port = process.env.PORT || 8000;
 app.set('port', port);
 app.listen(app.get('port'), function() {
@@ -37,6 +36,7 @@ app.listen(app.get('port'), function() {
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
+
 //////////// Setting Headers (CORS) ////////////
 app.use(function (req, res, next) {
     // Website you wish to allow to connect
@@ -44,7 +44,7 @@ app.use(function (req, res, next) {
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Content-Type, Accept, Origin');
     // Set to true if you need the website to include cookies in the requests sent
     // to the API (e.g. in case you use sessions)
     res.setHeader('Access-Control-Allow-Credentials', true);
@@ -52,6 +52,7 @@ app.use(function (req, res, next) {
     next();
 });
 ////////////////////////////////////////////////
+
 
 const sessionOptions = {
     resave: true,
@@ -73,21 +74,6 @@ const sessionOptions = {
 
 app.use(session(sessionOptions));
 
-<<<<<<< HEAD
-// app.use(function(req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//     next();
-// })
-=======
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
-    next();
-})
->>>>>>> 9d1a4023e2047653aa8530e4a03aa6dadabe8865
-
 app.use(passport.initialize());
 app.use(passport.session());
 // app.use(passport.authenticate()); // TODO: use this or self-defined one?
@@ -102,6 +88,9 @@ app.use(function(req, res, next) {
     next();
 });
 
+app.use('/investigation', require('./controllers/investigation'));
+
+
 //////////// USERS_CONTROLLER ROUTES ////////////
 app.post('/api/login', users_controller.login);
 app.get('/api/logout', users_controller.logout);
@@ -115,14 +104,9 @@ app.get('*', function(req, res) {
     res.status(404).send('Not found');
 });
 
+
 // app.listen(port, process.env.IP, function() {
 //     console.log("Server has started on port: " + port);
 // });
-
-module.exports = {
-    app,
-    db
-};
-
-app.use('/investigation', require('./controllers/investigation'));
+// Use environment defined port on 8000
 

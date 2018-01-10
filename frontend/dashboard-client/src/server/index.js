@@ -1,9 +1,6 @@
 import 'whatwg-fetch';
-<<<<<<< HEAD
 import { configData } from '../config.js';
-=======
 import axios from 'axios';
->>>>>>> 9d1a4023e2047653aa8530e4a03aa6dadabe8865
 
 var qs = require('qs');
 
@@ -96,75 +93,6 @@ export function addLink(url, label, notes) {
     })
 }
 
-<<<<<<< HEAD
-export function submitText(title, text) {
-    var url = 'http://localhost:8000/investigation/entities';
-    var options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            'title': title,
-            'text': text,
-        })
-    };
-    return new Promise(function (fulfill, reject) {
-        fetch(url, options)
-            .then(res => {
-                fulfill(res);
-            })
-            .catch(err => {
-                reject('Error: could not add entity because: ' + err);
-            });
-    });
-}
-
-export function loadEntities() {
-    /* Gets all entities related to a project. Server returns an object of objects containing all notes. */
-
-    var url = 'http://localhost:8000/investigation/entities';
-    var options = {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    };
-
-    function documentsToEntities(documents) {
-        /* map over all notes, then map over all entities in each note, and build a new array entities
-           which contains all entities of all notes */
-
-        var entities = documents.map((document) => {
-            return document.entities.map((entity) => {
-                return {
-                    "name": entity.normalized,
-                    "type": entity.type,
-                    "qid": entity.entityId,
-                    "sourceid": document._id
-                }
-            });
-        });
-        return [].concat.apply([], entities);
-    }
-
-    let newEntities = null;
-    return new Promise(function (fulfill, reject) {
-        fetch(url, options)
-            .then(res => {
-                return res.json();
-            })
-            .then(json => {
-                var documents = Object.values(json);
-                newEntities = documentsToEntities(documents);
-                fulfill({entities: newEntities, documents: documents})
-            })
-            .catch(err => {
-                reject('Error: could not return entities because ' + err);
-            });
-    });
-}
-=======
 export function submitText(title, text, projectid) {
 	var url ='http://localhost:8000/investigation/project/entityExtractor';
 	var options = {
@@ -215,7 +143,7 @@ export function getSuggestedEntities(projectid) {
 function documentsToEntities(vertexes) {
     /* map over all notes, then map over all entities in each note, and build a new array entities 
        which contains all entities of all notes */
-
+       debugger
     var entities = vertexes.map((vertex) => {
       return vertex.source.document.entities.map((entity) => {
         return {"name": entity.normalized, "type": entity.type, "qid": entity.entityId, "sourceid": document._id}
@@ -401,4 +329,3 @@ export function addConnection(idOne, idTwo, description, project) {
       });
     });
 }
->>>>>>> 9d1a4023e2047653aa8530e4a03aa6dadabe8865

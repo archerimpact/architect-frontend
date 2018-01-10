@@ -41,11 +41,6 @@ class App extends Component {
     }
 }
 
-<NavBar />
-<Route exact path="/" component={Home} />
-<Route path="/project/:id" component={Project} />                           
-<Route path="/source/:id" component={Source}/>
-
 function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators(actions, dispatch),

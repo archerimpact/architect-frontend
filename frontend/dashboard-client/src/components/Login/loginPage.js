@@ -41,21 +41,10 @@ class LoginPage extends React.Component {
                 self.props.dispatch(actions.userLogIn());
                 self.setState({email: '', password: '', redirectToReferrer: true})
             } else {
-                debugger
-                self.setState({password: '', error: true})
+                self.setState({email: '', password: '', passwordConf: '', error: true})
             }
         })
         .catch(err => console.log('Could not authenticate'))
-        // isAuthed.then(function(response) {
-        //     if (response.success) {
-                
-        //         // TODO: Route to correct place
-        //         // <Redirect to={'/'}/>;
-        //     } else {
-        //         console.log('err')
-        //     }
-        // })
-
     }
 
 
@@ -113,9 +102,7 @@ class LoginPage extends React.Component {
                     <br />
                         <br />
                         <br />
-                        <Link to={'/create_account'} style={{color: 'inherit'}}> New around here? Create an Account!
-                        </Link>
-
+                        <Link to={'/create_account'} style={{color: 'inherit'}}> New around here? Create an Account!</Link>
                     </div>
             </div>
         );
