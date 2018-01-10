@@ -209,8 +209,8 @@ export function getProjectEntities(projectid) {
 }
 
 
-/* For if you only want project sources and not suggested entities,
-    currently not being used.
+//For if you only want project sources and not suggested entities,
+//    currently not being used.
     
 export function getProjectSources(projectid) {
   // Gets all entities related to a project. Server returns an object of objects containing all notes. 
@@ -232,7 +232,7 @@ export function getProjectSources(projectid) {
     })
   });
 }
-*/
+
 
 export function addEntity(name, type, sources, project) {
     var url = 'http://localhost:8000/investigation/entity';

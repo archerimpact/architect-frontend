@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import { Document, Page } from 'react-pdf/build/entry.webpack';
-import pdf_1 from './sample_files/a_dirks_news.pdf';
-import pdf_2 from './sample_files/a_news_pdf.pdf';
-import pdf_3 from './sample_files/a_pdf.pdf';
-import pdf_4 from './sample_files/trump.pdf'
+import pdf_1 from './files/a_dirks_news.pdf';
+import pdf_2 from './files/a_news_pdf.pdf';
+import pdf_3 from './files/a_pdf.pdf';
+import pdf_4 from './files/trump.pdf'
 import {Card, CardMedia, CardTitle} from 'material-ui/Card';
 import './style.css';
+
+import { Link } from 'react-router-dom';
+import * as server_utils from '../../server/utils';
+import * as actions from '../../redux/actions/';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 class Sources extends Component {
 
@@ -34,6 +40,7 @@ class Sources extends Component {
 
     render() {
         var docs = [pdf_1, pdf_2, pdf_3, pdf_4];
+        //this.props.documents get cloudReference
         return (
             <div className="sources">
                 <div className="documentList">
@@ -44,4 +51,23 @@ class Sources extends Component {
     }
 }
 
-export default Sources;
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(actions, dispatch)
+    };
+}
+
+function mapStateToProps(state) {
+  if (state.data.savedSources.status === 'isLoading') {
+    return {
+      status: state.data.savedSources.status,
+      }
+  } else {
+      return {
+      status: state.data.savedSources.status,
+          documents: state.data.savedSources.documents,
+      }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Sources);

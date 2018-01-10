@@ -14,6 +14,9 @@ import { connect } from 'react-redux';
 import Sources from '../../components/Source'
 import SearchSources from '../../components/Source/search';
 import './style.css';
+import * as server_utils from '../../server/utils';
+import * as actions from '../../redux/actions/';
+import { bindActionCreators } from 'redux';
 
 class SourcesTable extends Component {
 	constructor(props) {
@@ -21,6 +24,10 @@ class SourcesTable extends Component {
 		this.state = {Toggled: true};
 		this.toggleViews = this.toggleViews.bind(this);
 	}
+
+	componentDidMount() {
+    	this.props.actions.fetchProjectSources(this.props.projectid);
+  	}
 
 	toggleViews() {
 		this.setState({Toggled: !this.state.Toggled});
@@ -37,7 +44,7 @@ class SourcesTable extends Component {
 					<TableHeader>
 						<TableRow>
 							<TableHeaderColumn>Name</TableHeaderColumn>
-							<TableHeaderColumn>Type</TableHeaderColumn>
+							<TableHeaderColumn>Content</TableHeaderColumn>
 							<TableHeaderColumn>Number of Entities</TableHeaderColumn>
 							<TableHeaderColumn>Graph</TableHeaderColumn>
 						</TableRow>
@@ -45,7 +52,7 @@ class SourcesTable extends Component {
 					<TableBody
 						showRowHover={true}
 					>
-						{this.props.savedSources.documents.map((vertex, id) => {
+						{this.props.documents.map((vertex, id) => {
 							return(
 								<TableRow key={id}>
 									<TableRowColumn>{vertex.name}</TableRowColumn>
@@ -71,7 +78,7 @@ class SourcesTable extends Component {
 			      	{marginBottom: 16, maxWidth: 150}
 			      }
 			      onToggle={this.toggleViews}
-			      toggle={this.state.Toggled}
+			      // toggle={this.state.Toggled}
 			    />
 			    <SearchSources />
 			    <p></p>
@@ -82,10 +89,27 @@ class SourcesTable extends Component {
 	};
 }
 
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(actions, dispatch)
+    };
+}
+
 function mapStateToProps(state) {
-	return {
-		savedSources: state.data.savedSources
-	};
+	// return {
+	// 	savedSources: state.data.savedSources
+	// };
+	if (state.data.savedSources.status === 'isLoading') {
+	    return {
+	      status: state.data.savedSources.status,
+	      documents: []
+	      }
+	  } else {
+	      return {
+	      status: state.data.savedSources.status,
+	          documents: state.data.savedSources.documents,
+	      }
+	  }
 }
  
-export default connect(mapStateToProps)(SourcesTable);
+export default connect(mapStateToProps, mapDispatchToProps)(SourcesTable);

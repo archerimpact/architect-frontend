@@ -72,7 +72,7 @@ class ProjectPage extends Component {
   							<div className="column">
   								<PDFUploader projectid={this.props.match.params.id}/>
   								<Paper className="projects">
-  									<SourcesTab />
+  									<SourcesTab projectid={this.props.match.params.id}/>
   								</Paper>
   							</div>
   						</Tab>

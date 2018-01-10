@@ -171,6 +171,9 @@ function getMetadata(bucketName, filename) {
 function moveFile(bucketName, srcFilename, destFilename) {
 
   // Moves the file within the bucket
+  console.log("MOVING FILE");
+  console.log(srcFilename);
+  console.log(destFilename);
   storage
     .bucket(bucketName)
     .file(srcFilename)

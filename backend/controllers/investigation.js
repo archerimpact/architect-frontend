@@ -30,7 +30,7 @@ app.use(multer({
 
 const upload = multer({ storage: storage });
 
-function saveDoc(text, name, entities) {  
+function saveDoc(text, name, entities, folder_dest) {  
     var doc = {
         _id: new mongoose.Types.ObjectId,
         content: text,
@@ -48,9 +48,11 @@ function saveDoc(text, name, entities) {
     var source = {
         _id: new mongoose.Types.ObjectId, 
         // TODO: cloudReference: String,
+        cloudReference: folder_dest,
+        entities: [],
         // entities: TODO: Alice fill this in with the extracted entities as a String array
         type: "Document",
-        source: doc._id, // Must be documentSchema, imageSchema, or VideoSchema
+        document: doc._id, // Must be documentSchema, imageSchema, or VideoSchema
     }
 
     var newSource = new vertex.Source(source);
@@ -121,8 +123,10 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
         var name = req.file.originalname;
         var projectid = req.body.projectid;
         console.log(projectid);
+        console.log(name);
         let text_dest = "./files/" + name.substring(0, name.length - 4) + ".txt";
         let pdf_dest = "./files/" + name;
+        let folder_dest = projectid + "/" + name;
         let pdfParser = new PDFParser(this,1);
 
         // For saving the text file, unnecessary at the moment
@@ -141,12 +145,15 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
             throw error;
           }
           else {
+            cloud.moveFile(bucket_name, name, folder_dest);
             fs.unlinkSync(pdf_dest);
           }
         });
 
+        cloud.listFiles(bucket_name);
+
         callEntityExtractor(content, function(response) {
-          var vertid = saveDoc(content, name, response.entities);
+          var vertid = saveDoc(content, name, response.entities, folder_dest);
           db.collection('projects').update(
               {_id : mongoose.Types.ObjectId(projectid)},
               {$push: {sources: vertid}}
@@ -218,14 +225,32 @@ app.post('/investigation/project', function(req, res) {
         //users: // Put in a fake one
     };
     var newProject = new Project(project);
+    var location = './files/' + project._id + '/';
     newProject.save()
         .then(item => {
-            res.send("New project saved");
+          res.send("New project saved");
         })
         .catch(err => {
             res.status(400).send("Unable to save to database because: " + err);
         })
 });
+
+app.get('/cloudfolder', function(req, res) {
+  /* Gets a project */
+  cloud.listFiles(bucket_name);
+  location = './files/' + '12345/empty.txt';// + '/';
+  //cloud.moveFile(bucket_name, 'a_pdf.pdf', 'folder/a_pdf.pdf');
+  // cloud.moveFile(bucket_name, 'empty.txt', 'folder/empty.txt');
+  // cloud.listFiles(bucket_name);
+  // cloud.uploadFile(bucket_name, location, function(error) {
+  //             if (error) {
+  //               throw error;
+  //             }
+  //             else {
+  //               console.log("worked");
+  //             }
+  //           })
+})
 
 app.get('/investigation/project', function(req, res) {
   /* Gets a project */
@@ -329,7 +354,7 @@ function vertexesToResponse(vertexes, type, callback) {
     vertexes = vertexes.map((vertex) => {
       return db.collection('sources').find({_id: vertex.source}).toArray()
         .then((sources) => {
-          return db.collection('documents').find({_id: sources[0].source}).toArray()
+          return db.collection('documents').find({_id: sources[0].document}).toArray()
           .then((document) => {
             vertex.source = sources[0];
             vertex.source.document = document[0];
@@ -359,7 +384,7 @@ app.post('/investigation/project/entityExtractor', function(req, res) {
       extractor on it */
 
   callEntityExtractor(req.body.text, function(response) {
-    var vertid = saveDoc(req.body.text, req.body.title, response.entities)
+    var vertid = saveDoc(req.body.text, req.body.title, response.entities, "")
     db.collection('projects').update(
       {_id : mongoose.Types.ObjectId(req.body.project)},
       {$push: {sources: vertid}}
