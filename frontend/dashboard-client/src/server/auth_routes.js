@@ -26,31 +26,6 @@ export const authenticateAccount = async (dataObj) => {
     return responseData.data;
 };
 
-// export function isAuthenticated() {
-//     return new Promise(function(fulfill, reject) {
-//         api_inst.get('/checkauth')
-//         .then(res => {
-//             debugger
-//             res.json()
-//         })
-//         .then(json => {
-//             debugger
-//             if (!json.login) {
-//                 reject('Error: could not authenticate');
-//             }
-//             fulfill(json)
-//         })
-//         .catch(err => {
-//             debugger
-//             reject('Error: could not authenticate');
-//         });
-//     });
-// // } = async () => {
-// //     let responseData = await 
-// //     debugger
-// //     return responseData.data;
-// };
-
 export const isAuthenticated = async () => {
     let responseData = await api_inst.get('/checkauth')
     return responseData.data.success;
