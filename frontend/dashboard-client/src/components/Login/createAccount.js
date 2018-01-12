@@ -47,7 +47,6 @@ class CreateAccount extends React.Component {
                     self.props.dispatch(actions.userLogIn());
                     self.setState({redirectToReferrer: true})
                 } else {
-                    // debugger
                     self.setState({email: '', password: '', passwordConf: '', error: true, error_message: data.message})
                 }
             }).catch(err => console.log('Could not create account'))

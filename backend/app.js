@@ -16,11 +16,10 @@ var express = require('express'),
     PDFParser = require("pdf2json");
 
 mongoose.Promise = Promise;
-// mongoose.connect(configData.db_url, configData.db_options);
-mongoose.connect('mongodb://alice:archer@ds143245.mlab.com:43245/uxreceiverdev');
+mongoose.connect(configData.db_url, configData.db_options);
+// mongoose.connect('mongodb://alice:archer@ds143245.mlab.com:43245/uxreceiverdev');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-
 
 module.exports = {
     app,
@@ -44,7 +43,7 @@ app.use(function (req, res, next) {
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Content-Type, Accept, Origin');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, content-type, Content-Type, Accept, Origin');
     // Set to true if you need the website to include cookies in the requests sent
     // to the API (e.g. in case you use sessions)
     res.setHeader('Access-Control-Allow-Credentials', true);
@@ -103,10 +102,3 @@ app.get('/api/checkauth', users_controller.isAuthenticated, users_controller.che
 app.get('*', function(req, res) {
     res.status(404).send('Not found');
 });
-
-
-// app.listen(port, process.env.IP, function() {
-//     console.log("Server has started on port: " + port);
-// });
-// Use environment defined port on 8000
-

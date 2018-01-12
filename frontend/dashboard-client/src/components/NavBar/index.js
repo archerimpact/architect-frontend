@@ -36,9 +36,7 @@ class NavBar extends Component {
 		    <MenuItem primaryText="Refresh" />
 		    <MenuItem primaryText="Help" />
 		    <MenuItem primaryText="Sign out" 
-		    	onClick={() => {
-				// history.push('/login');
-				
+		    	onClick={() => {				
 		    	self.props.logOut()
 				return (<Link replace to={{
 			        pathname: '/login',

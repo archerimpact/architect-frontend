@@ -39,16 +39,11 @@ export function register(authInfo) {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded'
-			// 'Content-Type': 'application/json'
 		},
 		body:
             qs.stringify({
 			username: authInfo.username,
 			password: authInfo.password,
-			// name: authInfo.name,
-			// email: authInfo.email,
-			// zip: authInfo.zip,
-			// company: authInfo.company
 		})
 	};
     return new Promise(function(fulfill, reject) {
