@@ -22,6 +22,7 @@ export function saveDocument(file, projectid) {
     });
 }
 
+/* Brings a document from the backend to frontend. TOOD: Angelina, does not yet work correctly */
 export function retrieveDocument(name, projectid) {
     var url = 'http://localhost:8000/investigation/project/document';
     return new Promise(function(fulfill, reject) {
@@ -32,7 +33,6 @@ export function retrieveDocument(name, projectid) {
             }
         })
         .then(function (document) {
-            console.log("alksdjflks");
             fulfill(document);
             // downlaod this file locally
         })

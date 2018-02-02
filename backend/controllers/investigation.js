@@ -453,15 +453,13 @@ app.get('/investigation/project/entities', function(req, res) {
     .catch((err)=>{console.log(err)})    
 })
 
-/* Downloads document from cloud and sends to frontend */
+/* Downloads document from cloud and sends to frontend TODO: angelina, this does not yet work correctly*/
 app.get('/investigation/project/document', function(req, res) {
   var projectid = req.query.projectid;
   var file_name = req.query.file_name;
   var cloud_loc = projectid + '/' + file_name;
-  //var dest_file = './../files/' + file_name;
   var dest_file = './files/' + file_name;
   // Maybe check if it's already there and if so don't download?
-  console.log("A");
 
   cloud.downloadFile(bucket_name, cloud_loc, dest_file, function (error) {
     if (error) {
