@@ -65,7 +65,6 @@ class EntitiesTab extends Component {
   }
 
   getEntitySource(vertex) {
-  	try {
 		//TODO: refactor to account for entities having multiple sources
     var sourceid = vertex.entity.sources[0];
 		var source = this.props.savedSources.documents.find(function (obj) {return obj._id=== sourceid});
@@ -75,10 +74,6 @@ class EntitiesTab extends Component {
 			return;
 		}
 	}
-	catch (e) {
-		return 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
-	}
-	};
 
 	//called from entity with this.props.onEntityClick(entity)
 	openEntityDrawer = (entity) => {

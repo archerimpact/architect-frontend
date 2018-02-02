@@ -216,46 +216,22 @@ export function getProjectSources(projectid) {
   // Gets all entities related to a project. Server returns an object of objects containing all notes. 
 
   var url ='http://localhost:8000/investigation/project/sources';
-  console.log("getting project sources");
 
   var url ='http://localhost:8000/investigation/project/sources';
 
   return new Promise(function(fulfill, reject) {
-    console.log("new here");
     axios.get(url, {
       params: {
         projectid: projectid
       }
     })
     .then(function (documents) {
-      console.log("inner");
       fulfill(documents.data);
-      // suggestedEntities = documentsToEntities(documents.data);
-      // fulfill({entities: suggestedEntities, documents: documents.data})
     })
     .catch(function(error) {
       console.log(error);
     })
   });
-
-
-  // return new Promise(function(fulfill, reject) {
-  //   console.log("here before");
-  //   axios.get(url, {
-  //     params: {
-  //       project: projectid
-  //     }
-  //   })
-  //   .then(response => {
-  //     console.log("here");
-  //     var sources = Object.values(response.data)
-  //     fulfill(sources)
-  //   })
-  //   .catch(function(error) {
-  //     console.log("OH NO");
-  //     console.log(error);
-  //   })
-  // });
 }
 
 

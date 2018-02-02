@@ -12,7 +12,6 @@ var express = require('express'),
     PDFParser = require("pdf2json");
 
 mongoose.connect('mongodb://alice:archer@ds143245.mlab.com:43245/uxreceiverdev');
-//mongoose.connect('mongodb://alice:archer@ds243085.mlab.com:43085/angelina_db');
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));

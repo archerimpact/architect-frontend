@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
 import { Document, Page } from 'react-pdf/build/entry.webpack';
-import pdf_1 from './files/a_dirks_news.pdf';
-import pdf_2 from './files/a_news_pdf.pdf';
-import pdf_3 from './files/a_pdf.pdf';
-import pdf_4 from './files/trump.pdf'
 import {Card, CardMedia, CardTitle} from 'material-ui/Card';
 import './style.css';
 
@@ -39,15 +35,10 @@ class Sources extends Component {
     }
 
     render() {
-        var docs = [pdf_1, pdf_2, pdf_3, pdf_4];
-        // var doc = server_utils.retrieveDocument('a_news_pdf.pdf', this.props.projectid);
-        // console.log(doc);
-        // docs.push(doc);
-        //this.props.documents get cloudReference
         return (
             <div className="sources">
                 <div className="documentList">
-                    {this.documentList(docs)}
+                    {this.documentList()}
                 </div>
             </div>
         );

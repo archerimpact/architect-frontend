@@ -4,11 +4,6 @@ const app = require('../app').app;
 
 const Storage = require('@google-cloud/storage');
 
-/* TODO Disclaimer: this file has a ton of stuff right now
-that will be reduced in a later PR, just keeping all
-the functionalities for now until we determine which we
-will use and which we won't */
-
 // Creates a client
 const storage = new Storage({
   keyFilename: './Flagship-90618a5e2e34.json'
@@ -95,9 +90,6 @@ function uploadFile(bucketName, filename, callback) {
 }
 
 function downloadFile(bucketName, srcFilename, destFilename, callback) {
-  console.log("B");
-  console.log(srcFilename);
-
   const options = {
     // The path to which the file should be downloaded, e.g. "./file.txt"
     destination: destFilename,
@@ -174,9 +166,6 @@ function getMetadata(bucketName, filename) {
 function moveFile(bucketName, srcFilename, destFilename) {
 
   // Moves the file within the bucket
-  console.log("MOVING FILE");
-  console.log(srcFilename);
-  console.log(destFilename);
   storage
     .bucket(bucketName)
     .file(srcFilename)
@@ -212,11 +201,6 @@ function copyFile(srcBucketName, srcFilename, destBucketName, destFilename) {
     });
 }
 
-app.get('/cloud/testing', function(req, res){
-  console.log("CLOUDBACK");
-  listFiles('dashboard-userdocs')
-})
-
 module.exports = {listFiles,
   listFilesByPrefix,
   uploadFile,
@@ -226,6 +210,4 @@ module.exports = {listFiles,
   moveFile,
   copyFile
 }
-
-
 

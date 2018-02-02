@@ -31,7 +31,6 @@ app.use(multer({
 const upload = multer({ storage: storage });
 
 function saveDoc(text, name, entities, folder_dest) {  
-    console.log("SAVE DOC");
     var doc = {
         _id: new mongoose.Types.ObjectId,
         content: text,
@@ -123,8 +122,6 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
     try {
         var name = req.file.originalname;
         var projectid = req.body.projectid;
-        console.log(projectid);
-        console.log(name);
         let text_dest = "./files/" + name.substring(0, name.length - 4) + ".txt";
         let pdf_dest = "./files/" + name;
         let folder_dest = projectid + "/" + name;
@@ -132,11 +129,9 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
 
         pdfParser.loadPDF(pdf_dest);
 
-        // For saving the text file, unnecessary at the moment
         pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError) );
         pdfParser.on("pdfParser_dataReady", pdfData => {
             var text = pdfParser.getRawTextContent();
-            console.log(text);
             callEntityExtractor(text, function(response) {
               var vertid = saveDoc(text, name, response.entities, folder_dest);
               db.collection('projects').update(
@@ -144,46 +139,10 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
                   {$push: {sources: vertid}}
                 )
               })
-              // .then(item => {
-              //     res.send("PDF Converted To Text Success");
-              // })
-              // .catch(err => {
-              //     res.sendStatus(400);
-              // })
           })
         .catch(err => {
-          console.log("IN ERROR");
           res.sendStatus(400);
         })
-            //fs.writeFile(text_dest, text, (error) => { console.error(error) });
-        //}); 
-
-        
-
-        // var content = pdfParser.getRawTextContent();
-        // console.log(content);
-
-        // pdfParser.getRawTextContent().then(content => {
-        //   console.log("IN THEN");
-        //   console.log(content);
-        //   callEntityExtractor(content, function(response) {
-        //     var vertid = saveDoc(content, name, response.entities, folder_dest);
-        //     db.collection('projects').update(
-        //         {_id : mongoose.Types.ObjectId(projectid)},
-        //         {$push: {sources: vertid}}
-        //       )
-        //   })
-        //       .then(item => {
-        //           res.send("PDF Converted To Text Success");
-        //       })
-        //       .catch(err => {
-        //           res.sendStatus(400);
-        //       })
-        //   })
-        // .catch(err => {
-        //   console.log("IN ERROR");
-        //   res.sendStatus(400);
-        // })
 
         cloud.uploadFile(bucket_name, pdf_dest, function(error) {
           if (error) {
@@ -194,13 +153,6 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
             fs.unlinkSync(pdf_dest);
           }
         });
-
-        cloud.listFiles(bucket_name);
-
-
-
-        
-
     } catch (err) {
         res.sendStatus(400);
     };
