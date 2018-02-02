@@ -1,4 +1,5 @@
 import 'whatwg-fetch';
+import axios from 'axios';
 
 var qs = require('qs');
 
@@ -18,6 +19,26 @@ export function saveDocument(file, projectid) {
     })
     .catch(err => {
         console.log('Error: could not upload document because: ' + err);
+    });
+}
+
+export function retrieveDocument(name, projectid) {
+    var url = 'http://localhost:8000/investigation/project/document';
+    return new Promise(function(fulfill, reject) {
+        axios.get(url, {
+            params: {
+                projectid: projectid,
+                file_name: name
+            }
+        })
+        .then(function (document) {
+            console.log("alksdjflks");
+            fulfill(document);
+            // downlaod this file locally
+        })
+        .catch(function(error) {
+            console.log(error);
+        })
     });
 }
 

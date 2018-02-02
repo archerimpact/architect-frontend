@@ -40,6 +40,9 @@ class Sources extends Component {
 
     render() {
         var docs = [pdf_1, pdf_2, pdf_3, pdf_4];
+        // var doc = server_utils.retrieveDocument('a_news_pdf.pdf', this.props.projectid);
+        // console.log(doc);
+        // docs.push(doc);
         //this.props.documents get cloudReference
         return (
             <div className="sources">

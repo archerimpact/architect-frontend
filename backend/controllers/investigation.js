@@ -31,6 +31,7 @@ app.use(multer({
 const upload = multer({ storage: storage });
 
 function saveDoc(text, name, entities, folder_dest) {  
+    console.log("SAVE DOC");
     var doc = {
         _id: new mongoose.Types.ObjectId,
         content: text,
@@ -129,16 +130,60 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
         let folder_dest = projectid + "/" + name;
         let pdfParser = new PDFParser(this,1);
 
-        // For saving the text file, unnecessary at the moment
-        /* pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError) );
-        pdfParser.on("pdfParser_dataReady", pdfData => {
-            var text = pdfParser.getRawTextContent();
-            fs.writeFile(text_dest, text, (error) => { console.error(error) });
-        });*/ 
-
         pdfParser.loadPDF(pdf_dest);
 
-        var content = pdfParser.getRawTextContent();
+        // For saving the text file, unnecessary at the moment
+        pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError) );
+        pdfParser.on("pdfParser_dataReady", pdfData => {
+            var text = pdfParser.getRawTextContent();
+            console.log(text);
+            callEntityExtractor(text, function(response) {
+              var vertid = saveDoc(text, name, response.entities, folder_dest);
+              db.collection('projects').update(
+                  {_id : mongoose.Types.ObjectId(projectid)},
+                  {$push: {sources: vertid}}
+                )
+              })
+              // .then(item => {
+              //     res.send("PDF Converted To Text Success");
+              // })
+              // .catch(err => {
+              //     res.sendStatus(400);
+              // })
+          })
+        .catch(err => {
+          console.log("IN ERROR");
+          res.sendStatus(400);
+        })
+            //fs.writeFile(text_dest, text, (error) => { console.error(error) });
+        //}); 
+
+        
+
+        // var content = pdfParser.getRawTextContent();
+        // console.log(content);
+
+        // pdfParser.getRawTextContent().then(content => {
+        //   console.log("IN THEN");
+        //   console.log(content);
+        //   callEntityExtractor(content, function(response) {
+        //     var vertid = saveDoc(content, name, response.entities, folder_dest);
+        //     db.collection('projects').update(
+        //         {_id : mongoose.Types.ObjectId(projectid)},
+        //         {$push: {sources: vertid}}
+        //       )
+        //   })
+        //       .then(item => {
+        //           res.send("PDF Converted To Text Success");
+        //       })
+        //       .catch(err => {
+        //           res.sendStatus(400);
+        //       })
+        //   })
+        // .catch(err => {
+        //   console.log("IN ERROR");
+        //   res.sendStatus(400);
+        // })
 
         cloud.uploadFile(bucket_name, pdf_dest, function(error) {
           if (error) {
@@ -152,23 +197,15 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
 
         cloud.listFiles(bucket_name);
 
-        callEntityExtractor(content, function(response) {
-          var vertid = saveDoc(content, name, response.entities, folder_dest);
-          db.collection('projects').update(
-              {_id : mongoose.Types.ObjectId(projectid)},
-              {$push: {sources: vertid}}
-            )
-        })
-            .then(item => {
-                res.send("PDF Converted To Text Success");
-            })
-            .catch(err => {
-                res.sendStatus(400);
-            })
+
+
+        
 
     } catch (err) {
         res.sendStatus(400);
     };
+
+    res.send(200).json({success: true, message: "PDF upload success"});
 })
 
 function callEntityExtractor(string, callback) {
@@ -415,6 +452,29 @@ app.get('/investigation/project/entities', function(req, res) {
     })
     .catch((err)=>{console.log(err)})    
 })
+
+/* Downloads document from cloud and sends to frontend */
+app.get('/investigation/project/document', function(req, res) {
+  var projectid = req.query.projectid;
+  var file_name = req.query.file_name;
+  var cloud_loc = projectid + '/' + file_name;
+  //var dest_file = './../files/' + file_name;
+  var dest_file = './files/' + file_name;
+  // Maybe check if it's already there and if so don't download?
+  console.log("A");
+
+  cloud.downloadFile(bucket_name, cloud_loc, dest_file, function (error) {
+    if (error) {
+      throw error;
+    }
+    else {
+      fs.readFile(dest_file, (err, data) => {
+        res.send(data);
+      });
+    }
+  })
+})
+
 
 app.get('/investigation/project/sources', function(req, res) {
   /* Gets all the sources from a project */

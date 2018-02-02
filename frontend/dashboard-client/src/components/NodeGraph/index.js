@@ -68,6 +68,8 @@ class NodeGraph extends Component {
 	connectionsToLinks(entity) {
 		/* Takes all of the tags of one entity and returns an array of all
 			 the links of that one entity */
+		console.log("eneitty is: ");
+		console.log(entity);
 		return entity.connections.map((tag) => {
 			return {"source": entity.name, "target": tag};
 		});

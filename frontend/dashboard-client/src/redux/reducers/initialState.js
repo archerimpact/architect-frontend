@@ -15,7 +15,7 @@ export default {
   pendingEntities: {
     status: 'isLoading',
     entities: [
-      {id: 2, name: 'Angelina Wang', type: 'Person', tags: [], sources: [], projects: [1], qid: ""}
+      {id: 2, name: 'Angelina Wang', type: 'Person', tags: [], sources: [], connections: [], projects: [1], qid: ""}
     ]
   },
 	savedSources: {

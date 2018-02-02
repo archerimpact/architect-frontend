@@ -94,7 +94,9 @@ function uploadFile(bucketName, filename, callback) {
     });
 }
 
-function downloadFile(bucketName, srcFilename, destFilename) {
+function downloadFile(bucketName, srcFilename, destFilename, callback) {
+  console.log("B");
+  console.log(srcFilename);
 
   const options = {
     // The path to which the file should be downloaded, e.g. "./file.txt"
@@ -110,6 +112,7 @@ function downloadFile(bucketName, srcFilename, destFilename) {
       console.log(
         `gs://${bucketName}/${srcFilename} downloaded to ${destFilename}.`
       );
+      callback();
     })
     .catch(err => {
       console.error('ERROR:', err);

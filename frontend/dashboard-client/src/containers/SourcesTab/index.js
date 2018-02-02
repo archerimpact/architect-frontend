@@ -35,7 +35,7 @@ class SourcesTable extends Component {
 
 	getViews(thumbnailView) {
 		if (thumbnailView) {
-			return <Sources/>;
+			return <Sources projectid={this.props.projectid}/>;
 		} else {
 			return (
 				<Table

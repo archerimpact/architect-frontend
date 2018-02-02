@@ -63,9 +63,10 @@ class ProjectPage extends Component {
   									<EntitiesTab listType={"entities"} entities={this.props.savedEntities.entities} projectid={this.props.match.params.id}/>
   								</Paper>
                   <h3>Suggested Entities</h3>
-                  <Paper className="projects">
+                  {/* <Paper className="projects">
                     <EntitiesTab listType={"suggested_entities"} entities={this.props.pendingEntities.entities} projectid={this.props.match.params.id}/>
                   </Paper>
+                  */}
   							</div>
   						</Tab>
   						<Tab label="Sources" style={tab_style}>
@@ -92,7 +93,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, props) {
-  if (state.data.savedEntities.status === 'isLoading' || state.data.savedSources.status === 'isLoading' || state.data.pendingEntities.status === 'isLoading') {
+  if (state.data.savedEntities.status === 'isLoading' || state.data.savedSources.status === 'isLoading') {
     return {
       status: 'isLoading',
       currentProject: state.data.currentProject
