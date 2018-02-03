@@ -59,13 +59,6 @@ export function storeEntities(entities){
 	};
 }
 
-export function storePendingEntities(entities){
-  return {
-    type: STORE_PENDING_ENTITIES,
-    payload: entities
-  }
-}
-
 export function storeSources(sources){
 	return {
 		type: STORE_SOURCES,
@@ -131,7 +124,7 @@ export function createEntity(entity) {
   return function (dispatch, getState) {
     return server.addEntity(entity.name, entity.type, entity.sources, entity.projectid)
       .then(data => {
-        dispatch(addEntity(entity));
+        dispatch(fetchProjectEntities(entity.projectid))
       })
       .catch(err => {
         console.log(err);
@@ -181,7 +174,6 @@ export function fetchSource(sourceid) {
   return function (dispatch, getState) {
     return server.getSource(sourceid)
       .then(data => {
-        dispatch(storePendingEntities(data.entities));
         dispatch(storeSources(data.documents));
       })
       .catch(err => {
@@ -204,9 +196,8 @@ export function fetchProjectEntities(projectid) {
 
 export function fetchProjectSources(projectid) {
   return function(dispatch, getState) {
-    return server.getSuggestedEntities(projectid)
+    return server.getProjectSources(projectid)
       .then((data) => {
-        dispatch(storePendingEntities(data.entities))
         dispatch(storeSources(data.documents));
       })
       .catch((err) => console.log(err));

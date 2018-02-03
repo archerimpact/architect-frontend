@@ -112,9 +112,9 @@ export function submitText(title, text, projectid) {
 	});
 }
 
-
+/*
 export function getSuggestedEntities(projectid) {
-	/* Gets all entities related to a project. Server returns an object of objects containing all notes. */
+	/* Gets all entities related to a project. Server returns an object of objects containing all notes. 
 
 	var url ='http://localhost:8000/investigation/project/sources';
 
@@ -134,11 +134,11 @@ export function getSuggestedEntities(projectid) {
       console.log(error);
     })
   });
-}
+}*/
 
-function documentsToEntities(vertexes) {
+/*function documentsToEntities(vertexes) {
     /* map over all notes, then map over all entities in each note, and build a new array entities 
-       which contains all entities of all notes */
+       which contains all entities of all notes 
 
     var entities = vertexes.map((vertex) => {
       return vertex.source.document.entities.map((entity) => {
@@ -146,10 +146,10 @@ function documentsToEntities(vertexes) {
       });
     });
     return [].concat.apply([], entities);
-  }
+  } */
 
 export function getSource(sourceid) {
-  /* Gets all entities related to a project. Server returns an object of objects containing all notes. */
+  /* Gets sources related to a project. Server returns an object of objects containing all notes. */
 
   var url ='http://localhost:8000/investigation/source';
 
@@ -161,14 +161,15 @@ export function getSource(sourceid) {
       }
     })
     .then(function (documents) {
-      newEntities = documentsToEntities(documents.data);
-      fulfill({entities: newEntities, documents: documents.data})
+      //newEntities = documentsToEntities(documents.data);
+      fulfill({documents: documents.data})
     })
     .catch(function(error) {
       console.log(error);
     })
   });
 }
+
 
 export function getProject(projectid) {
   var url ='http://localhost:8000/investigation/project';
@@ -186,6 +187,7 @@ export function getProject(projectid) {
     })
   });
 }
+
 
 export function getProjectEntities(projectid) {
   /* Gets all entities related to a project. Server returns an object of objects containing all notes. */
@@ -210,29 +212,31 @@ export function getProjectEntities(projectid) {
 
 
 /* For if you only want project sources and not suggested entities,
-    currently not being used.
+    currently not being used. */
     
 export function getProjectSources(projectid) {
   // Gets all entities related to a project. Server returns an object of objects containing all notes. 
 
   var url ='http://localhost:8000/investigation/project/sources';
 
+  let suggestedEntities = null;
+
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
       params: {
-        project: projectid
+        projectid: projectid
       }
     })
-    .then(response => {
-      var sources = Object.values(response.data)
-      fulfill(sources)
+    .then(function (documents) {
+      fulfill({documents: documents.data})
     })
     .catch(function(error) {
       console.log(error);
     })
-  });
+  })
 }
-*/
+
+
 
 export function addEntity(name, type, sources, project) {
     var url = 'http://localhost:8000/investigation/entity';

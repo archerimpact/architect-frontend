@@ -49,7 +49,7 @@ class EntityCard extends Component {
         );
     }
   render() {
-    if (this.props.listType === "suggested_entities") {
+    /*if (this.props.listType === "suggested_entities") {
       return (
         <div className="entityCard" onClick={() => this.props.onEntityClick(this.props.entity)}>
             <div className="cardHeader">
@@ -67,7 +67,7 @@ class EntityCard extends Component {
         </div>
     );
     }
-    else {
+    else {*/
       return (
           <div className="entityCard" onClick={() => this.props.onEntityClick(this.props.entity)}>
               <div className="cardHeader">
@@ -83,7 +83,7 @@ class EntityCard extends Component {
               </div>
           </div>
       );
-    }
+    /*}*/
   }
 }
 

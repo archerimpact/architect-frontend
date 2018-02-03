@@ -1,4 +1,4 @@
-import { ADD_LINK, ADD_ENTITY, REMOVE_ENTITY, REMOVE_SUGGESTED_ENTITY, ADD_TAG, STORE_ENTITIES, STORE_PENDING_ENTITIES, STORE_SOURCES, STORE_PROJECTS, CURRENT_PROJECT, STORE_VERTICES} from '../actions/actionTypes';
+import { ADD_LINK, ADD_ENTITY, REMOVE_ENTITY, REMOVE_SUGGESTED_ENTITY, ADD_TAG, STORE_ENTITIES, STORE_SOURCES, STORE_PROJECTS, CURRENT_PROJECT, STORE_VERTICES} from '../actions/actionTypes';
 import initialState from './initialState';
 
 export default function (state = initialState, action) {
@@ -33,28 +33,6 @@ export default function (state = initialState, action) {
           })
         },
         entityNames: state.entityNames.concat(action.payload.name)        
-      }      
-    case REMOVE_SUGGESTED_ENTITY:
-      return {
-        ...state,
-        pendingEntities: {
-          ...state.savedEntities,
-          status: 'isLoaded',
-          entities: state.pendingEntities.entities.filter(function(entity) {
-            return (entity.name !== action.payload.entity.name || entity.sources[0] !== action.payload.entity.sources[0]);
-          })
-        },
-        entityNames: state.entityNames.concat(action.payload.name)        
-      }
-    case STORE_PENDING_ENTITIES:
-      return {
-        ...state,
-        pendingEntities: {
-          ...state.pendingEntities,
-          status: 'isLoaded',
-          entities: action.payload.map((entity) => {return {name: entity.name, type: entity.type, link: '', tags: [], sources:[entity.sourceid], qid: entity.qid}})
-        },
-        entityNames: action.payload.map((entity) => {return entity.name})
       }
 		case STORE_ENTITIES:
 			return {
@@ -106,7 +84,6 @@ export default function (state = initialState, action) {
       if (state.currentProject._id !== action.payload._id) {
         state.savedSources.status = 'isLoading';
         state.savedEntities.status = 'isLoading';
-        state.pendingEntities.status = 'isLoading';
       }
       return {
         ...state,

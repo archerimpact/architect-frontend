@@ -106,11 +106,12 @@ function saveEntity(name, type, sources) {
     newVert.save()
         .then(item => {
             console.log("Successful save 2/2");
+            return newVert
         })
         .catch(err => {
             res.status(400).send("Unable to save to database because: " + err);
         })
-    return vert._id
+    return newVert
 }
 
 app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
@@ -219,7 +220,8 @@ app.get('/investigation/project', function(req, res) {
 })
 
 app.post('/investigation/entity', function(req, res){
-    var entityid = saveEntity(req.body.name, req.body.type, req.body.sources)
+    var newEntity = saveEntity(req.body.name, req.body.type, req.body.sources)
+    var entityid = newEntity._id
 
     /* Updates the project document to include this entity in its list of entities. */
     db.collection('projects').update(
@@ -228,7 +230,7 @@ app.post('/investigation/entity', function(req, res){
     )
     .then(data => {
       console.log("Updated project.")
-      res.send("Finished creating entity.")
+      res.send("Sucessful adding of entity")
     })
     .catch((err) => {console.log(err)});
 })

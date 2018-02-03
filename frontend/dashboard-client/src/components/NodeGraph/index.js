@@ -36,7 +36,6 @@ class NodeGraph extends Component {
   createNodes(entities, documents) {
 		/* Takes in a list of entities and documents and maps it to a 
 			list of nodes for the d3 simulation */
-
 		var entityNodes = entities.map((entity) => {
 			return {"id": entity.name, "name": entity.name, "type": entity.type};
 		});
@@ -65,11 +64,11 @@ class NodeGraph extends Component {
 		return entityLinks.concat(documentLinks);
 	};
 
-	connectionsToLinks(entity) {
+	connectionsToLinks(vertex) {
 		/* Takes all of the tags of one entity and returns an array of all
 			 the links of that one entity */
-		return entity.connections.map((tag) => {
-			return {"source": entity.name, "target": tag};
+    return vertex.connections.map((tag) => {
+			return {"source": vertex.name, "target": tag};
 		});
 	};
 
