@@ -204,21 +204,6 @@ export function fetchProjectSources(projectid) {
   }
 }
 
-/* For if you only want project sources and not suggested entities,
-    currently not being used.
-    
-export function fetchProjectSources(projectid) {
-  return function (dispatch, getState) {
-    return server.getProjectSources(projectid)
-      .then(sources => {
-        dispatch(storeSources(sources))
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-}
-*/
 
 export function fetchProject(projectid) {
   return function(dispatch, getState) {

@@ -219,8 +219,6 @@ export function getProjectSources(projectid) {
 
   var url ='http://localhost:8000/investigation/project/sources';
 
-  let suggestedEntities = null;
-
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
       params: {
@@ -235,8 +233,6 @@ export function getProjectSources(projectid) {
     })
   })
 }
-
-
 
 export function addEntity(name, type, sources, project) {
     var url = 'http://localhost:8000/investigation/entity';

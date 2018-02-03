@@ -9,9 +9,6 @@ class PDFUploader extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-            file: null,
-            numPages: null,
-            pageNumber: 1,
             styles: {
                 button: {
                     margin: 12,
@@ -26,29 +23,21 @@ class PDFUploader extends Component {
                     width: '100%',
                     opacity: 0,
                 },
-            }
+            },
+            fileUploaded: ''
         };
         this.onDocumentLoadSuccess = this.onDocumentLoadSuccess.bind(this);
         this.onFileChange = this.onFileChange.bind(this);
 	}
 
     onFileChange(event) {
-        this.setState({
-            file: event.target.files[0],
-        });
-        server_utils.saveDocument(event.target.files[0]);
+        this.setState({ fileUploaded: event.target.files[0].name + " uploaded"});
+        server_utils.saveDocument(event.target.files[0], this.props.projectid);
     }
 
 	onDocumentLoadSuccess({numPages}) {
 		this.setState({numPages: numPages, pageNumber: null,});
 	}
-
-    // Can be added later to allow page changes if only one page is displayed at a time
-/*    changePage(by) {
-       this.setState(prevState => ({
-           pageNumber: prevState.pageNumber + by,
-       }))
-    }*/
 
     render() {
         return (
@@ -69,20 +58,7 @@ class PDFUploader extends Component {
                     </RaisedButton>
                 </div>
                 <div className="addDocument">
-                    <Document file={this.state.file} onLoadSuccess={this.onDocumentLoadSuccess} >
-                    {
-                        Array.from(new Array(this.state.numPages),
-                            (el, index) => (
-                                <Page 
-                                    className="page" 
-                                    key={index + 1} 
-                                    pageNumber={index+1} 
-                                    width={Math.min(600, document.body.clientWidth - 52)}
-                                />
-                            ),
-                        )
-                    }
-                    </Document>
+                    <h5>{this.state.fileUploaded}</h5>
                 </div>
             </div>
         );

@@ -73,7 +73,7 @@ class EntitiesTab extends Component {
 		} else {
 			return;
 		}
-	};
+	}
 
 	//called from entity with this.props.onEntityClick(entity)
 	openEntityDrawer = (entity) => {

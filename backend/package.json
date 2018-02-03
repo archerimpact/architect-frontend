@@ -18,7 +18,8 @@
     "passport-local-mongoose": "^4.2.1",
     "pdf2json": "^1.1.7",
     "request": "^2.83.0",
-    "whatwg-fetch": "^2.0.3"
+    "whatwg-fetch": "^2.0.3",
+    "yargs": "^10.0.3"
   },
   "scripts": {
     "start": "node app.js"
