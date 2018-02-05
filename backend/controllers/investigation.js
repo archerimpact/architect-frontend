@@ -328,7 +328,15 @@ app.post('/investigation/connection', function(req, res){
   var newConnection = new Connection(connection);
   newConnection.save()
     .then(item => {
-      res.send("New connection saved");
+      console.log("Saved 1/1.")
+      db.collection('vertexes').update(
+          {_id: mongoose.Types.ObjectId(req.body.idOne)},
+          {$pull: {connections: connection._id}}
+        ).then((data) => { 
+            console.log("Updated entity 1/2.")
+            res.send("New connection saved");
+        })
+        .catch(err =>{console.log(err)})
     })
     .catch(err => {
       res.status(400).send("Unable to save to database because: " + err);
@@ -460,6 +468,13 @@ app.get('/investigation/project/sources', function(req, res) {
 
 app.get('/investigation/vertexList', function(req, res) {
     db.collection('vertexes').find({}).toArray(function(err, result) {
+        if (err) throw err;
+        res.send(result);
+    });
+});
+
+app.get('/investigation/connectionList', function(req, res) {
+    db.collection('connections').find({}).toArray(function(err, result) {
         if (err) throw err;
         res.send(result);
     });

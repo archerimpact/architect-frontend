@@ -96,3 +96,20 @@ export function getVertexList() {
         });
     })
 }
+
+export function getConnectionList() {
+    var url = 'http://localhost:8000/investigation/connectionList';
+    var options = {
+        method: 'GET',
+    };
+    return new Promise((fulfill, reject) => {
+        fetch(url, options)
+        .then(res => res.json())
+        .then(json => {
+            fulfill(json);
+        })
+        .catch(err => {
+            reject('Error: could not return vertex list because: ' + err);
+        });
+    })
+}

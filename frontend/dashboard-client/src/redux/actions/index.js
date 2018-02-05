@@ -11,7 +11,8 @@ import {
   STORE_PROJECTS, 
   CURRENT_PROJECT,
   STORE_VERTICES,
-  ADD_CONNECTION
+  ADD_CONNECTION,
+  STORE_CONNECTIONS
   } from './actionTypes';
 
 import * as server_utils from '../../server/utils';
@@ -255,11 +256,30 @@ export function fetchVertices() {
 	};
 }
 
+export function fetchConnections(){
+  return function (dispatch, getState) {
+    return server_utils.getConnectionList()
+      .then(connections => {
+        dispatch(storeConnections(connections));
+      })
+      .catch(err => {
+        console.log(err)
+      });
+  };
+}
+
 export function storeVertices(vertices) {
 	return {
 		type: STORE_VERTICES,
 		payload: vertices
 	};
+}
+
+export function storeConnections(connections) {
+  return {
+    type: STORE_CONNECTIONS,
+    payload: connections
+  };
 }
 
 export function logOutUser() {

@@ -21,7 +21,7 @@ class NodeGraph extends Component {
     };
   }
 
-  uniqueNodes(nodes) {
+  /* uniqueNodes(nodes) {
     var obj = {};
 
     for ( var i=0, len=nodes.length; i < len; i++ )
@@ -34,8 +34,8 @@ class NodeGraph extends Component {
   }
 
   createNodes(entities, documents) {
-		/* Takes in a list of entities and documents and maps it to a 
-			list of nodes for the d3 simulation */
+		//Takes in a list of entities and documents and maps it to a 
+		//	list of nodes for the d3 simulation 
 		var entityNodes = entities.map((entity) => {
 			return {"id": entity.name, "name": entity.name, "type": entity.type};
 		});
@@ -46,8 +46,8 @@ class NodeGraph extends Component {
 	};
 
 	createLinks(entities, documents) {
-		/* Iterates over all the entitiesa and documents and builds an 
-			array of all the links for the d3 simulation */
+		// Iterates over all the entitiesa and documents and builds an 
+		//	array of all the links for the d3 simulation
 
 		var documentLinks = [].concat.apply([], documents.map((document) => {
 			return this.sourceToLinks(document);
@@ -65,16 +65,16 @@ class NodeGraph extends Component {
 	};
 
 	connectionsToLinks(vertex) {
-		/* Takes all of the tags of one entity and returns an array of all
-			 the links of that one entity */
+		// Takes all of the tags of one entity and returns an array of all
+		// the links of that one entity
     return vertex.connections.map((tag) => {
 			return {"source": vertex.name, "target": tag};
 		});
 	};
 
 
-	/* TO-DO: refactor so that this method takes entities and maps a connection
-		 to sources if and only if the source appears in this graph */
+	  //TO-DO: refactor so that this method takes entities and maps a connection
+		//to sources if and only if the source appears in this graph
 	sourceToLinks(vertex) {
 		if (vertex.length === 0) {
 			return;
@@ -84,7 +84,7 @@ class NodeGraph extends Component {
 			});
 		}
 	};
-
+*/
 	getNodeColor(node) {
 		/* returns the color of the node based on the type of the entity */
     if (node.type === "PERSON") {
@@ -141,20 +141,19 @@ class NodeGraph extends Component {
     }
   }
 
-	generateNetworkCanvas(entities, sources, includeText) {
+	generateNetworkCanvas(nodes, links, includeText) {
 		/* The entire logic for generating a d3 forceSimulation graph */
-		if (typeof(sources[0]) === "undefined") {
+		/*if (typeof(sources[0]) === "undefined") {
 			sources = [];
-		};
-		
-		const dataNodes = this.createNodes(entities, sources);
-		const linkNodes = this.createLinks(entities, sources);
+		};*/
+		const dataNodes = nodes;
+		const linkNodes = links;
 		
 		const data = {
 			"nodes": dataNodes,
 			"links": linkNodes
 		};
-
+    debugger
 		const width = 1000;
 		const height = 700;
 
@@ -162,7 +161,7 @@ class NodeGraph extends Component {
 			.force("center", d3.forceCenter(width/2, height/2))
 			.force("charge", d3.forceManyBody())
       //.force("collide", d3.forceCollide((d) => this.getCollide(d)))
-			.force("link", d3.forceLink(linkNodes).id(function(d) { return d.id; }));
+			.force("link", d3.forceLink(linkNodes).id(function(d) { return d._id; }));
 
 		const svg = d3.select(this.refs.mountPoint)
 			.append('svg')
@@ -248,23 +247,23 @@ class NodeGraph extends Component {
     */
 	};
 
-  updateGraph(entities, sources) {
+  updateGraph(nodes, links) {
     const mountPoint = d3.select('#svgdiv');
     mountPoint.selectAll("svg").remove();
-    this.generateNetworkCanvas(entities, sources);
+    this.generateNetworkCanvas(nodes, links);
   }
 
   componentWillReceiveProps(nextProps) {		
 		/* When the props update (aka when there's a new entity or relationship), 
 			delete the old graph and create a new one */
 
-		this.updateGraph(nextProps.entities, nextProps.sources);
+		this.updateGraph(nextProps.nodes, nextProps.links);
 	};
 
 	componentDidMount = () => {
 		/* builds the first graph based on after the component mounted and mountPoint was created. */
 
-		this.generateNetworkCanvas(this.props.entities, this.props.sources);
+		this.generateNetworkCanvas(this.props.nodes,this.props.links, this.state.text);
 	};
 
   updateCheck() {
@@ -273,7 +272,7 @@ class NodeGraph extends Component {
         text: !oldState.text,
       };
     });
-    this.updateGraph(this.props.entities, this.props.sources);
+    this.updateGraph(this.props.nodes, this.props.links);
   }
 
 	render() {
