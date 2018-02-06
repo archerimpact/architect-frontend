@@ -20,8 +20,7 @@ export default {
   },
 	savedSources: {
 		status: 'isLoading',
-		documents: [
-		]
+		documents: []
 	},
 	savedVertices: {
 		status: 'isLoading',

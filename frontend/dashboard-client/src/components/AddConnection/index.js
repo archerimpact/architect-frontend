@@ -37,10 +37,10 @@ class AddConnection extends Component {
 
 
 
-	componentDidMount() {
+/*	componentDidMount() {
 		this.props.actions.fetchVertices(this.props.projectid);
 	}
-
+*/
 	handleSubmit = (event) => {
 		event.preventDefault();
 		this.props.onConnectionSubmit({idOne: this.state.vertexOne._id, idTwo: this.state.vertexTwo._id, description: this.state.description, projectid: this.props.projectid});
@@ -125,7 +125,7 @@ function mapStateToProps(state) {
 	} else {
 	    return {
 	    	status: state.data.savedVertices.status,
-	        vertices: state.data.savedVertices.vertices,
+	      vertices: state.data.savedVertices.vertices,
 	    }
 	}
 };

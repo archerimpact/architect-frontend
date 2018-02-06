@@ -261,7 +261,7 @@ app.post('/investigation/entity', function(req, res){
       {$push: {entities: entityid}}
     )
     .then(data => {
-      console.log("Updated project.")
+      console.log("Updated project 1/1.")
       res.send("Sucessful adding of entity")
     })
     .catch((err) => {console.log(err)});
@@ -328,25 +328,28 @@ app.post('/investigation/connection', function(req, res){
   var newConnection = new Connection(connection);
   newConnection.save()
     .then(item => {
-      console.log("Saved 1/1.")
+      console.log("Saved connection 1/1.")
       db.collection('vertexes').update(
           {_id: mongoose.Types.ObjectId(req.body.idOne)},
           {$pull: {connections: connection._id}}
         ).then((data) => { 
-            console.log("Updated entity 1/2.")
-            db.collection('projects').update(
-              {_id: mongoose.Types.ObjectId(req.body.projectid)},
-              {$push: {connections: connection._id}}
-            )
-            .then((data) => {
-              console.log("Updated project 1/1.");
-              res.send("New connection saved");
-            })
-            .catch(err => {console.log(err)})
-        })
-        .catch(err =>{console.log(err)})
-    })
-    .catch(err => {
+          console.log("Updated entity 1/2.")
+          db.collection('vertexes').update(
+            {_id: mongoose.Types.ObjectId(req.body.idTwo)},
+            {$pull: {connections: connection._id}}
+            ).then((data) => {
+              console.log("Updated entity 2/2.")
+              db.collection('projects').update(
+                {_id: mongoose.Types.ObjectId(req.body.projectid)},
+                {$push: {connections: connection._id}}
+              )
+              .then((data) => {
+                console.log("Updated project 1/1.");
+                res.send("New connection saved");
+              }).catch(err => {console.log(err)})
+          }).catch(err => {console.log(err)})
+        }).catch(err =>{console.log(err)})
+    }).catch(err => {
       res.status(400).send("Unable to save to database because: " + err);
     })
 })
@@ -475,16 +478,12 @@ app.get('/investigation/project/sources', function(req, res) {
   });
 
 app.get('/investigation/vertexList', function(req, res) {
-/*    db.collection('vertexes').find({}).toArray(function(err, result) {
-        if (err) throw err;
-        res.send(result);
-    });*/
-    console.log(req.query)
+    // gets all vertexes associated with a project
+
     var projectid = mongoose.Types.ObjectId(req.query.projectid)
     db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
     .then((projects) => {
       var vertexes = projects[0].entities.concat(projects[0].sources)
-      console.log("vertexes: ", vertexes)
       db.collection('vertexes').find({_id: {$in: vertexes}}).toArray()
         .then((vertexes) => {
           if (vertexes.length === 0) {
@@ -499,15 +498,11 @@ app.get('/investigation/vertexList', function(req, res) {
 });
 
 app.get('/investigation/connectionList', function(req, res) {
-    /*db.collection('connections').find({}).toArray(function(err, result) {
-        if (err) throw err;
-        res.send(result);
-    });*/
-    console.log(req.query)
+    // Gets all connections associated with a project
+
     var projectid = mongoose.Types.ObjectId(req.query.projectid)
     db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
     .then((projects) => {
-      console.log("connections: ", projects[0].connections)
       db.collection('connections').find({_id: {$in: projects[0].connections}}).toArray()
         .then((connections) => {
           if (connections.length === 0) {

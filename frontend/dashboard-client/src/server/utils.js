@@ -81,23 +81,8 @@ export function getProjectList() {
 }
 
 export function getVertexList(projectid) {
-    var url = 'http://localhost:8000/investigation/vertexList';
-/*    var options = {
-        method: 'GET',
-        body: {
-          projectid: projectid
-        }
-    };
-    return new Promise((fulfill, reject) => {
-        fetch(url, options)
-        .then(res => res.json())
-        .then(json => {
-            fulfill(json);
-        })
-        .catch(err => {
-            reject('Error: could not return vertex list because: ' + err);
-        });
-    })*/
+  var url = 'http://localhost:8000/investigation/vertexList';
+
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
       params: {
@@ -105,7 +90,6 @@ export function getVertexList(projectid) {
       }
     })
     .then(function (response) {
-      //newEntities = documentsToEntities(documents.data);
       fulfill(response.data)
     })
     .catch(function(error) {
@@ -115,17 +99,9 @@ export function getVertexList(projectid) {
 }
 
 export function getConnectionList(projectid) {
-  /*  var url = 'http://localhost:8000/investigation/connectionList';
-    var options = {
-        method: 'GET',
-        body: {
-          projectid: projectid
-        }
-    };*/
-    
+
   var url ='http://localhost:8000/investigation/connectionList';
 
-  let newEntities = null;
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
       params: {
@@ -133,21 +109,10 @@ export function getConnectionList(projectid) {
       }
     })
     .then(function (response) {
-      //newEntities = documentsToEntities(documents.data);
       fulfill(response.data)
     })
     .catch(function(error) {
       console.log(error);
     })
   });
-  /*  return new Promise((fulfill, reject) => {
-        fetch(url, options)
-        .then(res => res.json())
-        .then(json => {
-            fulfill(json);
-        })
-        .catch(err => {
-            reject('Error: could not return vertex list because: ' + err);
-        });
-    })*/
 }

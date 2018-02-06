@@ -87,8 +87,8 @@ class NodeGraph extends Component {
 */
 	getNodeColor(node) {
 		/* returns the color of the node based on the type of the entity */
-    if (node.type === "PERSON") {
-      return "#83DFFF";
+    if (node.type === "PERSON" || node.type === "Entity") {
+      return "#FB7E81";
     }
     if (node.type === "ORGANIZATION") {
       return "#76C9E5";
@@ -96,7 +96,7 @@ class NodeGraph extends Component {
     if (node.type === "LOCATION" || node.type === "NATIONALITY") {
       return "#62A8BF";
     }
-    if (node.type === "DOCUMENT") {
+    if (node.type === "Source") {
       return "#49FFB7";
     }
     if (node.type === "Person" || node.type === "person") {
@@ -109,7 +109,7 @@ class NodeGraph extends Component {
       return "#C454E5";
     }
     else {
-      return "#41707F";
+      return "#FFFF02";
     }
 	};
 
@@ -137,7 +137,7 @@ class NodeGraph extends Component {
       return 60;
     }
     else {
-      return 20;
+      return 60;
     }
   }
 
@@ -179,7 +179,7 @@ class NodeGraph extends Component {
 			.append('line')
 			.style('stroke', '#999999')
 			.style('stroke-opacty', 0.6)
-			.style('stroke-width', 2.0);
+			.style('stroke-width', 3.0);
 
 		const nodeElements = svg.selectAll('circle')
 			.data(data.nodes)
@@ -188,7 +188,7 @@ class NodeGraph extends Component {
 			.style('cursor', 'pointer');
 
     nodeElements.append('circle')
-			.attr('r',7)
+			.attr('r',13)
 			.style('stroke', '#FFFFFF')
 			.style('stroke-width', 1.5)
 			.style('fill', (d) => this.getNodeColor(d));
