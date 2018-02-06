@@ -2,7 +2,6 @@ import React from 'react';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import { Redirect, withRouter, Link } from 'react-router-dom';
-// import { authenticate } from "../server/index";
 import {authenticateAccount} from "../../server/auth_routes";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
