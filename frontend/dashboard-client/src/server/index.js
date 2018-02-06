@@ -1,93 +1,8 @@
 import 'whatwg-fetch';
+import { configData } from '../config.js';
 import axios from 'axios';
 
 var qs = require('qs');
-export function authenticate(authInfo) {
-	var url = 'https://localhost:8000/login';
-	var options = {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		body: qs.stringify({
-			username: authInfo.username,
-			password: authInfo.password
-		})
-	};
-	
-	return new Promise(function(fulfill, reject) {
-		fetch(url, options)
-		.then(res => res.json())
-		.then(json => {
-			if (!json.login) {
-				reject('Error: could not authenticate');
-			}
-			fulfill(json)
-		})
-		.catch(err => {
-			reject('Error: could not authenticate');
-		});
-	});
-}
-
-export function register(authInfo) {
-	var url = 'https://localhost:8000/register'
-	var options = {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		body: qs.stringify({
-			username: authInfo.username,
-			password: authInfo.password,
-			name: authInfo.name,
-			email: authInfo.email,
-			zip: authInfo.zip,
-			company: authInfo.company
-		})
-	};
-	return new Promise(function(fulfill, reject) {
-		fetch(url, options)
-		.then(res => res.json())
-		.then(json => {
-			if (!json.login) {
-				reject('Error: could not authenticate');
-			}
-			fulfill(json);
-		})
-		.catch(err => {
-			reject('Error: could not register');
-		});
-	})
-}
-
-/* Sample method for adding links
-function addLink(url, label, notes) {
-	var url ='http://localhost:8000/jobs';
-	var options = {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		body: qs.stringify({
-			url: url,
-			label: label,
-			notes: notes
-		})
-	};
-	return new Promise(function(fulfill, reject) {
-		fetch(url, options)
-		.then(res => {
-			return res.json()})
-		.then(json => {
-			fulfill(json)
-		})
-		.catch(err => {
-			reject('Error: could not add link');
-		})
-	})
-}
-*/
 
 export function submitText(title, text, projectid) {
 	var url ='http://localhost:8000/investigation/project/entityExtractor';
@@ -139,7 +54,6 @@ export function getSuggestedEntities(projectid) {
 function documentsToEntities(vertexes) {
     /* map over all notes, then map over all entities in each note, and build a new array entities 
        which contains all entities of all notes */
-
     var entities = vertexes.map((vertex) => {
       return vertex.source.document.entities.map((entity) => {
         return {"name": entity.normalized, "type": entity.type, "qid": entity.entityId, "sourceid": document._id}
