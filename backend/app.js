@@ -98,6 +98,8 @@ app.get('/api/checkauth', users_controller.isAuthenticated, users_controller.che
 /////////////////////////////////////////////////
 
 
+app.use('/cloud', require('./controllers/cloud'))
+
 app.get('*', function(req, res) {
     res.status(404).send('Not found');
 });

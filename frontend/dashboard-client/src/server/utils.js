@@ -1,11 +1,14 @@
 import 'whatwg-fetch';
+import axios from 'axios';
 import { configData } from '../config.js';
 
 var qs = require('qs');
 
-export function saveDocument(file) {
+export function saveDocument(file, projectid) {
     const data = new FormData();
     data.append('file', file);
+    data.append('projectid', projectid);
+    var url = 'http://localhost:8000/investigation/pdf';
     data.append('originalname', 'random_file_name');
     var url = configData.backend_url + '/investigation/pdf';
     var options = {
@@ -19,6 +22,26 @@ export function saveDocument(file) {
     })
     .catch(err => {
         console.log('Error: could not upload document because: ' + err);
+    });
+}
+
+/* Brings a document from the backend to frontend. TOOD: Angelina, does not yet work correctly */
+export function retrieveDocument(name, projectid) {
+    var url = 'http://localhost:8000/investigation/project/document';
+    return new Promise(function(fulfill, reject) {
+        axios.get(url, {
+            params: {
+                projectid: projectid,
+                file_name: name
+            }
+        })
+        .then(function (document) {
+            fulfill(document);
+            // downlaod this file locally
+        })
+        .catch(function(error) {
+            console.log(error);
+        })
     });
 }
 

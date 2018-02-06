@@ -123,30 +123,31 @@ export function getProjectEntities(projectid) {
 }
 
 
-/* For if you only want project sources and not suggested entities,
-    currently not being used.
+//For if you only want project sources and not suggested entities,
+//    currently not being used.
     
 export function getProjectSources(projectid) {
   // Gets all entities related to a project. Server returns an object of objects containing all notes. 
 
   var url ='http://localhost:8000/investigation/project/sources';
 
+  var url ='http://localhost:8000/investigation/project/sources';
+
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
       params: {
-        project: projectid
+        projectid: projectid
       }
     })
-    .then(response => {
-      var sources = Object.values(response.data)
-      fulfill(sources)
+    .then(function (documents) {
+      fulfill(documents.data);
     })
     .catch(function(error) {
       console.log(error);
     })
   });
 }
-*/
+
 
 export function addEntity(name, type, sources, project) {
     var url = 'http://localhost:8000/investigation/entity';
