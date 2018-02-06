@@ -216,8 +216,8 @@ export function fetchProjectEntities(projectid) {
 //   }
 // }
 
-// //  For if you only want project sources and not suggested entities,
-// //     currently not being used.
+//  For if you only want project sources and not suggested entities,
+//     currently not being used.
     
 export function fetchProjectSources(projectid) {
   return function (dispatch, getState) {

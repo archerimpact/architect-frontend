@@ -3,7 +3,7 @@ import { Document, Page } from 'react-pdf/build/entry.webpack';
 import {Card, CardMedia, CardTitle} from 'material-ui/Card';
 import './style.css';
 
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import * as server_utils from '../../server/utils';
 import * as actions from '../../redux/actions/';
 import { connect } from 'react-redux';
@@ -64,4 +64,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Sources);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Sources));
