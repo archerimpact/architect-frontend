@@ -5,6 +5,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import Home from '../../pages/Home/';
+import NewHome from '../../pages/Home/newHome.js';
 import Project from '../../pages/Project/';
 import Source from '../../pages/Source/';
 import NavBar from '../../components/NavBar/';
@@ -30,6 +31,7 @@ export default class Root extends Component {
 							<Route exact path="/" component={Home} />
 							<Route path="/project/:id" component={Project} />				    		
 							<Route path="/source/:id" component={Source}/>
+							<Route path="/homepage" component={NewHome}/>
 						</div>
 					</Router>
 				</Provider>
