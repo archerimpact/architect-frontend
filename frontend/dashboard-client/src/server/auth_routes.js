@@ -2,7 +2,7 @@ import axios from "axios";
 import { configData } from '../config.js';
 
 let api_inst = axios.create({
-    baseURL: configData.backend_url,
+    baseURL: configData.backend_url+'/api',
     timeout: 2000,
     headers: {},
     withCredentials: true

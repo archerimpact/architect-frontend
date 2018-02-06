@@ -35,7 +35,6 @@ app.listen(app.get('port'), function() {
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-
 //////////// Setting Headers (CORS) ////////////
 app.use(function (req, res, next) {
     // Website you wish to allow to connect
@@ -54,8 +53,8 @@ app.use(function (req, res, next) {
 
 
 const sessionOptions = {
-    resave: true,
-    saveUninitialized: true,
+    resave: false, // don't save session if unmodified
+    saveUninitialized: false, // don't create session until something stored
     secret: configData.express_session_secret,
     proxy: false,
     name: "sessionId",
