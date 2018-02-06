@@ -336,7 +336,7 @@ app.post('/investigation/connection', function(req, res){
             console.log("Updated entity 1/2.")
             db.collection('projects').update(
               {_id: mongoose.Types.ObjectId(req.body.projectid)},
-              {$pull: {connections: connection._id}}
+              {$push: {connections: connection._id}}
             )
             .then((data) => {
               console.log("Updated project 1/1.");
@@ -483,12 +483,15 @@ app.get('/investigation/vertexList', function(req, res) {
     var projectid = mongoose.Types.ObjectId(req.query.projectid)
     db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
     .then((projects) => {
-      db.collection('vertexes').find({_id: {$in: projects[0].entities.concat(projects[0].sources)}}).toArray()
+      var vertexes = projects[0].entities.concat(projects[0].sources)
+      console.log("vertexes: ", vertexes)
+      db.collection('vertexes').find({_id: {$in: vertexes}}).toArray()
         .then((vertexes) => {
           if (vertexes.length === 0) {
             res.send([])
+          } else {
+            res.send(vertexes)
           }
-          res.send(vertexes)
         })
         .catch((err)=>{console.log(err)})    
     })
@@ -504,12 +507,14 @@ app.get('/investigation/connectionList', function(req, res) {
     var projectid = mongoose.Types.ObjectId(req.query.projectid)
     db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
     .then((projects) => {
+      console.log("connections: ", projects[0].connections)
       db.collection('connections').find({_id: {$in: projects[0].connections}}).toArray()
         .then((connections) => {
           if (connections.length === 0) {
             res.send([])
+          } else{
+            res.send(connections)
           }
-          res.send(connections)
         })
         .catch((err)=>{console.log(err)})    
     })

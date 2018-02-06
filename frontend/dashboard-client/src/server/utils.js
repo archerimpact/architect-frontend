@@ -98,7 +98,6 @@ export function getVertexList(projectid) {
             reject('Error: could not return vertex list because: ' + err);
         });
     })*/
-debugger
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
       params: {
@@ -107,7 +106,7 @@ debugger
     })
     .then(function (response) {
       //newEntities = documentsToEntities(documents.data);
-      fulfill(response)
+      fulfill(response.data)
     })
     .catch(function(error) {
       console.log(error);
@@ -123,7 +122,7 @@ export function getConnectionList(projectid) {
           projectid: projectid
         }
     };*/
-
+    
   var url ='http://localhost:8000/investigation/connectionList';
 
   let newEntities = null;
@@ -135,7 +134,7 @@ export function getConnectionList(projectid) {
     })
     .then(function (response) {
       //newEntities = documentsToEntities(documents.data);
-      fulfill(response)
+      fulfill(response.data)
     })
     .catch(function(error) {
       console.log(error);

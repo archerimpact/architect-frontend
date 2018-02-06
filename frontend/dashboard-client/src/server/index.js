@@ -299,7 +299,7 @@ export function deleteSuggestedEntity(suggestedEntity, sourceid) {
   });
 }
 
-export function addConnection(idOne, idTwo, description, project) {
+export function addConnection(idOne, idTwo, description, projectid) {
     var url = 'http://localhost:8000/investigation/connection';
     var options = {
         method: 'POST',
@@ -310,10 +310,9 @@ export function addConnection(idOne, idTwo, description, project) {
             idOne: idOne,
             idTwo: idTwo,
             description: description,
-            project: project
+            projectid: projectid
         })
     };
-
     return new Promise(function(fulfill, reject) {
       fetch(url, options)
       .then(response => {

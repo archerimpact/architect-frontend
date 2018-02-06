@@ -246,7 +246,6 @@ export function storeProjects(projects) {
 
 export function fetchVertices(projectid) {
 	return function (dispatch, getState) {
-    debugger
 		return server_utils.getVertexList(projectid)
 			.then(vertices => {
 				dispatch(storeVertices(vertices));
