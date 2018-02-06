@@ -1,8 +1,23 @@
-import { ADD_LINK, ADD_ENTITY, REMOVE_ENTITY, REMOVE_SUGGESTED_ENTITY, ADD_TAG, STORE_ENTITIES, STORE_PENDING_ENTITIES, STORE_SOURCES, STORE_PROJECTS, CURRENT_PROJECT, STORE_VERTICES} from '../actions/actionTypes';
+import { ADD_LINK, ADD_ENTITY, REMOVE_ENTITY, REMOVE_SUGGESTED_ENTITY, ADD_TAG, STORE_ENTITIES, STORE_PENDING_ENTITIES, STORE_SOURCES, STORE_PROJECTS, CURRENT_PROJECT, STORE_VERTICES, USER_LOGIN, USER_LOGOUT} from '../actions/actionTypes';
 import initialState from './initialState';
 
 export default function (state = initialState, action) {
 	switch(action.type) {
+	    case USER_LOGIN:
+	    	return {
+	    		...state,
+	    		user: {
+	    			isAuthenticated: true
+	    		}
+	    	};
+        case USER_LOGOUT:
+	    	// TODO: refuse to logout if do not receive success response
+	    	return {
+	    		...state,
+	    		user: {
+	    			isAuthenticated: false
+	    		}
+	    	};
 		case ADD_LINK:
 			return {
 				...state,
@@ -11,7 +26,7 @@ export default function (state = initialState, action) {
 					status: 'isLoaded',
 					links: state.savedLinks.links.concat(action.payload)
 				}
-			}
+			};
 		case ADD_ENTITY:
 			return {
 				...state,
@@ -21,7 +36,7 @@ export default function (state = initialState, action) {
 					entities: state.savedEntities.entities.concat(action.payload)
 				},
 				entityNames: state.entityNames.concat(action.payload.name)
-			}
+			};
     case REMOVE_ENTITY:
       return {
         ...state,
@@ -65,7 +80,7 @@ export default function (state = initialState, action) {
 					entities: action.payload
 				},
 				entityNames: action.payload.map((entity) => {return entity.name})
-			}
+			};
 		case STORE_SOURCES:
 			return {
 				...state,
@@ -74,7 +89,7 @@ export default function (state = initialState, action) {
 					status: 'isLoaded',
 					documents: action.payload
 				},
-			}				
+			};
 		case ADD_TAG:
 			return {
 				...state,
@@ -83,6 +98,7 @@ export default function (state = initialState, action) {
 					status: 'isLoaded',
 					entities: action.payload
 				},
+
       }
 		case STORE_PROJECTS:
 			return {

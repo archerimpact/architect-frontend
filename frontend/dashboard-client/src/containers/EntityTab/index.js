@@ -8,6 +8,8 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import UpArrow from 'material-ui/svg-icons/navigation/arrow-upward';
+import { withRouter } from 'react-router-dom';
+
 import DownArrow from 'material-ui/svg-icons/navigation/arrow-downward';
 import EntitiesList from '../../components/Entity/';
 
@@ -171,15 +173,15 @@ class EntitiesTab extends Component {
 					        </div>
 					    </div>
 			        	<EntitiesList 
-                  listType={this.props.listType} 
-                  entities={this.props.entities} 
-                  searchTerm={this.state.queryEntity} 
-                  sortBy={this.state.entitySortBy} 
-                  getSource={this.getEntitySource} 
-                  onEntityClick={this.openEntityDrawer} 
-                  onCreateEntity={this.createEntity}
-                  onDeleteEntity={this.deleteEntity}
-                />
+		                  listType={this.props.listType} 
+		                  entities={this.props.entities} 
+		                  searchTerm={this.state.queryEntity} 
+		                  sortBy={this.state.entitySortBy} 
+		                  getSource={this.getEntitySource} 
+		                  onEntityClick={this.openEntityDrawer} 
+		                  onCreateEntity={this.createEntity}
+		                  onDeleteEntity={this.deleteEntity}
+		                />
 			        </div>
 				</div>
 			);      
@@ -208,4 +210,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(EntitiesTab);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EntitiesTab));

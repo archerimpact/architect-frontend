@@ -2,18 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
+import {withRouter} from 'react-router-dom';
 
 import ProjectList from '../../containers/ProjectList/';
 import './style.css'
 
 class Home extends Component {
-
     render() {
         return (
             <div style={{height:'100%'}}>
                 <div className="app">
                     <div style={{width:'100%', margin:'0 auto', top: 64}}>
-                        <ProjectList/>                        
+                        <ProjectList {...this.props}/>                        
                     </div>
                 </div>
             </div>
@@ -35,4 +35,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Home));
