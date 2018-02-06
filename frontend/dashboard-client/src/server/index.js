@@ -324,3 +324,29 @@ export function addConnection(idOne, idTwo, description, projectid) {
       });
     });
 }
+
+export function addGraph(projectid, entities, sources, connections) {
+    var url = 'http://localhost:8000/investigation/project/graph';
+    var options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: qs.stringify({
+            projectid: projectid,
+            entities: entities,
+            sources: sources,
+            connections: connections
+        })
+    };
+    return new Promise(function(fulfill, reject) {
+      fetch(url, options)
+      .then(response => {
+          // TODO: depending on the response, give user information about project add
+          fulfill(response);
+      })
+      .catch(err => {
+          console.log('Error: could not add connection because: ' + err);
+      });
+    });
+}

@@ -12,7 +12,8 @@ import {
   CURRENT_PROJECT,
   STORE_VERTICES,
   ADD_CONNECTION,
-  STORE_CONNECTIONS
+  STORE_CONNECTIONS,
+  ADD_GRAPH
   } from './actionTypes';
 
 import * as server_utils from '../../server/utils';
@@ -53,6 +54,13 @@ export function addConnection(connection) {
 	};
 }
 
+export function addGraph(graph) {
+  return {
+    type: ADD_GRAPH,
+    payload: graph
+  };
+}
+
 export function storeEntities(entities){
 	return {
 		type: STORE_ENTITIES,
@@ -67,6 +75,7 @@ export function storeSources(sources){
 	};
 }
 
+
 export function addTag(entities, name, tag) {
 	let entity = entities.find(x => x.name === name)
 	const index = entities.indexOf(entity)
@@ -77,6 +86,7 @@ export function addTag(entities, name, tag) {
 		payload: entities
 	};
 }
+
 
 export function deleteTag(entities, name, tag) {
 	let entity = entities.find(x => x.name === name);
@@ -92,6 +102,7 @@ export function deleteTag(entities, name, tag) {
 		payload: entities
 	};
 }
+
 
 export function retrieveDetails(actionType, res) {
 	return {
@@ -170,6 +181,20 @@ export function createConnection(connection) {
       })
   }
 }
+
+/* TODO: finish creating a new graph */
+export function createGraph(projectid, entities, sources, connections) {
+  return function (dispatch, getState) {
+    return server.addGraph(projectid, entities, sources, connections)
+      .then(data => {
+        dispatch(addGraph(projectid, entities, sources, connections));
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+}
+
 
 export function fetchSource(sourceid) {
   return function (dispatch, getState) {

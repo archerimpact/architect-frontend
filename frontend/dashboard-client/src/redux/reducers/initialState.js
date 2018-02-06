@@ -30,6 +30,10 @@ export default {
     status: 'isLoading',
     connections: []
   },
+  savedGraphs: {
+    status: 'isLoading',
+    connections: []
+  },
 	entityTypes: ["Company", "Person", "Location"],
 	entityNames: ["Alice Ma", "Daryus Medora", "Angelina Wang"],
 	projects: [

@@ -42,7 +42,7 @@ class ProjectPage extends Component {
   				<div className="header">
   					<div className="header-text">
   						<h3>{"Projects  >  " + this.props.currentProject.name}</h3>
-               <Link to={"/newproject/" + this.props.match.params.id}>"Go to new page"</Link>
+               <Link to={"/projectcanvas/" + this.props.match.params.id}>"Go to new page"</Link>
   					</div>
   					<div id="notifications">
               <AddInformation projectid={this.props.match.params.id}/>

@@ -5,6 +5,7 @@ var multer = require('multer'),
     vertex = require('../models/vertex'),
     Project = require('../models/project'),
     Connection = require('../models/connection'),
+    Graph = require('../models/graph'),
     mongoose = require('mongoose'),
     request = require('request'),
     cloud = require('./cloud'),
@@ -348,6 +349,29 @@ app.post('/investigation/connection', function(req, res){
                 res.send("New connection saved");
               }).catch(err => {console.log(err)})
           }).catch(err => {console.log(err)})
+        }).catch(err =>{console.log(err)})
+    }).catch(err => {
+      res.status(400).send("Unable to save to database because: " + err);
+    })
+})
+
+app.post('/investigation/project/graph', function(req, res){
+  var graph = {
+    _id: new mongoose.Types.ObjectId,
+    entities: req.body.entities,
+    sources: req.body.sources,
+    connections: req.body.connections //TODO: decide how we want to deal with confidence level of connections
+  };
+  var newGraph = new Graph(graph);
+  newGraph.save()
+    .then(item => {
+      console.log("Saved graph 1/1.")
+      db.collection('projects').update(
+          {_id: mongoose.Types.ObjectId(req.body.projectid)},
+          {$push: {graphs: graph._id}}
+        ).then((data) => { 
+          console.log("Updated project 1/1.")
+          res.send("New graph created.")
         }).catch(err =>{console.log(err)})
     }).catch(err => {
       res.status(400).send("Unable to save to database because: " + err);
