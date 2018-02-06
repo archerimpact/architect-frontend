@@ -153,7 +153,7 @@ class NodeGraph extends Component {
 			"nodes": dataNodes,
 			"links": linkNodes
 		};
-    debugger
+    
 		const width = 1000;
 		const height = 700;
 

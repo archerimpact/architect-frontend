@@ -80,10 +80,13 @@ export function getProjectList() {
     })
 }
 
-export function getVertexList() {
+export function getVertexList(projectid) {
     var url = 'http://localhost:8000/investigation/vertexList';
-    var options = {
+/*    var options = {
         method: 'GET',
+        body: {
+          projectid: projectid
+        }
     };
     return new Promise((fulfill, reject) => {
         fetch(url, options)
@@ -94,15 +97,51 @@ export function getVertexList() {
         .catch(err => {
             reject('Error: could not return vertex list because: ' + err);
         });
+    })*/
+debugger
+  return new Promise(function(fulfill, reject) {
+    axios.get(url, {
+      params: {
+        projectid: projectid
+      }
     })
+    .then(function (response) {
+      //newEntities = documentsToEntities(documents.data);
+      fulfill(response)
+    })
+    .catch(function(error) {
+      console.log(error);
+    })
+  });
 }
 
-export function getConnectionList() {
-    var url = 'http://localhost:8000/investigation/connectionList';
+export function getConnectionList(projectid) {
+  /*  var url = 'http://localhost:8000/investigation/connectionList';
     var options = {
         method: 'GET',
-    };
-    return new Promise((fulfill, reject) => {
+        body: {
+          projectid: projectid
+        }
+    };*/
+
+  var url ='http://localhost:8000/investigation/connectionList';
+
+  let newEntities = null;
+  return new Promise(function(fulfill, reject) {
+    axios.get(url, {
+      params: {
+        projectid: projectid
+      }
+    })
+    .then(function (response) {
+      //newEntities = documentsToEntities(documents.data);
+      fulfill(response)
+    })
+    .catch(function(error) {
+      console.log(error);
+    })
+  });
+  /*  return new Promise((fulfill, reject) => {
         fetch(url, options)
         .then(res => res.json())
         .then(json => {
@@ -111,5 +150,5 @@ export function getConnectionList() {
         .catch(err => {
             reject('Error: could not return vertex list because: ' + err);
         });
-    })
+    })*/
 }

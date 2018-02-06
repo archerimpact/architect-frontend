@@ -334,7 +334,15 @@ app.post('/investigation/connection', function(req, res){
           {$pull: {connections: connection._id}}
         ).then((data) => { 
             console.log("Updated entity 1/2.")
-            res.send("New connection saved");
+            db.collection('projects').update(
+              {_id: mongoose.Types.ObjectId(req.body.projectid)},
+              {$pull: {connections: connection._id}}
+            )
+            .then((data) => {
+              console.log("Updated project 1/1.");
+              res.send("New connection saved");
+            })
+            .catch(err => {console.log(err)})
         })
         .catch(err =>{console.log(err)})
     })
@@ -467,17 +475,45 @@ app.get('/investigation/project/sources', function(req, res) {
   });
 
 app.get('/investigation/vertexList', function(req, res) {
-    db.collection('vertexes').find({}).toArray(function(err, result) {
+/*    db.collection('vertexes').find({}).toArray(function(err, result) {
         if (err) throw err;
         res.send(result);
-    });
+    });*/
+    console.log(req.query)
+    var projectid = mongoose.Types.ObjectId(req.query.projectid)
+    db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
+    .then((projects) => {
+      db.collection('vertexes').find({_id: {$in: projects[0].entities.concat(projects[0].sources)}}).toArray()
+        .then((vertexes) => {
+          if (vertexes.length === 0) {
+            res.send([])
+          }
+          res.send(vertexes)
+        })
+        .catch((err)=>{console.log(err)})    
+    })
+    .catch((err)=>{console.log(err)})    
 });
 
 app.get('/investigation/connectionList', function(req, res) {
-    db.collection('connections').find({}).toArray(function(err, result) {
+    /*db.collection('connections').find({}).toArray(function(err, result) {
         if (err) throw err;
         res.send(result);
-    });
+    });*/
+    console.log(req.query)
+    var projectid = mongoose.Types.ObjectId(req.query.projectid)
+    db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
+    .then((projects) => {
+      db.collection('connections').find({_id: {$in: projects[0].connections}}).toArray()
+        .then((connections) => {
+          if (connections.length === 0) {
+            res.send([])
+          }
+          res.send(connections)
+        })
+        .catch((err)=>{console.log(err)})    
+    })
+    .catch((err)=>{console.log(err)}) 
 });
 
 app.get('/investigation/searchSources', function(req, res) {

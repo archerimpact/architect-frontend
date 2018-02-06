@@ -38,7 +38,7 @@ class AddConnection extends Component {
 
 
 	componentDidMount() {
-		this.props.actions.fetchVertices();
+		this.props.actions.fetchVertices(this.props.projectid);
 	}
 
 	handleSubmit = (event) => {
@@ -49,6 +49,7 @@ class AddConnection extends Component {
 			vertexTwo: '',
 			description: '',
 		});
+    this.props.actions.fetchConnections(this.props.projectid);
 	};
 
 	handleVertexOneChange(event, index, value) {
