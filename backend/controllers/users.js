@@ -48,9 +48,6 @@ exports.register = function(req, res) {
             return res.json({ success: false, name: err.name, message: err.message });
         } else {
             passport.authenticate('local') (req, res, function () {
-                console.log("LOGGER: account created");
-                console.log(req._passport.session); // eg. { user: 'lol12' }
-                console.log(user); // just as user's entry in db appears
                 res.json({ success: true });
             });
         }

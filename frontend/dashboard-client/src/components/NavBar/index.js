@@ -38,24 +38,18 @@ class NavBar extends Component {
 		    <MenuItem primaryText="Sign out" 
 		    	onClick={() => {				
 		    	self.props.logOut()
-				return (<Link replace to={{
-			        pathname: '/login',
-			        state: { from: this.props.location }
-			      }}/>
-			  )}}
+				}}
 		    />
 		  </IconMenu>
 		  )
 		);
 		const Login = withRouter(({ history }) => (
-		  <FlatButton label="Login" onClick={() => {
-		  		this.props.logIn()
-				return (<Link replace to={{
-			        pathname: '/login',
-			        state: { from: this.props.location }
-			      }}/>
-			  )}}
-		   />
+		  <FlatButton> 
+		  	<Link style={{textDecoration: 'none', color: 'inherit'}} to={{
+			    pathname: '/login',
+			    state: { from: this.props.location }
+			  }}> Login </Link>
+		   </FlatButton>
 		  )
 		);
 		return (
