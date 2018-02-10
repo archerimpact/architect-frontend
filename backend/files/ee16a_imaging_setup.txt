@@ -1,0 +1,206 @@
+Hardware Setup for Imaging Lab 2 and 3
+Light Sensor Breadboard Circuit
+Build the ambient light sensor circuit on a breadboard and hook it up to the Launchpad, as you
+did in Imaging Lab 1. This requires the following parts:
+1x Breadboard
+4x Male-to-Male Jumper Wires (Exposed metal connections on both ends)
+1x Ambient Light Sensor a.k.a. Phototransistor (Cory 140 only)
+1x AAXA Technologies Projector with Light Sensor (Cory 125 only)
+1x 0.1F Capacitor (104)
+1x 100 Resistor (Brown-Black-Yellow-Gold)
+1x TI Launchpad MSP430F5529LP
+1x Micro-USB to USB-A Cable (Long, supplied for this lab)
+The schematic that you will build is shown below. Labels in purple indicate connections to the
+Launchpad. First, we will plug the necessary circuit elements into the breadboard. Follow the
+instructions below exactly.  
+ 
+SchematicBreadboard View
+Ambient Light
+Sensor
+100kΩ
++
+-GND
+P6.0
+On Breadboard
+3V3
+0.1μF
+11
+55
+1010
+1515
+2020
+2525
+3030
+A
+A
+B
+B
+C
+C
+D
+D
+E
+E
+F
+F
+G
+G
+H
+H
+I
+I
+J
+J
+3.3V
+0V
+Short Leg
+LongLeg
+3V3GND
+Launchpad
+LaunchpadP6.0
+104
+Setting up the Breadboard:
+For Cory 140 ONLY: Plug the long leg of the ambient light sensor into Row 16, Column
+A of the breadboard, as illustrated in the breadboard diagram above. The short leg should
+be plugged into the nearest hole in the red (+) column of the breadboard.  
+ 
+
+L
+----------------Page (0) Break----------------
+For Cory 125 ONLY: Plug in the negative jumper wire (labeled with a minus) from the light
+sensor that is taped onto the projector to Row 16, Column A of the breadboard, as
+illustrated in the breadboard diagram above. The positive jumper wire (labeled with a plus)
+from the light sensor should be plugged into a hole in the red (+) column of the breadboard.
+You will be using the light sensor that is taped onto the projector as opposed to your own.  
+ 
+For everyone: Plug one leg of the 100k resistor into a hole in Row 6 of the breadboard.
+Plug its other leg into a nearby hole in the blue (-) column.  
+ 
+For everyone: In a similar fashion, plug the 0.1F capacitor into a hole in Row 6 of the
+breadboard. The other leg should also be plugged into the blue (-) column. Warning: Make
+sure that none of the legs are touching each other to prevent shorting! 
+ 
+For everyone: Use a male-to-male jumper wire to connect (short) Row 16, Column E to
+Row 6, Column E.
+
+
+Stand Setup
+Unlike last week, we care about where the light sensor and other components are placed on the
+breadboard. The light sensor should be facing the center of the image being captured
+(roughly the center of the projected display), and should not be tilted away. No
+components, wires, etc. should get in its way. Therefore, everything else is carefully placed to the
+side. This is evidenced from the photos below:  
+ 
+Cory 140
+FrontSide
+ 
+Cory 125
+SideTop
+----------------Page (1) Break----------------
+Cory 140 ONLY: Take the plastic stand (with projector) out of the cardboard box at your
+station. The breadboard should be sitting on top of the stand's raised base (immediately in
+front of/below the projector). You should tape the breadboard's side to the stand, as
+shown in the (Side) photo. Tape is on the TA desk; do not take the whole dispenser.
+After attaching the breadboard to the stand, place the Launchpad at the stand's base and
+use a male-to-male jumper wire to connect Row 6 (= sensor circuit output) to P6.0 on the
+back of the Launchpad (yellow). The Launchpad can read analog voltage values from our
+circuit, convert them into digital values, and then send them over to our computer. 
+ 
+The Launchpad supplies 3.3V to our circuit. Use a male-to-male jumper wire to connect the
+right-most hole (~Row 1) in the red (+) column (3.3V supply) to 3V3 on the back of the
+Launchpad (green).  
+ 
+Use a male-to-male jumper wire to connect the right-most hole in the blue (-) column (0V)
+to GND on the back of the Launchpad (blue).
+----------------Page (2) Break----------------
+Again, make sure none of your wires get in the way of the projector or light sensor. If they do,
+consider taping them down.
+Launchpad (MSP430) Setup
+Cory 140
+ 
+Cory 125
+----------------Page (3) Break----------------
+First, move everything into the cardboard box. For 125 Cory: If you are having trouble
+keeping the projector upright, really spread open the tripod legs. Feel free to put the
+breadboard and MSP anywhere in the box (on top of the projector, in front of the projector)
+as long as it does not get in the way of the projected image.  
+ 
+Feed a long Micro-USB cable (already connected to your computer on the USB-A end)
+through the hole in the box closest to the Launchpad's Micro-USB port. Plug it into
+the Launchpad's Micro-USB port. You can find the cable in the box for 140 Cory, and
+already attached to the computer in 125 Cory.  
+ 
+Open the AnalogReadSerial program in Energia (File > Open). This is a
+different Launchpad code from last week, and can be found in the Imaging Lab 2
+folder you downloaded. Upload the code by clicking on the Upload button (white
+circle with a right-pointing arrow, as shown below):  
+ 
+----------------Page (4) Break----------------
+ 
+To verify that the program is working, type a 6 into the serial monitor (accessed in
+Energia via Tools > Serial Monitor). You will need to set the Baud Rate to 
+115200. You should see a reading from the ambient light sensor appear. Take note of
+the highest and lowest values you can read.
+Note: If you're having any trouble connecting to your Launchpad, double check that the right
+board is selected via Tools > Board > MSP-EXP430F5529LP. Also double check that the right
+serial port is selected via Tools > Port > COM#. In order to upload code to the device, we have
+to select the serial port that the Launchpad is connected to. Use the *Windows Device Manager
+to figure out which COM port is connected to UART1.
+Projector Setup
+Cory 140
+----------------Page (5) Break----------------
+Cory 125
+Setup the projector with the following steps:
+Feed the Mini-HDMI cable and projector power cable through the box holes closest to
+corresponding projector ports (refer back to Launchpad Setup as reference) and
+connect them to the projector. The Mini-HDMI cable should already be plugged into the
+computer. You can likely find it on the computer or behind the monitor. The power adapter
+should be plugged into one of the outlets at the back of your workstation, behind your
+keyboard. In Cory 125, all the outlets may be used. Unplug the Soldering Iron (turquoise,
+shown below).
+----------------Page (6) Break----------------
+ 
+ 
+Turn on the projector by holding down the Power button (see the previous figure). 
+ 
+Find the Focus Adjustment wheel on the side of the projector to adjust the focus of the
+projection onto the box. Get it as close as possible; Cory 125 projectors will not have perfect
+focus. 
+ 
+Cory 140:
+ 
+ 
+Cory 125:
+----------------Page (7) Break----------------
+ 
+Using the left/right arrows on the Directional Pads, select HDMI on the projector's main
+menu. After a few seconds, you should see the Windows 10 desktop.  
+ 
+If you see the Windows 10 taskbar at the bottom of the projected screen, take the following
+precautions:
+1. Hit the Windows key and type Settings.
+2. Click on the Personalization icon.
+3. Click on Taskbar on the left side.
+4. Under the Multiple Displays section, turn Show taskbar on all displays off.  
+ 
+Use the Back button on the projector to return to displaying the main menu. 
+ 
+Use the left/right arrows to select the Settings option (gears icon). 
+ 
+ 
+ 
+Change the Picture Mode from Standard to User. 
+ 
+----------------Page (8) Break----------------
+IMPORTANT: Use the down arrow to move the cursor down to Contrast. Then use the right
+arrow to adjust the contrast to 100.  
+ 
+IMPORTANT: Move the cursor down to Brightness and use the left arrow to adjust the
+brightness to 0. 
+ 
+To Confirm the Selection, hit OK and exit the menu with the Back button. 
+ 
+Again, select HDMI on the projector's main menu and make sure that you see the Windows
+10 desktop on your projector.
+Your Hardware should now be properly setup!
+----------------Page (9) Break----------------
