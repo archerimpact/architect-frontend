@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import './style.css'
 
+import SearchBar from '../SearchBar/'
+
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -10,6 +12,9 @@ import * as server from '../../server/';
 
 class BackendSearch extends Component {
 
+  render() {
+    <SearchBar />
+  }
 }
 
 function mapDispatchToProps(dispatch) {
@@ -20,19 +25,8 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, props) {
-  if (state.data.savedEntities.status === 'isLoading' || state.data.savedSources.status === 'isLoading') {
-    return {
-      status: 'isLoading',
-      currentProject: state.data.currentProject
-    }
-  } else {
-    return {
-      status: 'isLoaded',
-      savedEntities: state.data.savedEntities,
-      projects: state.data.projects,
-      savedSources: state.data.savedSources,
-      currentProject: state.data.currentProject,
-    }
+  return {
+    
   }
 }
 

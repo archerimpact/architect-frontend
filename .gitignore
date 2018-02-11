@@ -5,6 +5,9 @@ backend/db.sqlite3
 *.DS_Store
 *.pyc
 __pycache__
+.idea/
 
 # Node Modules - run npm install locally instead
 frontend/node_modules
+backend/node_modules
+node_modules

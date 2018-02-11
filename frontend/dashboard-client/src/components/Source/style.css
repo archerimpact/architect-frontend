@@ -1,0 +1,17 @@
+.documentList {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.docCard {
+	position: relative;
+	margin-top: 30px;
+	margin-left: 20px;
+	margin-right: 20px;	
+}
+
+.search {
+	margin-top: 20px;
+	text-align: center;
+}
