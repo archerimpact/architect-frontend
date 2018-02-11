@@ -44,7 +44,7 @@ class EntityCard extends Component {
         }
         return (
             <div>
-                <span className="type"><Link to={"/source/"+vertex.entity.sources}><b>Source:</b></Link>{" " +docText15words}</span>
+              <span className="type"><Link replace to={"/source/"+vertex.entity.sources}><b>Source:</b></Link>{" " +docText15words}</span>
             </div>
         );
     }

@@ -1,5 +1,6 @@
 import { 
   ADD_LINK, 
+  USER_LOGIN,
   USER_LOGOUT, 
   ADD_ENTITY,
   REMOVE_ENTITY,
@@ -16,6 +17,7 @@ import {
 
 import * as server_utils from '../../server/utils';
 import * as server from '../../server/index.js';
+import { logoutAccount } from "../../server/auth_routes";
 
 export function addLink(link) {
 	return {
@@ -74,10 +76,10 @@ export function storeSources(sources){
 }
 
 export function addTag(entities, name, tag) {
-	let entity = entities.find(x => x.name === name)
-	const index = entities.indexOf(entity)
-	entities[index] = Object.assign({}, entities[index])
-	entities[index].tags = entities[index].tags.concat([tag])	
+	let entity = entities.find(x => x.name === name);
+	const index = entities.indexOf(entity);
+	entities[index] = Object.assign({}, entities[index]);
+	entities[index].tags = entities[index].tags.concat([tag]);
 	return {
 		type: ADD_TAG,
 		payload: entities
@@ -216,8 +218,8 @@ export function fetchProjectEntities(projectid) {
 //   }
 // }
 
-// //  For if you only want project sources and not suggested entities,
-// //     currently not being used.
+//  For if you only want project sources and not suggested entities,
+//     currently not being used.
     
 export function fetchProjectSources(projectid) {
   return function (dispatch, getState) {
@@ -292,8 +294,27 @@ export function storeVertices(vertices) {
 	};
 }
 
-export function logOutUser() {
+
+export function userLogIn() {
+  return {
+    type: USER_LOGIN,
+  };
+}
+
+export function userLogOutDispatch() {
 	return {
 		type: USER_LOGOUT,
 	};
+}
+
+export function userLogOut() {
+	return function (dispatch) {
+		return logoutAccount()
+			.then(res => {
+				dispatch(userLogOutDispatch());
+			})
+			.catch(err => {
+				console.log(err)
+			})
+	}
 }

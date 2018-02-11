@@ -9,7 +9,7 @@ import { List, ListItem} from 'material-ui/List';
 import {red500, blue500} from 'material-ui/styles/colors';
 import Folder from 'material-ui/svg-icons/file/folder';
 
-import {Tree, tree, cx, packageJSON} from 'react-ui-tree';
+//import {Tree, tree, cx, packageJSON} from 'react-ui-tree';
 
 import ProjectList from '../../containers/ProjectList/';
 //import './style.css'
@@ -20,7 +20,7 @@ import {Treebeard, decorators} from 'react-treebeard';
 import {StyleRoot} from 'radium';
 import PropTypes from 'prop-types';
 import * as filters from './filter';
-import data from './data';
+import data1 from './data';
 
 // const data = {
 //     name: 'root',
@@ -117,11 +117,45 @@ NodeViewer.propTypes = {
 };
 
 class NewHome extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+
+        const data = {
+            name: 'projects',
+            toggled: true,
+            children: this.projectList(this.props.projects)
+        }
 
         this.state = {data};
         this.onToggle = this.onToggle.bind(this);
+        this.projectList = this.projectList.bind(this);
+    }
+
+    projectList(projects) {
+        const projectItems = projects.map((project) => {
+            return ({
+                name: project.name,
+                children: [
+                    { name: 'canvas'},
+                    { name: 'sources'},
+                    { name: 'entities'}
+                ]
+            })
+        });
+        return projectItems;
+        // const projectItems = projects.map((project) => {
+        //   console.log("project: " + project)
+        //   return (
+        //   <Link to={"/project/" + project._id}>
+        //     <ListItem 
+        //       className="projectName" 
+        //       key={project._id} primaryText={project.name} 
+        //       leftIcon={<Folder color={blue500} hoverColor={red500}/>}
+        //     />
+        //   </Link>
+        //     );
+        //   });
+        // return projectItems;
     }
 
     onToggle(node, toggled) {
@@ -142,14 +176,22 @@ class NewHome extends React.Component {
     onFilterMouseUp(e) {
         const filter = e.target.value.trim();
         if (!filter) {
-            return this.setState({data});
+            //return this.setState({data});
+            return this.setState(this.state.data);
         }
-        var filtered = filters.filterTree(data, filter);
+        //var filtered = filters.filterTree(data, filter);
+        var filtered = filters.filterTree(this.state.data, filter);
         filtered = filters.expandFilteredNodes(filtered, filter);
         this.setState({data: filtered});
     }
 
     render() {
+        // const data = {
+        //     name: 'projects',
+        //     toggled: true,
+        //     children: this.projectList(this.props.projects)
+        // }
+
         const {data: stateData, cursor} = this.state;
 
         return (
@@ -186,10 +228,16 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state) {
-    return {
-        savedEntities: state.data.savedEntities,
-        savedSources: state.data.savedSources
-    };
+    if (state.data.savedProjects.status === 'isLoading') {
+        return {
+            status: state.data.savedProjects.status,
+            }
+    } else {
+        return {
+            status: state.data.savedProjects.status,
+            projects: state.data.savedProjects.projects,
+        }
+    }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewHome);

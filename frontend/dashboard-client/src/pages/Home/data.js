@@ -15,12 +15,12 @@ export default {
             ]
         },
         {
-            name: 'Project 2',
+            name: 'Project 2 Folder',
             loading: true,
             children: []
         },
         {
-            name: 'Project 3',
+            name: 'Project 3 Folder',
             children: [
                 {
                     name: 'components',
@@ -33,7 +33,7 @@ export default {
             ]
         },
         {
-            name: 'Project 4',
+            name: 'Project 4 Folder',
             children: [
                 { name: 'animations.js' },
                 { name: 'default.js' }

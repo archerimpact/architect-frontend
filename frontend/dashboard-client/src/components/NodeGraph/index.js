@@ -49,7 +49,6 @@ class NodeGraph extends Component {
 	createLinks(entities, documents) {
 		/* Iterates over all the entitiesa and documents and builds an 
 			array of all the links for the d3 simulation */
-
 		var documentLinks = [].concat.apply([], documents.map((document) => {
 			return this.sourceToLinks(document);
 		}));
