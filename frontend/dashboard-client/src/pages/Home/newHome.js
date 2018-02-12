@@ -9,85 +9,23 @@ import { List, ListItem} from 'material-ui/List';
 import {red500, blue500} from 'material-ui/styles/colors';
 import Folder from 'material-ui/svg-icons/file/folder';
 
-//import {Tree, tree, cx, packageJSON} from 'react-ui-tree';
-
 import ProjectList from '../../containers/ProjectList/';
-//import './style.css'
 import styles from './styleNew';
+import AddProject from '../../components/Project/addProject';
 
 import ReactDOM from 'react-dom';
 import {Treebeard, decorators} from 'react-treebeard';
 import {StyleRoot} from 'radium';
 import PropTypes from 'prop-types';
 import * as filters from './filter';
-import data1 from './data';
-
-// const data = {
-//     name: 'root',
-//     toggled: true,
-//     children: [
-//         {
-//             name: 'parent',
-//             children: [
-//                 { name: 'child1' },
-//                 { name: 'child2' }
-//             ]
-//         },
-//         {
-//             name: 'loading parent',
-//             loading: true,
-//             children: []
-//         },
-//         {
-//             name: 'parent',
-//             children: [
-//                 {
-//                     name: 'nested parent',
-//                     children: [
-//                         { name: 'nested child 1' },
-//                         { name: 'nested child 2' }
-//                     ]
-//                 }
-//             ]
-//         }
-//     ]
-// };
-
-// class NewHome extends React.Component {
-//     constructor(props){
-//         super(props);
-//         this.state = {};
-//         this.onToggle = this.onToggle.bind(this);
-//     }
-//     onToggle(node, toggled){
-//         if(this.state.cursor){this.state.cursor.active = false;}
-//         node.active = true;
-//         if(node.children){ node.toggled = toggled; }
-//         this.setState({ cursor: node });
-//     }
-//     render(){
-//         return (
-//             <div styles={styleNew.component}>
-//                 <Treebeard
-//                     data={data}
-//                     onToggle={this.onToggle}
-//                     decorators={decorators}/>
-//             </div>
-//         );
-//     }
-// }
 
 const HELP_MSG = 'Select A Node To See Its Data Structure Here...';
 
-// Example: Customising The Header Decorator To Include Icons
 decorators.Header = ({style, node}) => {
     const iconType = node.children ? 'folder' : 'file-text';
     const iconClass = `fa fa-${iconType}`;
     const iconStyle = {marginRight: '5px'};
     style.base.color = '#b8d3ed';
-    // style.base.backgroundcolor = '#b8d3ed'; does nothing
-    //style.title.backgroundcolor = '#57d163';
-    //node.color = '#57d163';
 
     return (
          <div style={style.base}>
@@ -129,7 +67,13 @@ class NewHome extends React.Component {
         this.state = {data};
         this.onToggle = this.onToggle.bind(this);
         this.projectList = this.projectList.bind(this);
+        this.addProject = this.addProject.bind(this);
     }
+
+    addProject(freshProject) {
+        server_utils.addProject(freshProject);
+        this.props.actions.fetchProjects();
+      }
 
     projectList(projects) {
         const projectItems = projects.map((project) => {
@@ -143,19 +87,6 @@ class NewHome extends React.Component {
             })
         });
         return projectItems;
-        // const projectItems = projects.map((project) => {
-        //   console.log("project: " + project)
-        //   return (
-        //   <Link to={"/project/" + project._id}>
-        //     <ListItem 
-        //       className="projectName" 
-        //       key={project._id} primaryText={project.name} 
-        //       leftIcon={<Folder color={blue500} hoverColor={red500}/>}
-        //     />
-        //   </Link>
-        //     );
-        //   });
-        // return projectItems;
     }
 
     onToggle(node, toggled) {
@@ -176,25 +107,19 @@ class NewHome extends React.Component {
     onFilterMouseUp(e) {
         const filter = e.target.value.trim();
         if (!filter) {
-            //return this.setState({data});
             return this.setState(this.state.data);
         }
-        //var filtered = filters.filterTree(data, filter);
         var filtered = filters.filterTree(this.state.data, filter);
         filtered = filters.expandFilteredNodes(filtered, filter);
         this.setState({data: filtered});
     }
 
     render() {
-        // const data = {
-        //     name: 'projects',
-        //     toggled: true,
-        //     children: this.projectList(this.props.projects)
-        // }
-
         const {data: stateData, cursor} = this.state;
 
         return (
+            <div>
+            <AddProject submit={(freshProject)=>this.addProject(freshProject)} />
             <StyleRoot>
                 <div style={styles.searchBox}>
                     <div className="input-group">
@@ -216,6 +141,7 @@ class NewHome extends React.Component {
                     <NodeViewer node={cursor}/>
                 </div>
             </StyleRoot>
+            </div>
         );
     }
 }
