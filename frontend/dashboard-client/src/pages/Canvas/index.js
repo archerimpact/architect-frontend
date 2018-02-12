@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import NodeGraph from '../../components/NodeGraph';
 import GraphContainer from './components/GraphContainer'
 
 import { Link } from 'react-router-dom';
@@ -11,12 +10,25 @@ import * as server from '../../server/';
 
 class Canvas extends Component {
 
-
+  componentDidMount = () => {
+    this.props.actions.fetchProject(this.props.match.params.id);
+    this.props.actions.fetchConnections(this.props.match.params.id);
+    this.props.actions.fetchVertices(this.props.match.params.id);
+  };
 
   render(){
-    return (
-
-    )
+    if (this.props.status==='isLoading') {
+      return (
+        <p>Loading...</p>
+      );
+    } else {
+      return (
+        <GraphContainer 
+          vertexes={this.props.savedVertexes.vertices} 
+          connections={this.props.savedConnections.connections} 
+        />
+      );
+    }
   }
 }
 
@@ -28,7 +40,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, props) {
-  if (state.data.savedEntities.status === 'isLoading' || state.data.savedSources.status === 'isLoading') {
+  if (state.data.savedVertices.status === 'isLoading' || state.data.savedConnections.status === 'isLoading') {
     return {
       status: 'isLoading',
       currentProject: state.data.currentProject
@@ -36,10 +48,9 @@ function mapStateToProps(state, props) {
   } else {
     return {
       status: 'isLoaded',
-      savedEntities: state.data.savedEntities,
-      projects: state.data.projects,
-      savedSources: state.data.savedSources,
+      savedVertexes: state.data.savedVertices,
       currentProject: state.data.currentProject,
+      savedConnections: state.data.savedConnections
     }
   }
 }
