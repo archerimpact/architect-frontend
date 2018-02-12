@@ -32,7 +32,7 @@ class Search extends Component {
         <input className="app_input" ref="query" type="text" onChange={(e) => this.updateSearch()}/>
         <button onClick={(e) => this.props.onSubmitSearch(this.state.searchQuery)}>Search</button>
       </div>
-    )
+    );
   }
 }
 export default Search

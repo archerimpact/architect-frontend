@@ -15,7 +15,7 @@ class EntitiesList extends Component {
           </div>
         )})}
       </div>
-    )
+    );
   }
 }
 

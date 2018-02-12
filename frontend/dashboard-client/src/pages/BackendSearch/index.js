@@ -27,7 +27,7 @@ class BackendSearch extends Component {
           <SearchBar onSubmitSearch={this.searchBackendText}/>
           <h3> Search Results </h3>
         </div>
-      )
+      );
     } else {
       return(
         <div>
@@ -35,7 +35,7 @@ class BackendSearch extends Component {
           <h3> Search Results </h3>
           <EntitiesList searchItems={this.props.savedSearchItems.searchItems} />
         </div>
-      )
+      );
     }
   }
 }
@@ -44,19 +44,19 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(actions, dispatch),
     dispatch: dispatch,
-  };
+  }
 }
 
 function mapStateToProps(state, props) {
   if (state.data.savedSearchItems.status==='isLoading'){
     return {
       status: 'isLoading'
-    };
+    }
   }else{ 
     return {
       savedSearchItems: state.data.savedSearchItems
-    };
-  };
+    }
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(BackendSearch);
