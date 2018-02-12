@@ -184,7 +184,6 @@ export function createConnection(connection) {
   }
 }
 
-/* TODO: finish creating a new graph */
 export function createGraph(projectid, entities, sources, connections) {
   return function (dispatch, getState) {
     return server.addGraph(projectid, entities, sources, connections)

@@ -339,6 +339,9 @@ app.post('/investigation/connection', function(req, res){
 })
 
 app.post('/investigation/project/graph', function(req, res){
+  /* creates a new graph object, also updates the project to include a reference to the graph
+   graphs contain entities, sources, and connections */
+
   var graph = {
     _id: new mongoose.Types.ObjectId,
     entities: req.body.entities,

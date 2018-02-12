@@ -5,7 +5,7 @@ import axios from 'axios';
 var qs = require('qs');
 
 export function submitText(title, text, projectid) {
-	var url ='http://localhost:8000/investigation/project/entityExtractor';
+	var url = configData.backend_url + '/investigation/project/entityExtractor';
 	var options = {
 		method: 'POST',
 		headers: {
@@ -66,7 +66,7 @@ export function getSuggestedEntities(projectid) {
 export function getSource(sourceid) {
   /* Gets sources related to a project. Server returns an object of objects containing all notes. */
 
-  var url ='http://localhost:8000/investigation/source';
+  var url = configData.backend_url + '/investigation/source';
 
   let newEntities = null;
   return new Promise(function(fulfill, reject) {
@@ -87,7 +87,7 @@ export function getSource(sourceid) {
 
 
 export function getProject(projectid) {
-  var url ='http://localhost:8000/investigation/project';
+  var url = configData.backend_url + '/investigation/project';
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
       params: {
@@ -107,7 +107,7 @@ export function getProject(projectid) {
 export function getProjectEntities(projectid) {
   /* Gets all entities related to a project. Server returns an object of objects containing all notes. */
 
-  var url ='http://localhost:8000/investigation/project/entities';
+  var url = configData.backend_url + '/investigation/project/entities';
 
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
@@ -132,7 +132,7 @@ export function getProjectEntities(projectid) {
 export function getProjectSources(projectid) {
   // Gets all entities related to a project. Server returns an object of objects containing all notes. 
 
-  var url ='http://localhost:8000/investigation/project/sources';
+  var url = configData.backend_url + '/investigation/project/sources';
 
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
@@ -150,7 +150,7 @@ export function getProjectSources(projectid) {
 }
 
 export function addEntity(name, type, sources, project) {
-    var url = 'http://localhost:8000/investigation/entity';
+    var url = configData.backend_url + '/investigation/entity';
     var options = {
         method: 'POST',
         headers: {
@@ -177,7 +177,7 @@ export function addEntity(name, type, sources, project) {
 }
 
 export function deleteEntity(entity, projectid) {
-  var url = 'http://localhost:8000/investigation/entity';
+  var url = configData.backend_url + '/investigation/entity';
 
   return new Promise(function(fulfill, reject) {
     axios.delete(url, {
@@ -196,7 +196,7 @@ export function deleteEntity(entity, projectid) {
 }
 
 export function deleteSuggestedEntity(suggestedEntity, sourceid) {
-  var url = 'http://localhost:8000/investigation/suggestedEntity';
+  var url = configData.backend_url + '/investigation/suggestedEntity';
 
   return new Promise(function(fulfill, reject) {
     axios.delete(url, {
@@ -215,7 +215,7 @@ export function deleteSuggestedEntity(suggestedEntity, sourceid) {
 }
 
 export function addConnection(idOne, idTwo, description, projectid) {
-    var url = 'http://localhost:8000/investigation/connection';
+    var url = configData.backend_url + '/investigation/connection';
     var options = {
         method: 'POST',
         headers: {
@@ -241,7 +241,7 @@ export function addConnection(idOne, idTwo, description, projectid) {
 }
 
 export function addGraph(projectid, entities, sources, connections) {
-    var url = 'http://localhost:8000/investigation/project/graph';
+    var url = configData.backend_url + '/investigation/project/graph';
     var options = {
         method: 'POST',
         headers: {
