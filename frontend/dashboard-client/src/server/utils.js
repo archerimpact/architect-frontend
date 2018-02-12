@@ -1,5 +1,6 @@
 import 'whatwg-fetch';
 import axios from 'axios';
+import { configData } from '../config.js';
 
 var qs = require('qs');
 
@@ -8,6 +9,8 @@ export function saveDocument(file, projectid) {
     data.append('file', file);
     data.append('projectid', projectid);
     var url = 'http://localhost:8000/investigation/pdf';
+    data.append('originalname', 'random_file_name');
+    var url = configData.backend_url + '/investigation/pdf';
     var options = {
         method: 'POST',
         body: data

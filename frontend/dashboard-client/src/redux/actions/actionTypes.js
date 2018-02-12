@@ -1,4 +1,5 @@
 export const ADD_LINK = 'ADD_LINK';
+export const USER_LOGIN = 'USER_LOGIN';
 export const USER_LOGOUT = 'USER_LOGOUT';
 export const ADD_ENTITY ='ADD_ENTITY';
 export const REMOVE_ENTITY ='REMOVE_ENTITY';

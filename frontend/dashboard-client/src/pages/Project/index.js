@@ -16,7 +16,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
 import * as server from '../../server/';
-
+import {withRouter} from 'react-router-dom';
 const tab_style = {
 	backgroundColor: '#fafafa',
 	color:'#747474'
@@ -106,4 +106,4 @@ function mapStateToProps(state, props) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectPage);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProjectPage));

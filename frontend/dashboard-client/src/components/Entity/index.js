@@ -38,14 +38,13 @@ class EntitiesList extends Component {
 					.map((entity, id) => {
 						return (
 							<div className="entityList" key={id}>
-          			<EntityCard 
-                  onCreateEntity={this.props.onCreateEntity} 
-
-                  onDeleteEntity={this.props.onDeleteEntity}
-                  onEntityClick={this.props.onEntityClick} 
-                  entity={entity} 
-                  getSource={this.props.getSource}
-                />
+			          			<EntityCard 
+				                  onCreateEntity={this.props.onCreateEntity} 
+				                  onDeleteEntity={this.props.onDeleteEntity}
+				                  onEntityClick={this.props.onEntityClick} 
+				                  entity={entity} 
+				                  getSource={this.props.getSource}
+				                />
 							</div>
 						);
 					})}

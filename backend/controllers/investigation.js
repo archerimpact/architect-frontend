@@ -226,23 +226,6 @@ app.post('/investigation/project', function(req, res) {
         })
 });
 
-app.get('/cloudfolder', function(req, res) {
-  /* Gets a project */
-  cloud.listFiles(bucket_name);
-  location = './files/' + '12345/empty.txt';// + '/';
-  //cloud.moveFile(bucket_name, 'a_pdf.pdf', 'folder/a_pdf.pdf');
-  // cloud.moveFile(bucket_name, 'empty.txt', 'folder/empty.txt');
-  // cloud.listFiles(bucket_name);
-  // cloud.uploadFile(bucket_name, location, function(error) {
-  //             if (error) {
-  //               throw error;
-  //             }
-  //             else {
-  //               console.log("worked");
-  //             }
-  //           })
-})
-
 app.get('/investigation/project', function(req, res) {
   /* Gets a project */
 
