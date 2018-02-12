@@ -268,3 +268,28 @@ export function searchBackendText(searchQuery) {
     })
   });
 }
+
+export function searchBackendNodes(neo4j_id){
+  var url = 'http://35.203.167.230:7474/db/data/cypher'
+  var query = {
+      headers: {  
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      json: { 
+        query: 'MATCH (node) WHERE ID(node)={neo4j_id} RETURN node',
+        params: {
+          neo4j_id: neo4j_id
+        }
+      }    
+    }
+  return new Promise(function(fulfill, reject) {
+    axios.post(url, JSON.stringify(query))
+    .then(function (response) {
+      fulfill(response.data);
+    })
+    .catch(function(error) {
+      console.log(error);
+    })
+  });
+}

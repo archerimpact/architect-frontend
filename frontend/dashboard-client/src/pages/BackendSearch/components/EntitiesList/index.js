@@ -11,6 +11,7 @@ class EntitiesList extends Component {
             <p>{"neo4j_id: " + item._source.neo4j_id} </p>
             <p>{"Name: " + item._source.name}</p>
             <p>{"Nationality: " + item._source.nationality} </p>
+            <button onClick={(e) => {this.props.onBackendNodeSearch(item._source.neo4j_id)}}>Get Neo4j</button>
             <br></br>
           </div>
         )})}

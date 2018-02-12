@@ -14,10 +14,15 @@ class BackendSearch extends Component {
   constructor(props) {
     super(props)
     this.searchBackendText = this.searchBackendText.bind(this);
+    this.searchBackendNodes = this.searchBackendNodes.bind(this);
   }
 
   searchBackendText(query){
     this.props.actions.searchBackendText(query)
+  }
+
+  searchBackendNodes(id){
+    this.props.actions.searchBackendNodes(id)
   }
 
   render() {
@@ -33,7 +38,10 @@ class BackendSearch extends Component {
         <div>
           <SearchBar onSubmitSearch={this.searchBackendText}/>
           <h3> Search Results </h3>
-          <EntitiesList searchItems={this.props.savedSearchItems.searchItems} />
+          <EntitiesList 
+            searchItems={this.props.savedSearchItems.searchItems} 
+            onBackendNodeSearch={this.searchBackendNodes} 
+          />
         </div>
       )
     }

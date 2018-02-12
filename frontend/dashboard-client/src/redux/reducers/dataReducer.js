@@ -1,4 +1,19 @@
-import { ADD_LINK, ADD_ENTITY, REMOVE_ENTITY, REMOVE_SUGGESTED_ENTITY, ADD_TAG, STORE_ENTITIES, STORE_PENDING_ENTITIES, STORE_SOURCES, STORE_PROJECTS, CURRENT_PROJECT, STORE_VERTICES, USER_LOGIN, USER_LOGOUT, STORE_SEARCH_ITEMS} from '../actions/actionTypes';
+import { 
+  ADD_LINK, 
+  ADD_ENTITY, 
+  REMOVE_ENTITY, 
+  REMOVE_SUGGESTED_ENTITY, 
+  ADD_TAG, STORE_ENTITIES, 
+  STORE_PENDING_ENTITIES, 
+  STORE_SOURCES, 
+  STORE_PROJECTS, 
+  CURRENT_PROJECT, 
+  STORE_VERTICES, 
+  USER_LOGIN, 
+  USER_LOGOUT, 
+  STORE_SEARCH_ITEMS,
+  STORE_ARCHER_NODE
+} from '../actions/actionTypes';
 import initialState from './initialState';
 
 export default function (state = initialState, action) {
@@ -130,13 +145,22 @@ export default function (state = initialState, action) {
         ...state,
         currentProject: action.payload
       }
-      case STORE_SEARCH_ITEMS:
+    case STORE_SEARCH_ITEMS:
       return {
         ...state,
         savedSearchItems: {
           ...state.savedSearchItems,
           status: 'isLoaded',
           searchItems: action.payload
+        }
+      }
+    case STORE_ARCHER_NODE:
+      return {
+        ...state,
+        savedArcherNodes: {
+          ...state.savedArcherNodes,
+          status: 'isLoaded',
+          nodes: state.savedArcherNodes.nodes.concat(action.payload)
         }
       }
 		default:
