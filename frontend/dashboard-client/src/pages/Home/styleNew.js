@@ -9,7 +9,7 @@ export default {
         '@media (max-width: 640px)': {
             width: '100%',
             display: 'block'
-        },,
+        },
     },
     searchBox: {
         padding: '20px 20px 0 20px'
