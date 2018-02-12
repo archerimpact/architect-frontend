@@ -253,7 +253,6 @@ export function searchBackendText(searchQuery) {
       }
     }
   } 
-
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
         params: {
@@ -261,9 +260,8 @@ export function searchBackendText(searchQuery) {
         source_content_type: 'application/json'
       }
     })
-    .then(function (documents) {
-      console.log(documents.data.hits)
-      fulfill(documents.data);
+    .then(function (response) {
+      fulfill(response.data);
     })
     .catch(function(error) {
       console.log(error);

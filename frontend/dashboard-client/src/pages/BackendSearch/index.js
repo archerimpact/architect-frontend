@@ -25,14 +25,14 @@ class BackendSearch extends Component {
       return(
         <div>
           <SearchBar onSubmitSearch={this.searchBackendText}/>
-          <h3> HELLO WORLDS </h3>
+          <h3> Search Results </h3>
         </div>
       )
     } else {
       return(
         <div>
           <SearchBar onSubmitSearch={this.searchBackendText}/>
-          <h3> HELLO WORLDS </h3>
+          <h3> Search Results </h3>
           <EntitiesList searchItems={this.props.savedSearchItems.searchItems} />
         </div>
       )
