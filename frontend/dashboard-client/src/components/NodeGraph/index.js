@@ -146,12 +146,10 @@ class NodeGraph extends Component {
 		/*if (typeof(sources[0]) === "undefined") {
 			sources = [];
 		};*/
-		const dataNodes = nodes;
-		const linkNodes = links;
-		
+    
 		const data = {
-			"nodes": dataNodes,
-			"links": linkNodes
+			"nodes": nodes,
+			"links": links
 		};
     
 		const width = 1000;
