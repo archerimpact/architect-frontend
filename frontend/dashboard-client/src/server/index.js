@@ -240,3 +240,33 @@ export function addConnection(idOne, idTwo, description, project) {
       });
     });
 }
+
+export function searchBackendText(searchQuery) {
+  var url = 'http://35.197.34.74:9200/_search';
+  var query = {
+    query: {
+      fuzzy: {
+        "name": {
+          value: searchQuery,
+          fuzziness: 2
+        }
+      }
+    }
+  } 
+
+  return new Promise(function(fulfill, reject) {
+    axios.get(url, {
+        params: {
+        source: JSON.stringify(query),
+        source_content_type: 'application/json'
+      }
+    })
+    .then(function (documents) {
+      console.log(documents.data.hits)
+      fulfill(documents.data);
+    })
+    .catch(function(error) {
+      console.log(error);
+    })
+  });
+}

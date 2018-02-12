@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 
-import './style.css'
-
-import SearchBar from '../SearchBar/'
+import SearchBar from './components/SearchBar/'
+import EntitiesList from './components/EntitiesList/'
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -12,8 +11,32 @@ import * as server from '../../server/';
 
 class BackendSearch extends Component {
 
+  constructor(props) {
+    super(props)
+    this.searchBackendText = this.searchBackendText.bind(this);
+  }
+
+  searchBackendText(query){
+    this.props.actions.searchBackendText(query)
+  }
+
   render() {
-    <SearchBar />
+    if (this.props.status === 'isLoading'){
+      return(
+        <div>
+          <SearchBar onSubmitSearch={this.searchBackendText}/>
+          <h3> HELLO WORLDS </h3>
+        </div>
+      )
+    } else {
+      return(
+        <div>
+          <SearchBar onSubmitSearch={this.searchBackendText}/>
+          <h3> HELLO WORLDS </h3>
+          <EntitiesList searchItems={this.props.savedSearchItems.searchItems} />
+        </div>
+      )
+    }
   }
 }
 
@@ -25,8 +48,14 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, props) {
-  return {
-    
+  if (state.data.savedSearchItems.status==='isLoading'){
+    return {
+      status: 'isLoading'
+    }
+  }else{ 
+    return {
+      savedSearchItems: state.data.savedSearchItems
+    }
   }
 }
 

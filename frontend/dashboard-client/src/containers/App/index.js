@@ -7,6 +7,7 @@ import Login from '../../components/Login/loginPage.js'
 import Home from '../../pages/Home/';
 import Project from '../../pages/Project/';
 import Source from '../../pages/Source/';
+import BackendSearch from '../../pages/BackendSearch/';
 import PrivateRoute from '../Login/PrivateRoute';
 import NavBar from '../../components/NavBar/';
 import CreateAccount from "../../components/Login/createAccount";
@@ -35,7 +36,9 @@ class App extends Component {
                     <Route path="/create_account" component={CreateAccount} />
     				<PrivateRoute path="/project/:id" component={Project} />				    		
     				<PrivateRoute path="/source/:id" component={Source}/>
+            <PrivateRoute path="/backendsearch" component={BackendSearch} />
 				</Switch>
+      
         	</div>
         );
     }
