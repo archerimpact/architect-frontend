@@ -53,7 +53,6 @@ class ProjectPage extends Component {
   						<Tab label="Workspace" type="default" style={tab_style}>
   							<div className="graph-canvas">
   								<Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
-  									<NodeGraph entities={this.props.savedEntities.entities} sources={this.props.savedSources.documents}/>
   								</Paper>
 
   							</div>
