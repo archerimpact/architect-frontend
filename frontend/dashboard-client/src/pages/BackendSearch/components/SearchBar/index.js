@@ -9,6 +9,8 @@ class Search extends Component {
     this.state = {
       searchQuery: ''
     };
+    this.search = this.search.bind(this);
+    this.updateSearch = this.updateSearch.bind(this);
   }
   
   componentWillMount() {
@@ -16,7 +18,7 @@ class Search extends Component {
   }
   
   search( query = '' ) {
-    this.setState({searchQuery: query})
+    this.setState({searchQuery: query});
   }
   
   updateSearch() {
@@ -27,7 +29,7 @@ class Search extends Component {
   render (){
     return(
       <div className="searchBody">
-        <input className="app_input" ref="query" type="text" onChange={ (e) => this.updateSearch() }/>
+        <input className="app_input" ref="query" type="text" onChange={(e) => this.updateSearch()}/>
         <button onClick={(e) => this.props.onSubmitSearch(this.state.searchQuery)}>Search</button>
       </div>
     )

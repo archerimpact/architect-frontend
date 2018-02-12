@@ -17,7 +17,7 @@ class BackendSearch extends Component {
   }
 
   searchBackendText(query){
-    this.props.actions.searchBackendText(query)
+    this.props.actions.searchBackendText(query);
   }
 
   render() {
@@ -51,12 +51,12 @@ function mapStateToProps(state, props) {
   if (state.data.savedSearchItems.status==='isLoading'){
     return {
       status: 'isLoading'
-    }
+    };
   }else{ 
     return {
       savedSearchItems: state.data.savedSearchItems
-    }
-  }
+    };
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(BackendSearch);
