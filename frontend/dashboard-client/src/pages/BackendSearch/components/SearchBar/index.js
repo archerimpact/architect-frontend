@@ -17,7 +17,6 @@ class Search extends Component {
   
   search( query = '' ) {
     this.setState({searchQuery: query})
-    console.log(this.state.searchQuery);
   }
   
   updateSearch() {
@@ -27,7 +26,7 @@ class Search extends Component {
 
   render (){
     return(
-      <div>
+      <div className="searchBody">
         <input className="app_input" ref="query" type="text" onChange={ (e) => this.updateSearch() }/>
         <button onClick={(e) => this.props.onSubmitSearch(this.state.searchQuery)}>Search</button>
       </div>

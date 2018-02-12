@@ -245,9 +245,9 @@ export function searchBackendText(searchQuery) {
   var url = 'http://35.197.34.74:9200/_search';
   var query = {
     query: {
-      fuzzy: {
+      match: {
         "name": {
-          value: searchQuery,
+          query: searchQuery,
           fuzziness: 2
         }
       }
