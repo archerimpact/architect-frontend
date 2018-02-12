@@ -2,6 +2,10 @@ import 'whatwg-fetch';
 import { configData } from '../config.js';
 import axios from 'axios';
 
+import neo4j from "neo4j-driver/lib/browser/neo4j-web";
+var driver = neo4j.driver("bolt://35.203.167.230:7474")
+var session = driver.session();
+
 var qs = require('qs');
 
 export function submitText(title, text, projectid) {
@@ -270,7 +274,19 @@ export function searchBackendText(searchQuery) {
 }
 
 export function searchBackendNodes(neo4j_id){
-  var url = 'http://35.203.167.230:7474/db/data/cypher'
+  debugger
+  session
+  .run('MATCH (node) WHERE ID(node)={neo4j_id} RETURN node', {neo4j_id: neo4j_id})
+  .then(function (result) {
+    result.records.forEach(function (record) {
+      console.log(record.get('name'));
+    });
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+
+  /*var url = 'http://35.203.167.230:7474/db/data/cypher'
   var query = {
       headers: {  
         'Content-Type': 'application/json',
@@ -291,5 +307,5 @@ export function searchBackendNodes(neo4j_id){
     .catch(function(error) {
       console.log(error);
     })
-  });
+  }); */
 }
