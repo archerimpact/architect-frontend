@@ -146,7 +146,7 @@ class NodeGraph extends Component {
 		/*if (typeof(sources[0]) === "undefined") {
 			sources = [];
 		};*/
-    
+		
 		const data = {
 			"nodes": nodes,
 			"links": links
@@ -159,7 +159,7 @@ class NodeGraph extends Component {
 			.force("center", d3.forceCenter(width/2, height/2))
 			.force("charge", d3.forceManyBody())
       //.force("collide", d3.forceCollide((d) => this.getCollide(d)))
-			.force("link", d3.forceLink(linkNodes).id(function(d) { return d._id; }));
+			.force("link", d3.forceLink(data.links).id(function(d) { return d._id; }));
 
 		const svg = d3.select(this.refs.mountPoint)
 			.append('svg')
