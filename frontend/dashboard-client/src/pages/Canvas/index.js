@@ -11,7 +11,6 @@ import * as server from '../../server/';
 class Canvas extends Component {
 
   componentDidMount = () => {
-    this.props.actions.fetchProject(this.props.match.params.id);
     this.props.actions.fetchConnections(this.props.match.params.id);
     this.props.actions.fetchVertices(this.props.match.params.id);
   };
@@ -24,8 +23,8 @@ class Canvas extends Component {
     } else {
       return (
         <GraphContainer 
-          vertexes={this.props.savedVertexes.vertices} 
-          connections={this.props.savedConnections.connections} 
+          vertexes={this.props.savedVertexes.vertices.slice()} 
+          connections={this.props.savedConnections.connections.slice()} 
         />
       );
     }
@@ -43,13 +42,11 @@ function mapStateToProps(state, props) {
   if (state.data.savedVertices.status === 'isLoading' || state.data.savedConnections.status === 'isLoading') {
     return {
       status: 'isLoading',
-      currentProject: state.data.currentProject
     }
   } else {
     return {
       status: 'isLoaded',
       savedVertexes: state.data.savedVertices,
-      currentProject: state.data.currentProject,
       savedConnections: state.data.savedConnections
     }
   }

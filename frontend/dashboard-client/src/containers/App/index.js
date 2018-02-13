@@ -10,6 +10,7 @@ import Home from '../../pages/Home/';
 import Project from '../../pages/Project/';
 import Source from '../../pages/Source/';
 import Canvas from '../../pages/Canvas/';
+import BackendSearch from '../../pages/BackendSearch/';
 
 import PrivateRoute from '../Login/PrivateRoute';
 import NavBar from '../../components/NavBar/';
@@ -40,7 +41,9 @@ class App extends Component {
     				<PrivateRoute path="/project/:id" component={Project} />				    		
     				<PrivateRoute path="/source/:id" component={Source}/>
             <PrivateRoute path="/projectcanvas/:id" component={Canvas}/>
+            <PrivateRoute path="/backendsearch" component={BackendSearch} />
 				</Switch>
+      
         	</div>
         );
     }

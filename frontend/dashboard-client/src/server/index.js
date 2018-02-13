@@ -265,3 +265,31 @@ export function addGraph(projectid, entities, sources, connections) {
       });
     });
 }
+
+export function searchBackendText(searchQuery) {
+  var url = 'http://35.197.34.74:9200/_search';
+  var query = {
+    query: {
+      match: {
+        "name": {
+          query: searchQuery,
+          fuzziness: 2
+        }
+      }
+    }
+  } 
+  return new Promise(function(fulfill, reject) {
+    axios.get(url, {
+        params: {
+        source: JSON.stringify(query),
+        source_content_type: 'application/json'
+      }
+    })
+    .then(function (response) {
+      fulfill(response.data);
+    })
+    .catch(function(error) {
+      console.log(error);
+    })
+  });
+}

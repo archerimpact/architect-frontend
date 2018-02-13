@@ -12,7 +12,8 @@ class GraphContainer extends Component {
   }
 
   getLinks(connections) {
-    var links = connections.map((connection)=> {
+    var newconnections = connections.slice();
+    var links = newconnections.map((connection)=> {
       return({"source": connection.vertices[0], "target": connection.vertices[1]})
     });
     return links;
