@@ -154,7 +154,7 @@ class NodeGraph extends Component {
     
 		const width = 1000;
 		const height = 700;
-
+    
 		const simulation = d3.forceSimulation(data.nodes)
 			.force("center", d3.forceCenter(width/2, height/2))
 			.force("charge", d3.forceManyBody())
