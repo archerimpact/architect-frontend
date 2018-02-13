@@ -14,29 +14,27 @@ class BackendSearch extends Component {
   constructor(props) {
     super(props)
     this.searchBackendText = this.searchBackendText.bind(this);
+    this.state={
+      searchData: null
+    }
   }
 
   searchBackendText(query){
-    this.props.actions.searchBackendText(query);
+    server.searchBackendText(query)
+      .then((data)=>{
+        this.setState({searchData: data.hits.hits})
+      })
+      .catch((error) => {console.log(error)});
   }
 
   render() {
-    if (this.props.status === 'isLoading'){
-      return(
-        <div>
-          <SearchBar onSubmitSearch={this.searchBackendText}/>
-          <h3> Search Results </h3>
-        </div>
-      );
-    } else {
-      return(
-        <div>
-          <SearchBar onSubmitSearch={this.searchBackendText}/>
-          <h3> Search Results </h3>
-          <EntitiesList searchItems={this.props.savedSearchItems.searchItems} />
-        </div>
-      );
-    }
+    return(
+      <div>
+        <SearchBar onSubmitSearch={this.searchBackendText}/>
+        <h3> Search Results </h3>
+        <EntitiesList searchItems={this.state.searchData} />
+      </div>
+    );
   }
 }
 
@@ -48,14 +46,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, props) {
-  if (state.data.savedSearchItems.status==='isLoading'){
-    return {
-      status: 'isLoading'
-    }
-  }else{ 
-    return {
-      savedSearchItems: state.data.savedSearchItems
-    }
+  return{
   }
 }
 

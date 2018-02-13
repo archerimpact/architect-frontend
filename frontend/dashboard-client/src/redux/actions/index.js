@@ -319,22 +319,3 @@ export function userLogOut() {
 			})
 	}
 }
-
-export function searchBackendText(query){
-  return function (dispatch) {
-    return server.searchBackendText(query)
-      .then(res => {
-        dispatch(storeSearchItems(res.hits.hits));
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-}
-
-export function storeSearchItems(items){
-  return{
-    type: STORE_SEARCH_ITEMS,
-    payload: items
-  }
-}
