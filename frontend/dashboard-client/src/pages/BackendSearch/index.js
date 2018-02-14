@@ -22,7 +22,13 @@ class BackendSearch extends Component {
   }
 
   searchBackendNodes(id){
-    this.props.actions.searchBackendNodes(id)
+    server.searchBackendNodes(id)
+      .then(res => {
+        dispatch(storeArcherNode(res));
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   render() {

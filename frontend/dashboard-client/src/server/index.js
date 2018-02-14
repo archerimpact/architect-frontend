@@ -5,7 +5,7 @@ import axios from 'axios';
 import neo4j from "neo4j-driver/lib/browser/neo4j-web";
 //var neo4j = require('neo4j-driver').v1;
 
-var driver = neo4j.driver("bolt://35.203.167.230:7474", neo4j.auth.basic('neo4j','neo4j'),
+var driver = neo4j.driver("bolt://35.203.167.230:7474", neo4j.auth.basic('user','password'),
   {
   encrypted: 'ENCRYPTION_OFF'
   }
@@ -279,8 +279,7 @@ export function searchBackendText(searchQuery) {
 }
 
 export function searchBackendNodes(neo4j_id){
-  debugger
-  return new Promise(function(fulfill, reject) {
+/*  return new Promise(function(fulfill, reject) {
     var session = driver.session();
     session
       .run('MATCH (node) WHERE ID(node)={neo4j_id} RETURN node', {'neo4j_id': neo4j_id})
@@ -293,28 +292,29 @@ export function searchBackendNodes(neo4j_id){
       .catch(function (error) {
         console.log(error);
       });
-  })
+  })*/
 
-  /*var url = 'http://35.203.167.230:7474/db/data/cypher'
-  var query = {
-      headers: {  
+  var url = 'http://35.203.167.230:7474/db/data/cypher'
+  var headers = {
+      headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json'
-      },
-      json: { 
+      }
+    };
+  var data = {
         query: 'MATCH (node) WHERE ID(node)={neo4j_id} RETURN node',
         params: {
           neo4j_id: neo4j_id
-        }
-      }    
-    }
+      }   
+  }
   return new Promise(function(fulfill, reject) {
-    axios.post(url, JSON.stringify(query))
+    axios.post(url, data, headers)
     .then(function (response) {
-      fulfill(response.data);
+      debugger
+      fulfill(response.data.data[0]);
     })
     .catch(function(error) {
       console.log(error);
     })
-  }); */
+  }); 
 }
