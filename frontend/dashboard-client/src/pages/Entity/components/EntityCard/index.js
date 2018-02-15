@@ -34,7 +34,7 @@ class EntityCard extends Component {
             </div>
           </div>
           <i>Company</i>
-          <div idName="identifyingInfo">
+          <div className="identifyingInfo">
             <div>{this.props.nodeItem.data.nationality} </div>
             <div className="info">{"Jurisdiction: " + this.props.nodeItem.data.jurisdiction}</div>
             <div className="info">{"Date Created: " + this.props.nodeItem.data.date_of_creation}</div>

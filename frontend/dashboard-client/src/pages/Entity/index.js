@@ -25,7 +25,6 @@ class Entity extends Component {
   componentDidMount = () => {
     server.getBackendNode(this.props.match.params.neo4j_id)
       .then(data => {
-        debugger
         this.setState({nodeData: data[0]})
       })
       .catch(err => {
