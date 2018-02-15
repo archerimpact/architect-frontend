@@ -2,14 +2,16 @@ import 'whatwg-fetch';
 import { configData } from '../config.js';
 import axios from 'axios';
 
+/* Neo4j driver code not in use
+
 import neo4j from "neo4j-driver/lib/browser/neo4j-web";
-//var neo4j = require('neo4j-driver').v1;
+var neo4j = require('neo4j-driver').v1;
 
 var driver = neo4j.driver("bolt://35.203.167.230:7474", neo4j.auth.basic('user','password'),
   {
   encrypted: 'ENCRYPTION_OFF'
   }
-);
+);*/
 
 var qs = require('qs');
 
@@ -281,21 +283,6 @@ export function searchBackendText(searchQuery) {
 export function getBackendNode(neo4j_id){
     /* retrieves the corresponding neo4j nodes of one id */
 
-/*  return new Promise(function(fulfill, reject) {
-    var session = driver.session();
-    session
-      .run('MATCH (node) WHERE ID(node)={neo4j_id} RETURN node', {'neo4j_id': neo4j_id})
-      .then(function (result) {
-        debugger
-        result.records.forEach(function (record) {
-          console.log(record.get('name'));
-        });
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  })*/
-
   var url = 'http://35.203.167.230:7474/db/data/cypher'
   var headers = {
     headers: {
@@ -322,7 +309,6 @@ export function getBackendNode(neo4j_id){
 
 export function getBackendNodes(neo4j_ids){ 
   /* retrieves the corresponding neo4j nodes of a list of ids */
-  console.log("type of this neo4j_id" + typeof(neo4j_ids[0]))
 
   var url = 'http://35.203.167.230:7474/db/data/cypher'
   var headers = {
@@ -365,7 +351,6 @@ export function getNodeRelationships(neo4j_id){
   return new Promise(function(fulfill, reject) {
     axios.post(url, data, headers)
     .then(function (response) {
-      debugger
       fulfill(response.data.data);
     })
     .catch(function(error) {
