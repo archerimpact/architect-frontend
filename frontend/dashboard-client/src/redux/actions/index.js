@@ -13,8 +13,6 @@ import {
   CURRENT_PROJECT,
   STORE_VERTICES,
   ADD_CONNECTION,
-  STORE_SEARCH_ITEMS,
-  STORE_ARCHER_NODE
   } from './actionTypes';
 
 import * as server_utils from '../../server/utils';
@@ -319,42 +317,4 @@ export function userLogOut() {
 				console.log(err)
 			})
 	}
-}
-
-export function searchBackendText(query){
-  return function (dispatch) {
-    return server.searchBackendText(query)
-      .then(res => {
-        dispatch(storeSearchItems(res.hits.hits));
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-}
-
-export function storeSearchItems(items){
-  return{
-    type: STORE_SEARCH_ITEMS,
-    payload: items
-  }
-}
-
-export function searchBackendNodes(id){
-  return function (dispatch) {
-    return server.searchBackendNodes(id)
-      .then(res => {
-        dispatch(storeArcherNode(res));
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-}
-
-export function storeArcherNode(node){
-  return{
-    type: STORE_ARCHER_NODE,
-    payload: node
-  }
 }

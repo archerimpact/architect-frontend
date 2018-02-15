@@ -30,10 +30,6 @@ export default {
 		status: 'isLoading',
 		vertices: []
 	},
-  savedSearchItems:{
-    status:'isLoading',
-    searchItems: []
-  },
 	entityTypes: ["Company", "Person", "Location"],
 	entityNames: ["Alice Ma", "Daryus Medora", "Angelina Wang"],
 	projects: [

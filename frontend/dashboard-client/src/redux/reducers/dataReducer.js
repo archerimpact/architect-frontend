@@ -11,9 +11,8 @@ import {
   STORE_VERTICES, 
   USER_LOGIN, 
   USER_LOGOUT, 
-  STORE_SEARCH_ITEMS,
-  STORE_ARCHER_NODE
 } from '../actions/actionTypes';
+
 import initialState from './initialState';
 
 export default function (state = initialState, action) {
@@ -144,24 +143,6 @@ export default function (state = initialState, action) {
       return {
         ...state,
         currentProject: action.payload
-      }
-    case STORE_SEARCH_ITEMS:
-      return {
-        ...state,
-        savedSearchItems: {
-          ...state.savedSearchItems,
-          status: 'isLoaded',
-          searchItems: action.payload
-        }
-      }
-    case STORE_ARCHER_NODE:
-      return {
-        ...state,
-        savedArcherNodes: {
-          ...state.savedArcherNodes,
-          status: 'isLoaded',
-          nodes: state.savedArcherNodes.nodes.concat(action.payload)
-        }
       }
 		default:
 			return state;

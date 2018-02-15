@@ -15,16 +15,29 @@ class BackendSearch extends Component {
     super(props)
     this.searchBackendText = this.searchBackendText.bind(this);
     this.searchBackendNodes = this.searchBackendNodes.bind(this);
+    this.state={
+      searchData: null,
+      nodesData: null
+    }
   }
 
   searchBackendText(query){
-    this.props.actions.searchBackendText(query)
+    var that = this;
+    server.searchBackendText(query)
+      .then((data)=>{
+        this.setState({searchData: data.hits.hits, nodesData: null})
+        var ids = data.hits.hits.map((item) => {
+          return item._source.neo4j_id
+        })
+        that.searchBackendNodes(ids)
+      })
+      .catch((error) => {console.log(error)});
   }
 
-  searchBackendNodes(id){
-    server.searchBackendNodes(id)
-      .then(res => {
-        dispatch(storeArcherNode(res));
+  searchBackendNodes(idsArray){
+    server.getBackendNodes(idsArray)
+      .then(data => {
+        this.setState({nodesData: data})
       })
       .catch(err => {
         console.log(err)
@@ -32,25 +45,13 @@ class BackendSearch extends Component {
   }
 
   render() {
-    if (this.props.status === 'isLoading'){
-      return(
-        <div>
-          <SearchBar onSubmitSearch={this.searchBackendText}/>
-          <h3> Search Results </h3>
-        </div>
-      )
-    } else {
-      return(
-        <div>
-          <SearchBar onSubmitSearch={this.searchBackendText}/>
-          <h3> Search Results </h3>
-          <EntitiesList 
-            searchItems={this.props.savedSearchItems.searchItems} 
-            onBackendNodeSearch={this.searchBackendNodes} 
-          />
-        </div>
-      )
-    }
+    return(
+      <div>
+        <SearchBar onSubmitSearch={this.searchBackendText}/>
+        <h3> Search Results </h3>
+        <EntitiesList searchItems={this.state.searchData} nodeItems={this.state.nodesData}/>
+      </div>
+    );
   }
 }
 
@@ -58,18 +59,11 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(actions, dispatch),
     dispatch: dispatch,
-  };
+  }
 }
 
 function mapStateToProps(state, props) {
-  if (state.data.savedSearchItems.status==='isLoading'){
-    return {
-      status: 'isLoading'
-    }
-  }else{ 
-    return {
-      savedSearchItems: state.data.savedSearchItems
-    }
+  return{
   }
 }
 

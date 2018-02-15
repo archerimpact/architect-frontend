@@ -1,22 +1,37 @@
 import React, { Component } from 'react';
 
+import EntityCard from '../EntityCard'
+
 class EntitiesList extends Component {
 
+  constructor(props){
+    super(props);
+  }
+
   render() {
-    return(
-      <div>
-        {this.props.searchItems.map((item)=> {return(
-          <div>
-            <p>{"elastic_id: " + item._id}</p>
-            <p>{"neo4j_id: " + item._source.neo4j_id} </p>
-            <p>{"Name: " + item._source.name}</p>
-            <p>{"Nationality: " + item._source.nationality} </p>
-            <button onClick={(e) => {this.props.onBackendNodeSearch(item._source.neo4j_id)}}>Get Neo4j</button>
-            <br></br>
-          </div>
-        )})}
-      </div>
-    )
+    if (this.props.searchItems == null || this.props.nodeItems==null){
+      return (
+        <div></div>
+      )
+    }else {
+      return(
+        <div>
+          {this.props.searchItems.map((item)=> {
+            return(
+              <EntityCard 
+                searchItem={item} 
+                nodeItem={this.props.nodeItems.find((element) => {
+                  if (typeof(element)=== 'undefined') {
+                    return null
+                  } else {
+                    return element[0].metadata.id===item._source.neo4j_id}
+                  }
+                )} 
+              />
+          )})}
+        </div>
+      );
+    }
   }
 }
 

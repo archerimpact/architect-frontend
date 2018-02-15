@@ -278,7 +278,9 @@ export function searchBackendText(searchQuery) {
   });
 }
 
-export function searchBackendNodes(neo4j_id){
+export function getBackendNode(neo4j_id){
+    /* retrieves the corresponding neo4j nodes of one id */
+
 /*  return new Promise(function(fulfill, reject) {
     var session = driver.session();
     session
@@ -310,8 +312,34 @@ export function searchBackendNodes(neo4j_id){
   return new Promise(function(fulfill, reject) {
     axios.post(url, data, headers)
     .then(function (response) {
-      debugger
       fulfill(response.data.data[0]);
+    })
+    .catch(function(error) {
+      console.log(error);
+    })
+  }); 
+}
+
+export function getBackendNodes(neo4j_ids){ 
+  /* retrieves the corresponding neo4j nodes of a list of ids */
+
+  var url = 'http://35.203.167.230:7474/db/data/cypher'
+  var headers = {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      }
+    };
+  var data = {
+        query: 'MATCH (node) WHERE ID(node) in {neo4j_ids} RETURN node',
+        params: {
+          neo4j_ids: neo4j_ids
+      }   
+  }
+  return new Promise(function(fulfill, reject) {
+    axios.post(url, data, headers)
+    .then(function (response) {
+      fulfill(response.data.data);
     })
     .catch(function(error) {
       console.log(error);
