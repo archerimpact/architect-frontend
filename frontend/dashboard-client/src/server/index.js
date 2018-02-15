@@ -298,21 +298,21 @@ export function getBackendNode(neo4j_id){
 
   var url = 'http://35.203.167.230:7474/db/data/cypher'
   var headers = {
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      }
-    };
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    }
+  };
   var data = {
-        query: 'MATCH (node) WHERE ID(node)={neo4j_id} RETURN node',
-        params: {
-          neo4j_id: neo4j_id
-      }   
+    "query" : "MATCH (node) WHERE ID(node)={neo4j_id} RETURN node",
+    params: {
+      neo4j_id: parseInt(neo4j_id)
+    }   
   }
   return new Promise(function(fulfill, reject) {
     axios.post(url, data, headers)
     .then(function (response) {
-      fulfill(response.data.data[0]);
+      fulfill(response.data.data);
     })
     .catch(function(error) {
       console.log(error);
@@ -322,23 +322,50 @@ export function getBackendNode(neo4j_id){
 
 export function getBackendNodes(neo4j_ids){ 
   /* retrieves the corresponding neo4j nodes of a list of ids */
+  console.log("type of this neo4j_id" + typeof(neo4j_ids[0]))
 
   var url = 'http://35.203.167.230:7474/db/data/cypher'
   var headers = {
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      }
-    };
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    }
+  };
   var data = {
-        query: 'MATCH (node) WHERE ID(node) in {neo4j_ids} RETURN node',
-        params: {
-          neo4j_ids: neo4j_ids
-      }   
+    query: 'MATCH (node) WHERE ID(node) in {neo4j_ids} RETURN node',
+    params: {
+      neo4j_ids: neo4j_ids
+    }   
   }
   return new Promise(function(fulfill, reject) {
     axios.post(url, data, headers)
     .then(function (response) {
+      fulfill(response.data.data);
+    })
+    .catch(function(error) {
+      console.log(error);
+    })
+  }); 
+}
+
+export function getNodeRelationships(neo4j_id){
+  var url = 'http://35.203.167.230:7474/db/data/cypher'
+  var headers = {
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    }
+  };
+  var data = {
+  'query' : 'MATCH (node) WHERE id(node)={neo4j_id} MATCH (node)-[r]-(end) RETURN r, end',
+    'params': {
+      'neo4j_id': parseInt(neo4j_id)
+    } 
+  }
+  return new Promise(function(fulfill, reject) {
+    axios.post(url, data, headers)
+    .then(function (response) {
+      debugger
       fulfill(response.data.data);
     })
     .catch(function(error) {
