@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 
-class EntityCard extends Component {
+class SearchEntityCard extends Component {
 
   render(){
 
@@ -34,4 +34,4 @@ class EntityCard extends Component {
   }
 }
 
-export default EntityCard;
+export default SearchEntityCard;

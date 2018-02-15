@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import EntityCard from '../EntityCard'
+import SearchEntityCard from '../SearchEntityCard'
 
 class EntitiesList extends Component {
 
@@ -18,7 +18,7 @@ class EntitiesList extends Component {
         <div>
           {this.props.searchItems.map((item)=> {
             return(
-              <EntityCard 
+              <SearchEntityCard 
                 searchItem={item} 
                 nodeItem={this.props.nodeItems.find((element) => {
                   if (typeof(element)=== 'undefined') {
