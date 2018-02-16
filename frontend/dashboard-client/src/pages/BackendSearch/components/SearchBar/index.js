@@ -13,10 +13,6 @@ class Search extends Component {
     this.updateSearch = this.updateSearch.bind(this);
   }
   
-  /*componentWillMount() {
-    this.search();
-  }*/
-  
   search( query = '' ) {
     this.setState({searchQuery: query});
     this.props.onSubmitSearch(query)
