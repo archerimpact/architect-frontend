@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { Link } from 'react-router-dom';
 
-class SearchEntityCard extends Component {
+class SearchDataCard extends Component {
 
   render(){
     let link_data = null
@@ -26,4 +26,4 @@ class SearchEntityCard extends Component {
   }
 }
 
-export default SearchEntityCard;
+export default SearchDataCard;
