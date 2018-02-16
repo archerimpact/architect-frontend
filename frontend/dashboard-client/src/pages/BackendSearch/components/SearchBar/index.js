@@ -26,7 +26,12 @@ class Search extends Component {
   render (){
     return(
       <div className="searchBody">
-        <input className="app_input" ref="query" type="text" onChange={(e) => this.updateSearch()}/>
+        <input className="app_input" 
+          ref="query" 
+          type="text" 
+          placeholder="Search all entities."
+          onChange={(e) => this.updateSearch()}
+        />
         <button onClick={(e) => this.props.onSubmitSearch(this.state.searchQuery)}>Search</button>
       </div>
     );

@@ -48,7 +48,6 @@ class BackendSearch extends Component {
     return(
       <div>
         <SearchBar onSubmitSearch={this.searchBackendText}/>
-        <h3> Search Results </h3>
         <SearchDataList searchItems={this.state.searchData} nodeItems={this.state.nodesData}/>
       </div>
     );

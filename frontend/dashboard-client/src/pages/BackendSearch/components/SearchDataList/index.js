@@ -16,6 +16,7 @@ class SearchDataList extends Component {
     }else {
       return(
         <div className="searchResults">
+          <h3> Search Results </h3>
           {this.props.searchItems.map((item)=> {
             return(
               <SearchDataCard 
