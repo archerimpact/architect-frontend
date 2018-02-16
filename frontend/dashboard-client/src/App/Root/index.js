@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { PersistGate } from 'redux-persist/es/integration/react'
-import App from '../App/'
+import App from '../'
 import './index.css';
 // Color options: 45AD7C (darker green) or 4CBF88 (lighter green)
 const muiTheme = getMuiTheme({

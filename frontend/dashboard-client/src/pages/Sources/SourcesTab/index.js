@@ -11,8 +11,8 @@ import Toggle from 'material-ui/Toggle';
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import Sources from '../../components/Source'
-import SearchSources from '../../components/Source/search';
+import Sources from '../../../components/Source'
+import SearchSources from '../../../components/Source/search';
 import './style.css';
 
 class SourcesTable extends Component {

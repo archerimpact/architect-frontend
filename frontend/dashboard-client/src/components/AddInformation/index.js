@@ -5,7 +5,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Popover from 'material-ui/Popover';
 
-import AddEntity from '../../components/Entity/AddEntity';
+import AddEntity from '../../components/AddEntity';
 import AddConnection from '../../components/AddConnection';
 import EntityExtractor from '../../components/EntityExtractor/';
 

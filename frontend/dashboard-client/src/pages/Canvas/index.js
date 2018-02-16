@@ -2,14 +2,11 @@ import React, { Component } from 'react';
 
 import './style.css'
 
-import EntitiesTab from '../../containers/EntityTab';
 import NodeGraph from '../../components/NodeGraph';
-import SourcesTab from '../../containers/SourcesTab';
 import PDFUploader from '../../components/PDFUploader';
-import AddInformation from '../../containers/AddInformation';
+import AddInformation from '../../components/AddInformation';
 
 import Paper from 'material-ui/Paper';
-import {Tabs, Tab} from 'material-ui/Tabs';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -21,7 +18,7 @@ const tab_style = {
 	color:'#747474'
 };
 
-class ProjectPage extends Component {
+class Canvas extends Component {
 
   componentDidMount = () => {
     this.props.actions.fetchProject(this.props.match.params.id);
@@ -47,36 +44,11 @@ class ProjectPage extends Component {
   					</div>
   				</div>
   				<div className="tabs" style={{width:'100%', margin:'0 auto'}}>
-  					<Tabs >
-  						<Tab label="Workspace" type="default" style={tab_style}>
-  							<div className="graph-canvas">
-  								<Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
-  									<NodeGraph entities={this.props.allEntities} sources={this.props.savedSources.documents}/>
-  								</Paper>
-
-  							</div>
-  						</Tab>
-  						<Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={tab_style}>
-  							<div className="column">
-                  <h3>Your Entities</h3>
-  								<Paper className="projects">
-  									<EntitiesTab listType={"entities"} entities={this.props.savedEntities.entities} projectid={this.props.match.params.id}/>
-  								</Paper>
-                  <h3>Suggested Entities</h3>
-                  <Paper className="projects">
-                    <EntitiesTab listType={"suggested_entities"} entities={this.props.pendingEntities.entities} projectid={this.props.match.params.id}/>
-                  </Paper>
-  							</div>
-  						</Tab>
-  						<Tab label="Sources" style={tab_style}>
-  							<div className="column">
-  								<PDFUploader />
-  								<Paper className="projects">
-  									<SourcesTab />
-  								</Paper>
-  							</div>
-  						</Tab>
-  					</Tabs>
+					  <div className="graph-canvas">
+              <Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
+                <NodeGraph entities={this.props.allEntities} sources={this.props.savedSources.documents}/>
+              </Paper>
+            </div>
   				</div>
   			</div>
       );
@@ -110,4 +82,4 @@ function mapStateToProps(state, props) {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProjectPage));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Canvas));

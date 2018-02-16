@@ -1,15 +1,20 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../../redux/actions/';
+import * as actions from '../redux/actions/';
+
 import { Route, Redirect, Switch, withRouter} from 'react-router-dom';
-import Login from '../../components/Login/loginPage.js'
-import Home from '../../pages/Home/';
-import Project from '../../pages/Project/';
-import Source from '../../pages/Source/';
-import PrivateRoute from '../Login/PrivateRoute';
-import NavBar from '../../components/NavBar/';
-import CreateAccount from "../../components/Login/createAccount";
+import PrivateRoute from './PrivateRoute/';
+
+
+import NavBar from '../components/NavBar/';
+import Login from '../pages/Login/';
+import CreateAccount from '../pages/CreateAccount/';
+import Home from '../pages/Home/';
+import Canvas from '../pages/Canvas/';
+import Source from '../pages/Source/';
+import Sources from '../pages/Sources/';
+import Entities from '../pages/Entities/';
 
 class App extends Component {
 
@@ -33,8 +38,10 @@ class App extends Component {
     				<PrivateRoute exact path="/" component={Home} />
     				<Route path="/login" component={Login} />
                     <Route path="/create_account" component={CreateAccount} />
-    				<PrivateRoute path="/project/:id" component={Project} />				    		
+    				<PrivateRoute path="/project/:id" component={Canvas} />				    		
     				<PrivateRoute path="/source/:id" component={Source}/>
+                    <PrivateRoute path="/sources/:id" component={Sources}/>
+                    <PrivateRoute path="/entities/:id" component={Entities}/>
 				</Switch>
         	</div>
         );

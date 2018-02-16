@@ -9,9 +9,10 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import UpArrow from 'material-ui/svg-icons/navigation/arrow-upward';
 import { withRouter } from 'react-router-dom';
+import Paper from 'material-ui/Paper';
 
 import DownArrow from 'material-ui/svg-icons/navigation/arrow-downward';
-import EntitiesList from '../../components/Entity/';
+import EntitiesList from './components/';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -26,7 +27,7 @@ const iconStyles = {
 }
 
 
-class EntitiesTab extends Component {
+class Entities extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -35,14 +36,18 @@ class EntitiesTab extends Component {
 			entitySortBy: {property: null, reverse: false},
 			queryEntity: null
 		};
-    this.createEntity = this.createEntity.bind(this);
-    this.deleteEntity = this.deleteEntity.bind(this);
+	    this.createEntity = this.createEntity.bind(this);
+	    this.deleteEntity = this.deleteEntity.bind(this);
 		this.getEntitySource = this.getEntitySource.bind(this);
 		this.openEntityDrawer = this.openEntityDrawer.bind(this);
 		this.closeEntityDrawer = this.closeEntityDrawer.bind(this);
 		this.handleEntitySearch = this.handleEntitySearch.bind(this);
 		this.handleChangeSortBy = this.handleChangeSortBy.bind(this);
 		this.reverseList = this.reverseList.bind(this);
+	};
+
+	componentDidMount = () => {
+	    this.props.actions.fetchProjectEntities(this.props.match.params.id);
 	};
 
 	createEntity(suggestedEntity) {
@@ -140,49 +145,52 @@ class EntitiesTab extends Component {
     	} else {
 			return(
 				<div>
-					<Drawer width={300} containerStyle={{height: 'calc(100% - 64px)', top: 64}} openSecondary={true} open={this.state.drawerOpen} >
-			          	<AppBar onLeftIconButtonTouchTap={this.closeEntityDrawer}
-	    						iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-	    						title={'Entity Details'}
-	    						 />                
-			          	{this.state.drawerOpen ? this.renderEntityDrawer() : null}
-			        </Drawer>
-			        <div>
-			        	<div className="entitiesListHeader">
-				        	<TextField
-								floatingLabelText="Search for entity name"
-								hintText="e.g. Person"
-								onChange={this.handleEntitySearch}
-								style={{marginRight: 16, marginLeft: 24}}
-								fullWidth={true}
-							/>
-							<SelectField
-					        	floatingLabelText="Sort By"
-					        	value={this.state.entitySortBy.property}
-					        	onChange={this.handleChangeSortBy}
-					        	style={{textAlign: 'left', marginRight: 8}}
-					        	autoWidth={true}
-					        >
-								<MenuItem value={'name'} primaryText="Name" />
-								<MenuItem value={'type'} primaryText="Type" />
-								<MenuItem value={'source'} primaryText="Source" />
-								<MenuItem value={'dateAdded'} primaryText="Date Added" />
-					        </SelectField>
-					        <div onClick={this.reverseList}>
-					        	{this.state.entitySortBy.reverse ? <UpArrow className="icon" style={iconStyles}/> : <DownArrow className="icon" style={iconStyles}/>}
-					        </div>
-					    </div>
-			        	<EntitiesList 
-		                  listType={this.props.listType} 
-		                  entities={this.props.entities} 
-		                  searchTerm={this.state.queryEntity} 
-		                  sortBy={this.state.entitySortBy} 
-		                  getSource={this.getEntitySource} 
-		                  onEntityClick={this.openEntityDrawer} 
-		                  onCreateEntity={this.createEntity}
-		                  onDeleteEntity={this.deleteEntity}
-		                />
-			        </div>
+				    <h3>Your Entities</h3>
+					<Paper className="projects">
+						<Drawer width={300} containerStyle={{height: 'calc(100% - 64px)', top: 64}} openSecondary={true} open={this.state.drawerOpen} >
+				          	<AppBar onLeftIconButtonTouchTap={this.closeEntityDrawer}
+		    						iconElementLeft={<IconButton><NavigationClose /></IconButton>}
+		    						title={'Entity Details'}
+		    						 />                
+				          	{this.state.drawerOpen ? this.renderEntityDrawer() : null}
+				        </Drawer>
+				        <div>
+				        	<div className="entitiesListHeader">
+					        	<TextField
+									floatingLabelText="Search for entity name"
+									hintText="e.g. Person"
+									onChange={this.handleEntitySearch}
+									style={{marginRight: 16, marginLeft: 24}}
+									fullWidth={true}
+								/>
+								<SelectField
+						        	floatingLabelText="Sort By"
+						        	value={this.state.entitySortBy.property}
+						        	onChange={this.handleChangeSortBy}
+						        	style={{textAlign: 'left', marginRight: 8}}
+						        	autoWidth={true}
+						        >
+									<MenuItem value={'name'} primaryText="Name" />
+									<MenuItem value={'type'} primaryText="Type" />
+									<MenuItem value={'source'} primaryText="Source" />
+									<MenuItem value={'dateAdded'} primaryText="Date Added" />
+						        </SelectField>
+						        <div onClick={this.reverseList}>
+						        	{this.state.entitySortBy.reverse ? <UpArrow className="icon" style={iconStyles}/> : <DownArrow className="icon" style={iconStyles}/>}
+						        </div>
+						    </div>
+				        	<EntitiesList 
+			                  listType={this.props.listType} 
+			                  entities={this.props.entities} 
+			                  searchTerm={this.state.queryEntity} 
+			                  sortBy={this.state.entitySortBy} 
+			                  getSource={this.getEntitySource} 
+			                  onEntityClick={this.openEntityDrawer} 
+			                  onCreateEntity={this.createEntity}
+			                  onDeleteEntity={this.deleteEntity}
+			                />
+				        </div>
+				    </Paper>
 				</div>
 			);      
 		}
@@ -203,11 +211,14 @@ function mapStateToProps(state) {
 	    }
 	} else {
 	    return {
+	    	// TODO move project id to redux
+	    	listType: "entities",
+	    	projectid: 1,
+	    	entities: state.data.savedEntities.entities,
 			status: state.data.savedEntities.status,
 			savedSources: state.data.savedSources
 	    }
 	}
 }
 
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EntitiesTab));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Entities));

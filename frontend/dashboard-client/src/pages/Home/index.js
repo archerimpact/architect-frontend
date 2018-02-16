@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
 import {withRouter} from 'react-router-dom';
-
-import ProjectList from '../../containers/ProjectList/';
+import ProjectList from './ProjectList/';
 import './style.css'
 
 class Home extends Component {
@@ -13,7 +12,7 @@ class Home extends Component {
             <div style={{height:'100%'}}>
                 <div className="app">
                     <div style={{width:'100%', margin:'0 auto', top: 64}}>
-                        <ProjectList {...this.props}/>                        
+                        <ProjectList {...this.props} />
                     </div>
                 </div>
             </div>

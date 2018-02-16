@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import './style.css';
 
-import AddProject from '../../components/Project/addProject';
+import AddProject from '../../Canvas/Project/addProject';
 
 import Folder from 'material-ui/svg-icons/file/folder';
 import { List, ListItem} from 'material-ui/List';
@@ -10,8 +10,8 @@ import {red500, blue500} from 'material-ui/styles/colors';
 import Divider from 'material-ui/Divider';
 
 import { Link } from 'react-router-dom';
-import * as server_utils from '../../server/utils';
-import * as actions from '../../redux/actions/';
+import * as server_utils from '../../../server/utils';
+import * as actions from '../../../redux/actions/';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 

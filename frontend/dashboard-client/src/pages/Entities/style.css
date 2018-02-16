@@ -11,3 +11,11 @@
     height: 16px;
     padding-top: 32px
 }
+
+.column {
+  width:70%;
+  margin:15px auto;
+  text-align: center;
+  position: relative;
+
+}

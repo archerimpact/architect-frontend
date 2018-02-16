@@ -6,7 +6,7 @@ import {authenticateAccount} from "../../server/auth_routes";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
-import CreateAccount from "./createAccount";
+import CreateAccount from "../CreateAccount/";
 
 class LoginPage extends React.Component {
 
