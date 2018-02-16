@@ -17,7 +17,7 @@ class Search extends Component {
     this.setState({searchQuery: query});
     this.props.onSubmitSearch(query)
   }
-  
+
   updateSearch() {
     this.search(this.refs.query.value);
   }

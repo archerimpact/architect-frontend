@@ -15,7 +15,7 @@ class EntitiesList extends Component {
       )
     }else {
       return(
-        <div>
+        <div className="searchResults">
           {this.props.searchItems.map((item)=> {
             return(
               <SearchEntityCard 

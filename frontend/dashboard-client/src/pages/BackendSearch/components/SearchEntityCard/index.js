@@ -8,10 +8,8 @@ class SearchEntityCard extends Component {
     let link_data = null
     if (typeof(this.props.nodeItem) !=='undefined') {
       /* after the neo4j node item has loaded */
-
       link_data = (
         <div>
-          <Link to={"/entity/" + this.props.searchItem._source.neo4j_id}>Go to Entity</Link>
           <p>{"Some Neo4j data: " + this.props.nodeItem[0].all_relationships} </p>
         </div>
       );
@@ -19,11 +17,10 @@ class SearchEntityCard extends Component {
 
     return (
       <div>
-        <p>{"elastic_id: " + this.props.searchItem._id}</p>
-        <p>{"neo4j_id: " + this.props.searchItem._source.neo4j_id} </p>
-        <p>{"Name: " + this.props.searchItem._source.name}</p>
+        <Link to={"/entity/" + this.props.searchItem._source.neo4j_id}><h2>{this.props.searchItem._source.name}</h2></Link>
         <p>{"Nationality: " + this.props.searchItem._source.nationality} </p>
         {link_data}
+        <hr></hr>
       </div> 
     );
   }
