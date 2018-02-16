@@ -2,17 +2,6 @@ import 'whatwg-fetch';
 import { configData } from '../config.js';
 import axios from 'axios';
 
-/* Neo4j driver code not in use
-
-import neo4j from "neo4j-driver/lib/browser/neo4j-web";
-var neo4j = require('neo4j-driver').v1;
-
-var driver = neo4j.driver("bolt://35.203.167.230:7474", neo4j.auth.basic('user','password'),
-  {
-  encrypted: 'ENCRYPTION_OFF'
-  }
-);*/
-
 var qs = require('qs');
 
 export function submitText(title, text, projectid) {
