@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import SearchBar from './components/SearchBar/'
-import EntitiesList from './components/EntitiesList/'
+import SearchDataList from './components/SearchDataList/'
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -49,7 +49,7 @@ class BackendSearch extends Component {
       <div>
         <SearchBar onSubmitSearch={this.searchBackendText}/>
         <h3> Search Results </h3>
-        <EntitiesList searchItems={this.state.searchData} nodeItems={this.state.nodesData}/>
+        <SearchDataList searchItems={this.state.searchData} nodeItems={this.state.nodesData}/>
       </div>
     );
   }
