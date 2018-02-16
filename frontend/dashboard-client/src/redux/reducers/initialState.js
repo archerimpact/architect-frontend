@@ -40,9 +40,5 @@ export default {
 		status: 'isLoading',
     projects: []
 	},
-  savedArcherNodes: {
-    status: 'isLoading',
-    nodes: []
-  },
   currentProject: {_id: 0, name: "Sample"}
 }
