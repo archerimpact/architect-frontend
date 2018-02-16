@@ -20,17 +20,26 @@ class Entity extends Component {
       nodeData: null,
       relationshipData: null
     }
+    this.loadData = this.loadData.bind(this);
   }
 
   componentDidMount = () => {
-    server.getBackendNode(this.props.match.params.neo4j_id)
+    this.loadData(this.props.match.params.neo4j_id)
+  }
+
+  componentWillReceiveProps = (nextprops) => {
+    this.loadData(nextprops.match.params.neo4j_id)
+  }
+
+  loadData(neo4j_id) {
+    server.getBackendNode(neo4j_id)
       .then(data => {
         this.setState({nodeData: data[0]})
       })
       .catch(err => {
         console.log(err)
       })
-    server.getNodeRelationships(this.props.match.params.neo4j_id)
+    server.getNodeRelationships(neo4j_id)
       .then(data => {
         this.setState({relationshipData: data})
       })
@@ -41,14 +50,14 @@ class Entity extends Component {
 
   render(){
     if (this.state.nodeData== null || this.state.relationshipData==null) {
-            return (
+      return (
         <div>Loading</div>
       );
     } else {
       return(
         <div className="entityInfo">
           <EntityCard nodeItem={this.state.nodeData[0]} />
-          <SummaryInfo nodeItem={this.state.nodeData} nodeRelationships={this.state.relationshipData}/>
+          <SummaryInfo nodeItem={this.state.nodeData[0]} nodeRelationships={this.state.relationshipData}/>
           <ConnectionsTab nodeRelationships={this.state.relationshipData}/>
         </div>
       );
