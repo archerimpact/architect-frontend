@@ -21,12 +21,8 @@ class EntitiesList extends Component {
               <SearchEntityCard 
                 searchItem={item} 
                 nodeItem={this.props.nodeItems.find((element) => {
-                  if (typeof(element)=== 'undefined') {
-                    return null
-                  } else {
-                    return element[0].metadata.id===item._source.neo4j_id}
-                  }
-                )} 
+                    return element[0].metadata.id===item._source.neo4j_id
+                })} 
               />
           )})}
         </div>
