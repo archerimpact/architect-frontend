@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import GraphContainer from './components/GraphContainer'
+import GraphContainer from './components/GraphContainer/'
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
