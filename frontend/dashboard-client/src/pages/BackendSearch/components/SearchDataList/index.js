@@ -12,8 +12,8 @@ class SearchDataList extends Component {
     if (this.props.searchItems == null || this.props.nodeItems==null){
       return (
         <div></div>
-      )
-    }else {
+      );
+    } else {
       return(
         <div className="searchResults">
           <h3> Search Results </h3>
@@ -25,7 +25,8 @@ class SearchDataList extends Component {
                     return element[0].metadata.id===item._source.neo4j_id
                 })} 
               />
-          )})}
+            );
+          })}
         </div>
       );
     }

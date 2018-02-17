@@ -22,14 +22,13 @@ class BackendSearch extends Component {
   }
 
   searchBackendText(query){
-    var that = this;
     server.searchBackendText(query)
       .then((data)=>{
         this.setState({searchData: data.hits.hits, nodesData: null})
         var ids = data.hits.hits.map((item) => {
           return item._source.neo4j_id
         })
-        that.searchBackendNodes(ids)
+        this.searchBackendNodes(ids)
       })
       .catch((error) => {console.log(error)});
   }

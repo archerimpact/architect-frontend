@@ -242,7 +242,7 @@ export function addConnection(idOne, idTwo, description, project) {
 }
 
 export function searchBackendText(searchQuery) {
-  var url = 'http://35.197.34.74:9200/_search';
+  var url = configData.elastic_url + '/_search';
   var query = {
     query: {
       match: {
@@ -272,7 +272,7 @@ export function searchBackendText(searchQuery) {
 export function getBackendNode(neo4j_id){
     /* retrieves the corresponding neo4j nodes of one id */
 
-  var url = 'http://35.203.167.230:7474/db/data/cypher'
+  var url = configData.neo4j_url + '/db/data/cypher'
   var headers = {
     headers: {
       'Content-Type': 'application/json',
@@ -299,7 +299,7 @@ export function getBackendNode(neo4j_id){
 export function getBackendNodes(neo4j_ids){ 
   /* retrieves the corresponding neo4j nodes of a list of ids */
 
-  var url = 'http://35.203.167.230:7474/db/data/cypher'
+  var url = configData.neo4j_url + '/db/data/cypher'
   var headers = {
     headers: {
       'Content-Type': 'application/json',
@@ -324,7 +324,7 @@ export function getBackendNodes(neo4j_ids){
 }
 
 export function getNodeRelationships(neo4j_id){
-  var url = 'http://35.203.167.230:7474/db/data/cypher'
+  var url = configData.neo4j_url + '/db/data/cypher'
   var headers = {
     headers: {
       'Content-Type': 'application/json',
