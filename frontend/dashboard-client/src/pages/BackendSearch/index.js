@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import SearchBar from './components/SearchBar/'
-import EntitiesList from './components/EntitiesList/'
+import SearchDataList from './components/SearchDataList/'
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -14,25 +14,40 @@ class BackendSearch extends Component {
   constructor(props) {
     super(props)
     this.searchBackendText = this.searchBackendText.bind(this);
+    this.searchBackendNodes = this.searchBackendNodes.bind(this);
     this.state={
-      searchData: null
+      searchData: null,
+      nodesData: null
     }
   }
 
   searchBackendText(query){
     server.searchBackendText(query)
       .then((data)=>{
-        this.setState({searchData: data.hits.hits})
+        this.setState({searchData: data.hits.hits, nodesData: null})
+        var ids = data.hits.hits.map((item) => {
+          return item._source.neo4j_id
+        })
+        this.searchBackendNodes(ids)
       })
       .catch((error) => {console.log(error)});
+  }
+
+  searchBackendNodes(idsArray){
+    server.getBackendNodes(idsArray)
+      .then(data => {
+        this.setState({nodesData: data})
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   render() {
     return(
       <div>
         <SearchBar onSubmitSearch={this.searchBackendText}/>
-        <h3> Search Results </h3>
-        <EntitiesList searchItems={this.state.searchData} />
+        <SearchDataList searchItems={this.state.searchData} nodeItems={this.state.nodesData}/>
       </div>
     );
   }

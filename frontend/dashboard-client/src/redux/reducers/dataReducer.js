@@ -1,4 +1,18 @@
-import { ADD_LINK, ADD_ENTITY, REMOVE_ENTITY, REMOVE_SUGGESTED_ENTITY, ADD_TAG, STORE_ENTITIES, STORE_PENDING_ENTITIES, STORE_SOURCES, STORE_PROJECTS, CURRENT_PROJECT, STORE_VERTICES, USER_LOGIN, USER_LOGOUT} from '../actions/actionTypes';
+import { 
+  ADD_LINK, 
+  ADD_ENTITY, 
+  REMOVE_ENTITY, 
+  REMOVE_SUGGESTED_ENTITY, 
+  ADD_TAG, STORE_ENTITIES, 
+  STORE_PENDING_ENTITIES, 
+  STORE_SOURCES, 
+  STORE_PROJECTS, 
+  CURRENT_PROJECT, 
+  STORE_VERTICES, 
+  USER_LOGIN, 
+  USER_LOGOUT, 
+} from '../actions/actionTypes';
+
 import initialState from './initialState';
 
 export default function (state = initialState, action) {
