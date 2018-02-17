@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import './style.css'
 
 import EntitiesTab from '../../containers/EntityTab';
-import NodeGraph from '../../components/NodeGraph';
 import SourcesTab from '../../containers/SourcesTab';
 import PDFUploader from '../../components/PDFUploader';
 import AddInformation from '../../containers/AddInformation';
@@ -11,6 +10,7 @@ import AddInformation from '../../containers/AddInformation';
 import Paper from 'material-ui/Paper';
 import {Tabs, Tab} from 'material-ui/Tabs';
 
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
@@ -41,6 +41,7 @@ class ProjectPage extends Component {
   				<div className="header">
   					<div className="header-text">
   						<h3>{"Projects  >  " + this.props.currentProject.name}</h3>
+               <Link to={"/projectcanvas/" + this.props.match.params.id}>"Go to new page"</Link>
   					</div>
   					<div id="notifications">
               <AddInformation projectid={this.props.match.params.id}/>
@@ -51,9 +52,7 @@ class ProjectPage extends Component {
   						<Tab label="Workspace" type="default" style={tab_style}>
   							<div className="graph-canvas">
   								<Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
-  									<NodeGraph entities={this.props.allEntities} sources={this.props.savedSources.documents}/>
   								</Paper>
-
   							</div>
   						</Tab>
   						<Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={tab_style}>
@@ -62,11 +61,6 @@ class ProjectPage extends Component {
   								<Paper className="projects">
   									<EntitiesTab listType={"entities"} entities={this.props.savedEntities.entities} projectid={this.props.match.params.id}/>
   								</Paper>
-                  <h3>Suggested Entities</h3>
-                  {/* <Paper className="projects">
-                    <EntitiesTab listType={"suggested_entities"} entities={this.props.pendingEntities.entities} projectid={this.props.match.params.id}/>
-                  </Paper>
-                  */}
   							</div>
   						</Tab>
   						<Tab label="Sources" style={tab_style}>
@@ -105,8 +99,6 @@ function mapStateToProps(state, props) {
       projects: state.data.projects,
       savedSources: state.data.savedSources,
       currentProject: state.data.currentProject,
-      pendingEntities: state.data.pendingEntities,
-      allEntities: state.data.pendingEntities.entities.concat(state.data.savedEntities.entities)
     }
   }
 }

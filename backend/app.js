@@ -17,7 +17,7 @@ var express = require('express'),
 
 mongoose.Promise = Promise;
 mongoose.connect(configData.db_url, configData.db_options);
-// mongoose.connect('mongodb://alice:archer@ds143245.mlab.com:43245/uxreceiverdev');
+
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 

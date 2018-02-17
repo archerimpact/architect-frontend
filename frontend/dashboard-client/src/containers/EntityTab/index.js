@@ -35,7 +35,7 @@ class EntitiesTab extends Component {
 			entitySortBy: {property: null, reverse: false},
 			queryEntity: null
 		};
-    this.createEntity = this.createEntity.bind(this);
+    //this.createEntity = this.createEntity.bind(this);
     this.deleteEntity = this.deleteEntity.bind(this);
 		this.getEntitySource = this.getEntitySource.bind(this);
 		this.openEntityDrawer = this.openEntityDrawer.bind(this);
@@ -45,7 +45,7 @@ class EntitiesTab extends Component {
 		this.reverseList = this.reverseList.bind(this);
 	};
 
-	createEntity(suggestedEntity) {
+	/*createEntity(suggestedEntity) {
     var entity = {
       name: suggestedEntity.name,
       type: suggestedEntity.type.toLowerCase(),
@@ -55,12 +55,12 @@ class EntitiesTab extends Component {
     }
     this.props.actions.createEntity(entity);
     this.props.actions.deleteSuggestedEntity(suggestedEntity, suggestedEntity.sources[0]);
-  }
+  }*/
 
   deleteEntity(entity) {
-    if (this.props.listType === "suggested_entities") {
+    /*if (this.props.listType === "suggested_entities") {
       this.props.actions.deleteSuggestedEntity(entity, entity.sources[0])
-    }
+    }*/
     if (this.props.listType === "entities") {
       this.props.actions.deleteEntity(entity, this.props.projectid)
     }
@@ -173,15 +173,14 @@ class EntitiesTab extends Component {
 					        </div>
 					    </div>
 			        	<EntitiesList 
-		                  listType={this.props.listType} 
-		                  entities={this.props.entities} 
-		                  searchTerm={this.state.queryEntity} 
-		                  sortBy={this.state.entitySortBy} 
-		                  getSource={this.getEntitySource} 
-		                  onEntityClick={this.openEntityDrawer} 
-		                  onCreateEntity={this.createEntity}
-		                  onDeleteEntity={this.deleteEntity}
-		                />
+                  entities={this.props.entities} 
+                  searchTerm={this.state.queryEntity} 
+                  sortBy={this.state.entitySortBy} 
+                  getSource={this.getEntitySource} 
+                  onEntityClick={this.openEntityDrawer} 
+                  onCreateEntity={this.createEntity}
+                  onDeleteEntity={this.deleteEntity}
+                />
 			        </div>
 				</div>
 			);      

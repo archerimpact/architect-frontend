@@ -13,6 +13,8 @@ import {
   CURRENT_PROJECT,
   STORE_VERTICES,
   ADD_CONNECTION,
+  STORE_CONNECTIONS,
+  ADD_GRAPH
   } from './actionTypes';
 
 import * as server_utils from '../../server/utils';
@@ -54,18 +56,18 @@ export function addConnection(connection) {
 	};
 }
 
+export function addGraph(graph) {
+  return {
+    type: ADD_GRAPH,
+    payload: graph
+  };
+}
+
 export function storeEntities(entities){
 	return {
 		type: STORE_ENTITIES,
 		payload: entities
 	};
-}
-
-export function storePendingEntities(entities){
-  return {
-    type: STORE_PENDING_ENTITIES,
-    payload: entities
-  }
 }
 
 export function storeSources(sources){
@@ -74,6 +76,7 @@ export function storeSources(sources){
 		payload: sources
 	};
 }
+
 
 export function addTag(entities, name, tag) {
 	let entity = entities.find(x => x.name === name);
@@ -85,6 +88,7 @@ export function addTag(entities, name, tag) {
 		payload: entities
 	};
 }
+
 
 export function deleteTag(entities, name, tag) {
 	let entity = entities.find(x => x.name === name);
@@ -100,6 +104,7 @@ export function deleteTag(entities, name, tag) {
 		payload: entities
 	};
 }
+
 
 export function retrieveDetails(actionType, res) {
 	return {
@@ -133,7 +138,7 @@ export function createEntity(entity) {
   return function (dispatch, getState) {
     return server.addEntity(entity.name, entity.type, entity.sources, entity.projectid)
       .then(data => {
-        dispatch(addEntity(entity));
+        dispatch(fetchProjectEntities(entity.projectid))
       })
       .catch(err => {
         console.log(err);
@@ -179,14 +184,23 @@ export function createConnection(connection) {
   }
 }
 
+export function createGraph(projectid, entities, sources, connections) {
+  return function (dispatch, getState) {
+    return server.addGraph(projectid, entities, sources, connections)
+      .then(data => {
+        dispatch(addGraph(projectid, entities, sources, connections));
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+}
+
+
 export function fetchSource(sourceid) {
   return function (dispatch, getState) {
     return server.getSource(sourceid)
       .then(data => {
-        /*dispatch(storePendingEntities(data.entities)); TODO: @alice, storePendingEntities needs to work differently
-        so that it doesn't try to access the source via the entities, but rather the entities as
-        a whole associated with a source. So it looks like you're treating suggested entities like real
-        ones when they're not, like they don't have sources.*/
         dispatch(storeSources(data.documents));
       })
       .catch(err => {
@@ -207,32 +221,13 @@ export function fetchProjectEntities(projectid) {
   }
 }
 
-// export function fetchProjectSources(projectid) {
-//   return function(dispatch, getState) {
-//     return server.getSuggestedEntities(projectid)
-//       .then((data) => {
-//         //dispatch(storePendingEntities(data.entities)) //TODO: related to TODO of above in fetchSource
-//         dispatch(storeSources(data.documents));
-//       })
-//       .catch((err) => console.log(err));
-//   }
-// }
-
-//  For if you only want project sources and not suggested entities,
-//     currently not being used.
-    
 export function fetchProjectSources(projectid) {
-  return function (dispatch, getState) {
-    console.log("FETCHING");
+  return function(dispatch, getState) {
     return server.getProjectSources(projectid)
-      .then(sources => {
-        console.log("SOURCES");
-        console.log(sources);
-        dispatch(storeSources(sources))
+      .then((data) => {
+        dispatch(storeSources(data.documents));
       })
-      .catch(err => {
-        console.log(err)
-      })
+      .catch((err) => console.log(err));
   }
 }
 
@@ -275,9 +270,9 @@ export function storeProjects(projects) {
 	};
 }
 
-export function fetchVertices() {
+export function fetchVertices(projectid) {
 	return function (dispatch, getState) {
-		return server_utils.getVertexList()
+		return server_utils.getVertexList(projectid)
 			.then(vertices => {
 				dispatch(storeVertices(vertices));
 			})
@@ -287,6 +282,18 @@ export function fetchVertices() {
 	};
 }
 
+export function fetchConnections(projectid){
+  return function (dispatch, getState) {
+    return server_utils.getConnectionList(projectid)
+      .then(connections => {
+        dispatch(storeConnections(connections));
+      })
+      .catch(err => {
+        console.log(err)
+      });
+  };
+}
+
 export function storeVertices(vertices) {
 	return {
 		type: STORE_VERTICES,
@@ -294,6 +301,12 @@ export function storeVertices(vertices) {
 	};
 }
 
+export function storeConnections(connections) {
+  return {
+    type: STORE_CONNECTIONS,
+    payload: connections
+  };
+}
 
 export function userLogIn() {
   return {

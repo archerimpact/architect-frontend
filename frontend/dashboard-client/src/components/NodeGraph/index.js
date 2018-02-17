@@ -21,7 +21,7 @@ class NodeGraph extends Component {
     };
   }
 
-  uniqueNodes(nodes) {
+  /* uniqueNodes(nodes) {
     var obj = {};
 
     for ( var i=0, len=nodes.length; i < len; i++ )
@@ -34,9 +34,8 @@ class NodeGraph extends Component {
   }
 
   createNodes(entities, documents) {
-		/* Takes in a list of entities and documents and maps it to a 
-			list of nodes for the d3 simulation */
-
+		//Takes in a list of entities and documents and maps it to a 
+		//	list of nodes for the d3 simulation 
 		var entityNodes = entities.map((entity) => {
 			return {"id": entity.name, "name": entity.name, "type": entity.type};
 		});
@@ -48,7 +47,8 @@ class NodeGraph extends Component {
 
 	createLinks(entities, documents) {
 		/* Iterates over all the entitiesa and documents and builds an 
-			array of all the links for the d3 simulation */
+			array of all the links for the d3 simulation 
+
 		var documentLinks = [].concat.apply([], documents.map((document) => {
 			return this.sourceToLinks(document);
 		}));
@@ -64,17 +64,17 @@ class NodeGraph extends Component {
 		return entityLinks.concat(documentLinks);
 	};
 
-	connectionsToLinks(entity) {
-		/* Takes all of the tags of one entity and returns an array of all
-			 the links of that one entity */
-		return entity.connections.map((tag) => {
-			return {"source": entity.name, "target": tag};
+	connectionsToLinks(vertex) {
+		// Takes all of the tags of one entity and returns an array of all
+		// the links of that one entity
+    return vertex.connections.map((tag) => {
+			return {"source": vertex.name, "target": tag};
 		});
 	};
 
 
-	/* TO-DO: refactor so that this method takes entities and maps a connection
-		 to sources if and only if the source appears in this graph */
+	  //TO-DO: refactor so that this method takes entities and maps a connection
+		//to sources if and only if the source appears in this graph
 	sourceToLinks(vertex) {
 		if (vertex.length === 0) {
 			return;
@@ -84,11 +84,11 @@ class NodeGraph extends Component {
 			});
 		}
 	};
-
+*/
 	getNodeColor(node) {
 		/* returns the color of the node based on the type of the entity */
-    if (node.type === "PERSON") {
-      return "#83DFFF";
+    if (node.type === "PERSON" || node.type === "Entity") {
+      return "#FB7E81";
     }
     if (node.type === "ORGANIZATION") {
       return "#76C9E5";
@@ -96,7 +96,7 @@ class NodeGraph extends Component {
     if (node.type === "LOCATION" || node.type === "NATIONALITY") {
       return "#62A8BF";
     }
-    if (node.type === "DOCUMENT") {
+    if (node.type === "Source") {
       return "#49FFB7";
     }
     if (node.type === "Person" || node.type === "person") {
@@ -109,7 +109,7 @@ class NodeGraph extends Component {
       return "#C454E5";
     }
     else {
-      return "#41707F";
+      return "#FFFF02";
     }
 	};
 
@@ -137,32 +137,29 @@ class NodeGraph extends Component {
       return 60;
     }
     else {
-      return 20;
+      return 60;
     }
   }
 
-	generateNetworkCanvas(entities, sources, includeText) {
+	generateNetworkCanvas(nodes, links, includeText) {
 		/* The entire logic for generating a d3 forceSimulation graph */
-		if (typeof(sources[0]) === "undefined") {
+		/*if (typeof(sources[0]) === "undefined") {
 			sources = [];
-		};
-		
-		const dataNodes = this.createNodes(entities, sources);
-		const linkNodes = this.createLinks(entities, sources);
+		};*/
 		
 		const data = {
-			"nodes": dataNodes,
-			"links": linkNodes
+			"nodes": nodes.slice(),
+			"links": links.slice()
 		};
-
+        
 		const width = 1000;
 		const height = 700;
-
+    
 		const simulation = d3.forceSimulation(data.nodes)
 			.force("center", d3.forceCenter(width/2, height/2))
 			.force("charge", d3.forceManyBody())
       //.force("collide", d3.forceCollide((d) => this.getCollide(d)))
-			.force("link", d3.forceLink(linkNodes).id(function(d) { return d.id; }));
+			.force("link", d3.forceLink(data.links).id(function(d) { return d._id; }));
 
 		const svg = d3.select(this.refs.mountPoint)
 			.append('svg')
@@ -180,7 +177,7 @@ class NodeGraph extends Component {
 			.append('line')
 			.style('stroke', '#999999')
 			.style('stroke-opacty', 0.6)
-			.style('stroke-width', 2.0);
+			.style('stroke-width', 3.0);
 
 		const nodeElements = svg.selectAll('circle')
 			.data(data.nodes)
@@ -189,7 +186,7 @@ class NodeGraph extends Component {
 			.style('cursor', 'pointer');
 
     nodeElements.append('circle')
-			.attr('r',7)
+			.attr('r',13)
 			.style('stroke', '#FFFFFF')
 			.style('stroke-width', 1.5)
 			.style('fill', (d) => this.getNodeColor(d));
@@ -248,23 +245,23 @@ class NodeGraph extends Component {
     */
 	};
 
-  updateGraph(entities, sources) {
+  updateGraph(nodes, links) {
     const mountPoint = d3.select('#svgdiv');
     mountPoint.selectAll("svg").remove();
-    this.generateNetworkCanvas(entities, sources);
+    this.generateNetworkCanvas(nodes, links);
   }
 
   componentWillReceiveProps(nextProps) {		
 		/* When the props update (aka when there's a new entity or relationship), 
 			delete the old graph and create a new one */
 
-		this.updateGraph(nextProps.entities, nextProps.sources);
+		this.updateGraph(nextProps.nodes, nextProps.links);
 	};
 
 	componentDidMount = () => {
 		/* builds the first graph based on after the component mounted and mountPoint was created. */
 
-		this.generateNetworkCanvas(this.props.entities, this.props.sources);
+		this.generateNetworkCanvas(this.props.nodes,this.props.links, this.state.text);
 	};
 
   updateCheck() {
@@ -273,7 +270,7 @@ class NodeGraph extends Component {
         text: !oldState.text,
       };
     });
-    this.updateGraph(this.props.entities, this.props.sources);
+    this.updateGraph(this.props.nodes, this.props.links);
   }
 
 	render() {

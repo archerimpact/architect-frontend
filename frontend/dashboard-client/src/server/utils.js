@@ -83,19 +83,41 @@ export function getProjectList() {
     })
 }
 
-export function getVertexList() {
-    var url = 'http://localhost:8000/investigation/vertexList';
-    var options = {
-        method: 'GET',
-    };
-    return new Promise((fulfill, reject) => {
-        fetch(url, options)
-        .then(res => res.json())
-        .then(json => {
-            fulfill(json);
-        })
-        .catch(err => {
-            reject('Error: could not return vertex list because: ' + err);
-        });
+export function getVertexList(projectid) {
+  var url = 'http://localhost:8000/investigation/vertexList';
+
+  return new Promise(function(fulfill, reject) {
+    axios.get(url, {
+      params: {
+        projectid: projectid
+      }
     })
+    .then(function (response) {
+      fulfill(response.data)
+    })
+    .catch(function(error) {
+      console.log(error);
+    })
+  });
+}
+
+export function getConnectionList(projectid) {
+
+  var url ='http://localhost:8000/investigation/connectionList';
+
+  //debugger;
+
+  return new Promise(function(fulfill, reject) {
+    axios.get(url, {
+      params: {
+        projectid: projectid
+      }
+    })
+    .then(function (response) {
+      fulfill(response.data)
+    })
+    .catch(function(error) {
+      console.log(error);
+    })
+  });
 }

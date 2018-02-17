@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
@@ -8,7 +9,9 @@ import Login from '../../components/Login/loginPage.js'
 import Home from '../../pages/Home/';
 import Project from '../../pages/Project/';
 import Source from '../../pages/Source/';
+import Canvas from '../../pages/Canvas/';
 import BackendSearch from '../../pages/BackendSearch/';
+
 import Entity from '../../pages/Entity/';
 
 import PrivateRoute from '../Login/PrivateRoute';
@@ -40,6 +43,7 @@ class App extends Component {
             <Route path="/create_account" component={CreateAccount} />
     				<PrivateRoute path="/project/:id" component={Project} />				    		
     				<PrivateRoute path="/source/:id" component={Source}/>
+            <PrivateRoute path="/projectcanvas/:id" component={Canvas}/>
             <PrivateRoute path="/homepage" component={NewHome}/>
             <PrivateRoute path="/backendsearch" component={BackendSearch} />
             <PrivateRoute path="/entity/:neo4j_id" component={Entity} />

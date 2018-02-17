@@ -6,10 +6,15 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import { PersistGate } from 'redux-persist/es/integration/react'
 import App from '../App/'
+
 import './index.css';
+
 // Color options: 45AD7C (darker green) or 4CBF88 (lighter green)
 const muiTheme = getMuiTheme({
   fontFamily: "'Open Sans', sans-serif",
+	palette: {
+		accent1Color: '#2c98f0',
+	}
 });
 
 export default class Root extends Component {
