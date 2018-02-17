@@ -23,8 +23,8 @@ class Canvas extends Component {
     } else {
       return (
         <GraphContainer 
-          vertexes={this.props.savedVertexes.vertices.slice()} 
-          connections={this.props.savedConnections.connections.slice()} 
+          vertexes={this.props.savedVertexes.vertices} 
+          connections={this.props.savedConnections.connections} 
         />
       );
     }
