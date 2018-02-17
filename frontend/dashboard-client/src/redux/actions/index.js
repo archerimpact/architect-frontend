@@ -12,7 +12,8 @@ import {
   STORE_PROJECTS, 
   CURRENT_PROJECT,
   STORE_VERTICES,
-  ADD_CONNECTION
+  ADD_CONNECTION,
+  STORE_SEARCH_ITEMS
   } from './actionTypes';
 
 import * as server_utils from '../../server/utils';

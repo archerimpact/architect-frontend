@@ -1,0 +1,27 @@
+.searchBody{
+ display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ccc;
+  font-family: 'Helvetica Neue', Arial;
+}
+.wrapper {
+  text-align: center;
+}
+.title {
+  font-weight: 300;
+  display: block;
+  color: gray;
+}
+.app_input {
+  width: 300px;
+  border-radius: 5px;
+  height: 40px;
+  border: 1px solid white;
+  margin: 20px;
+}
+li{
+  list-style: none;
+  text-align: left; 
+  line-height: 30px;
+}
