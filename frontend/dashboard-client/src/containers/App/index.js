@@ -11,6 +11,7 @@ import BackendSearch from '../../pages/BackendSearch/';
 import PrivateRoute from '../Login/PrivateRoute';
 import NavBar from '../../components/NavBar/';
 import CreateAccount from "../../components/Login/createAccount";
+import NewHome from '../../pages/Home/newHome.js';
 
 class App extends Component {
 
@@ -33,9 +34,10 @@ class App extends Component {
     			<Switch>
     				<PrivateRoute exact path="/" component={Home} />
     				<Route path="/login" component={Login} />
-                    <Route path="/create_account" component={CreateAccount} />
+            <Route path="/create_account" component={CreateAccount} />
     				<PrivateRoute path="/project/:id" component={Project} />				    		
     				<PrivateRoute path="/source/:id" component={Source}/>
+            <PrivateRoute path="/homepage" component={NewHome}/>
             <PrivateRoute path="/backendsearch" component={BackendSearch} />
 				</Switch>
       
