@@ -6,7 +6,6 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import Home from '../../pages/Home/';
 import NewHome from '../../pages/Home/newHome.js';
-import Project from '../../pages/Project/';
 import Source from '../../pages/Source/';
 import NavBar from '../../components/NavBar/';
 
