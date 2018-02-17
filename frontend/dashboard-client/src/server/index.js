@@ -357,7 +357,7 @@ export function getNodeRelationships(neo4j_id){
     }
   };
   var data = {
-  'query' : 'MATCH (node) WHERE id(node)={neo4j_id} MATCH (node)-[r]-(end) RETURN r, end',
+  'query' : 'MATCH (node) WHERE id(node)={neo4j_id} MATCH (node)-[r]-(end) RETURN r, end, node',
     'params': {
       'neo4j_id': parseInt(neo4j_id)
     } 

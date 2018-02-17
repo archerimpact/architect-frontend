@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import GraphContainer from './components/GraphContainer/'
+import GraphContainer from '../../components/NodeGraph/containers/BackendVertexesContainer/'
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';

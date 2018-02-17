@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import NodeGraph from '../../../../components/NodeGraph';
+import Graph from '../../components/Graph';
 
 import Paper from 'material-ui/Paper';
 
@@ -28,7 +28,7 @@ class GraphContainer extends Component {
   render(){
     return (
       <Paper>
-        <NodeGraph nodes={this.getNodes(this.props.vertexes)} links={this.getLinks(this.props.connections)} />
+        <Graph nodes={this.getNodes(this.props.vertexes)} links={this.getLinks(this.props.connections)} />
       </Paper>
     )
   }
