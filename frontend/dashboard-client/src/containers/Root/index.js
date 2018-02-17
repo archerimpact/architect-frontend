@@ -4,11 +4,6 @@ import { Provider } from 'react-redux';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
-import Home from '../../pages/Home/';
-import NewHome from '../../pages/Home/newHome.js';
-import Source from '../../pages/Source/';
-import NavBar from '../../components/NavBar/';
-
 import { PersistGate } from 'redux-persist/es/integration/react'
 import App from '../App/'
 import './index.css';
