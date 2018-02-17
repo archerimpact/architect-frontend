@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import GraphContainer from './components/GraphContainer'
+import GraphContainer from './components/GraphContainer/'
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -23,8 +23,8 @@ class Canvas extends Component {
     } else {
       return (
         <GraphContainer 
-          vertexes={[...this.props.savedVertices.vertices].slice()} 
-          connections={this.props.savedConnections.connections.slice()} 
+          vertexes={this.props.savedVertexes.vertices} 
+          connections={this.props.savedConnections.connections} 
         />
       );
     }
