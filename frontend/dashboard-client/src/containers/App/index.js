@@ -12,6 +12,8 @@ import Source from '../../pages/Source/';
 import Canvas from '../../pages/Canvas/';
 import BackendSearch from '../../pages/BackendSearch/';
 
+import Entity from '../../pages/Entity/';
+
 import PrivateRoute from '../Login/PrivateRoute';
 import NavBar from '../../components/NavBar/';
 import CreateAccount from "../../components/Login/createAccount";
@@ -44,6 +46,7 @@ class App extends Component {
             <PrivateRoute path="/projectcanvas/:id" component={Canvas}/>
             <PrivateRoute path="/homepage" component={NewHome}/>
             <PrivateRoute path="/backendsearch" component={BackendSearch} />
+            <PrivateRoute path="/entity/:neo4j_id" component={Entity} />
 				</Switch>
       
         	</div>

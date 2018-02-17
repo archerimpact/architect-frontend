@@ -4,7 +4,6 @@ RUN mkdir /code
 WORKDIR /code
 
 ADD package.json /code
-ADD yarn.lock /code
 RUN yarn install
 
 ADD . /code/

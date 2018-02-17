@@ -1,18 +1,19 @@
-import { ADD_LINK, 
-        ADD_ENTITY, 
-        REMOVE_ENTITY, 
-        REMOVE_SUGGESTED_ENTITY, 
-        ADD_TAG, 
-        STORE_ENTITIES, 
-        STORE_SOURCES, 
-        STORE_PROJECTS, 
-        CURRENT_PROJECT, 
-        STORE_VERTICES, 
-        STORE_CONNECTIONS, 
-        ADD_GRAPH,
-        USER_LOGIN, 
-        USER_LOGOUT,
-        } from '../actions/actionTypes';
+import { 
+  ADD_LINK, 
+  ADD_ENTITY, 
+  REMOVE_ENTITY, 
+  REMOVE_SUGGESTED_ENTITY, 
+  ADD_TAG, 
+  STORE_ENTITIES, 
+  STORE_SOURCES, 
+  STORE_PROJECTS, 
+  CURRENT_PROJECT, 
+  STORE_VERTICES, 
+  STORE_CONNECTIONS, 
+  ADD_GRAPH,
+  USER_LOGIN, 
+  USER_LOGOUT,
+  } from '../actions/actionTypes';
 
 import initialState from './initialState';
 

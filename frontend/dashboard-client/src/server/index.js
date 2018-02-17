@@ -267,7 +267,7 @@ export function addGraph(projectid, entities, sources, connections) {
 }
 
 export function searchBackendText(searchQuery) {
-  var url = 'http://35.197.34.74:9200/_search';
+  var url = configData.elastic_url + '/_search';
   var query = {
     query: {
       match: {
@@ -292,4 +292,83 @@ export function searchBackendText(searchQuery) {
       console.log(error);
     })
   });
+}
+
+export function getBackendNode(neo4j_id){
+    /* retrieves the corresponding neo4j nodes of one id */
+
+  var url = configData.neo4j_url + '/db/data/cypher'
+  var headers = {
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    }
+  };
+  var data = {
+    "query" : "MATCH (node) WHERE ID(node)={neo4j_id} RETURN node",
+    params: {
+      neo4j_id: parseInt(neo4j_id)
+    }   
+  }
+  return new Promise(function(fulfill, reject) {
+    axios.post(url, data, headers)
+    .then(function (response) {
+      fulfill(response.data.data);
+    })
+    .catch(function(error) {
+      console.log(error);
+    })
+  }); 
+}
+
+export function getBackendNodes(neo4j_ids){ 
+  /* retrieves the corresponding neo4j nodes of a list of ids */
+
+  var url = configData.neo4j_url + '/db/data/cypher'
+  var headers = {
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    }
+  };
+  var data = {
+    query: 'MATCH (node) WHERE ID(node) in {neo4j_ids} RETURN node',
+    params: {
+      neo4j_ids: neo4j_ids
+    }   
+  }
+  return new Promise(function(fulfill, reject) {
+    axios.post(url, data, headers)
+    .then(function (response) {
+      fulfill(response.data.data);
+    })
+    .catch(function(error) {
+      console.log(error);
+    })
+  }); 
+}
+
+export function getNodeRelationships(neo4j_id){
+  var url = configData.neo4j_url + '/db/data/cypher'
+  var headers = {
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    }
+  };
+  var data = {
+  'query' : 'MATCH (node) WHERE id(node)={neo4j_id} MATCH (node)-[r]-(end) RETURN r, end',
+    'params': {
+      'neo4j_id': parseInt(neo4j_id)
+    } 
+  }
+  return new Promise(function(fulfill, reject) {
+    axios.post(url, data, headers)
+    .then(function (response) {
+      fulfill(response.data.data);
+    })
+    .catch(function(error) {
+      console.log(error);
+    })
+  }); 
 }
