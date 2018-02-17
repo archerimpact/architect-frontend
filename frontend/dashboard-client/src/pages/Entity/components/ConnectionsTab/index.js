@@ -9,7 +9,6 @@ class ConnectionsTab extends Component {
   render(){
     return(
       <div className="tab">
-        <h3><u>Connections</u></h3>
         {this.props.nodeRelationships.map((tuple) => {
           return(
             <div className="connectionCard">

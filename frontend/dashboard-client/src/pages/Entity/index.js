@@ -6,11 +6,18 @@ import EntityCard from './components/EntityCard/';
 import SummaryInfo from './components/SummaryInfo/';
 import ConnectionsTab from './components/ConnectionsTab/';
 
+import {Tabs, Tab} from 'material-ui/Tabs';
+
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
 import * as server from '../../server/';
+
+const tab_style = {
+  backgroundColor: '#FFFFFF',
+  color:'#747474'
+};
 
 class Entity extends Component {
 
@@ -58,7 +65,19 @@ class Entity extends Component {
         <div className="entityInfo">
           <EntityCard nodeItem={this.state.nodeData[0]} />
           <SummaryInfo nodeItem={this.state.nodeData[0]} nodeRelationships={this.state.relationshipData}/>
-          <ConnectionsTab nodeRelationships={this.state.relationshipData}/>
+          <div className="tabs" style={{width:'100%'}}>
+            <Tabs className="tab">
+              <Tab label="Connections" type="default" style={tab_style}>
+                <div className="connections-tab">
+                  <ConnectionsTab nodeRelationships={this.state.relationshipData}/>
+                </div>
+              </Tab>
+              <Tab label="Graph" style={tab_style}>
+                <div className="column">
+                </div>
+              </Tab>
+            </Tabs>
+          </div>
         </div>
       );
     }
