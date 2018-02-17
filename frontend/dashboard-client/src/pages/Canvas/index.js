@@ -23,7 +23,7 @@ class Canvas extends Component {
     } else {
       return (
         <GraphContainer 
-          vertexes={this.props.savedVertexes.vertices.slice()} 
+          vertexes={[...this.props.savedVertices.vertices].slice()} 
           connections={this.props.savedConnections.connections.slice()} 
         />
       );
@@ -46,7 +46,7 @@ function mapStateToProps(state, props) {
   } else {
     return {
       status: 'isLoaded',
-      savedVertexes: state.data.savedVertices,
+      savedVertices: state.data.savedVertices,
       savedConnections: state.data.savedConnections
     }
   }

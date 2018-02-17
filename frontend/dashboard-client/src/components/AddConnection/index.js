@@ -74,7 +74,8 @@ class AddConnection extends Component {
 
 		let vertexItems = [];
 		if (this.props.status !== 'isLoading') {
-			vertexItems = this.props.vertices.map((vertex) => {
+      const vertices = [...this.props.vertices].slice();
+			vertexItems = vertices.map((vertex) => {
 				return <MenuItem value={vertex} primaryText={vertex.name} />;
 			})
 		}

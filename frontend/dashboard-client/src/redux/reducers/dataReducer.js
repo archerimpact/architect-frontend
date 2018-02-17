@@ -68,7 +68,7 @@ export default function (state = initialState, action) {
 			return {
 				...state,
 				savedEntities: {
-					...state.savedEntities,
+					//...state.savedEntities,
 					status: 'isLoaded',
 					entities: action.payload
 				},
@@ -78,7 +78,7 @@ export default function (state = initialState, action) {
 			return {
 				...state,
 				savedSources: {
-					...state.savedSources,
+					//...state.savedSources,
 					status: 'isLoaded',
 					documents: action.payload
 				},
@@ -111,7 +111,7 @@ export default function (state = initialState, action) {
 			return {
 				...state,
 				savedProjects: {
-					...state.savedProjects,
+					//...state.savedProjects,
 					status: 'isLoaded',
 					projects: action.payload
 				}
@@ -120,7 +120,7 @@ export default function (state = initialState, action) {
 			return {
 				...state,
 				savedVertices: {
-					...state.savedVertices,
+					//...state.savedVertices,
 					status: 'isLoaded',
 					vertices: action.payload
 				}
@@ -129,7 +129,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         savedConnections: {
-          ...state.savedConnections,
+          //...state.savedConnections,
           status: 'isLoaded',
           connections: action.payload
         }

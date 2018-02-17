@@ -12,10 +12,10 @@ class GraphContainer extends Component {
   }
 
   getLinks(connections) {
-    debugger
-    var newconnections = connections.slice();
-    var links = newconnections.map((connection)=> {
-      return({"source": connection.vertices[0], "target": connection.vertices[1]})
+    const newconnections = connections.slice();
+    const links = newconnections.map((connection)=> {
+      const vertex = connection.vertices.slice()
+      return({"source": vertex[0].slice(), "target": vertex[1].slice()})
     });
     return links;
   }

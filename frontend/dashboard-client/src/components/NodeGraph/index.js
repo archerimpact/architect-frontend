@@ -148,10 +148,10 @@ class NodeGraph extends Component {
 		};*/
 		
 		const data = {
-			"nodes": nodes,
-			"links": links
+			"nodes": nodes.slice(),
+			"links": links.slice()
 		};
-    
+        
 		const width = 1000;
 		const height = 700;
     

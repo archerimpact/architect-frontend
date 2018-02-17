@@ -105,6 +105,8 @@ export function getConnectionList(projectid) {
 
   var url ='http://localhost:8000/investigation/connectionList';
 
+  //debugger;
+
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
       params: {
