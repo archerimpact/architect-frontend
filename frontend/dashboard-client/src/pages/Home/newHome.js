@@ -115,15 +115,6 @@ class NewHome extends React.Component {
 
     render() {
         // Can reference current node with this.props.node
-        const data_nodes = {
-            data:{
-                name: 'projects',
-                toggled: this.state.data.toggled,
-                children: this.projectList(this.props.projects)
-            },   
-            cursor: cursor
-        }
-
         const {data: stateData, cursor} = this.state
 
         return (
