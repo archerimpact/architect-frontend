@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import './style.css'
 
 import EntitiesTab from '../../containers/EntityTab';
-import NodeGraph from '../../components/NodeGraph';
 import SourcesTab from '../../containers/SourcesTab';
 import PDFUploader from '../../components/PDFUploader';
 import AddInformation from '../../containers/AddInformation';
@@ -54,7 +53,6 @@ class ProjectPage extends Component {
   							<div className="graph-canvas">
   								<Paper style={{width:"80%", margin:"0px auto", display:"flex"}}>
   								</Paper>
-
   							</div>
   						</Tab>
   						<Tab label={"Entities (" + this.props.savedEntities.entities.length + ")"} style={tab_style}>
