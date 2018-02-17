@@ -46,7 +46,7 @@ function mapStateToProps(state, props) {
   } else {
     return {
       status: 'isLoaded',
-      savedVertices: state.data.savedVertices,
+      savedVertexes: state.data.savedVertices,
       savedConnections: state.data.savedConnections
     }
   }
