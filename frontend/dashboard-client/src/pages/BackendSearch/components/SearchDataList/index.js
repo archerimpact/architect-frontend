@@ -17,13 +17,14 @@ class SearchDataList extends Component {
       return(
         <div className="searchResults">
           <h3> Search Results </h3>
-          {this.props.searchItems.map((item)=> {
+          {this.props.searchItems.map((item, key)=> {
             return(
               <SearchDataCard 
                 searchItem={item} 
                 nodeItem={this.props.nodeItems.find((element) => {
                     return element[0].metadata.id===item._source.neo4j_id
-                })} 
+                })}
+                key={key} 
               />
             );
           })}
