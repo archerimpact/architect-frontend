@@ -154,8 +154,8 @@ class NodeGraph extends Component {
     
 		const simulation = d3.forceSimulation(data.nodes)
 			.force("center", d3.forceCenter(width/2, height/2))
-			.force("charge", d3.forceManyBody())
-      //.force("collide", d3.forceCollide((d) => this.getCollide(d)))
+			//.force("charge", d3.forceManyBody())
+      .force("collide", d3.forceCollide((d) => this.getCollide(d)))
 			.force("link", d3.forceLink(data.links).id(function(d) { return d._id; }));
 
 		const svg = d3.select(this.refs.mountPoint)
@@ -200,7 +200,7 @@ class NodeGraph extends Component {
 			.on("drag", dragged)
 			.on("end", dragended));
 
-		if (this.state.text === true) {
+		if (includeText === true) {
       nodeElements.append('text')
 			.style("font-size", "12px")
 			.text((d) => d.name);
@@ -242,10 +242,10 @@ class NodeGraph extends Component {
     */
 	};
 
-  updateGraph(nodes, links) {
+  updateGraph(nodes, links, text) {
     const mountPoint = d3.select('#svgdiv');
     mountPoint.selectAll("svg").remove();
-    this.generateNetworkCanvas(nodes, links, this.state.text, this.props.width, this.props.height);
+    this.generateNetworkCanvas(nodes, links, text, this.props.width, this.props.height);
   }
 
   componentWillReceiveProps(nextProps) {		
@@ -262,12 +262,11 @@ class NodeGraph extends Component {
 	};
 
   updateCheck() {
-    this.setState((oldState) => {
-      return {
-        text: !oldState.text,
-      };
+    var newText = !this.state.text;
+    this.setState({
+      text: newText
     });
-    this.updateGraph(this.props.nodes, this.props.links);
+    this.updateGraph(this.props.nodes, this.props.links, newText);
   }
 
 	render() {
@@ -277,7 +276,7 @@ class NodeGraph extends Component {
           <Checkbox
             label="Include Text"
             checked={this.state.text}
-            onCheck={this.updateCheck.bind(this)}
+            onClick={this.updateCheck.bind(this)}
             style={styles.checkbox}
           />
         </div>

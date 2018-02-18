@@ -69,13 +69,13 @@ class Entity extends Component {
           <SummaryInfo nodeItem={this.state.nodeData[0]} nodeRelationships={this.state.relationshipData}/>
           <div className="tabs" style={{width:'100%'}}>
             <Tabs className="tab">
-              <Tab label="Connections" type="default" style={tab_style}>
+              <Tab label={"Connections (" + this.state.relationshipData.length + ")"} type="default" style={tab_style}>
                 <div className="connections-tab">
                   <ConnectionsTab nodeRelationships={this.state.relationshipData}/>
                 </div>
               </Tab>
               <Tab label="Graph" style={tab_style}>
-                <div className="column">
+                <div>
                   <GraphContainer vertexes={this.state.nodeData[0]} connections={this.state.relationshipData} />
                 </div>
               </Tab>
