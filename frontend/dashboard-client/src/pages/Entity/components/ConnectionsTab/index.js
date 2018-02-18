@@ -13,7 +13,7 @@ class ConnectionsTab extends Component {
           return(
             <div className="connectionCard" key={key}>
               <div>{"Is " + data[0].type + ": "}</div>
-              <EntityCard nodeItem={data[1]}/>
+              <EntityCard nodeItem={data[2]}/>
             </div>
           );
         })}

@@ -348,7 +348,11 @@ export function getBackendNodes(neo4j_ids){
   }); 
 }
 
-export function getNodeRelationships(neo4j_id){
+export function getBackendRelationships(neo4j_id){
+
+  /* Retrieves all relationships of a neo4j node.
+    neo4j returns items in this format: [connection, startNode, endNode] */
+
   var url = configData.neo4j_url + '/db/data/cypher'
   var headers = {
     headers: {
@@ -357,7 +361,7 @@ export function getNodeRelationships(neo4j_id){
     }
   };
   var data = {
-  'query' : 'MATCH (node) WHERE id(node)={neo4j_id} MATCH (node)-[r]-(end) RETURN r, end, node',
+  'query' : 'MATCH (node) WHERE id(node)={neo4j_id} MATCH (node)-[r]-(end) RETURN r, node, end',
     'params': {
       'neo4j_id': parseInt(neo4j_id)
     } 
