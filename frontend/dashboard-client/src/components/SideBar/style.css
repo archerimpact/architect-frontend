@@ -1,0 +1,18 @@
+.fish {
+	border-style: solid;
+	border-width: 5px;
+	display: inline-block;
+	width: 350px;
+}
+
+.directory {
+	height: 100%;
+    width: 220px; /* Set the width of the sidebar */
+    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+    z-index: 1; /* Stay on top */
+    top: 64px; /* Stay at the top */
+    left: 0;
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 4px;
+    overflow: auto;
+}
