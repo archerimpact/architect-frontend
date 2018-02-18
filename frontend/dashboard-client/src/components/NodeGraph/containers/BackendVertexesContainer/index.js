@@ -28,7 +28,7 @@ class GraphContainer extends Component {
   render(){
     return (
       <Paper>
-        <Graph nodes={this.getNodes(this.props.vertexes)} links={this.getLinks(this.props.connections)} />
+        <Graph nodes={this.getNodes(this.props.vertexes)} links={this.getLinks(this.props.connections)} height={800} width={1000} />
       </Paper>
     )
   }

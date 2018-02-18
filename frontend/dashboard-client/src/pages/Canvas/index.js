@@ -24,7 +24,7 @@ class Canvas extends Component {
       return (
         <GraphContainer 
           vertexes={this.props.savedVertexes.vertices} 
-          connections={this.props.savedConnections.connections} 
+          connections={this.props.savedConnections.connections}
         />
       );
     }
