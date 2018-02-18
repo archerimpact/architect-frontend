@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './style.css';
 
 import EntityList from './components/EntityList.js';
-import NodeGraph from '../../components/NodeGraph';
+//import NodeGraph from '../../components/NodeGraph';
 import FakeSource from '../../components/Source/fakeSource';
 import AddEntity from '../../components/Entity/AddEntity.js';
 
@@ -38,7 +38,7 @@ class SourcePage extends Component {
 					</div>
 					<div className="right-column">
 						<Paper>
-							<NodeGraph entities={this.props.sourceEntities} sources={[this.props.currentSource]}/>
+							{/*<NodeGraph entities={this.props.sourceEntities} sources={[this.props.currentSource]}/>*/}
 						</Paper>
 					</div>
 				</div>
