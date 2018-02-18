@@ -9,7 +9,7 @@ import MenuItem from 'material-ui/MenuItem';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
-
+import { withRouter } from 'react-router-dom';
 import './style.css';
 
 const styles = {
@@ -131,4 +131,4 @@ function mapStateToProps(state) {
 	}
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddConnection);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddConnection));

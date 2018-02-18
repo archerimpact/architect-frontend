@@ -14,5 +14,4 @@
     left: 0;
     overflow-x: hidden; /* Disable horizontal scroll */
     padding-top: 4px;
-    overflow: auto;
 }

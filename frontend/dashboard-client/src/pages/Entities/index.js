@@ -50,6 +50,12 @@ class Entities extends Component {
 	    this.props.actions.fetchProjectEntities(this.props.match.params.id);
 	};
 
+	componentWillReceiveProps = (newprops) => {
+		if (this.props.projectid != newprops.projectid) {
+			this.props.actions.fetchProjectEntities(newprops.projectid);
+		}
+	}
+
 	/*createEntity(suggestedEntity) {
 	    var entity = {
 	      name: suggestedEntity.name,
@@ -72,6 +78,7 @@ class Entities extends Component {
   }
 
   getEntitySource(vertex) {
+  	debugger
 		//TODO: refactor to account for entities having multiple sources
     var sourceid = vertex.entity.sources[0];
 		var source = this.props.savedSources.documents.find(function (obj) {return obj._id=== sourceid});
@@ -146,7 +153,6 @@ class Entities extends Component {
 			return(
 				<div>
 				    <h3>Your Entities</h3>
-					<Paper className="projects">
 						<Drawer width={300} containerStyle={{height: 'calc(100% - 64px)', top: 64}} openSecondary={true} open={this.state.drawerOpen} >
 				          	<AppBar onLeftIconButtonTouchTap={this.closeEntityDrawer}
 		    						iconElementLeft={<IconButton><NavigationClose /></IconButton>}
@@ -189,7 +195,6 @@ class Entities extends Component {
 			                  onDeleteEntity={this.deleteEntity}
 			                />
 				        </div>
-				    </Paper>
 				</div>
 			);      
 		}
@@ -203,16 +208,15 @@ function mapDispatchToProps(dispatch) {
 	};
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownprops) {
+	debugger
 	if (state.data.savedEntities.status === 'isLoading') {
 		return {
 			status: state.data.savedEntities.status,
 	    }
 	} else {
 	    return {
-	    	// TODO move project id to redux
-	    	listType: "entities",
-	    	projectid: 1,
+	    	projectid: ownprops.match.params.id,
 	    	entities: state.data.savedEntities.entities,
 			status: state.data.savedEntities.status,
 			savedSources: state.data.savedSources

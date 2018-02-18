@@ -13,6 +13,7 @@ import * as server from '../../server/';
 import * as actions from '../../redux/actions/';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import {withRouter } from 'react-router-dom';
 
 const add_style = {
   marginRight: 20,
@@ -111,4 +112,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddInformation)          
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddInformation))          

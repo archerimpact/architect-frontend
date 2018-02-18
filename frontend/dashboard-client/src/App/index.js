@@ -37,7 +37,7 @@ class App extends Component {
         return ( 
         	<div>
     			<NavBar isAuthenticated={this.props.isAuthenticated} logOut={this.logOut.bind(this)} logIn={this.logIn.bind(this)} />
-                <SideBar />
+                <SideBar isAuthenticated={this.props.isAuthenticated}/>
                 <div className="main">
         			<Switch>
         				<PrivateRoute exact path="/" component={Home} />

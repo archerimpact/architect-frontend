@@ -3,11 +3,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
 
-import { Link } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import * as server_utils from '../../server/utils';
-import { List, ListItem} from 'material-ui/List';
-import {red500, blue500} from 'material-ui/styles/colors';
-import Folder from 'material-ui/svg-icons/file/folder';
 
 import styles from './styleNew';
 import AddProject from './AddProject/';
@@ -16,6 +13,7 @@ import {Treebeard, decorators} from 'react-treebeard';
 import {StyleRoot} from 'radium';
 import 'font-awesome/css/font-awesome.min.css';
 import './style.css';
+
 
 decorators.Header = ({style, node}) => {
     const iconType = node.children ? 'folder-o' : 'file-text-o';
@@ -42,13 +40,20 @@ class SideBar extends React.Component {
         this.onToggle = this.onToggle.bind(this);
         this.projectList = this.projectList.bind(this);
         this.addProject = this.addProject.bind(this);
-
-        const data =  this.projectList(this.props.projects);
-        this.state = {data};
+        this.state = {
+            data: null
+        };
     }
 
     componentDidMount() {
-        this.props.actions.fetchProjects();
+        this.props.actions.fetchProjects();        
+    }
+    componentWillMount() {
+        if (this.props.isAuthenticated){
+            this.setState({
+                data: this.projectList(this.props.projects)
+            });
+        }
     }
 
     componentWillReceiveProps(nextProps){
@@ -95,21 +100,25 @@ class SideBar extends React.Component {
 
     render() {
         // Can reference current node with this.props.node
-        const {data: stateData, cursor} = this.state
-
-        return (
-            <div className="directory">
-                <AddProject submit={(freshProject)=>this.addProject(freshProject)} />
-                <StyleRoot>
-                    <div style={styles.component}>
-                        <Treebeard data={stateData}
-                                   decorators={decorators}
-                                   onToggle={this.onToggle}
-                                   style={styles}/>
-                    </div>
-                </StyleRoot>
-            </div>
-        );
+        if (!this.props.isAuthenticated) {
+            return null
+        } else {
+            const {data: stateData, cursor} = this.state
+            return (
+                <div className="directory">
+                    <AddProject submit={(freshProject)=>this.addProject(freshProject)} />
+                    <StyleRoot>
+                        <div style={styles.component}>
+                            <Treebeard data={stateData}
+                                       decorators={decorators}
+                                       onToggle={this.onToggle}
+                                       style={styles}/>
+                        </div>
+                    </StyleRoot>
+                </div>
+            );
+        }
+        
     }
 }
 

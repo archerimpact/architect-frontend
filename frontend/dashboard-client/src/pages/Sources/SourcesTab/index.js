@@ -9,7 +9,7 @@ import {
 } from 'material-ui/Table';
 import Toggle from 'material-ui/Toggle';
 
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import SearchSources from '../../../components/Source/search';
 import './style.css';
@@ -28,6 +28,11 @@ class SourcesTable extends Component {
     	this.props.actions.fetchProjectSources(this.props.projectid);
   	}
 
+  	componentWillReceiveProps = (newprops) => {
+	    if (this.props.match.params.id != newprops.match.params.id) {
+    		this.props.actions.fetchProjectSources(newprops.projectid);
+	    }
+	}
 	toggleViews() {
 		this.setState({Toggled: !this.state.Toggled});
 	}
@@ -95,4 +100,4 @@ function mapStateToProps(state) {
 	  }
 }
  
-export default connect(mapStateToProps, mapDispatchToProps)(SourcesTable);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SourcesTable));
