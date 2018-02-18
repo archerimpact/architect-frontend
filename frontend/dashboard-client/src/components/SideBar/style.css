@@ -8,7 +8,7 @@
 .directory {
 	height: 100%;
     width: 220px; /* Set the width of the sidebar */
-    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+    position: absolute; /* change to fixed to stay on top */
     z-index: 1; /* Stay on top */
     top: 64px; /* Stay at the top */
     left: 0;
