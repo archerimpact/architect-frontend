@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import './style.css'
 
-import GraphContainer from '../../components/NodeGraph/containers/Neo4jContainer/'
+import Neo4jGraphContainer from '../../components/NodeGraph/containers/Neo4jContainer/'
 
 import EntityCard from './components/EntityCard/';
 import SummaryInfo from './components/SummaryInfo/';
@@ -76,7 +76,7 @@ class Entity extends Component {
               </Tab>
               <Tab label="Graph" style={tab_style}>
                 <div>
-                  <GraphContainer vertexes={this.state.nodeData[0]} connections={this.state.relationshipData} />
+                  <Neo4jGraphContainer relationshipData={this.state.relationshipData} />
                 </div>
               </Tab>
             </Tabs>

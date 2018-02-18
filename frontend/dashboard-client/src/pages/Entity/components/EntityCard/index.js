@@ -16,7 +16,7 @@ class EntityCard extends Component {
             </div>
           </div>
           <i>Person</i>
-          <div idName="identifyingInfo">
+          <div>
             <div className="info">{this.props.nodeItem.data.nationality} </div>
           </div>
           <hr></hr>

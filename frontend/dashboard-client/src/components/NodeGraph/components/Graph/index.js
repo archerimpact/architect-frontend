@@ -135,7 +135,7 @@ class NodeGraph extends Component {
       return 60;
     }
     else {
-      return 60;
+      return 40;
     }
   }
 
