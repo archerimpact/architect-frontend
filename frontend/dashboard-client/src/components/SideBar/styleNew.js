@@ -11,7 +11,7 @@ export default {
         },
         backgroundColor: 'white',
         color: 'white',
-        paddingLeft: '12px'
+        paddingLeft: '18px'
     },
     tree: {
         base: {
