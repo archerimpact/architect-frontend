@@ -26,8 +26,8 @@ class GraphContainer extends Component {
 
   getNodesFromRelationshipData(relationshipData) {
     return [].concat.apply([], relationshipData.map((data) => {
-      var startNode = data[2]
-      var endNode = data[1]
+      var startNode = data[1]
+      var endNode = data[2]
       return([
         {"_id": startNode.metadata.id, "name": startNode.data.name, "type": startNode.metadata.labels[0]},
         {"_id": endNode.metadata.id, "name": endNode.data.name, "type": endNode.metadata.labels[0]}

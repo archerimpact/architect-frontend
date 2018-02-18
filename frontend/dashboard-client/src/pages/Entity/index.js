@@ -51,13 +51,15 @@ class Entity extends Component {
     server.getBackendRelationships(neo4j_id)
       .then(data => {
         /* neo4j returns items in this format: [connection, startNode, endNode] */
-        
+
         this.setState({relationshipData: data})
       })
       .catch(err => {
         console.log(err)
       })
   }
+
+
 
   render(){
     if (this.state.nodeData== null || this.state.relationshipData==null) {

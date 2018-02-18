@@ -2,15 +2,36 @@ import React, { Component } from 'react';
 
 import './style.css'
 
+import Person from 'material-ui/svg-icons/social/person';
+import Entity from 'material-ui/svg-icons/social/domain';
+import Document from 'material-ui/svg-icons/av/note';
+
 import { Link } from 'react-router-dom';
 
 class EntityCard extends Component {
+  constructor(props) {
+    super(props);
+    this.renderIcon = this.renderIcon.bind(this);
+  }
+
+  renderIcon(type) {
+    if (type.toLowerCase() === "person") {
+      return <Person className="icon"/>
+    }
+    if (type.toLowerCase() === "document") {
+      return <Document className="icon"/>
+    }
+    if (type.toLowerCase() === "corporation") {
+      return <Entity className="icon"/>
+    }
+  }
 
   render(){
     if (this.props.nodeItem.metadata.labels[0]==='person'){
       return(    
         <div className="outerBox">
           <div className="heading">
+            {this.renderIcon(this.props.nodeItem.metadata.labels[0])}
             <div className="titleName">
               <Link to={"/entity/" + this.props.nodeItem.metadata.id}><h2>{this.props.nodeItem.data.name}</h2></Link>
             </div>
@@ -26,6 +47,7 @@ class EntityCard extends Component {
       return (
         <div className="outerBox">
           <div className="heading">
+            {this.renderIcon(this.props.nodeItem.metadata.labels[0])}
             <div className="titleName">
               <Link to={"/entity/" + this.props.nodeItem.metadata.id}><h2>{this.props.nodeItem.data.name}</h2></Link>
             </div>
@@ -44,8 +66,13 @@ class EntityCard extends Component {
       );
     } else if (this.props.nodeItem.metadata.labels[0]==='Document'){
       return (
-        <div>
-          <h2>Document</h2>
+        <div className="outerBox">
+          <div className="heading">
+            {this.renderIcon(this.props.nodeItem.metadata.labels[0])}
+            <div className="titleName">
+              <h2>Document</h2>
+            </div>
+          </div>
           <p>{"GCS Self: " + this.props.nodeItem.data.self}</p>
           <hr></hr>
         </div>
