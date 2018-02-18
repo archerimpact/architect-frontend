@@ -5,6 +5,7 @@ var multer = require('multer'),
     vertex = require('../models/vertex'),
     Project = require('../models/project'),
     Connection = require('../models/connection'),
+    Graph = require('../models/graph'),
     mongoose = require('mongoose'),
     request = require('request'),
     cloud = require('./cloud'),
@@ -111,11 +112,12 @@ function saveEntity(name, type, sources) {
     newVert.save()
         .then(item => {
             console.log("Successful save 2/2");
+            return newVert
         })
         .catch(err => {
             res.status(400).send("Unable to save to database because: " + err);
         })
-    return vert._id
+    return newVert
 }
 
 app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
@@ -234,7 +236,8 @@ app.get('/investigation/project', function(req, res) {
 })
 
 app.post('/investigation/entity', function(req, res){
-    var entityid = saveEntity(req.body.name, req.body.type, req.body.sources)
+    var newEntity = saveEntity(req.body.name, req.body.type, req.body.sources)
+    var entityid = newEntity._id
 
     /* Updates the project document to include this entity in its list of entities. */
     db.collection('projects').update(
@@ -242,8 +245,8 @@ app.post('/investigation/entity', function(req, res){
       {$push: {entities: entityid}}
     )
     .then(data => {
-      console.log("Updated project.")
-      res.send("Finished creating entity.")
+      console.log("Updated project 1/1.")
+      res.send("Sucessful adding of entity")
     })
     .catch((err) => {console.log(err)});
 })
@@ -309,9 +312,54 @@ app.post('/investigation/connection', function(req, res){
   var newConnection = new Connection(connection);
   newConnection.save()
     .then(item => {
-      res.send("New connection saved");
+      console.log("Saved connection 1/1.")
+      db.collection('vertexes').update(
+          {_id: mongoose.Types.ObjectId(req.body.idOne)},
+          {$pull: {connections: connection._id}}
+        ).then((data) => { 
+          console.log("Updated entity 1/2.")
+          db.collection('vertexes').update(
+            {_id: mongoose.Types.ObjectId(req.body.idTwo)},
+            {$pull: {connections: connection._id}}
+            ).then((data) => {
+              console.log("Updated entity 2/2.")
+              db.collection('projects').update(
+                {_id: mongoose.Types.ObjectId(req.body.projectid)},
+                {$push: {connections: connection._id}}
+              )
+              .then((data) => {
+                console.log("Updated project 1/1.");
+                res.send("New connection saved");
+              }).catch(err => {console.log(err)})
+          }).catch(err => {console.log(err)})
+        }).catch(err =>{console.log(err)})
+    }).catch(err => {
+      res.status(400).send("Unable to save to database because: " + err);
     })
-    .catch(err => {
+})
+
+app.post('/investigation/project/graph', function(req, res){
+  /* creates a new graph object, also updates the project to include a reference to the graph
+   graphs contain entities, sources, and connections */
+
+  var graph = {
+    _id: new mongoose.Types.ObjectId,
+    entities: req.body.entities,
+    sources: req.body.sources,
+    connections: req.body.connections //TODO: decide how we want to deal with confidence level of connections
+  };
+  var newGraph = new Graph(graph);
+  newGraph.save()
+    .then(item => {
+      console.log("Saved graph 1/1.")
+      db.collection('projects').update(
+          {_id: mongoose.Types.ObjectId(req.body.projectid)},
+          {$push: {graphs: graph._id}}
+        ).then((data) => { 
+          console.log("Updated project 1/1.")
+          res.send("New graph created.")
+        }).catch(err =>{console.log(err)})
+    }).catch(err => {
       res.status(400).send("Unable to save to database because: " + err);
     })
 })
@@ -440,10 +488,42 @@ app.get('/investigation/project/sources', function(req, res) {
   });
 
 app.get('/investigation/vertexList', function(req, res) {
-    db.collection('vertexes').find({}).toArray(function(err, result) {
-        if (err) throw err;
-        res.send(result);
-    });
+    // gets all vertexes associated with a project
+
+    var projectid = mongoose.Types.ObjectId(req.query.projectid)
+    db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
+    .then((projects) => {
+      var vertexes = projects[0].entities.concat(projects[0].sources)
+      db.collection('vertexes').find({_id: {$in: vertexes}}).toArray()
+        .then((vertexes) => {
+          if (vertexes.length === 0) {
+            res.send([])
+          } else {
+            res.send(vertexes)
+          }
+        })
+        .catch((err)=>{console.log(err)})    
+    })
+    .catch((err)=>{console.log(err)})    
+});
+
+app.get('/investigation/connectionList', function(req, res) {
+    // Gets all connections associated with a project
+
+    var projectid = mongoose.Types.ObjectId(req.query.projectid)
+    db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
+    .then((projects) => {
+      db.collection('connections').find({_id: {$in: projects[0].connections}}).toArray()
+        .then((connections) => {
+          if (connections.length === 0) {
+            res.send([])
+          } else{
+            res.send(connections)
+          }
+        })
+        .catch((err)=>{console.log(err)})    
+    })
+    .catch((err)=>{console.log(err)}) 
 });
 
 app.get('/investigation/searchSources', function(req, res) {

@@ -2,7 +2,6 @@
  display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #ccc;
   font-family: 'Helvetica Neue', Arial;
 }
 .wrapper {
@@ -17,7 +16,7 @@
   width: 300px;
   border-radius: 5px;
   height: 40px;
-  border: 1px solid white;
+  border: 1px solid #ccc;
   margin: 20px;
 }
 li{

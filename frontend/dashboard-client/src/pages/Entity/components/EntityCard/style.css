@@ -1,0 +1,22 @@
+.outerBox{
+  display: block;
+}
+
+.heading, .identifyingInfo{
+  white-space:nowrap;
+}
+
+.titleName, .info, .status{
+  display:inline-block;
+}
+
+.status{
+  margin: 15px;
+  color: green;
+}
+
+.info{
+  margin-right:15px;
+  margin-top:10px;
+  margin-bottom:10px;
+}

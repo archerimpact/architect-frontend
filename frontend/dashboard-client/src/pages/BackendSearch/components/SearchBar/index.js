@@ -13,15 +13,11 @@ class Search extends Component {
     this.updateSearch = this.updateSearch.bind(this);
   }
   
-  componentWillMount() {
-    this.search();
-  }
-  
   search( query = '' ) {
     this.setState({searchQuery: query});
     this.props.onSubmitSearch(query)
   }
-  
+
   updateSearch() {
     this.search(this.refs.query.value);
   }
@@ -30,7 +26,12 @@ class Search extends Component {
   render (){
     return(
       <div className="searchBody">
-        <input className="app_input" ref="query" type="text" onChange={(e) => this.updateSearch()}/>
+        <input className="app_input" 
+          ref="query" 
+          type="text" 
+          placeholder="Search all entities."
+          onChange={(e) => this.updateSearch()}
+        />
         <button onClick={(e) => this.props.onSubmitSearch(this.state.searchQuery)}>Search</button>
       </div>
     );

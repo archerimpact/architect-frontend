@@ -37,10 +37,10 @@ class AddConnection extends Component {
 
 
 
-	componentDidMount() {
-		this.props.actions.fetchVertices();
+/*	componentDidMount() {
+		this.props.actions.fetchVertices(this.props.projectid);
 	}
-
+*/
 	handleSubmit = (event) => {
 		event.preventDefault();
 		this.props.onConnectionSubmit({idOne: this.state.vertexOne._id, idTwo: this.state.vertexTwo._id, description: this.state.description, projectid: this.props.projectid});
@@ -49,6 +49,7 @@ class AddConnection extends Component {
 			vertexTwo: '',
 			description: '',
 		});
+    this.props.actions.fetchConnections(this.props.projectid);
 	};
 
 	handleVertexOneChange(event, index, value) {
@@ -73,7 +74,8 @@ class AddConnection extends Component {
 
 		let vertexItems = [];
 		if (this.props.status !== 'isLoading') {
-			vertexItems = this.props.vertices.map((vertex) => {
+      const vertices = [...this.props.vertices].slice();
+			vertexItems = vertices.map((vertex) => {
 				return <MenuItem value={vertex} primaryText={vertex.name} />;
 			})
 		}
@@ -124,7 +126,7 @@ function mapStateToProps(state) {
 	} else {
 	    return {
 	    	status: state.data.savedVertices.status,
-	        vertices: state.data.savedVertices.vertices,
+	      vertices: state.data.savedVertices.vertices,
 	    }
 	}
 };

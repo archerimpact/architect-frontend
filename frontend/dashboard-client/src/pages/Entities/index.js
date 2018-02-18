@@ -36,7 +36,7 @@ class Entities extends Component {
 			entitySortBy: {property: null, reverse: false},
 			queryEntity: null
 		};
-	    this.createEntity = this.createEntity.bind(this);
+	    //this.createEntity = this.createEntity.bind(this);
 	    this.deleteEntity = this.deleteEntity.bind(this);
 		this.getEntitySource = this.getEntitySource.bind(this);
 		this.openEntityDrawer = this.openEntityDrawer.bind(this);
@@ -50,22 +50,22 @@ class Entities extends Component {
 	    this.props.actions.fetchProjectEntities(this.props.match.params.id);
 	};
 
-	createEntity(suggestedEntity) {
-    var entity = {
-      name: suggestedEntity.name,
-      type: suggestedEntity.type.toLowerCase(),
-      sources: suggestedEntity.sources,
-      projectid: this.props.projectid,
-      tags: []
-    }
-    this.props.actions.createEntity(entity);
-    this.props.actions.deleteSuggestedEntity(suggestedEntity, suggestedEntity.sources[0]);
-  }
+	/*createEntity(suggestedEntity) {
+	    var entity = {
+	      name: suggestedEntity.name,
+	      type: suggestedEntity.type.toLowerCase(),
+	      sources: suggestedEntity.sources,
+	      projectid: this.props.projectid,
+	      tags: []
+	    }
+	    this.props.actions.createEntity(entity);
+	    this.props.actions.deleteSuggestedEntity(suggestedEntity, suggestedEntity.sources[0]);
+	  }*/
 
   deleteEntity(entity) {
-    if (this.props.listType === "suggested_entities") {
+    /*if (this.props.listType === "suggested_entities") {
       this.props.actions.deleteSuggestedEntity(entity, entity.sources[0])
-    }
+    }*/
     if (this.props.listType === "entities") {
       this.props.actions.deleteEntity(entity, this.props.projectid)
     }
@@ -180,7 +180,6 @@ class Entities extends Component {
 						        </div>
 						    </div>
 				        	<EntitiesList 
-			                  listType={this.props.listType} 
 			                  entities={this.props.entities} 
 			                  searchTerm={this.state.queryEntity} 
 			                  sortBy={this.state.entitySortBy} 

@@ -1,7 +1,7 @@
 const configData = {
     /* mlab acc - user: ofacasaurus; pass: m1chaelsBlueKettle */
     frontend_url: 'http://localhost:3000',
-    db_url: 'mongodb://alice:archer@ds143245.mlab.com:43245/uxreceiverdev',
+    db_url: 'mongodb://alice:archer@ds125578.mlab.com:25578/redtwine1',
     express_session_secret: 'sNGDGX1Kd5j4sQRYWE33',
     db_options: {
         useMongoClient: true,
