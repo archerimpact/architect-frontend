@@ -6,8 +6,9 @@ import * as actions from '../redux/actions/';
 import { Route, Redirect, Switch, withRouter} from 'react-router-dom';
 import PrivateRoute from './PrivateRoute/';
 
-
 import NavBar from '../components/NavBar/';
+import SideBar from '../components/SideBar';
+
 import Login from '../pages/Login/';
 import CreateAccount from '../pages/CreateAccount/';
 import Home from '../pages/Home/';
@@ -15,7 +16,8 @@ import Canvas from '../pages/Canvas/';
 import Source from '../pages/Source/';
 import Sources from '../pages/Sources/';
 import Entities from '../pages/Entities/';
-
+import BackendSearch from '../pages/BackendSearch';
+import './style.css';
 class App extends Component {
 
 	constructor(props) {
@@ -34,15 +36,19 @@ class App extends Component {
         return ( 
         	<div>
     			<NavBar isAuthenticated={this.props.isAuthenticated} logOut={this.logOut.bind(this)} logIn={this.logIn.bind(this)} />
-    			<Switch>
-    				<PrivateRoute exact path="/" component={Home} />
-    				<Route path="/login" component={Login} />
-                    <Route path="/create_account" component={CreateAccount} />
-    				<PrivateRoute path="/project/:id" component={Canvas} />				    		
-    				<PrivateRoute path="/source/:id" component={Source}/>
-                    <PrivateRoute path="/sources/:id" component={Sources}/>
-                    <PrivateRoute path="/entities/:id" component={Entities}/>
-				</Switch>
+                <SideBar />
+                <div className="main">
+        			<Switch>
+        				<PrivateRoute exact path="/" component={Home} />
+        				<Route path="/login" component={Login} />
+                        <Route path="/create_account" component={CreateAccount} />
+        				<PrivateRoute path="/canvas/:id" component={Canvas} />				    		
+        				<PrivateRoute path="/source/:id" component={Source}/>
+                        <PrivateRoute path="/sources/:id" component={Sources}/>
+                        <PrivateRoute path="/entities/:id" component={Entities}/>
+                        <PrivateRoute path="/backendsearch" component={BackendSearch} />
+    				</Switch>
+                </div>
         	</div>
         );
     }

@@ -12,7 +12,8 @@ import {
   STORE_PROJECTS, 
   CURRENT_PROJECT,
   STORE_VERTICES,
-  ADD_CONNECTION
+  ADD_CONNECTION,
+  STORE_SEARCH_ITEMS
   } from './actionTypes';
 
 import * as server_utils from '../../server/utils';
@@ -183,7 +184,10 @@ export function fetchSource(sourceid) {
   return function (dispatch, getState) {
     return server.getSource(sourceid)
       .then(data => {
-        dispatch(storePendingEntities(data.entities));
+        /*dispatch(storePendingEntities(data.entities)); TODO: @alice, storePendingEntities needs to work differently
+        so that it doesn't try to access the source via the entities, but rather the entities as
+        a whole associated with a source. So it looks like you're treating suggested entities like real
+        ones when they're not, like they don't have sources.*/
         dispatch(storeSources(data.documents));
       })
       .catch(err => {
@@ -204,24 +208,27 @@ export function fetchProjectEntities(projectid) {
   }
 }
 
-export function fetchProjectSources(projectid) {
-  return function(dispatch, getState) {
-    return server.getSuggestedEntities(projectid)
-      .then((data) => {
-        dispatch(storePendingEntities(data.entities))
-        dispatch(storeSources(data.documents));
-      })
-      .catch((err) => console.log(err));
-  }
-}
+// export function fetchProjectSources(projectid) {
+//   return function(dispatch, getState) {
+//     return server.getSuggestedEntities(projectid)
+//       .then((data) => {
+//         //dispatch(storePendingEntities(data.entities)) //TODO: related to TODO of above in fetchSource
+//         dispatch(storeSources(data.documents));
+//       })
+//       .catch((err) => console.log(err));
+//   }
+// }
 
-/* For if you only want project sources and not suggested entities,
-    currently not being used.
+//  For if you only want project sources and not suggested entities,
+//     currently not being used.
     
 export function fetchProjectSources(projectid) {
   return function (dispatch, getState) {
+    console.log("FETCHING");
     return server.getProjectSources(projectid)
       .then(sources => {
+        console.log("SOURCES");
+        console.log(sources);
         dispatch(storeSources(sources))
       })
       .catch(err => {
@@ -229,7 +236,7 @@ export function fetchProjectSources(projectid) {
       })
   }
 }
-*/
+
 
 export function fetchProject(projectid) {
   return function(dispatch, getState) {

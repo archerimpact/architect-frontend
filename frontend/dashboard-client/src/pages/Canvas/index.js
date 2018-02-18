@@ -64,7 +64,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, props) {
-  if (state.data.savedEntities.status === 'isLoading' || state.data.savedSources.status === 'isLoading' || state.data.pendingEntities.status === 'isLoading') {
+  if (state.data.savedEntities.status === 'isLoading' || state.data.savedSources.status === 'isLoading') {
     return {
       status: 'isLoading',
       currentProject: state.data.currentProject
