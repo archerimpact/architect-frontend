@@ -35,7 +35,8 @@ export default {
                 display: 'block'
             },
             activeLink: {
-                background: 'white'
+                borderRight: '2px solid #3498db',
+                color: '#3498db',
             },
             toggle: {
                 base: {
