@@ -63,7 +63,7 @@ export default {
                 base: {
                     display: 'inline-block',
                     verticalAlign: 'center',
-                    color: '#888888'
+                    color: '#585858'
                 },
                 connector: {
                     width: '2px',
