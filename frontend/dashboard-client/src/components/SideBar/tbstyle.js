@@ -20,19 +20,17 @@ export default {
             margin: 0,
             padding: 0,
             color: '#888888',
-            fontFamily: 'lucida grande ,tahoma,verdana,arial,sans-serif',
             fontSize: '14px',
             verticalAlign: 'center'
         },
         node: {
             base: {
-                position: 'relative'
+                position: 'relative',
             },
             link: {
                 cursor: 'pointer',
                 position: 'relative',
-                padding: '0px 5px',
-                display: 'flex'
+                display: 'flex',
             },
             activeLink: {
                 borderRight: '2px solid #3498db',

@@ -6,11 +6,11 @@ import * as actions from '../../redux/actions/';
 import { withRouter, Link } from 'react-router-dom';
 import * as server_utils from '../../server/utils';
 
-import styles from './styleNew';
+import styles from './tbstyle';
+import animations from './tbanimations';
 import AddProject from './AddProject/';
 
 import {Treebeard, decorators} from 'react-treebeard';
-import {StyleRoot} from 'radium';
 import 'font-awesome/css/font-awesome.min.css';
 import './style.css';
 
@@ -21,17 +21,17 @@ decorators.Header = ({style, node}) => {
     const iconStyle = {marginLeft: '5px', marginRight: '5px'};
     const pathname = '/'+node.name + '/'+node.pid;
     return (
-            <div style={{flexGrow: '1'}}>
+            <div className="elementContainer">
                 {node.children ? 
                     <div >
                         <i className={iconClass} style={iconStyle}/>
-                        {node.name}
+                        <span className="elem">{node.name}</span>
                     </div>
                     : 
                     <Link style={{color: 'inherit', textDecoration: 'none'}} to={pathname}> 
                         <div>
                             <i className={iconClass} style={iconStyle}/>
-                                {node.name}
+                            <span className="elem">{node.name}</span>
                         </div>
                     </Link>
                 }
@@ -120,7 +120,8 @@ class SideBar extends React.Component {
                             <Treebeard data={stateData}
                                        decorators={decorators}
                                        onToggle={this.onToggle}
-                                       style={styles}/>
+                                       style={styles}
+                                       animations={animations}/>
                         </div>
                 </div>
             );
