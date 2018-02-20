@@ -19,20 +19,28 @@ decorators.Header = ({style, node}) => {
     const iconType = node.children ? 'folder-o' : 'file-text-o';
     const iconClass = `fa fa-${iconType}`;
     const iconStyle = {marginLeft: '5px', marginRight: '5px'};
-    const pathname = '/'+node.name + '/'+node.pid
+    const pathname = '/'+node.name + '/'+node.pid;
     return (
-         <div style={style.base}>
-             <div style={style.title}>
-                <i className={iconClass} style={iconStyle}/>
-                {node.children ? node.name : 
-                    <Link style={{color: 'inherit', textDecoration: 'none',}} to={pathname}> 
+            <div style={{flexGrow: '1'}}>
+                {node.children ? 
+                    <div >
+                        <i className={iconClass} style={iconStyle}/>
                         {node.name}
+                    </div>
+                    : 
+                    <Link style={{color: 'inherit', textDecoration: 'none'}} to={pathname}> 
+                        <div>
+                            <i className={iconClass} style={iconStyle}/>
+                                {node.name}
+                        </div>
                     </Link>
                 }
             </div>
-        </div>
+
     );
 };
+
+
 
 class SideBar extends React.Component {
     constructor(props) {
@@ -75,6 +83,7 @@ class SideBar extends React.Component {
         const projectItems = projects.map((project) => {
             return ({
                 name: project.name,
+                pid: project._id,
                 children: [
                     { name: 'canvas', pid: project._id},
                     { name: 'sources', pid: project._id},
@@ -107,14 +116,12 @@ class SideBar extends React.Component {
             return (
                 <div className="directory">
                     <AddProject submit={(freshProject)=>this.addProject(freshProject)} />
-                    <StyleRoot>
                         <div style={styles.component}>
                             <Treebeard data={stateData}
                                        decorators={decorators}
                                        onToggle={this.onToggle}
                                        style={styles}/>
                         </div>
-                    </StyleRoot>
                 </div>
             );
         }

@@ -32,7 +32,7 @@ export default {
                 cursor: 'pointer',
                 position: 'relative',
                 padding: '0px 5px',
-                display: 'block'
+                display: 'flex'
             },
             activeLink: {
                 borderRight: '2px solid #3498db',
