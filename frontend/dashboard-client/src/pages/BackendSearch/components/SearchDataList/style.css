@@ -1,3 +1,4 @@
 .searchResults{
-  padding: 30px;
+  max-width: 1000px;
+  margin: 0px auto;
 }

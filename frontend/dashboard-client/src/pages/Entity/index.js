@@ -57,8 +57,9 @@ class Entity extends Component {
     } else {
       return(
         <div className="entityInfo">
-          <EntityCard nodeItem={this.state.nodeData[0]} />
-          <SummaryInfo nodeItem={this.state.nodeData[0]} nodeRelationships={this.state.relationshipData}/>
+          <EntityCard nodeItem={this.state.nodeData} />
+          <hr></hr>
+          <SummaryInfo nodeItem={this.state.nodeData} nodeRelationships={this.state.relationshipData}/>
           <ConnectionsTab nodeRelationships={this.state.relationshipData}/>
         </div>
       );
