@@ -1,3 +1,5 @@
+/* All of this styling is not in use.
+
 .header{
   display: flex;
   flex-direction: row;
@@ -31,12 +33,6 @@
   display:inline-block;
 }
 
-.graph-canvas{
-  width:90%;
-  margin:15px auto;
-  text-align: center;
-}
-
 .column{
   width:70%;
   margin:15px auto;
@@ -44,3 +40,12 @@
   position: relative;
 
 }
+*/
+
+.graph {
+  height: 800px;
+  background-color:white;
+  margin: 10px;
+  margin-top: 20px;
+}
+

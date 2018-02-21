@@ -81,7 +81,7 @@ class Entity extends Component {
                 </div>
               </Tab>
               <Tab label="Graph" style={tab_style}>
-                <div>
+                <div className="graph">
                   <Neo4jGraphContainer relationshipData={this.state.relationshipData} />
                 </div>
               </Tab>
