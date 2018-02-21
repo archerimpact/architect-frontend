@@ -13,8 +13,11 @@ class ConnectionsTab extends Component {
         {this.props.nodeRelationships.map((tuple) => {
           return(
             <div className="connectionCard">
-              <div>{"Is " + tuple[0].type + ": "}</div>
-              <EntityCard nodeItem={tuple[1]}/>
+              <div className="connectionType">
+                <div>{"Is " + tuple[0].type + ": "}</div>
+                </div>
+                <EntityCard nodeItem={tuple[1]}/>
+              <hr></hr>
             </div>
           );
         })}

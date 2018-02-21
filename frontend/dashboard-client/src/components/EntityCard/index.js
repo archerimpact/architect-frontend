@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 class EntityCard extends Component {
 
   render(){
-    var nodeItem = this.props.nodeItem[0]
+    var nodeItem = this.props.nodeItem
     if (typeof(nodeItem) ==='undefined') {
       return (
         <div></div>
@@ -48,7 +48,7 @@ class EntityCard extends Component {
       );
     } else if (nodeItem.metadata.labels[0]==='Document'){
       return (
-        <div>
+        <div className="outerBox">
           <h2>Document</h2>
           <p>{"GCS Self: " + nodeItem.data.self}</p>
         </div>

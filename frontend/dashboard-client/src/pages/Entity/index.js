@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import './style.css'
 
-import EntityCard from './components/EntityCard/';
+import EntityCard from '../../components/EntityCard/';
 import SummaryInfo from './components/SummaryInfo/';
 import ConnectionsTab from './components/ConnectionsTab/';
 
@@ -57,9 +57,9 @@ class Entity extends Component {
     } else {
       return(
         <div className="entityInfo">
-          <EntityCard nodeItem={this.state.nodeData} />
+          <EntityCard nodeItem={this.state.nodeData[0]} />
           <hr></hr>
-          <SummaryInfo nodeItem={this.state.nodeData} nodeRelationships={this.state.relationshipData}/>
+          <SummaryInfo nodeItem={this.state.nodeData[0]} nodeRelationships={this.state.relationshipData}/>
           <ConnectionsTab nodeRelationships={this.state.relationshipData}/>
         </div>
       );
