@@ -12,6 +12,10 @@ import Add from 'material-ui/svg-icons/content/add';
 
 import { Link } from 'react-router-dom';
 
+const customContentStyle = {
+  width: '300px'
+}
+
 class EntityCard extends Component {
 
   constructor(props){
@@ -57,6 +61,7 @@ class EntityCard extends Component {
             open={this.state.open}
             onRequestClose={this.handleClose}
             autoScrollBodyContent={true}
+            contentStyle={customContentStyle}
           >
             <SideBar isAuthenticated={true}/>
           </Dialog>
