@@ -8,6 +8,8 @@ const styles = {
   },
   checkbox: {
     marginBottom: 16,
+    marginTop: 16,
+    marginLeft:16
   },
 };
 
@@ -101,7 +103,7 @@ class NodeGraph extends Component {
       return "#49FFB7";
     }
     if (node.type === "Company" || node.type === "organization" || node.type==="corporation") {
-      return "#A346BF";
+      return "#97C2FC";
     }
     if (node.type === "Location" || node.type==="location") {
       return "#C454E5";
@@ -110,6 +112,19 @@ class NodeGraph extends Component {
       return "#FFFF02";
     }
 	};
+
+  getBorderColor(node){
+    /* returns the color of the borderbased on the type of the entity */
+    if (node.type.toLowerCase() === "person" || node.type === "Entity") {
+      return "#FA0A11";
+    }
+    if (node.type === "Company" || node.type === "organization" || node.type==="corporation") {
+      return "#2B7CE9";
+    }
+    else {
+      return "#FFAE08";
+    }
+  };
 
   /* For getting an image for node types
   getImage(node) {
@@ -184,7 +199,7 @@ class NodeGraph extends Component {
 
     nodeElements.append('circle')
 			.attr('r',13)
-			.style('stroke', '#FFFFFF')
+			.style('stroke', (d)=> this.getBorderColor(d))
 			.style('stroke-width', 1.5)
 			.style('fill', (d) => this.getNodeColor(d));
 

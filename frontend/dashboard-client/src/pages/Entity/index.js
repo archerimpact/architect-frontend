@@ -2,13 +2,9 @@ import React, { Component } from 'react';
 
 import './style.css'
 
-<<<<<<< HEAD
 import EntityCard from '../../components/EntityCard/';
-=======
 import Neo4jGraphContainer from '../../components/NodeGraph/containers/Neo4jContainer/'
 
-import EntityCard from './components/EntityCard/';
->>>>>>> 8f6ed4926031883cc04378322579ad1650e81587
 import SummaryInfo from './components/SummaryInfo/';
 import ConnectionsTab from './components/ConnectionsTab/';
 
