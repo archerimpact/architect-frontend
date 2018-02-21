@@ -9,17 +9,30 @@
   white-space:nowrap;
 }
 
-.titleName, .info, .status{
+.titleName, .info, .status, .actions{
   display:inline-block;
-}
-
-.status{
-  margin: 15px;
-  color: green;
 }
 
 .info{
   margin-right:15px;
   margin-top:10px;
   margin-bottom:10px;
+}
+
+.actions{
+  float:right;
+}
+
+.titleText, .status {
+  margin:0px;
+  padding:0px;
+}
+
+.status{
+  margin-left: 15px;
+  color: green;
+}
+
+.heading {
+  margin-bottom: 7px;
 }
