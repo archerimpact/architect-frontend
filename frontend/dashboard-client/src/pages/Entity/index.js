@@ -2,9 +2,17 @@ import React, { Component } from 'react';
 
 import './style.css'
 
+<<<<<<< HEAD
 import EntityCard from '../../components/EntityCard/';
+=======
+import Neo4jGraphContainer from '../../components/NodeGraph/containers/Neo4jContainer/'
+
+import EntityCard from './components/EntityCard/';
+>>>>>>> 8f6ed4926031883cc04378322579ad1650e81587
 import SummaryInfo from './components/SummaryInfo/';
 import ConnectionsTab from './components/ConnectionsTab/';
+
+import {Tabs, Tab} from 'material-ui/Tabs';
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -12,6 +20,11 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
 import * as server from '../../server/';
 import {withRouter } from 'react-router-dom';
+
+const tab_style = {
+  backgroundColor: '#FFFFFF',
+  color:'#747474'
+};
 
 class Entity extends Component {
 
@@ -40,14 +53,18 @@ class Entity extends Component {
       .catch(err => {
         console.log(err)
       })
-    server.getNodeRelationships(neo4j_id)
+    server.getBackendRelationships(neo4j_id)
       .then(data => {
+        /* neo4j returns items in this format: [connection, startNode, endNode] */
+
         this.setState({relationshipData: data})
       })
       .catch(err => {
         console.log(err)
       })
   }
+
+
 
   render(){
     if (this.state.nodeData== null || this.state.relationshipData==null) {
@@ -60,7 +77,20 @@ class Entity extends Component {
           <EntityCard nodeItem={this.state.nodeData[0]} />
           <hr></hr>
           <SummaryInfo nodeItem={this.state.nodeData[0]} nodeRelationships={this.state.relationshipData}/>
-          <ConnectionsTab nodeRelationships={this.state.relationshipData}/>
+          <div className="tabs" style={{width:'100%'}}>
+            <Tabs className="tab">
+              <Tab label={"Connections (" + this.state.relationshipData.length + ")"} type="default" style={tab_style}>
+                <div className="connections-tab">
+                  <ConnectionsTab nodeRelationships={this.state.relationshipData}/>
+                </div>
+              </Tab>
+              <Tab label="Graph" style={tab_style}>
+                <div>
+                  <Neo4jGraphContainer relationshipData={this.state.relationshipData} />
+                </div>
+              </Tab>
+            </Tabs>
+          </div>
         </div>
       );
     }
