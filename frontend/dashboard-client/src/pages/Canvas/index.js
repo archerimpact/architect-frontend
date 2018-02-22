@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
 import * as server from '../../server/';
+import {withRouter } from 'react-router-dom';
 
 class Canvas extends Component {
 
@@ -14,6 +15,14 @@ class Canvas extends Component {
     this.props.actions.fetchConnections(this.props.match.params.id);
     this.props.actions.fetchVertices(this.props.match.params.id);
   };
+
+  componentWillReceiveProps = (newprops) => {
+    if (this.props.match.params.id != newprops.match.params.id) {
+      this.props.actions.fetchConnections(newprops.match.params.id);
+      this.props.actions.fetchVertices(newprops.match.params.id);
+    }
+  }
+
 
   render(){
     if (this.props.status==='isLoading') {
@@ -52,4 +61,4 @@ function mapStateToProps(state, props) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Canvas);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Canvas));

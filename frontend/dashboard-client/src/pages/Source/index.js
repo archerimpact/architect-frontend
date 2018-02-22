@@ -4,7 +4,7 @@ import './style.css';
 import EntityList from './components/EntityList.js';
 import NodeGraph from '../../components/NodeGraph';
 import FakeSource from '../../components/Source/fakeSource';
-import AddEntity from '../../components/Entity/AddEntity.js';
+import AddEntity from '../../components/AddEntity';
 
 import Paper from 'material-ui/Paper';
 

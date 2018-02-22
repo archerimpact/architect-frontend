@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
 import * as server from '../../server/';
+import {withRouter } from 'react-router-dom';
 
 class Entity extends Component {
 
@@ -77,4 +78,4 @@ function mapStateToProps(state, props) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Entity);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Entity));

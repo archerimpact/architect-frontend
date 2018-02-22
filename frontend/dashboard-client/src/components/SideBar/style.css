@@ -1,0 +1,25 @@
+.directory {
+	height: 100%;
+    width: 220px; /* Set the width of the sidebar */
+    position: absolute; /* change to fixed to stay on top */
+    z-index: 1; /* Stay on top */
+    top: 64px; /* Stay at the top */
+    left: 0;
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 4px;
+    border-right: 1px solid #dddfe2;
+}
+
+
+.elementContainer {
+	flex-grow: 1;
+}
+
+.elementContainer:hover {
+	background-color: #efefef;
+}
+
+.elem {
+	margin-left: 4px;
+	font-family: sans-serif;
+}

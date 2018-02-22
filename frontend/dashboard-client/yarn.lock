@@ -1293,12 +1293,12 @@ caniuse-api@^1.5.2:
     lodash.uniq "^4.5.0"
 
 caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
-  version "1.0.30000808"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000808.tgz#30dfd83009d5704f02dffb37725068ed12a366bb"
+  version "1.0.30000809"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000809.tgz#b0b88434a598f40b546d46a4dbd839b0ff798f4d"
 
 caniuse-lite@^1.0.30000697, caniuse-lite@^1.0.30000792:
-  version "1.0.30000808"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000808.tgz#7d759b5518529ea08b6705a19e70dbf401628ffc"
+  version "1.0.30000809"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000809.tgz#1e12c1344b8f74d56737ee2614bcedb648943479"
 
 capture-stack-trace@^1.0.0:
   version "1.0.0"
@@ -1490,10 +1490,10 @@ commondir@^1.0.1:
   resolved "https://registry.yarnpkg.com/commondir/-/commondir-1.0.1.tgz#ddd800da0c66127393cca5950ea968a3aaf1253b"
 
 compressible@~2.0.11:
-  version "2.0.12"
-  resolved "https://registry.yarnpkg.com/compressible/-/compressible-2.0.12.tgz#c59a5c99db76767e9876500e271ef63b3493bd66"
+  version "2.0.13"
+  resolved "https://registry.yarnpkg.com/compressible/-/compressible-2.0.13.tgz#0d1020ab924b2fdb4d6279875c7d6daba6baa7a9"
   dependencies:
-    mime-db ">= 1.30.0 < 2"
+    mime-db ">= 1.33.0 < 2"
 
 compression@^1.5.2:
   version "1.7.1"
@@ -2891,6 +2891,10 @@ follow-redirects@^1.2.5:
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.4.1.tgz#d8120f4518190f55aac65bb6fc7b85fcd666d6aa"
   dependencies:
     debug "^3.1.0"
+
+font-awesome@^4.3.0:
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/font-awesome/-/font-awesome-4.7.0.tgz#8fa8cf0411a1a31afd07b06d2902bb9fc815a133"
 
 for-in@^1.0.1:
   version "1.0.2"
@@ -4482,7 +4486,7 @@ miller-rabin@^4.0.0:
     bn.js "^4.0.0"
     brorand "^1.0.1"
 
-"mime-db@>= 1.30.0 < 2", mime-db@~1.33.0:
+"mime-db@>= 1.33.0 < 2", mime-db@~1.33.0:
   version "1.33.0"
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.33.0.tgz#a3492050a5cb9b63450541e39d9788d2272783db"
 
@@ -5343,8 +5347,8 @@ postcss@^5.0.10, postcss@^5.0.11, postcss@^5.0.12, postcss@^5.0.13, postcss@^5.0
     supports-color "^3.2.3"
 
 postcss@^6.0.1, postcss@^6.0.2, postcss@^6.0.6:
-  version "6.0.18"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-6.0.18.tgz#370f5f44d47f3a205f0eb2f6262bbf202df2a80e"
+  version "6.0.19"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-6.0.19.tgz#76a78386f670b9d9494a655bf23ac012effd1555"
   dependencies:
     chalk "^2.3.1"
     source-map "^0.6.1"
@@ -5588,6 +5592,13 @@ react-event-listener@^0.5.1:
     fbjs "^0.8.16"
     prop-types "^15.6.0"
     warning "^3.0.0"
+
+react-fa@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/react-fa/-/react-fa-5.0.0.tgz#d571732856c6cb2c155c46daef018ba67a75b973"
+  dependencies:
+    font-awesome "^4.3.0"
+    prop-types "^15.5.8"
 
 react-pdf@^2.1.7:
   version "2.5.3"
@@ -5840,8 +5851,8 @@ redux-logger@^3.0.6:
     deep-diff "^0.3.5"
 
 redux-persist@^5.3.4:
-  version "5.8.0"
-  resolved "https://registry.yarnpkg.com/redux-persist/-/redux-persist-5.8.0.tgz#f3496bcc054e54cd9fc035ba6df0bc8dcbb49577"
+  version "5.9.0"
+  resolved "https://registry.yarnpkg.com/redux-persist/-/redux-persist-5.9.0.tgz#700ee49fd5f7ecf5868025c9fd0a7672b0f9ddc2"
 
 redux-thunk@^2.2.0:
   version "2.2.0"

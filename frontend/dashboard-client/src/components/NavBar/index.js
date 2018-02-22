@@ -54,7 +54,7 @@ class NavBar extends Component {
 		);
 		return (
 			<div >
-				<AppBar title={<Link to="/" style={{color: 'inherit'}}>ArcherUX</Link>} iconElementRight={this.props.isAuthenticated ? <Logged logOut={this.props.logOut.bind(this)}/> : <Login logIn={this.props.logIn.bind(this)}/>}/>                
+				<AppBar title={<Link to="/" style={{color: 'inherit', textDecoration: 'none'}}>ArcherUX</Link>} iconElementRight={this.props.isAuthenticated ? <Logged logOut={this.props.logOut.bind(this)}/> : <Login logIn={this.props.logIn.bind(this)}/>}/>                
 			</div>
 		);
 	};
