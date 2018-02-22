@@ -21,11 +21,11 @@ class NodeGraph extends Component {
     };
   }
 
-  /* uniqueNodes(nodes) {
+  uniqueNodes(nodes) {
     var obj = {};
 
     for ( var i=0, len=nodes.length; i < len; i++ )
-      obj[nodes[i]['id']] = nodes[i];
+      obj[nodes[i]['_id']] = nodes[i];
 
     nodes = [];
     for ( var key in obj )
@@ -33,6 +33,7 @@ class NodeGraph extends Component {
     return nodes;
   }
 
+  /*
   createNodes(entities, documents) {
 		//Takes in a list of entities and documents and maps it to a 
 		//	list of nodes for the d3 simulation 
@@ -87,7 +88,7 @@ class NodeGraph extends Component {
 */
 	getNodeColor(node) {
 		/* returns the color of the node based on the type of the entity */
-    if (node.type === "PERSON" || node.type === "Entity") {
+    if (node.type.toLowerCase() === "person" || node.type === "Entity") {
       return "#FB7E81";
     }
     if (node.type === "ORGANIZATION") {
@@ -99,10 +100,7 @@ class NodeGraph extends Component {
     if (node.type === "Source") {
       return "#49FFB7";
     }
-    if (node.type === "Person" || node.type === "person") {
-      return "#DA5DFF";
-    }
-    if (node.type === "Company" || node.type === "organization") {
+    if (node.type === "Company" || node.type === "organization" || node.type==="corporation") {
       return "#A346BF";
     }
     if (node.type === "Location" || node.type==="location") {
@@ -137,28 +135,27 @@ class NodeGraph extends Component {
       return 60;
     }
     else {
-      return 60;
+      return 40;
     }
   }
 
-	generateNetworkCanvas(nodes, links, includeText) {
+	generateNetworkCanvas(nodes, links, includeText, width=500, height=300) {
 		/* The entire logic for generating a d3 forceSimulation graph */
 		/*if (typeof(sources[0]) === "undefined") {
 			sources = [];
 		};*/
 		
-		const data = {
-			"nodes": nodes.slice(),
+		var uniqueNodes = this.uniqueNodes(nodes)
+
+    const data = {
+			"nodes": uniqueNodes,
 			"links": links.slice()
 		};
-        
-		const width = 1000;
-		const height = 700;
     
 		const simulation = d3.forceSimulation(data.nodes)
 			.force("center", d3.forceCenter(width/2, height/2))
-			.force("charge", d3.forceManyBody())
-      //.force("collide", d3.forceCollide((d) => this.getCollide(d)))
+			//.force("charge", d3.forceManyBody())
+      .force("collide", d3.forceCollide((d) => this.getCollide(d)))
 			.force("link", d3.forceLink(data.links).id(function(d) { return d._id; }));
 
 		const svg = d3.select(this.refs.mountPoint)
@@ -203,7 +200,7 @@ class NodeGraph extends Component {
 			.on("drag", dragged)
 			.on("end", dragended));
 
-		if (this.state.text === true) {
+		if (includeText === true) {
       nodeElements.append('text')
 			.style("font-size", "12px")
 			.text((d) => d.name);
@@ -245,32 +242,31 @@ class NodeGraph extends Component {
     */
 	};
 
-  updateGraph(nodes, links) {
+  updateGraph(nodes, links, text) {
     const mountPoint = d3.select('#svgdiv');
     mountPoint.selectAll("svg").remove();
-    this.generateNetworkCanvas(nodes, links);
+    this.generateNetworkCanvas(nodes, links, text, this.props.width, this.props.height);
   }
 
   componentWillReceiveProps(nextProps) {		
 		/* When the props update (aka when there's a new entity or relationship), 
 			delete the old graph and create a new one */
 
-		this.updateGraph(nextProps.nodes, nextProps.links);
+		this.updateGraph(nextProps.nodes, nextProps.links, this.state.text, this.props.width, this.props.height);
 	};
 
 	componentDidMount = () => {
 		/* builds the first graph based on after the component mounted and mountPoint was created. */
 
-		this.generateNetworkCanvas(this.props.nodes,this.props.links, this.state.text);
+		this.generateNetworkCanvas(this.props.nodes,this.props.links, this.state.text, this.props.width, this.props.height);
 	};
 
   updateCheck() {
-    this.setState((oldState) => {
-      return {
-        text: !oldState.text,
-      };
+    var newText = !this.state.text;
+    this.setState({
+      text: newText
     });
-    this.updateGraph(this.props.nodes, this.props.links);
+    this.updateGraph(this.props.nodes, this.props.links, newText);
   }
 
 	render() {
@@ -280,7 +276,7 @@ class NodeGraph extends Component {
           <Checkbox
             label="Include Text"
             checked={this.state.text}
-            onCheck={this.updateCheck.bind(this)}
+            onClick={this.updateCheck.bind(this)}
             style={styles.checkbox}
           />
         </div>

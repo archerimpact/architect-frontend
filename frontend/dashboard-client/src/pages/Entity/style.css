@@ -4,3 +4,10 @@
   max-width: 1000px;
   background-color:white;
 }
+
+.connections-tab{
+  text-align: left;
+}
+.tab{
+  background-color: #ffffff;
+}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import GraphContainer from './components/GraphContainer/'
+import GraphContainer from '../../components/NodeGraph/containers/BackendVertexesContainer/'
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -33,7 +33,7 @@ class Canvas extends Component {
       return (
         <GraphContainer 
           vertexes={this.props.savedVertexes.vertices} 
-          connections={this.props.savedConnections.connections} 
+          connections={this.props.savedConnections.connections}
         />
       );
     }

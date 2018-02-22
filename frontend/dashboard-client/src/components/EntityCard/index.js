@@ -32,7 +32,7 @@ class EntityCard extends Component {
             {actionButtons}
           </div>
           <i>Person</i>
-          <div idName="identifyingInfo">
+          <div className="identifyingInfo">
             <div className="info">{nodeItem.data.nationality} </div>
           </div>
         </div>
