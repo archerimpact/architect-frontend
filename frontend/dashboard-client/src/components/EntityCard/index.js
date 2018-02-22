@@ -10,7 +10,7 @@ class EntityCard extends Component {
 
   render(){
     var nodeItem = this.props.nodeItem
-    if (typeof(nodeItem) ==='undefined') {
+    if (typeof(nodeItem) ==='undefined' || nodeItem === null) {
       return (
         <div></div>
       );
