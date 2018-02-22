@@ -9,12 +9,11 @@ class ConnectionsTab extends Component {
   render(){
     return(
       <div className="tab">
-        <h3><u>Connections</u></h3>
-        {this.props.nodeRelationships.map((tuple) => {
+        {this.props.nodeRelationships.map((data, key) => {
           return(
-            <div className="connectionCard">
-              <div>{"Is " + tuple[0].type + ": "}</div>
-              <EntityCard nodeItem={tuple[1]}/>
+            <div className="connectionCard" key={key}>
+              <div>{"Is " + data[0].type + ": "}</div>
+              <EntityCard nodeItem={data[2]}/>
             </div>
           );
         })}

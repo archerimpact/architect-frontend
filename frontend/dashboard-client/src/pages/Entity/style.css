@@ -1,3 +1,10 @@
 .entityInfo{
   padding: 30px;
 }
+
+.connections-tab{
+  text-align: left;
+}
+.tab{
+  background-color: #ffffff;
+}
