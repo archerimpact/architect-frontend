@@ -6,4 +6,5 @@
     height: 100%;
     width: calc(100% - 240px);
     position: absolute;
+    margin-top: 64px;
 }

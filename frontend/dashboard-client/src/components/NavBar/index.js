@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 
+import './style.css'
+
 import AppBar from 'material-ui/AppBar';
+
+import SearchBar from '../../pages/BackendSearch/components/SearchBar'
 import {Link, withRouter} from 'react-router-dom';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
@@ -17,9 +21,6 @@ class Login extends Component {
     );
   }
 }
-
-
-
 
 class NavBar extends Component {
 
@@ -53,8 +54,9 @@ class NavBar extends Component {
 		  )
 		);
 		return (
-			<div >
-				<AppBar title={<Link to="/" style={{color: 'inherit', textDecoration: 'none'}}>ArcherUX</Link>} iconElementRight={this.props.isAuthenticated ? <Logged logOut={this.props.logOut.bind(this)}/> : <Login logIn={this.props.logIn.bind(this)}/>}/>                
+			<div className="outerContainer">
+        <div className="logo" />
+        <SearchBar className="searchBar" />
 			</div>
 		);
 	};
