@@ -12,12 +12,11 @@ class Project extends Component {
     const iconClass = `fa fa-${iconType}`;
     const iconStyle = {marginLeft: '5px', marginRight: '5px'};
     const pathname = '/'+ node.name + '/'+ node.pid;
+
     return (
-      <div className="elementContainer" onClick={() => {this.props.onProjectSelect(node._id)}}>
-        <div >
+      <div className="elementContainer" tabIndex={0} onClick={() => {this.props.onProjectSelect(node._id)}}>
             <i className={iconClass} style={iconStyle}/>
-            <span className="elem">{node.name}</span>
-        </div>
+            <span className="elem" tabIndex>{node.name}</span>
       </div>
     );
   }

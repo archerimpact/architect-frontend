@@ -24,11 +24,13 @@ class AddToProject extends Component {
   constructor(props){
     super(props);
     this.state ={
-      open: false
+      open: false,
+      project: null
     }
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleProjectSelect = this.handleProjectSelect.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleOpen() {
@@ -41,7 +43,12 @@ class AddToProject extends Component {
   };
 
   handleProjectSelect(projectid) {
+    this.setState({project: projectid})
+  }
+
+  handleSubmit(projectid) {
     this.props.actions.createEntity({name: this.props.entity.data.name, type: this.props.entity.metadata.labels[0], sources: [], projectid: projectid})
+    this.handleClose();
   }
 
   render(){
@@ -60,7 +67,7 @@ class AddToProject extends Component {
           label="Submit"
           primary={true}
           keyboardFocused={true}
-          onClick={this.handleClose}
+          onClick={()=>{this.handleSubmit(this.state.project)}}
         />,
       ];
       return(
@@ -77,7 +84,13 @@ class AddToProject extends Component {
               contentStyle={customContentStyle}
             >
               {this.props.projects.map((project, key)=>{
-                return <Project node={project} onProjectSelect={this.handleProjectSelect} key={key}/>
+                return (
+                  <Project 
+                    node={project} 
+                    onProjectSelect={this.handleProjectSelect} 
+                    key={key} 
+                  />
+                ); 
               })}
             </Dialog>
           </ IconButton>

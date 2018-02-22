@@ -6,6 +6,10 @@
   background-color: #efefef;
 }
 
+.elementContainer:visited, .elementContainer:focus{
+  text-decoration-color: '#3498db'; 
+}
+
 .elem {
   margin-left: 4px;
   font-family: sans-serif;
