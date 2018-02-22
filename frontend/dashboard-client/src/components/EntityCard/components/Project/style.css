@@ -1,0 +1,12 @@
+.elementContainer {
+  flex-grow: 1;
+}
+
+.elementContainer:hover {
+  background-color: #efefef;
+}
+
+.elem {
+  margin-left: 4px;
+  font-family: sans-serif;
+}

@@ -2,72 +2,13 @@ import React, { Component } from 'react';
 
 import './style.css'
 
-import SideBar from '../SideBar/'
-
-import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
-import IconButton from 'material-ui/IconButton';
-import Grade from 'material-ui/svg-icons/action/grade';
-import Add from 'material-ui/svg-icons/content/add';
+import AddToProject from './components/AddToProject/';
 
 import { Link } from 'react-router-dom';
 
-const customContentStyle = {
-  width: '300px'
-}
-
 class EntityCard extends Component {
 
-  constructor(props){
-    super(props);
-    this.state ={
-      open: false
-    }
-    this.handleOpen = this.handleOpen.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-  }
-
-  handleOpen() {
-    this.setState({open: true});
-  }
-
-  handleClose() {
-    this.setState({open: false});
-  };
-
   render(){
-    const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onClick={this.handleClose}
-      />,
-      <FlatButton
-        label="Submit"
-        primary={true}
-        keyboardFocused={true}
-        onClick={this.handleClose}
-      />,
-    ];
-
-    const actionButtons = (
-      <div className="actions">
-        <Grade/>
-        <IconButton onClick={this.handleOpen}>
-          <Add />
-          <Dialog 
-            actions={actions}
-            title="Add to Project"
-            open={this.state.open}
-            onRequestClose={this.handleClose}
-            autoScrollBodyContent={true}
-            contentStyle={customContentStyle}
-          >
-            <SideBar isAuthenticated={true}/>
-          </Dialog>
-        </ IconButton>
-      </div>
-    )
     var nodeItem = this.props.nodeItem
     if (typeof(nodeItem) ==='undefined') {
       return (
@@ -81,7 +22,7 @@ class EntityCard extends Component {
             <div className="titleName">
               <Link to={"/entity/" + nodeItem.metadata.id}><h2 className="titleText">{nodeItem.data.name}</h2></Link>
             </div>      
-            {actionButtons}
+            <AddToProject entity={nodeItem}/>
           </div>
           <i>Person</i>
           <div idName="identifyingInfo">
@@ -99,7 +40,7 @@ class EntityCard extends Component {
             <div className="status">
               {nodeItem.data.company_status}
             </div>
-            {actionButtons}
+            <AddToProject entity={nodeItem}/>
           </div>
           <i>Company</i>
           <div className="identifyingInfo">
@@ -113,7 +54,7 @@ class EntityCard extends Component {
       return (
         <div className="outerBox">
           <h2 className="titleText">Document</h2>
-          {actionButtons}
+          <AddToProject entity={nodeItem}/>
           <p>{"GCS Self: " + nodeItem.data.self}</p>
         </div>
       );
