@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 
 import SearchBar from './components/SearchBar/'
 import SearchDataList from './components/SearchDataList/'
@@ -10,7 +11,20 @@ import * as actions from '../../redux/actions/';
 import * as server from '../../server/';
 import {withRouter } from 'react-router-dom';
 
+const urlPropsQueryConfig = {
+  arr: { type: UrlQueryParamTypes.array },
+  search: { type: UrlQueryParamTypes.string, queryParam: 'search' },
+  foo: { type: UrlQueryParamTypes.number, queryParam: 'fooInUrl' },
+}
+
 class BackendSearch extends Component {
+
+  static propTypes = {
+    search: PropTypes.string,
+    onChangeSearch: PropTypes.func,
+  }
+
+  _mounted = false;
 
   constructor(props) {
     super(props)
@@ -20,16 +34,37 @@ class BackendSearch extends Component {
       searchData: null,
       nodesData: null
     }
+    debugger
+  }
+
+  componentWillMount(){
+    if (this.props.search != null ){
+      debugger
+      this.searchBackendText(this.props.search)
+    }    
+  }
+  componentDidMount(){
+    this._mounted=true;
+  }
+  componentWillUnmount(){
+    debugger
+    this._mounted = false;
+  }
+
+  componentWillReceiveProps(nextprops){
+    this.searchBackendText(nextprops.search)
   }
 
   searchBackendText(query){
     server.searchBackendText(query)
       .then((data)=>{
-        this.setState({searchData: data.hits.hits, nodesData: null})
-        var ids = data.hits.hits.map((item) => {
-          return item._source.neo4j_id
-        })
-        this.searchBackendNodes(ids)
+        if (this._mounted === true){
+          this.setState({searchData: data.hits.hits, nodesData: null})
+          var ids = data.hits.hits.map((item) => {
+            return item._source.neo4j_id
+          })
+          this.searchBackendNodes(ids)          
+        }
       })
       .catch((error) => {console.log(error)});
   }
@@ -37,7 +72,9 @@ class BackendSearch extends Component {
   searchBackendNodes(idsArray){
     server.getBackendNodes(idsArray)
       .then(data => {
-        this.setState({nodesData: data})
+        if (this._mounted === true) {
+          this.setState({nodesData: data})       
+        }
       })
       .catch(err => {
         console.log(err)
@@ -47,7 +84,7 @@ class BackendSearch extends Component {
   render() {
     return(
       <div>
-        <SearchBar onSubmitSearch={this.searchBackendText}/>
+        <SearchBar onSubmit={this.searchBackendText} onChange={this.searchBackendText}/>
         <SearchDataList searchItems={this.state.searchData} nodeItems={this.state.nodesData}/>
       </div>
     );
@@ -66,4 +103,4 @@ function mapStateToProps(state, props) {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(BackendSearch));
+export default withRouter(addUrlProps({ urlPropsQueryConfig })(connect(mapStateToProps, mapDispatchToProps)(BackendSearch)));

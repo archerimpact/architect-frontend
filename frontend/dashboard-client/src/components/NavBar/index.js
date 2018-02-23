@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 
 import './style.css'
 
@@ -6,11 +7,20 @@ import AppBar from 'material-ui/AppBar';
 
 import SearchBar from '../../pages/BackendSearch/components/SearchBar'
 import {Link, withRouter} from 'react-router-dom';
+import { Redirect } from 'react-router'
+
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import FlatButton from 'material-ui/FlatButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+
+import * as server from '../../server/';
+
+const urlPropsQueryConfig = {
+  search: { type: UrlQueryParamTypes.string },
+  foo: { type: UrlQueryParamTypes.number, queryParam: 'fooInUrl' },
+};
 
 class Login extends Component {
   static muiName = 'FlatButton';
@@ -23,6 +33,42 @@ class Login extends Component {
 }
 
 class NavBar extends Component {
+
+  static propTypes = {
+    // URL props are automatically decoded and passed in based on the config
+    search: PropTypes.string,
+    foo: PropTypes.number,
+
+    // change handlers are automatically generated when given a config.
+    // By default they update that single query parameter and maintain existing
+    // values in the other parameters.
+    onChangeFoo: PropTypes.func,
+    onChangeSearch: PropTypes.func,
+  }
+
+  constructor(props) {
+    super(props)
+    this.searchBackendText = this.searchBackendText.bind(this);
+    this.goToSearchPage = this.goToSearchPage.bind(this);
+    this.state={
+      searchData: null,
+      fireRedirect: false,
+      query: null
+    }
+  }
+
+  searchBackendText(query){
+    server.searchBackendText(query)
+      .then((data)=>{
+        this.setState({searchData: data.hits.hits, nodesData: null})
+      })
+      .catch((error) => {console.log(error)});
+  }
+
+  goToSearchPage(query){
+    this.setState({fireRedirect: true});
+    this.props.onChangeSearch(query)
+  }
 
 	render () {
 		var self = this
@@ -53,13 +99,27 @@ class NavBar extends Component {
 		   </FlatButton>
 		  )
 		);
-		return (
+
+    const { fireRedirect } = this.state
+
+    const searchQuery = this.state.query
+
+
+    if (fireRedirect) {
+      debugger
+      this.setState({fireRedirect:false})
+      return (<Redirect to={{ pathname: '/backendsearch?search=' + this.props.search}}  />
+              );
+    }
+
+
+    return (
 			<div className="outerContainer">
           <Link to="/">
             <div className="logo" />
           </Link>
           <div className="searchContainer">
-            <SearchBar />
+            <SearchBar onChange={this.searchBackendText} onSubmit={this.goToSearchPage}/>
           </div>
           <div className="iconMenu">
             {this.props.isAuthenticated ? <Logged logOut={this.props.logOut.bind(this)}/> : <Login logIn={this.props.logIn.bind(this)}/>}
@@ -69,4 +129,4 @@ class NavBar extends Component {
 	};
 };
 
-export default NavBar;
+export default addUrlProps({ urlPropsQueryConfig })(NavBar);

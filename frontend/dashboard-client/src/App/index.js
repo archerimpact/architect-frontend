@@ -47,7 +47,7 @@ class App extends Component {
         				<PrivateRoute path="/source/:id" component={Source}/>
                         <PrivateRoute path="/sources/:id" component={Sources}/>
                         <PrivateRoute path="/entities/:id" component={Entities}/>
-                        <PrivateRoute path="/backendsearch" component={BackendSearch} />
+                        <PrivateRoute exact path="/backendsearch" component={BackendSearch} />
                         <PrivateRoute path="/entity/:neo4j_id" component={Entity} />
     				</Switch>
                 </div>

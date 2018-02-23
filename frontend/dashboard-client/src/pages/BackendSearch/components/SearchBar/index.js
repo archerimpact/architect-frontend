@@ -11,19 +11,18 @@ class SearchBar extends Component {
     this.state = {
       searchQuery: ''
     };
-    this.search = this.search.bind(this);
     this.updateSearch = this.updateSearch.bind(this);
-  }
-  
-  search( query = '' ) {
-    this.setState({searchQuery: query});
-    this.props.onSubmitSearch(query)
+    this.submitSearch = this.submitSearch.bind(this);
   }
 
   updateSearch() {
-    this.search(this.refs.query.value);
+    this.setState({searchQuery: this.refs.query.value})
+    this.props.onChange(this.state.searchQuery);
   }
 
+  submitSearch() {
+    this.props.onSubmit(this.state.searchQuery)
+  }
 
   render (){
     return(
@@ -35,7 +34,7 @@ class SearchBar extends Component {
             placeholder="Search all entities"
             onChange={(e) => this.updateSearch()}
           />
-          <Search className="input_img" onClick={(e) => this.props.onSubmitSearch(this.state.searchQuery)}/>
+          <Search className="input_img" onClick={(e) => this.submitSearch()}/>
         </div>
       </div>
     );
