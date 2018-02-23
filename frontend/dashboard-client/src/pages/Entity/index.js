@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 
 import './style.css'
 
+import EntityCard from '../../components/EntityCard/';
 import Neo4jGraphContainer from '../../components/NodeGraph/containers/Neo4jContainer/'
 
-import EntityCard from './components/EntityCard/';
 import SummaryInfo from './components/SummaryInfo/';
 import ConnectionsTab from './components/ConnectionsTab/';
 
@@ -71,6 +71,7 @@ class Entity extends Component {
       return(
         <div className="entityInfo">
           <EntityCard nodeItem={this.state.nodeData[0]} />
+          <hr></hr>
           <SummaryInfo nodeItem={this.state.nodeData[0]} nodeRelationships={this.state.relationshipData}/>
           <div className="tabs" style={{width:'100%'}}>
             <Tabs className="tab">

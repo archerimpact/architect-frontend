@@ -78,7 +78,6 @@ class Entities extends Component {
   }
 
   getEntitySource(vertex) {
-  	debugger
 		//TODO: refactor to account for entities having multiple sources
     var sourceid = vertex.entity.sources[0];
 		var source = this.props.savedSources.documents.find(function (obj) {return obj._id=== sourceid});
@@ -209,7 +208,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, ownprops) {
-	debugger
 	if (state.data.savedEntities.status === 'isLoading') {
 		return {
 			status: state.data.savedEntities.status,

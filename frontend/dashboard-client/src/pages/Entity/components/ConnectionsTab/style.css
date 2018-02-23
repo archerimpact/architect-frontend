@@ -1,6 +1,12 @@
 .tab{
   padding-left: 20px;
 }
+
+hr, .connectionType {
+  margin-left: 13px;
+  /* same as the padding for the entity card */
+}
+
 .connectionCard{
-  padding-left:20px;
+  margin-top: 13px;
 }
