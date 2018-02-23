@@ -122,14 +122,20 @@ function saveEntity(name, type, sources) {
 
 app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
     try {
+        // Grabs project id from the url
+        var url = req.headers.referer;
+        var index = url.indexOf('sources') + 8;
+        var projectid = url.substring(index);
         var name = req.file.originalname;
-        var projectid = req.body.projectid;
         let text_dest = "./files/" + name.substring(0, name.length - 4) + ".txt";
         let pdf_dest = "./files/" + name;
         let folder_dest = projectid + "/" + name;
+
         let pdfParser = new PDFParser(this,1);
 
         pdfParser.loadPDF(pdf_dest);
+
+
 
         pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError) );
         pdfParser.on("pdfParser_dataReady", pdfData => {
@@ -143,7 +149,7 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
               })
           })
         .catch(err => {
-          res.sendStatus(400);
+          res.status(400).send("Unable to save pdf because: " + err);
         })
 
         cloud.uploadFile(bucket_name, pdf_dest, function(error) {
@@ -156,7 +162,7 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
           }
         });
     } catch (err) {
-        res.sendStatus(400);
+        res.status(400).send("Unable to save pdf because: " + err);
     };
 
     res.send(200).json({success: true, message: "PDF upload success"});
@@ -468,6 +474,7 @@ app.get('/investigation/project/sources', function(req, res) {
 
       /* if the project's array of sources doesn't exist, return an empty array */
       if (vertexes.length === 0) {
+        console.log("empty sources");
         res.send([]);
       }
       vertexesToResponse(vertexes, "Source", function(response) {
