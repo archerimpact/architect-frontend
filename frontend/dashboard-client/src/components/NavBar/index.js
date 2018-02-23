@@ -55,7 +55,9 @@ class NavBar extends Component {
 		);
 		return (
 			<div className="outerContainer">
+        <Link to="/">
           <div className="logo" />
+        </Link>
           <div className="searchContainer">
             <SearchBar />
           </div>
