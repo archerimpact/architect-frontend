@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import './style.css'
+
 import GraphContainer from '../../components/NodeGraph/containers/BackendVertexesContainer/'
 
 import { Link } from 'react-router-dom';
@@ -23,7 +25,6 @@ class Canvas extends Component {
     }
   }
 
-
   render(){
     if (this.props.status==='isLoading') {
       return (
@@ -31,10 +32,12 @@ class Canvas extends Component {
       );
     } else {
       return (
-        <GraphContainer 
-          vertexes={this.props.savedVertexes.vertices} 
-          connections={this.props.savedConnections.connections}
-        />
+        <div className="graph">
+          <GraphContainer 
+            vertexes={this.props.savedVertexes.vertices} 
+            connections={this.props.savedConnections.connections}
+          />
+        </div>
       );
     }
   }

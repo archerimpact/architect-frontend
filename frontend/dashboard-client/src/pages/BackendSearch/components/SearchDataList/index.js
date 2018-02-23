@@ -19,14 +19,20 @@ class SearchDataList extends Component {
       return(
         <div className="searchResults">
           {this.props.searchItems.map((item, key)=> {
+            var nodeItem = this.props.nodeItems.find((element) => {
+              return element[0].metadata.id===item._source.neo4j_id
+            })
+            let nodeItemData = null;
+            if (typeof(nodeItem) !== 'undefined') {
+              nodeItemData = nodeItem[0]
+            }
             return(
               <EntityCard 
-                nodeItem={this.props.nodeItems.find((element) => {
-                    return element[0].metadata.id===item._source.neo4j_id
-                })[0]} 
-                key={key}
+                nodeItem={nodeItemData} 
+                key={key} 
               />
             );
+
           })}
         </div>
       );

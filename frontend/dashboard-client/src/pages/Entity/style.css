@@ -8,6 +8,11 @@
 .connections-tab{
   text-align: left;
 }
+
 .tab{
   background-color: #ffffff;
+}
+
+.graph {
+  height:800px;
 }

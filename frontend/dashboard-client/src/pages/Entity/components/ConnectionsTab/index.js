@@ -15,7 +15,7 @@ class ConnectionsTab extends Component {
               <div className="connectionType">
                 <div>{"Is " + data[0].type + ": "}</div>
                 </div>
-                <EntityCard nodeItem={data[1]}/>
+                <EntityCard nodeItem={data[2]}/>
               <hr></hr>
             </div>
           );

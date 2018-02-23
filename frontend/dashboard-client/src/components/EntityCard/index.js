@@ -2,22 +2,15 @@ import React, { Component } from 'react';
 
 import './style.css'
 
-import { Link } from 'react-router-dom';
+import AddToProject from './components/AddToProject/';
 
-import Grade from 'material-ui/svg-icons/action/grade';
-import Add from 'material-ui/svg-icons/content/add';
+import { Link } from 'react-router-dom';
 
 class EntityCard extends Component {
 
   render(){
-    const actionButtons = (
-      <div className="actions">
-        <Grade/>
-        <Add/>
-      </div>
-    )
     var nodeItem = this.props.nodeItem
-    if (typeof(nodeItem) ==='undefined') {
+    if (typeof(nodeItem) ==='undefined' || nodeItem === null) {
       return (
         <div></div>
       );
@@ -29,7 +22,7 @@ class EntityCard extends Component {
             <div className="titleName">
               <Link to={"/entity/" + nodeItem.metadata.id}><h2 className="titleText">{nodeItem.data.name}</h2></Link>
             </div>      
-            {actionButtons}
+            <AddToProject entity={nodeItem}/>
           </div>
           <i>Person</i>
           <div className="identifyingInfo">
@@ -47,7 +40,7 @@ class EntityCard extends Component {
             <div className="status">
               {nodeItem.data.company_status}
             </div>
-            {actionButtons}
+            <AddToProject entity={nodeItem}/>
           </div>
           <i>Company</i>
           <div className="identifyingInfo">
@@ -61,7 +54,7 @@ class EntityCard extends Component {
       return (
         <div className="outerBox">
           <h2 className="titleText">Document</h2>
-          {actionButtons}
+          <AddToProject entity={nodeItem}/>
           <p>{"GCS Self: " + nodeItem.data.self}</p>
         </div>
       );
