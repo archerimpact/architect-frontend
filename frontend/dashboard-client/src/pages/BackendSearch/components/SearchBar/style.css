@@ -41,3 +41,10 @@ margin: 0 auto;
     height:24px;
     display: inline-block;
 }
+
+/* Inexplicably this section here changes the formatting of the sidebar! */
+li{
+  list-style: none;
+  text-align: left; 
+  line-height: 30px;
+}
