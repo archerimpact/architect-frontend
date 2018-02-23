@@ -1,0 +1,59 @@
+.iconBox{
+  flex-grow:1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.information{
+  display: flex;
+flex-direction: row;
+flex-grow:11;
+
+}
+.entityRow{
+  display: flex;
+  flex-direction: row;
+}
+
+.column, .titleColumn{
+  display: flex;
+  flex-direction:row;
+  align-content: center;
+    font-family: Open Sans, sans-serif; 
+  margin:15px auto;
+  text-align: center;
+  position: relative;
+
+}
+
+.actions{
+  flex-grow:2;
+}
+
+.titleColumn{
+  flex-grow: 4;
+  flex-basis:40%;
+}
+
+.column{
+  flex-grow:3;  
+  color: rgba(0, 0, 0, 0.54);
+  flex-basis:30%;
+  justify-content:center;
+
+}
+
+.title {
+  font-color: #3C3C3C;
+  display: block;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.type {
+  color: rgba(0, 0, 0, 0.54);
+  display: block; 
+  font-size: 14px;
+  margin-left: 20px;
+  font-style: italic;
+}

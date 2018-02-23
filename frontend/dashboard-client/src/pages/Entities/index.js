@@ -12,7 +12,8 @@ import { withRouter } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
 
 import DownArrow from 'material-ui/svg-icons/navigation/arrow-downward';
-import EntitiesList from './components/';
+
+import EntityTable from './components/EntityTable'
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -48,11 +49,13 @@ class Entities extends Component {
 
 	componentDidMount = () => {
 	    this.props.actions.fetchProjectEntities(this.props.match.params.id);
+      this.props.actions.fetchProject(this.props.match.params.id);
 	};
 
 	componentWillReceiveProps = (newprops) => {
 		if (this.props.projectid != newprops.projectid) {
 			this.props.actions.fetchProjectEntities(newprops.projectid);
+      this.props.actions.fetchProject(newprops.projectid);
 		}
 	}
 
@@ -68,17 +71,16 @@ class Entities extends Component {
 	    this.props.actions.deleteSuggestedEntity(suggestedEntity, suggestedEntity.sources[0]);
 	  }*/
 
-  deleteEntity(entity) {
+  deleteEntity(entity, listType) {
     /*if (this.props.listType === "suggested_entities") {
       this.props.actions.deleteSuggestedEntity(entity, entity.sources[0])
     }*/
-    if (this.props.listType === "entities") {
+    if (listType === "entities") {
       this.props.actions.deleteEntity(entity, this.props.projectid)
     }
   }
 
   getEntitySource(vertex) {
-  	debugger
 		//TODO: refactor to account for entities having multiple sources
     var sourceid = vertex.entity.sources[0];
 		var source = this.props.savedSources.documents.find(function (obj) {return obj._id=== sourceid});
@@ -152,14 +154,19 @@ class Entities extends Component {
     	} else {
 			return(
 				<div>
-				    <h3>Your Entities</h3>
-						<Drawer width={300} containerStyle={{height: 'calc(100% - 64px)', top: 64}} openSecondary={true} open={this.state.drawerOpen} >
-				          	<AppBar onLeftIconButtonTouchTap={this.closeEntityDrawer}
-		    						iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-		    						title={'Entity Details'}
-		    						 />                
-				          	{this.state.drawerOpen ? this.renderEntityDrawer() : null}
-				        </Drawer>
+            <div className = "projectHeading">
+				      {"Projects > " + this.props.project.name + " > Entities"}
+            </div>
+						{/* TEMPORARILY DEPRECATED 02/22/2018 IN ENTITIES PAGE PR
+
+            <Drawer width={300} containerStyle={{height: 'calc(100% - 64px)', top: 64}} openSecondary={true} open={this.state.drawerOpen} >
+		          	<AppBar onLeftIconButtonTouchTap={this.closeEntityDrawer}
+    						iconElementLeft={<IconButton><NavigationClose /></IconButton>}
+    						title={'Entity Details'}
+    						 />                
+		          	{this.state.drawerOpen ? this.renderEntityDrawer() : null}
+		        </Drawer>
+          */}
 				        <div>
 				        	<div className="entitiesListHeader">
 					        	<TextField
@@ -185,16 +192,17 @@ class Entities extends Component {
 						        	{this.state.entitySortBy.reverse ? <UpArrow className="icon" style={iconStyles}/> : <DownArrow className="icon" style={iconStyles}/>}
 						        </div>
 						    </div>
-				        	<EntitiesList 
-			                  entities={this.props.entities} 
-			                  searchTerm={this.state.queryEntity} 
-			                  sortBy={this.state.entitySortBy} 
-			                  getSource={this.getEntitySource} 
-			                  onEntityClick={this.openEntityDrawer} 
-			                  onCreateEntity={this.createEntity}
-			                  onDeleteEntity={this.deleteEntity}
-			                />
-				        </div>
+                <div className="container">
+                  <EntityTable
+                    entities={this.props.entities} 
+                    searchTerm={this.state.queryEntity} 
+                    sortBy={this.state.entitySortBy} 
+                    getSource={this.getEntitySource} 
+                    onCreateEntity={this.createEntity}
+                    onDeleteEntity={this.deleteEntity}
+                  />
+                </div>
+				      </div>
 				</div>
 			);      
 		}
@@ -209,7 +217,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, ownprops) {
-	debugger
 	if (state.data.savedEntities.status === 'isLoading') {
 		return {
 			status: state.data.savedEntities.status,
@@ -217,6 +224,7 @@ function mapStateToProps(state, ownprops) {
 	} else {
 	    return {
 	    	projectid: ownprops.match.params.id,
+        project: state.data.currentProject,
 	    	entities: state.data.savedEntities.entities,
 			status: state.data.savedEntities.status,
 			savedSources: state.data.savedSources

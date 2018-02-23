@@ -1,7 +1,8 @@
+/* DEPRECATED 02/22/2018 IN ENTITIES PAGE PR
+
 import React, { Component } from 'react';
 import EntityCard from './EntityCard';
 
-import './style.css';
 
 class EntitiesList extends Component {
 
@@ -53,3 +54,5 @@ class EntitiesList extends Component {
 	}
 }
 export default EntitiesList
+
+*/

@@ -1,3 +1,5 @@
+/* DEPRECATED 02/22/2018 IN ENTITIES PAGE PR
+
 import React, {Component} from 'react';
 import './style.css'
 
@@ -88,3 +90,4 @@ class EntityCard extends Component {
 }
 
 export default EntityCard;
+*/
