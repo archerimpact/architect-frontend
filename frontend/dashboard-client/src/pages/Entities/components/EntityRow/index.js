@@ -2,6 +2,12 @@ import React, {Component} from 'react';
 import './style.css'
 
 import RaisedButton from 'material-ui/RaisedButton';
+
+import IconButton from 'material-ui/IconButton';
+import Delete from 'material-ui/svg-icons/action/delete';
+import Create from 'material-ui/svg-icons/content/create';
+import Grade from 'material-ui/svg-icons/action/grade';
+
 import Person from 'material-ui/svg-icons/social/person';
 import Entity from 'material-ui/svg-icons/social/domain';
 import Location from 'material-ui/svg-icons/communication/location-on';
@@ -27,6 +33,7 @@ class EntityRow extends Component {
       if (type.toLowerCase() === "nationality") {
         return <Nationality className="icon"/>
       }
+      return <div className="icon"/>
     }
   render() {
     /*if (this.props.listType === "suggested_entities") {
@@ -65,7 +72,17 @@ class EntityRow extends Component {
                     Degree of Importance
                   </div>
               </div>
-              <RaisedButton label="Delete" onClick={()=>this.props.onDeleteEntity(this.props.entity, "entities")} />
+              <div className="actions">
+                <IconButton className="actionButton" onClick={()=>this.props.onDeleteEntity(this.props.entity, "entities")} >
+                  <Delete />
+                </IconButton>
+                <IconButton className="actionButton">
+                  <Grade />
+                </IconButton>
+                <IconButton className="actionButton">
+                  <Create />
+                </IconButton>
+              </div>
           </div>
       );
     /*}*/
