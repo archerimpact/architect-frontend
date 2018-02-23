@@ -29,7 +29,7 @@ class BackendSearch extends Component {
         var ids = data.hits.hits.map((item) => {
           return item._source.neo4j_id
         })
-        this.searchBackendNodes(ids)
+        this.searchBackendNodes(ids) //gets the nodeData only after completing elastic
       })
       .catch((error) => {console.log(error)});
   }
