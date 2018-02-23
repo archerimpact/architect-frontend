@@ -34,13 +34,11 @@ class BackendSearch extends Component {
       searchData: null,
       nodesData: null
     }
-    this.props.onChangeSearch(this.props.location.query)
+    props.onChangeSearch(props.location.query)
     debugger
   }
 
   componentWillMount(){
-    debugger
-
     if (this.props.search != null ){
       this.searchBackendText(this.props.search)
     }    
@@ -55,9 +53,9 @@ class BackendSearch extends Component {
 
   componentWillReceiveProps(nextprops){
     this.searchBackendText(nextprops.search)
-
-    if (this.props.location.query != null) {
-      this.props.onChangeSearch(this.props.location.query.search)
+    if (nextprops.location.query != null) {
+      debugger
+      nextprops.onChangeSearch(nextprops.location.query.search)
     }
   }
 
