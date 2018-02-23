@@ -55,8 +55,13 @@ class NavBar extends Component {
 		);
 		return (
 			<div className="outerContainer">
-        <div className="logo" />
-        <SearchBar className="searchBar" />
+          <div className="logo" />
+          <div className="searchContainer">
+            <SearchBar />
+          </div>
+          <div className="iconMenu">
+            {this.props.isAuthenticated ? <Logged logOut={this.props.logOut.bind(this)}/> : <Login logIn={this.props.logIn.bind(this)}/>}
+          </div>
 			</div>
 		);
 	};

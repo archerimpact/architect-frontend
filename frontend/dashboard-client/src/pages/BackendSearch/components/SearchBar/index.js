@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 
 import './style.css'
 
-class Search extends Component {
+import Search from 'material-ui/svg-icons/action/search';
+
+class SearchBar extends Component {
 
   constructor() {
     super();
@@ -26,15 +28,17 @@ class Search extends Component {
   render (){
     return(
       <div className="searchBody">
-        <input className="app_input" 
-          ref="query" 
-          type="text" 
-          placeholder="Search all entities."
-          onChange={(e) => this.updateSearch()}
-        />
-        <button onClick={(e) => this.props.onSubmitSearch(this.state.searchQuery)}>Search</button>
+        <div className="input_container">
+          <input className="input" 
+            ref="query" 
+            type="text" 
+            placeholder="Search all entities"
+            onChange={(e) => this.updateSearch()}
+          />
+          <Search className="input_img" onClick={(e) => this.props.onSubmitSearch(this.state.searchQuery)}/>
+        </div>
       </div>
     );
   }
 }
-export default Search
+export default SearchBar
