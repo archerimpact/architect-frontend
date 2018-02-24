@@ -12,9 +12,7 @@ import * as server from '../../server/';
 import {withRouter } from 'react-router-dom';
 
 const urlPropsQueryConfig = {
-  arr: { type: UrlQueryParamTypes.array },
   search: { type: UrlQueryParamTypes.string, queryParam: 'search' },
-  foo: { type: UrlQueryParamTypes.number, queryParam: 'fooInUrl' },
 }
 
 class BackendSearch extends Component {
@@ -34,8 +32,9 @@ class BackendSearch extends Component {
       searchData: null,
       nodesData: null
     }
-    props.onChangeSearch(props.location.query)
-    debugger
+    if (props.location.query != null) {
+      props.onChangeSearch(props.location.query.search)
+    }
   }
 
   componentWillMount(){
@@ -47,14 +46,12 @@ class BackendSearch extends Component {
     this._mounted=true;
   }
   componentWillUnmount(){
-    debugger
     this._mounted = false;
   }
 
   componentWillReceiveProps(nextprops){
     this.searchBackendText(nextprops.search)
     if (nextprops.location.query != null) {
-      debugger
       nextprops.onChangeSearch(nextprops.location.query.search)
     }
   }

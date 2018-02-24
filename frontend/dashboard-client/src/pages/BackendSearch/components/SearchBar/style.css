@@ -33,6 +33,10 @@ margin: 0 auto;
     border: none;
     display: inline-block;
 }
+
+.input:focus{
+  outline: none;
+}
 .input_img {
     position:absolute;
     margin: 10px auto;
