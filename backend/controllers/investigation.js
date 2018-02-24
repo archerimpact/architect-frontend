@@ -239,9 +239,7 @@ app.get('/investigation/project', function(req, res) {
 app.post('/investigation/entity', function(req, res){
     var newEntity = saveEntity(req.body.name, req.body.type, req.body.sources, req.body.neo4jid)
     var entityid = newEntity._id
-
-    console.log("neo4jid: " + req.body.neo4jid)
-
+    
     /* Updates the project document to include this entity in its list of entities. */
     db.collection('projects').update(
       {_id : mongoose.Types.ObjectId(req.body.project)},
