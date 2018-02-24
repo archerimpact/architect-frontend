@@ -36,7 +36,7 @@ justify-content: space-between;
 }
 
 .titleColumn{
-  width: 300px;
+  width: 400px;
 }
 
 .column{
@@ -55,6 +55,7 @@ justify-content: space-between;
 
 .typeBox {
   margin-left: 20px;
+  margin-right: 40px;
 }
 
 .typeText{
