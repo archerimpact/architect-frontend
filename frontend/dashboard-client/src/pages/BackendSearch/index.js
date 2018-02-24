@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 
+import './style.css'
+
 import SearchBar from '../../components/SearchBar/'
 import SearchDataList from './components/SearchDataList/'
 
@@ -86,7 +88,7 @@ class BackendSearch extends Component {
 
   render() {
     return(
-      <div>
+      <div className="entitiesList">
         <SearchDataList searchItems={this.state.searchData} nodeItems={this.state.nodesData}/>
       </div>
     );
