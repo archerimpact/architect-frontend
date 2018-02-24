@@ -99,7 +99,7 @@ class NavBar extends Component {
     if (this.state.fireRedirect) {
       this.setState({fireRedirect:false})
       return (
-        <Redirect to={'/backendsearch?search=' + this.props.search}  />
+        <Redirect to={'/search?search=' + this.props.search}  />
       );
     }
 
