@@ -5,7 +5,7 @@ import './style.css'
 
 import AppBar from 'material-ui/AppBar';
 
-import SearchBar from '../../pages/BackendSearch/components/SearchBar'
+import SearchBar from '../SearchBar'
 import {Link, withRouter} from 'react-router-dom';
 import { Redirect } from 'react-router'
 
@@ -19,7 +19,6 @@ import * as server from '../../server/';
 
 const urlPropsQueryConfig = {
   search: { type: UrlQueryParamTypes.string },
-  foo: { type: UrlQueryParamTypes.number, queryParam: 'fooInUrl' },
 };
 
 class Login extends Component {
@@ -37,12 +36,10 @@ class NavBar extends Component {
   static propTypes = {
     // URL props are automatically decoded and passed in based on the config
     search: PropTypes.string,
-    foo: PropTypes.number,
 
     // change handlers are automatically generated when given a config.
     // By default they update that single query parameter and maintain existing
     // values in the other parameters.
-    onChangeFoo: PropTypes.func,
     onChangeSearch: PropTypes.func,
   }
 
@@ -53,21 +50,19 @@ class NavBar extends Component {
     this.state={
       searchData: null,
       fireRedirect: false,
-      query: null
     }
   }
 
   searchBackendText(query){
     server.searchBackendText(query)
       .then((data)=>{
-        this.setState({searchData: data.hits.hits, nodesData: null})
+        this.setState({searchData: data.hits.hits})
       })
       .catch((error) => {console.log(error)});
   }
 
   goToSearchPage(query){
     this.setState({fireRedirect: true});
-    this.setState({query: query})
     this.props.onChangeSearch(query)
   }
 
@@ -101,9 +96,7 @@ class NavBar extends Component {
 		  )
 		);
 
-    const { fireRedirect } = this.state
-
-    if (fireRedirect) {
+    if (this.state.fireRedirect) {
       this.setState({fireRedirect:false})
       return (
         <Redirect to={'/backendsearch?search=' + this.props.search}  />
