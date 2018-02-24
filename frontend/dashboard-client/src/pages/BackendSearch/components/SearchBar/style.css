@@ -35,7 +35,7 @@ margin: 0 auto;
 }
 
 .input:focus{
-  outline: none;
+  outline: none ;
 }
 .input_img {
     position:absolute;
