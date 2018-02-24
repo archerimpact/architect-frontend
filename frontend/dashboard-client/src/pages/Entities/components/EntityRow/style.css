@@ -1,11 +1,11 @@
 .iconBox{
-  flex-grow:1;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 50px;
 }
 .information{
-  display: flex;
+display: flex;
 flex-direction: row;
 flex-grow:10;
 justify-content: space-between;
@@ -18,13 +18,7 @@ justify-content: space-between;
 
 .column, .titleColumn{
   display: flex;
-  flex-direction:row;
-  align-content: center;
-    font-family: Open Sans, sans-serif; 
   margin:15px auto;
-  text-align: center;
-  position: relative;
-  justify-content: flex-start;
 
 }
 
@@ -42,29 +36,29 @@ justify-content: space-between;
 }
 
 .titleColumn{
-  flex-grow: 4;
-  flex-basis:40%;
+  width: 300px;
 }
 
 .column{
   flex-grow:3;  
   color: rgba(0, 0, 0, 0.54);
   flex-basis:30%;
-  justify-content:center;
+  justify-content:flex-start;
 
 }
 
 .title {
   font-color: #3C3C3C;
-  display: block;
   font-size: 18px;
   font-weight: 500;
 }
 
-.type {
-  color: rgba(0, 0, 0, 0.54);
-  display: block; 
-  font-size: 14px;
+.typeBox {
   margin-left: 20px;
+}
+
+.typeText{
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 14px;
   font-style: italic;
 }

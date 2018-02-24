@@ -24,7 +24,7 @@ class EntityRow extends Component {
       if (type.toLowerCase() === "document") {
         return <Document className="icon"/>
       }
-      if (type.toLowerCase() ==="organization" || type.toLowerCase() === "company") {
+      if (type.toLowerCase() ==="organization" || type.toLowerCase() === "company" || type.toLowerCase() === "corporation") {
         return <Entity className="icon"/>
       }
       if (type.toLowerCase() === "location") {
@@ -63,13 +63,17 @@ class EntityRow extends Component {
               <div className="information">
                   <div className="titleColumn">
                       <div className="title"> {this.props.entity.qid && this.props.entity.qid.charAt(0) !== "T" ? <a href={"https://www.wikidata.org/wiki/" + this.props.entity.qid}>{this.props.entity.name} </a> : this.props.entity.name}</div>
-                      <div className="type">{this.props.entity.entity.type}</div>
+                      <div className="typeBox">
+                        <div className="typeText">
+                        {this.props.entity.entity.type}
+                        </div>
+                      </div>
                   </div>
                   <div className="column text">
                     {this.props.entity.connections.length + " connections"}
                   </div>
                   <div className="column text">
-                    Degree of Importance
+                    {this.props.entity.entity.sources.length + " sources"}
                   </div>
               </div>
               <div className="actions">
