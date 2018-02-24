@@ -267,6 +267,21 @@ export function addGraph(projectid, entities, sources, connections) {
 }
 
 export function searchBackendText(searchQuery) {
+  /* Takes in a searchQuery parameter and sends a query directly to the hosted elastic
+    search instance. Query format below is the standard for elastic. Matches only if the
+    name field and the searchQuery are within an edit distance of 2.
+
+    Query needs to be turned into a proper JSON to work.
+
+    Returns data in the format:
+      data = [data
+                hits: {
+                  hits: {
+                    Array of 10 search results
+                  }
+              }]
+  */
+
   var url = configData.elastic_url + '/_search';
   var query = {
     query: {
@@ -295,7 +310,15 @@ export function searchBackendText(searchQuery) {
 }
 
 export function getBackendNode(neo4j_id){
-    /* retrieves the corresponding neo4j nodes of one id */
+    /* retrieves the corresponding neo4j nodes of one id 
+      
+        returns data in the format:
+          response.data= {
+            data : [
+              [neo4j_node]
+            ]
+          }
+    */
 
   var url = configData.neo4j_url + '/db/data/cypher'
   var headers = {
@@ -322,7 +345,17 @@ export function getBackendNode(neo4j_id){
 }
 
 export function getBackendNodes(neo4j_ids){ 
-  /* retrieves the corresponding neo4j nodes of a list of ids */
+  /* retrieves the corresponding neo4j nodes of a list of ids 
+
+    returns data in the format:
+      response.data = {
+        data: [
+          [neo4j_node1],
+          [neo4j_node2]
+        ]
+      }
+
+  */
 
   var url = configData.neo4j_url + '/db/data/cypher'
   var headers = {
@@ -351,7 +384,13 @@ export function getBackendNodes(neo4j_ids){
 export function getBackendRelationships(neo4j_id){
 
   /* Retrieves all relationships of a neo4j node.
-    neo4j returns items in this format: [connection, startNode, endNode] */
+    neo4j returns items in this format: 
+
+      response.data = {
+        data:
+          [connection, startNode, endNode] 
+        }
+  */
 
   var url = configData.neo4j_url + '/db/data/cypher'
   var headers = {

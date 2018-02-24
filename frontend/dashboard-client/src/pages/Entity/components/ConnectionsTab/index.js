@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import './style.css'
 
-import EntityCard from '../EntityCard/';
+import EntityCard from '../../../../components/EntityCard/';
 
 class ConnectionsTab extends Component {
 
@@ -12,8 +12,11 @@ class ConnectionsTab extends Component {
         {this.props.nodeRelationships.map((data, key) => {
           return(
             <div className="connectionCard" key={key}>
-              <div>{"Is " + data[0].type + ": "}</div>
-              <EntityCard nodeItem={data[2]}/>
+              <div className="connectionType">
+                <div>{"Is " + data[0].type + ": "}</div>
+                </div>
+                <EntityCard nodeItem={data[2]}/>
+              <hr></hr>
             </div>
           );
         })}

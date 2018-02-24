@@ -1,10 +1,18 @@
 .entityInfo{
   padding: 30px;
+  margin: 34px auto;
+  max-width: 1000px;
+  background-color:white;
 }
 
 .connections-tab{
   text-align: left;
 }
+
 .tab{
   background-color: #ffffff;
+}
+
+.graph {
+  height:800px;
 }

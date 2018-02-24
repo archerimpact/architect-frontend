@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 
-import SearchDataCard from '../SearchDataCard'
+import EntityCard from '../../../../components/EntityCard/'
+
+import './style.css'
 
 class SearchDataList extends Component {
 
@@ -16,17 +18,21 @@ class SearchDataList extends Component {
     } else {
       return(
         <div className="searchResults">
-          <h3> Search Results </h3>
           {this.props.searchItems.map((item, key)=> {
+            var nodeItem = this.props.nodeItems.find((element) => {
+              return element[0].metadata.id===item._source.neo4j_id
+            })
+            let nodeItemData = null;
+            if (typeof(nodeItem) !== 'undefined') {
+              nodeItemData = nodeItem[0]
+            }
             return(
-              <SearchDataCard 
-                searchItem={item} 
-                nodeItem={this.props.nodeItems.find((element) => {
-                    return element[0].metadata.id===item._source.neo4j_id
-                })}
+              <EntityCard 
+                nodeItem={nodeItemData} 
                 key={key} 
               />
             );
+
           })}
         </div>
       );

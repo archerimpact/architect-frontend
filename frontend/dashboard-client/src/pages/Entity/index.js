@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 
 import './style.css'
 
+import EntityCard from '../../components/EntityCard/';
 import Neo4jGraphContainer from '../../components/NodeGraph/containers/Neo4jContainer/'
 
-import EntityCard from './components/EntityCard/';
 import SummaryInfo from './components/SummaryInfo/';
 import ConnectionsTab from './components/ConnectionsTab/';
 
@@ -38,12 +38,13 @@ class Entity extends Component {
   }
 
   componentWillReceiveProps = (nextprops) => {
-    this.loadData(nextprops.match.params.neo4j_id)
+    this.loadData(nextprops.match.params.neo4j_id) //load data when you change the url props
   }
 
   loadData(neo4j_id) {
     server.getBackendNode(neo4j_id)
       .then(data => {
+        //returns items in the format: [neo4j_data]
         this.setState({nodeData: data[0]})
       })
       .catch(err => {
@@ -71,6 +72,7 @@ class Entity extends Component {
       return(
         <div className="entityInfo">
           <EntityCard nodeItem={this.state.nodeData[0]} />
+          <hr></hr>
           <SummaryInfo nodeItem={this.state.nodeData[0]} nodeRelationships={this.state.relationshipData}/>
           <div className="tabs" style={{width:'100%'}}>
             <Tabs className="tab">
@@ -80,7 +82,7 @@ class Entity extends Component {
                 </div>
               </Tab>
               <Tab label="Graph" style={tab_style}>
-                <div>
+                <div className="graph">
                   <Neo4jGraphContainer relationshipData={this.state.relationshipData} />
                 </div>
               </Tab>

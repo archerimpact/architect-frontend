@@ -2,8 +2,8 @@
 .main {
     margin-left: 220px; /* Same as the width of the sidebar */
     padding: 0px 10px;
-    background-color: #e9ebee;
-    height: 100%;
+    background-color: #F5F5F5;
+    min-height: 100%;
     width: calc(100% - 240px);
     position: absolute;
 }

@@ -37,14 +37,12 @@ class GraphContainer extends Component {
 
   render(){
     return (
-      <Paper>
         <Graph 
           nodes={this.getNodesFromRelationshipData(this.props.relationshipData)} 
           links={this.getLinks(this.props.relationshipData)} 
-          height={800}
+          height={600}
           width={1000}
         />
-      </Paper>
     )
   }
 }
