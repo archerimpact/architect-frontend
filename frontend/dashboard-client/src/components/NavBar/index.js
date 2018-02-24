@@ -103,15 +103,12 @@ class NavBar extends Component {
 
     const { fireRedirect } = this.state
 
-    const searchQuery = this.state.query
-
-
     if (fireRedirect) {
       this.setState({fireRedirect:false})
-      return (<Redirect to={{ pathname: '/backendsearch', query: {search: searchQuery}}}  />
-              );
+      return (
+        <Redirect to={{ pathname: '/backendsearch', query: {search: this.state.query}}}  />
+      );
     }
-
 
     return (
 			<div className="outerContainer">
