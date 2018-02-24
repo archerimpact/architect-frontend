@@ -106,7 +106,7 @@ class NavBar extends Component {
     if (fireRedirect) {
       this.setState({fireRedirect:false})
       return (
-        <Redirect to={{ pathname: '/backendsearch', query: {search: this.state.query}}}  />
+        <Redirect to={'/backendsearch?search=' + this.props.search}  />
       );
     }
 
