@@ -84,7 +84,7 @@ function saveDoc(text, name, entities, folder_dest) {
     return vert._id
 }
 
-function saveEntity(name, type, sources) {  
+function saveEntity(name, type, sources, neo4jid) {  
     var entity = {
         _id: new mongoose.Types.ObjectId,
         name: name,
@@ -105,6 +105,7 @@ function saveEntity(name, type, sources) {
         name: name,
         type: "Entity", // Must be Source or Entity
         date_added: Date.now(),
+        neo4j_id: neo4jid,
         entity: entity._id
     }
 
@@ -236,8 +237,10 @@ app.get('/investigation/project', function(req, res) {
 })
 
 app.post('/investigation/entity', function(req, res){
-    var newEntity = saveEntity(req.body.name, req.body.type, req.body.sources)
+    var newEntity = saveEntity(req.body.name, req.body.type, req.body.sources, req.body.neo4jid)
     var entityid = newEntity._id
+
+    console.log("neo4jid: " + req.body.neo4jid)
 
     /* Updates the project document to include this entity in its list of entities. */
     db.collection('projects').update(
