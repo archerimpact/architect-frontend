@@ -1,15 +1,11 @@
 import React, { Component } from 'react'; 
 
-import Drawer from 'material-ui/Drawer';
-import AppBar from 'material-ui/AppBar';
 import TextField from 'material-ui/TextField';
-import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import UpArrow from 'material-ui/svg-icons/navigation/arrow-upward';
 import { withRouter } from 'react-router-dom';
-import Paper from 'material-ui/Paper';
 
 import DownArrow from 'material-ui/svg-icons/navigation/arrow-downward';
 

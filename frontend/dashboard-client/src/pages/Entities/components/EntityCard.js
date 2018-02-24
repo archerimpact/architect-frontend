@@ -69,7 +69,7 @@ class EntityCard extends Component {
         </div>
     );
     }
-    else {*/
+    else {
       return (
           <div className="entityCard" onClick={() => this.props.onEntityClick(this.props.entity)}>
               <div className="cardHeader">
@@ -85,7 +85,7 @@ class EntityCard extends Component {
               </div>
           </div>
       );
-    /*}*/
+    /*}
   }
 }
 

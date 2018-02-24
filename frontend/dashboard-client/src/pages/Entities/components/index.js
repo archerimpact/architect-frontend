@@ -12,7 +12,7 @@ class EntitiesList extends Component {
 	}
 
 	sortByProperty(prop, reverse) {
-	/* pass in the property you want to sort by of the entity, and whether or not to reverse the list as a boolean */
+	/* pass in the property you want to sort by of the entity, and whether or not to reverse the list as a boolean 
 	  	return function(a, b) {
 		    if (prop === null || typeof a[prop] !== 'string') {
 		     	return reverse ? (b - a): (a - b);
