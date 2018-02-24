@@ -2,12 +2,16 @@ import React, { Component } from 'react';
 import * as d3 from 'd3';
 import Checkbox from 'material-ui/Checkbox';
 
+import './style.css'
+
 const styles = {
   block: {
     maxWidth: 250,
   },
   checkbox: {
     marginBottom: 16,
+    marginTop: 16,
+    marginLeft:16
   },
 };
 
@@ -101,7 +105,7 @@ class NodeGraph extends Component {
       return "#49FFB7";
     }
     if (node.type === "Company" || node.type === "organization" || node.type==="corporation") {
-      return "#A346BF";
+      return "#97C2FC";
     }
     if (node.type === "Location" || node.type==="location") {
       return "#C454E5";
@@ -110,6 +114,19 @@ class NodeGraph extends Component {
       return "#FFFF02";
     }
 	};
+
+  getBorderColor(node){
+    /* returns the color of the borderbased on the type of the entity */
+    if (node.type.toLowerCase() === "person" || node.type === "Entity") {
+      return "#FA0A11";
+    }
+    if (node.type === "Company" || node.type === "organization" || node.type==="corporation") {
+      return "#2B7CE9";
+    }
+    else {
+      return "#FFAE08";
+    }
+  };
 
   /* For getting an image for node types
   getImage(node) {
@@ -144,7 +161,6 @@ class NodeGraph extends Component {
 		/*if (typeof(sources[0]) === "undefined") {
 			sources = [];
 		};*/
-		
 		var uniqueNodes = this.uniqueNodes(nodes)
 
     const data = {
@@ -153,15 +169,15 @@ class NodeGraph extends Component {
 		};
     
 		const simulation = d3.forceSimulation(data.nodes)
-			.force("center", d3.forceCenter(width/2, height/2))
+			.force("center", d3.forceCenter(this.refs.mountPoint.offsetWidth/2, this.refs.mountPoint.offsetHeight/2))
 			//.force("charge", d3.forceManyBody())
       .force("collide", d3.forceCollide((d) => this.getCollide(d)))
 			.force("link", d3.forceLink(data.links).id(function(d) { return d._id; }));
 
 		const svg = d3.select(this.refs.mountPoint)
 			.append('svg')
-			.attr('width', width)
-			.attr('height', height)
+			.attr('width', this.refs.mountPoint.offsetWidth)
+			.attr('height', this.refs.mountPoint.offsetHeight)
 			.attr('display', "block")
 			.attr('margin', "auto")
 			.attr('id', 'svg1')
@@ -184,7 +200,7 @@ class NodeGraph extends Component {
 
     nodeElements.append('circle')
 			.attr('r',13)
-			.style('stroke', '#FFFFFF')
+			.style('stroke', (d)=> this.getBorderColor(d))
 			.style('stroke-width', 1.5)
 			.style('fill', (d) => this.getNodeColor(d));
 
@@ -271,7 +287,7 @@ class NodeGraph extends Component {
 
 	render() {
 		return (
-			<div>
+			<div className="filled">
         <div style={{position:"absolute"}}>
           <Checkbox
             label="Include Text"

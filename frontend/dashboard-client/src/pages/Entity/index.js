@@ -38,12 +38,13 @@ class Entity extends Component {
   }
 
   componentWillReceiveProps = (nextprops) => {
-    this.loadData(nextprops.match.params.neo4j_id)
+    this.loadData(nextprops.match.params.neo4j_id) //load data when you change the url props
   }
 
   loadData(neo4j_id) {
     server.getBackendNode(neo4j_id)
       .then(data => {
+        //returns items in the format: [neo4j_data]
         this.setState({nodeData: data[0]})
       })
       .catch(err => {
@@ -81,7 +82,7 @@ class Entity extends Component {
                 </div>
               </Tab>
               <Tab label="Graph" style={tab_style}>
-                <div>
+                <div className="graph">
                   <Neo4jGraphContainer relationshipData={this.state.relationshipData} />
                 </div>
               </Tab>

@@ -32,6 +32,7 @@ class SearchDataList extends Component {
                 key={key} 
               />
             );
+
           })}
         </div>
       );
