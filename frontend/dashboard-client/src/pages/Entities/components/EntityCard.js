@@ -74,8 +74,6 @@ class EntityCard extends Component {
                   {this.renderIcon(this.props.entity)}
                   <div className="cardHeaderText">
                       <span className="title">
-                       {/*{this.props.entity.qid && this.props.entity.qid.charAt(0) !== "T" ? <a href={"https://www.wikidata.org/wiki/" + this.props.entity.qid}>
-                        {this.props.entity.name} </a> : this.props.entity.name}*/}
                         {this.props.entity.neo4j_id ? <Link to={"/entity/" + this.props.entity.neo4j_id}>{this.props.entity.name}</Link> : this.props.entity.name}
                         </span>
                       <span className="type">{this.props.entity.type}</span>
