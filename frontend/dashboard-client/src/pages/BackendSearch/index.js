@@ -28,7 +28,7 @@ class BackendSearch extends Component {
   }
 
   constructor(props) {
-    super(props)
+    super(props);
     this.searchBackendText = this.searchBackendText.bind(this);
     this.searchBackendNodes = this.searchBackendNodes.bind(this);
     this.submitSearch = this.submitSearch.bind(this);
@@ -44,7 +44,7 @@ class BackendSearch extends Component {
       linking there directly. Only search if there's params */
 
     if (this.props.search != null ){
-      this.searchBackendText(this.props.search)
+      this.searchBackendText(this.props.search);
     }    
   }
 
@@ -52,16 +52,16 @@ class BackendSearch extends Component {
     /* handles the case when you are already on backend search and are
       searching again in the nav bar; react only recognizes that there's nextprops */
 
-    this.searchBackendText(nextprops.search)
+    this.searchBackendText(nextprops.search);
   }
 
   submitSearch(query){
     this.searchBackendText(query);
-    this.props.onChangeSearch(query)          
+    this.props.onChangeSearch(query);       
   }
 
   updateSearch(query){
-    this.searchBackendText(query)
+    this.searchBackendText(query);
   }
 
   searchBackendText(query){
@@ -70,8 +70,8 @@ class BackendSearch extends Component {
         this.setState({searchData: data.hits.hits, nodesData: null})
         var ids = data.hits.hits.map((item) => {
           return item._source.neo4j_id
-        })
-        this.searchBackendNodes(ids) //use the neo4jids of the elastic results to get all data
+        });
+        this.searchBackendNodes(ids); //use the neo4jids of the elastic results to get all data
       })
       .catch((error) => {console.log(error)});
   }
@@ -79,10 +79,10 @@ class BackendSearch extends Component {
   searchBackendNodes(idsArray){
     server.getBackendNodes(idsArray)
       .then(data => {
-          this.setState({nodesData: data})       
+          this.setState({nodesData: data});      
       })
       .catch(err => {
-        console.log(err)
+        console.log(err);
       })
   }
 

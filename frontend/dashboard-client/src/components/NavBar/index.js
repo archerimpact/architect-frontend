@@ -44,7 +44,7 @@ class NavBar extends Component {
   }
 
   constructor(props) {
-    super(props)
+    super(props);
     this.searchBackendText = this.searchBackendText.bind(this);
     this.goToSearchPage = this.goToSearchPage.bind(this);
     this.state={
