@@ -1,0 +1,65 @@
+.iconBox{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+}
+.information{
+display: flex;
+flex-direction: row;
+flex-grow:10;
+justify-content: space-between;
+
+}
+.entityRow{
+  display: flex;
+  flex-direction: row;
+}
+
+.column, .titleColumn{
+  display: flex;
+  margin:15px auto;
+
+}
+
+.actions{
+  flex-grow:1;
+  display:flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-left:auto;
+  align-content:center;
+}
+
+.actionButton{
+  padding: 0px;
+}
+
+.titleColumn{
+  width: 400px;
+}
+
+.column{
+  flex-grow:3;  
+  color: rgba(0, 0, 0, 0.54);
+  flex-basis:30%;
+  justify-content:flex-start;
+
+}
+
+.title {
+  font-color: #3C3C3C;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.typeBox {
+  margin-left: 20px;
+  margin-right: 40px;
+}
+
+.typeText{
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 14px;
+  font-style: italic;
+}
