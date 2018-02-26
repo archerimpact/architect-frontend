@@ -23,3 +23,7 @@ a:link, a:visited, a:hover, a:active{
 	position: absolute;
   font-family:"Open Sans", sans-serif;
 }
+
+h3, h2, h1 {
+  font-family: Open Sans, sans-serif; 
+}
