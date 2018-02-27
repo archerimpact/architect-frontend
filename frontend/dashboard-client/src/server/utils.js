@@ -22,13 +22,13 @@ export function saveDocument(file, projectid) {
 }
 
 /* Brings a document from the backend to frontend. TOOD: Angelina, does not yet work correctly */
-export function retrieveDocument(name, projectid) {
+export function retrieveDocument(name) {
     var url = 'http://localhost:8000/investigation/project/document';
     return new Promise(function(fulfill, reject) {
         axios.get(url, {
             params: {
-                projectid: projectid,
-                file_name: name
+                //projectid: projectid,
+                file_name: name,
             }
         })
         .then(function (document) {

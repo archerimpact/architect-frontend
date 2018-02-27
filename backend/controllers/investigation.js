@@ -9,6 +9,8 @@ var multer = require('multer'),
     mongoose = require('mongoose'),
     request = require('request'),
     cloud = require('./cloud'),
+    path = require('path'),
+    mime = require('mime'),
     PDFParser = require('pdf2json');
 
 const app = require('../app').app;
@@ -135,8 +137,6 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
 
         pdfParser.loadPDF(pdf_dest);
 
-
-
         pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError) );
         pdfParser.on("pdfParser_dataReady", pdfData => {
             var text = pdfParser.getRawTextContent();
@@ -148,16 +148,16 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
                 )
               })
           })
-        .catch(err => {
-          res.status(400).send("Unable to save pdf because: " + err);
-        })
+        // pdfParser API does not allow a .catch after all this?
 
         cloud.uploadFile(bucket_name, pdf_dest, function(error) {
           if (error) {
+            console.log("this error");
             throw error;
           }
           else {
-            cloud.moveFile(bucket_name, name, folder_dest);
+            // This line here saves it in the cloud depending on which project you are in, will be needed when need to associate docs with users.
+            //cloud.moveFile(bucket_name, name, folder_dest);
             fs.unlinkSync(pdf_dest);
           }
         });
@@ -444,10 +444,13 @@ app.get('/investigation/project/entities', function(req, res) {
 
 /* Downloads document from cloud and sends to frontend TODO: angelina, this does not yet work correctly*/
 app.get('/investigation/project/document', function(req, res) {
-  var projectid = req.query.projectid;
+  console.log("DOWNLOADING");
+  //cloud.listFiles(bucket_name);
+  //var projectid = req.query.projectid;
   var file_name = req.query.file_name;
-  var cloud_loc = projectid + '/' + file_name;
+  var cloud_loc = '/' + file_name;
   var dest_file = './files/' + file_name;
+  console.log(cloud_loc);
   // Maybe check if it's already there and if so don't download?
 
   cloud.downloadFile(bucket_name, cloud_loc, dest_file, function (error) {
@@ -455,9 +458,28 @@ app.get('/investigation/project/document', function(req, res) {
       throw error;
     }
     else {
+      console.log("read_file");
       fs.readFile(dest_file, (err, data) => {
+        res.header('content-type', 'application/pdf');
         res.send(data);
       });
+
+
+    //   var file = __dirname + '/upload-folder/dramaticpenguin.MOV';
+
+    //   var filename = path.basename(file);
+    //   var mimetype = mime.lookup(file);
+
+    //   res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+    //   res.setHeader('Content-type', mimetype);
+
+    //   var filestream = fs.createReadStream(file);
+    //   filestream.pipe(res);
+    // });file);
+    //   filestream.pipe(res);
+
+
+
     }
   })
 })
