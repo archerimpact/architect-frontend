@@ -47,7 +47,7 @@ class AddToProject extends Component {
   }
 
   handleSubmit(projectid) {
-    this.props.actions.createEntity({name: this.props.entity.data.name, type: this.props.entity.metadata.labels[0], sources: [], projectid: projectid})
+    this.props.actions.createEntity({name: this.props.entity.data.name, type: this.props.entity.metadata.labels[0], sources: [], projectid: projectid, neo4jid: this.props.entity.metadata.id})
     this.handleClose();
   }
 

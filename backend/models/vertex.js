@@ -9,7 +9,8 @@ var vertexSchema = new mongoose.Schema({
     type: String, // Must be Source or Entity
     date_added: Date,
     source: { type: Schema.Types.ObjectId, ref: 'Source' },
-    entity: { type: Schema.Types.ObjectId, ref: 'Entity' }
+    entity: { type: Schema.Types.ObjectId, ref: 'Entity' },
+    neo4j_id: String
 });
 
 var sourceSchema = new mongoose.Schema({
