@@ -20,17 +20,22 @@ class Sources extends Component {
       };
       this.documentList = this.documentList.bind(this);
       this.things = this.things.bind(this);
+      this.things();
     }
 
     documentList(documents) {
         var documentItems = documents.map((document, i) => {
-          var newDoc = {
+          /*var newDoc = {
             httpHeaders: document.headers,
             data: document.data
-          }
+          }*/
+          console.log("type of pdf data: " + typeof(document.data))
+          console.log("data: ", document.data)
+          //document.data = System.Text.Encoding.UTF8.GetBytes(document.data);
+          //console.log("type of pdf data after encoding: " + typeof(document.data))
           debugger
             return (
-                  <Document file={newDoc}>
+                  <Document file={document}>
                   {
                       <Page 
                           className="page" 
@@ -46,7 +51,7 @@ class Sources extends Component {
     }
 
     things() {
-      server_utils.retrieveDocument('a_dirks_news.pdf')
+      server_utils.retrieveDocument('rental-app.pdf')
         .then(data => {
           console.log("DOCUMENT: ");
 
@@ -54,7 +59,7 @@ class Sources extends Component {
                     type: "application/pdf"
                   }))*/
           console.log(data);
-          window.open("data:application/pdf;base64, " + data.data);
+          //window.open("data:application/pdf;base64, " + data.data);
           // var name = data.params;
           // console.log(name);
           // var piece = data.data;
@@ -65,7 +70,7 @@ class Sources extends Component {
 
     render() {
       console.log(sample_file);
-      this.things();
+
       if (this.state.loaded) {
         return (
           <div className="sources">

@@ -29,7 +29,8 @@ export function retrieveDocument(name) {
             params: {
                 //projectid: projectid,
                 file_name: name,
-            }
+            },
+            responseType: "arraybuffer"
         })
         .then(function (document) {
             fulfill(document);

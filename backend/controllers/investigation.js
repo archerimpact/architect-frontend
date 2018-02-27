@@ -450,18 +450,22 @@ app.get('/investigation/project/document', function(req, res) {
   //var projectid = req.query.projectid;
   var file_name = req.query.file_name;
   var cloud_loc = '/' + file_name;
-  var dest_file = './files/' + file_name;
+  var dest_file = './files2/' + file_name;
   console.log(cloud_loc);
   // Maybe check if it's already there and if so don't download?
 
   cloud.downloadFile(bucket_name, cloud_loc, dest_file, function (error) {
     if (error) {
+      console.log("error")
       throw error;
     }
     else {
       console.log("read_file");
       fs.readFile(dest_file, (err, data) => {
-        res.header('content-type', 'application/pdf');
+        if (err){
+          throw err;
+        }
+        res.contentType( 'application/pdf');
         res.send(data);
       });
 
