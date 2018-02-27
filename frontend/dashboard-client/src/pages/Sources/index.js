@@ -9,7 +9,7 @@ class Sources extends Component {
 	render() {
 		return (
 			<div>
-				<PDFUploader />
+				<PDFUploader projectid={this.props.match.params.id}/>
 				<SourcesTab projectid={this.props.match.params.id}/>
 			</div>)		
 	};

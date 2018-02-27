@@ -107,6 +107,7 @@ function downloadFile(bucketName, srcFilename, destFilename, callback) {
       callback();
     })
     .catch(err => {
+      //console.log("ERROR");
       console.error('ERROR:', err);
     });
 }
