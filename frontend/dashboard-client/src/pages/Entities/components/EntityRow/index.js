@@ -60,7 +60,9 @@ class EntityRow extends Component {
               </div>
               <div className="information">
                   <div className="titleColumn">
-                      <div className="title"> {this.props.entity.qid && this.props.entity.qid.charAt(0) !== "T" ? <a href={"https://www.wikidata.org/wiki/" + this.props.entity.qid}>{this.props.entity.name} </a> : this.props.entity.name}</div>
+                      <div className="title"> 
+                        {this.props.entity.neo4j_id ? <Link to={"/entity/" + this.props.entity.neo4j_id}>{this.props.entity.name}</Link> : this.props.entity.name}
+                      </div>
                       <div className="typeBox">
                         <div className="typeText">
                         {this.props.entity.entity.type}

@@ -149,7 +149,7 @@ export function getProjectSources(projectid) {
   })
 }
 
-export function addEntity(name, type, sources, project) {
+export function addEntity(name, type, sources, project, neo4jid) {
     var url = configData.backend_url + '/investigation/entity';
     var options = {
         method: 'POST',
@@ -160,7 +160,8 @@ export function addEntity(name, type, sources, project) {
             name: name,
             type: type,
             sources: sources,
-            project: project
+            project: project,
+            neo4jid: neo4jid
         })
     };
 

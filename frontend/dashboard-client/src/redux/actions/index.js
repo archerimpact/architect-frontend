@@ -135,7 +135,7 @@ export function retrieveDetails(actionType, res) {
 
 export function createEntity(entity) {
   return function (dispatch, getState) {
-    return server.addEntity(entity.name, entity.type, entity.sources, entity.projectid)
+    return server.addEntity(entity.name, entity.type, entity.sources, entity.projectid, entity.neo4jid)
       .then(data => {
         dispatch(fetchProjectEntities(entity.projectid))
       })
