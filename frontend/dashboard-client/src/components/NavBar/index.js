@@ -33,16 +33,6 @@ class Login extends Component {
 
 class NavBar extends Component {
 
-  static propTypes = {
-    // URL props are automatically decoded and passed in based on the config
-    search: PropTypes.string,
-
-    // change handlers are automatically generated when given a config.
-    // By default they update that single query parameter and maintain existing
-    // values in the other parameters.
-    onChangeSearch: PropTypes.func,
-  }
-
   constructor(props) {
     super(props);
     this.searchBackendText = this.searchBackendText.bind(this);

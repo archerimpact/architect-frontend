@@ -22,11 +22,6 @@ const urlPropsQueryConfig = {
 
 class BackendSearch extends Component {
 
-  static propTypes = {
-    search: PropTypes.string,
-    onChangeSearch: PropTypes.func, //automatically generates encoding based on PropType of search
-  }
-
   constructor(props) {
     super(props);
     this.searchBackendText = this.searchBackendText.bind(this);
