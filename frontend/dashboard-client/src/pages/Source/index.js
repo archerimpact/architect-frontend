@@ -32,7 +32,7 @@ class SourcePage extends Component {
 				</div>
 				<div className="document-entities">
 					<div className="left-column">
-						<Sources projectid={this.props.match.params.id}/>
+						<Sources sourceid={this.props.match.params.id}/>
 					</div>
 					<div className="middle-column">
 						<EntityList entities={this.props.sourceEntities}/>

@@ -1,7 +1,9 @@
-.documentList {
+.documentRender {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
+	text-align: center;
+	margin-left:280px;
 }
 
 .docCard {
@@ -14,4 +16,10 @@
 .search {
 	margin-top: 20px;
 	text-align: center;
+}
+
+.pageChange {
+	display: inline-block;
+	margin-right: -500px;
+	margin-left: 200px;
 }

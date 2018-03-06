@@ -131,7 +131,7 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
         var projectid = url.substring(index);
         var name = req.file.originalname;
         let text_dest = "./files/" + name.substring(0, name.length - 4) + ".txt";
-        let pdf_dest = "./files/" + name;
+        var pdf_dest = "./files/" + name;
         let folder_dest = projectid + "/" + name;
 
         let pdfParser = new PDFParser(this,1);
@@ -147,21 +147,26 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
                   {_id : mongoose.Types.ObjectId(projectid)},
                   {$push: {sources: vertid}}
                 )
-              })
+
+              let pdf_dest_id = '' + vertid;
+
+              cloud.uploadFile(bucket_name, pdf_dest, function(error) {
+              if (error) {
+                console.log("this error");
+                throw error;
+              }
+              else {
+                cloud.moveFile(bucket_name, name, pdf_dest_id);
+                fs.unlinkSync(pdf_dest);
+              }
+            });
+
+              });
+
           })
         // pdfParser API does not allow a .catch after all this?
 
-        cloud.uploadFile(bucket_name, pdf_dest, function(error) {
-          if (error) {
-            console.log("this error");
-            throw error;
-          }
-          else {
-            // This line here saves it in the cloud depending on which project you are in, will be needed when need to associate docs with users.
-            //cloud.moveFile(bucket_name, name, folder_dest);
-            fs.unlinkSync(pdf_dest);
-          }
-        });
+        
     } catch (err) {
         res.status(400).send("Unable to save pdf because: " + err);
     };
@@ -448,9 +453,9 @@ app.get('/investigation/project/document', function(req, res) {
   console.log("DOWNLOADING");
   //cloud.listFiles(bucket_name);
   //var projectid = req.query.projectid;
-  var file_name = req.query.file_name;
-  var cloud_loc = '/' + file_name;
-  var dest_file = './files2/' + file_name;
+  var sourceid = req.query.sourceid;
+  var cloud_loc = '/' + sourceid;
+  var dest_file = './files2/' + sourceid + '.pdf';
   console.log(cloud_loc);
   // Maybe check if it's already there and if so don't download?
 
@@ -465,6 +470,7 @@ app.get('/investigation/project/document', function(req, res) {
         if (err){
           throw err;
         }
+        fs.unlinkSync(dest_file);
         res.contentType( 'application/pdf');
         res.send(data);
       });
