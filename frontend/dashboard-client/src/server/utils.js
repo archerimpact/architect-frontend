@@ -11,7 +11,7 @@ export function saveDocument(file, projectid) {
     var url = configData.backend_url + '/investigation/pdf';
 
     return new Promise(function(fulfill, reject) {
-        axios.post(url, file_data)//, headers)
+        axios.post(url, file_data)
         .then(function (response) {
             console.log("success");
         })

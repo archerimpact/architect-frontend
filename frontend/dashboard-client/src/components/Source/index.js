@@ -46,7 +46,6 @@ class Sources extends Component {
           page: page,
         });
       }
-      
     };
 
     onDocumentLoad = ({ numPages }) => {
@@ -73,14 +72,9 @@ class Sources extends Component {
         .then(data => {
           this.setState({document: data, loaded: true});
         })
-
     }
 
     render() {
-
-      const style = {
-        margin: 12,
-      };
 
       if (this.state.loaded) {
         return (
@@ -89,8 +83,8 @@ class Sources extends Component {
                   {this.documentRender(this.state.document)}
               </div>
               <div className="pageChange">
-                <RaisedButton label="Previous Page" primary={true} style={style} onClick={this.toPrevious}/>
-                <RaisedButton label="Next Page" primary={true} style={style} onClick={this.toNext}/>
+                <RaisedButton label="Previous Page" primary={true} style={{margin: 12}} onClick={this.toPrevious}/>
+                <RaisedButton label="Next Page" primary={true} style={{margin: 12}} onClick={this.toNext}/>
               </div>
           </div>
         );

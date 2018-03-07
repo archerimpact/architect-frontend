@@ -31,8 +31,6 @@ class PDFUploader extends Component {
 	}
 
     onFileChange(event) {
-        console.log("id:");
-        console.log(this.props.projectid);
         this.setState({ fileUploaded: event.target.files[0].name + " uploaded"});
         server_utils.saveDocument(event.target.files[0], this.props.projectid);
     }

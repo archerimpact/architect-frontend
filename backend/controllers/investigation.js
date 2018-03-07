@@ -9,8 +9,6 @@ var multer = require('multer'),
     mongoose = require('mongoose'),
     request = require('request'),
     cloud = require('./cloud'),
-    path = require('path'),
-    mime = require('mime'),
     PDFParser = require('pdf2json');
 
 const app = require('../app').app;
@@ -448,24 +446,17 @@ app.get('/investigation/project/entities', function(req, res) {
     .catch((err)=>{console.log(err)})    
 })
 
-/* Downloads document from cloud and sends to frontend TODO: angelina, this does not yet work correctly*/
+/* Downloads document from cloud and sends to frontend */
 app.get('/investigation/project/document', function(req, res) {
-  console.log("DOWNLOADING");
-  //cloud.listFiles(bucket_name);
-  //var projectid = req.query.projectid;
   var sourceid = req.query.sourceid;
   var cloud_loc = '/' + sourceid;
   var dest_file = './files2/' + sourceid + '.pdf';
-  console.log(cloud_loc);
-  // Maybe check if it's already there and if so don't download?
 
   cloud.downloadFile(bucket_name, cloud_loc, dest_file, function (error) {
     if (error) {
-      console.log("error")
       throw error;
     }
     else {
-      console.log("read_file");
       fs.readFile(dest_file, (err, data) => {
         if (err){
           throw err;
@@ -474,23 +465,6 @@ app.get('/investigation/project/document', function(req, res) {
         res.contentType( 'application/pdf');
         res.send(data);
       });
-
-
-    //   var file = __dirname + '/upload-folder/dramaticpenguin.MOV';
-
-    //   var filename = path.basename(file);
-    //   var mimetype = mime.lookup(file);
-
-    //   res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-    //   res.setHeader('Content-type', mimetype);
-
-    //   var filestream = fs.createReadStream(file);
-    //   filestream.pipe(res);
-    // });file);
-    //   filestream.pipe(res);
-
-
-
     }
   })
 })
