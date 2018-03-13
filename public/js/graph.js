@@ -19,21 +19,29 @@ d3.json("data.json", function(json) {
 
   var link = svg.selectAll(".link")
       .data(json.links)
-    .enter().append("line")
+      .enter().append("line")
       .attr("class", "link")
-    .style("stroke-width", function(d) { return Math.sqrt(d.weight); });
+      .style("stroke-width", "3");
 
   var node = svg.selectAll(".node")
       .data(json.nodes)
-    .enter().append("g")
+      .enter().append("g")
       .attr("class", "node")
       .call(force.drag);
 
   node.append("circle")
-      .attr("r","5");
+      .attr("r","15")
+      .style("fill", "#545454")
+      .style("stroke", "#0d77e2")
+      .style("stroke-width", "3")
+      .on("click", function() {
+        prevColor = d3.rgb(d3.select(this).style("fill")).toString();
+        currColor = (prevColor == "#545454") ? "#0d77e2" : "#545454";
+        d3.select(this).style("fill", currColor);
+      });
 
   node.append("text")
-      .attr("dx", 12)
+      .attr("dx", 22)
       .attr("dy", ".35em")
       .text(function(d) { return d.name });
 
