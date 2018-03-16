@@ -123,11 +123,15 @@ function saveEntity(name, type, sources, neo4jid) {
 
 app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
     try {
+        // Grabs project id from the url
+        var url = req.headers.referer;
+        var index = url.indexOf('sources') + 8;
+        var projectid = url.substring(index);
         var name = req.file.originalname;
-        var projectid = req.body.projectid;
         let text_dest = "./files/" + name.substring(0, name.length - 4) + ".txt";
-        let pdf_dest = "./files/" + name;
+        var pdf_dest = "./files/" + name;
         let folder_dest = projectid + "/" + name;
+
         let pdfParser = new PDFParser(this,1);
 
         pdfParser.loadPDF(pdf_dest);
@@ -141,23 +145,28 @@ app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
                   {_id : mongoose.Types.ObjectId(projectid)},
                   {$push: {sources: vertid}}
                 )
-              })
-          })
-        .catch(err => {
-          res.sendStatus(400);
-        })
 
-        cloud.uploadFile(bucket_name, pdf_dest, function(error) {
-          if (error) {
-            throw error;
-          }
-          else {
-            cloud.moveFile(bucket_name, name, folder_dest);
-            fs.unlinkSync(pdf_dest);
-          }
-        });
+              let pdf_dest_id = '' + vertid;
+
+              cloud.uploadFile(bucket_name, pdf_dest, function(error) {
+              if (error) {
+                console.log("this error");
+                throw error;
+              }
+              else {
+                cloud.moveFile(bucket_name, name, pdf_dest_id);
+                fs.unlinkSync(pdf_dest);
+              }
+            });
+
+              });
+
+          })
+        // pdfParser API does not allow a .catch after all this?
+
+        
     } catch (err) {
-        res.sendStatus(400);
+        res.status(400).send("Unable to save pdf because: " + err);
     };
 
     res.send(200).json({success: true, message: "PDF upload success"});
@@ -437,13 +446,11 @@ app.get('/investigation/project/entities', function(req, res) {
     .catch((err)=>{console.log(err)})    
 })
 
-/* Downloads document from cloud and sends to frontend TODO: angelina, this does not yet work correctly*/
+/* Downloads document from cloud and sends to frontend */
 app.get('/investigation/project/document', function(req, res) {
-  var projectid = req.query.projectid;
-  var file_name = req.query.file_name;
-  var cloud_loc = projectid + '/' + file_name;
-  var dest_file = './files/' + file_name;
-  // Maybe check if it's already there and if so don't download?
+  var sourceid = req.query.sourceid;
+  var cloud_loc = '/' + sourceid;
+  var dest_file = './files2/' + sourceid + '.pdf';
 
   cloud.downloadFile(bucket_name, cloud_loc, dest_file, function (error) {
     if (error) {
@@ -451,6 +458,11 @@ app.get('/investigation/project/document', function(req, res) {
     }
     else {
       fs.readFile(dest_file, (err, data) => {
+        if (err){
+          throw err;
+        }
+        fs.unlinkSync(dest_file);
+        res.contentType( 'application/pdf');
         res.send(data);
       });
     }
@@ -469,6 +481,7 @@ app.get('/investigation/project/sources', function(req, res) {
 
       /* if the project's array of sources doesn't exist, return an empty array */
       if (vertexes.length === 0) {
+        console.log("empty sources");
         res.send([]);
       }
       vertexesToResponse(vertexes, "Source", function(response) {

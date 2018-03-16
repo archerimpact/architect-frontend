@@ -47,7 +47,7 @@ class SourcesTable extends Component {
 						<TableHeaderColumn>Name</TableHeaderColumn>
 						<TableHeaderColumn>Content</TableHeaderColumn>
 						<TableHeaderColumn>Number of Entities</TableHeaderColumn>
-						<TableHeaderColumn>Graph</TableHeaderColumn>
+						<TableHeaderColumn>Document</TableHeaderColumn>
 					</TableRow>
 				</TableHeader>
 				<TableBody
@@ -59,7 +59,7 @@ class SourcesTable extends Component {
 								<TableRowColumn>{vertex.name}</TableRowColumn>
 								<TableRowColumn>{vertex.source.document.content}</TableRowColumn>
 								<TableRowColumn>{vertex.source.document.entities.length}</TableRowColumn>
-								<TableHeaderColumn><a href={"/source/" + vertex._id}>View Details</a></TableHeaderColumn>
+								<TableHeaderColumn><a href={"/source/" + vertex._id}>View Document</a></TableHeaderColumn>
 							</TableRow>
 						);
 					})}

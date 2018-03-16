@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Document, Page } from 'react-pdf/build/entry.webpack';
 import {Card, CardMedia, CardTitle} from 'material-ui/Card';
+import RaisedButton from 'material-ui/RaisedButton';
 import './style.css';
 
 import { Link, withRouter } from 'react-router-dom';
@@ -11,37 +12,94 @@ import { bindActionCreators } from 'redux';
 
 class Sources extends Component {
 
-    documentList(documents) {
-        const documentItems = documents.map((document, i) => {
-            return (
-                <Card className="docCard" key={i}>
-                    <CardMedia>
-                        <Document file={document}>
-                        {
-                            <Page 
-                                className="page" 
-                                key={1} 
-                                pageNumber={1} 
-                                width={125}
-                            />
-                        }
-                        </Document>
-                    </CardMedia>
-                    <CardTitle title={document.substring(14).slice(0, -13)} subtitle="Some comments" />
-                </Card>
-                );
-            });
-        return documentItems;
+    constructor(props) {
+      super(props);
+      this.state = {
+        document: '',
+        loaded: false,
+        page: 1
+      };
+      this.getDocument = this.getDocument.bind(this);
+      this.getDocument();
+      this.documentRender = this.documentRender.bind(this);
+      this.toPrevious = this.toPrevious.bind(this);
+      this.toNext = this.toNext.bind(this);
+      this.onDocumentLoad = this.onDocumentLoad.bind(this);
+    }
+
+    toPrevious = (event) => {
+      event.preventDefault();
+      var page = this.state.page - 1;
+      if (page > 0) {
+        this.setState({
+          page: page,
+        });
+      }
+      
+    };
+
+    toNext = (event) => {
+      event.preventDefault();
+      var page = this.state.page + 1;
+      if (this.state.numPages && page <= this.state.numPages) {
+        this.setState({
+          page: page,
+        });
+      }
+    };
+
+    onDocumentLoad = ({ numPages }) => {
+      this.setState({ numPages: numPages });
+    }
+
+    documentRender(document) {
+        return (
+              <Document file={document} onLoadSuccess={this.onDocumentLoad}>
+              {
+                  <Page 
+                      className="page" 
+                      key={1} 
+                      pageNumber={this.state.page} 
+                      width={400}
+                  />
+              }
+              </Document>
+            );
+    }
+
+    getDocument() {
+      server_utils.retrieveDocument(this.props.sourceid)
+        .then(data => {
+          this.setState({document: data, loaded: true});
+        })
     }
 
     render() {
+
+      if (this.state.loaded) {
         return (
-            <div className="sources">
-                <div className="documentList">
-                    {this.documentList()}
-                </div>
-            </div>
+          <div className="sources">
+              <div className="documentRender">
+                  {this.documentRender(this.state.document)}
+              </div>
+              <div className="pageChange">
+                <RaisedButton label="Previous Page" primary={true} style={{margin: 12}} onClick={this.toPrevious}/>
+                <RaisedButton label="Next Page" primary={true} style={{margin: 12}} onClick={this.toNext}/>
+              </div>
+          </div>
         );
+      }
+      else {
+        return (
+          <div className="sources">
+              <div className="documentRender">
+                  Loading
+              </div>
+          </div>
+        )
+      }
+
+      
     }
 }
 

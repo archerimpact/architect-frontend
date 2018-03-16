@@ -4,6 +4,7 @@ import './style.css';
 import EntityList from './components/EntityList.js';
 //import NodeGraph from '../../components/NodeGraph';
 import FakeSource from '../../components/Source/fakeSource';
+import Sources from '../../components/Source';
 import AddEntity from '../../components/AddEntity';
 
 import Paper from 'material-ui/Paper';
@@ -31,7 +32,7 @@ class SourcePage extends Component {
 				</div>
 				<div className="document-entities">
 					<div className="left-column">
-						<FakeSource />
+						<Sources sourceid={this.props.match.params.id}/>
 					</div>
 					<div className="middle-column">
 						<EntityList entities={this.props.sourceEntities}/>
