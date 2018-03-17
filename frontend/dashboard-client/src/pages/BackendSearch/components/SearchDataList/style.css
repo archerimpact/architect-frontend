@@ -2,3 +2,7 @@
   max-width: 1000px;
   margin: 0px auto;
 }
+
+.entity-result {
+	border-bottom: 1px solid #ACACAC;
+}

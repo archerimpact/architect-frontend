@@ -51,9 +51,8 @@ class EntityResult extends Component {
   }
 
     render() {
-      debugger;
       return (
-        <div onClick={()=>this.setState({toggled:!this.state.toggled})}>
+        <div className='entity-result' onClick={()=>this.setState({toggled:!this.state.toggled})}>
           <EntityCard 
             nodeItem={this.props.nodeItem} 
             key={this.props.key} 
