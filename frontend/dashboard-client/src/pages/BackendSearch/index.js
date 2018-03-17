@@ -83,9 +83,12 @@ class BackendSearch extends Component {
 
   render() {
     return(
-      <div className="entitiesList">
-        <SearchDataList searchItems={this.state.searchData} nodeItems={this.state.nodesData}/>
-      </div>
+      // <div className="entitiesList">
+      <div className="search-side-container">
+        <div className="search-side">
+          <SearchDataList searchItems={this.state.searchData} nodeItems={this.state.nodesData}/>
+        </div>
+      </div> 
     );
   }
 }
