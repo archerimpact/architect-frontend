@@ -1,3 +1,20 @@
-.entitiesList{
-  margin-top: 20px;
+.search-side-container {
+	display: block;
+}
+.search-side {
+	height: calc(100% - 12px) ;
+	position: absolute;
+    right: 0px;
+    margin: 8px 8px 0px 0px;
+    top: 0px;
+    z-index: 10;
+    transition: left 0.5s;
+    -webkit-transform: translateX(0px);
+    transform: translateX(0px);
+    transition-property: -webkit-transform,transform,visibility,opacity;
+    transition-duration: 200ms;
+    transition-timing-function: cubic-bezier(0.0,0.0,0.2,1);
+    overflow-y: auto;
+    	overflow-x: hidden;
+
 }
