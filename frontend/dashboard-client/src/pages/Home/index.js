@@ -1,20 +1,13 @@
-import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
-import {withRouter} from 'react-router-dom';
-
-
-
 
 import React, { Component, PropTypes } from 'react';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 
-import './style.css'
-
 import AppBar from 'material-ui/AppBar';
 
-import SearchBar from '../SearchBar'
+import DatabaseSearchBar from '../../components/SearchBar/databaseSearchBar'
 import {Link, withRouter} from 'react-router-dom';
 import { Redirect } from 'react-router'
 
@@ -25,6 +18,7 @@ import FlatButton from 'material-ui/FlatButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 import * as server from '../../server/';
+import './style.css';
 
 const urlPropsQueryConfig = {
   search: { type: UrlQueryParamTypes.string },
@@ -40,91 +34,18 @@ class Login extends Component {
   }
 }
 
-class NavBar extends Component {
-
-  constructor(props) {
-    super(props);
-    this.searchBackendText = this.searchBackendText.bind(this);
-    this.goToSearchPage = this.goToSearchPage.bind(this);
-    this.state={
-      searchData: null,
-      fireRedirect: false,
-    }
-  }
-
-  searchBackendText(query){
-    server.searchBackendText(query)
-      .then((data)=>{
-        this.setState({searchData: data.hits.hits})
-      })
-      .catch((error) => {console.log(error)});
-  }
-
-  goToSearchPage(query){
-    this.setState({fireRedirect: true});
-    this.props.onChangeSearch(query)
-  }
-
-    render () {
-        var self = this
-        const Logged = withRouter(({ history }) => (
-          <IconMenu style={{color: 'inherit'}}
-            iconButtonElement={
-              <IconButton><MoreVertIcon /></IconButton>
-            }
-            targetOrigin={{horizontal: 'right', vertical: 'top'}}
-            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-          >
-            <MenuItem primaryText="Refresh" />
-            <MenuItem primaryText="Help" />
-            <MenuItem primaryText="Sign out" 
-                onClick={() => {                
-                self.props.logOut()
-                }}
-            />
-          </IconMenu>
-          )
-        );
-        const Login = withRouter(({ history }) => (
-          <FlatButton> 
-            <Link style={{textDecoration: 'none', color: 'inherit'}} to={{
-                pathname: '/login',
-                state: { from: this.props.location }
-              }}> Login </Link>
-           </FlatButton>
-          )
-        );
-
-    if (this.state.fireRedirect) {
-      this.setState({fireRedirect:false})
-      return (
-        <Redirect to={'/search?search=' + this.props.search}  />
-      );
-    }
-
-    return (
-            <div className="outerContainer">
-          <Link to="/">
-            <div className="logo" />
-          </Link>
-          
-          <div className="iconMenu">
-            {this.props.isAuthenticated ? <Logged logOut={this.props.logOut.bind(this)}/> : <Login logIn={this.props.logIn.bind(this)}/>}
-          </div>
-            </div>
-        );
-    };
-};
-
 class Home extends Component {
+
     render() {
-        return (
-            <div style={{height:'100%'}}>
-                <div className="searchContainer">
-                    <SearchBar onChange={this.searchBackendText} onSubmit={this.goToSearchPage}/>
-                </div>
-            </div>
-        );
+    return (
+        <div className='home-container' style={{height:'100%'}}>
+          <h1>ARCHITECT</h1>
+          <p>A World of Data at your Fingertips</p>
+          <div className="search-main">
+              <DatabaseSearchBar/>
+          </div>
+        </div>
+    );
     }
 }
 
