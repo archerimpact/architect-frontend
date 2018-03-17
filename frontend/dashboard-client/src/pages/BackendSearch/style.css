@@ -17,5 +17,10 @@
     transition-timing-function: cubic-bezier(0.0,0.0,0.2,1);
     overflow-y: auto;
    	overflow-x: hidden;
+    width: 400px;
 
+}
+
+.search-bar {
+    margin-bottom: 10px;
 }
