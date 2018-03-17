@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
 
-import EntityCard from '../../../../components/EntityCard/'
-
+import EntityCard from '../../../../components/EntityCard/';
+import SummaryInfo from '../../../Entity/components/SummaryInfo/';
 import './style.css'
 
 class SearchDataList extends Component {
 
   constructor(props){
     super(props);
+    this.state = {
+      toggled: false
+    }
   }
+
+
 
   render() {
     if (this.props.searchItems == null || this.props.nodeItems==null){
@@ -27,10 +32,7 @@ class SearchDataList extends Component {
               nodeItemData = nodeItem[0]
             }
             return(
-              <EntityCard 
-                nodeItem={nodeItemData} 
-                key={key} 
-              />
+              <EntityResult nodeItem={nodeItemData} key={key}/>
             );
 
           })}
@@ -38,6 +40,28 @@ class SearchDataList extends Component {
       );
     }
   }
+}
+
+class EntityResult extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      toggled: false
+    }
+  }
+
+    render() {
+      debugger;
+      return (
+        <div onClick={()=>this.setState({toggled:!this.state.toggled})}>
+          <EntityCard 
+            nodeItem={this.props.nodeItem} 
+            key={this.props.key} 
+          />
+          {this.state.toggled?<SummaryInfo nodeItem={this.props.nodeItem}/>: null }
+        </div>
+        )
+    }
 }
 
 export default SearchDataList;

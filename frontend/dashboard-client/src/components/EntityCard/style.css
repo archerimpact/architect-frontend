@@ -1,8 +1,7 @@
 .outerBox{
   display: block;
   background-color: white;
-  padding: 13px;
-  margin-bottom: 13px;
+  padding: 12px;
 }
 
 .heading, .identifyingInfo{
