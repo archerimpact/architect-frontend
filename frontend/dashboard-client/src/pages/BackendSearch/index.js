@@ -83,7 +83,6 @@ class BackendSearch extends Component {
 
   render() {
     return(
-      // <div className="entitiesList">
       <div className="search-side-container">
         <div className="search-side">
           <div className="search-bar">

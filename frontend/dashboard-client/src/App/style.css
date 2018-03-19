@@ -1,7 +1,6 @@
 
 .main {
     margin-left: 220px; /* Same as the width of the sidebar */
-    /*padding: 0px 10px;*/
     background-color: #F5F5F5;
     min-height: calc(100% - 64px);
     width: calc(100% - 220px);
