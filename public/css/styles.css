@@ -14,3 +14,7 @@ svg {
 .node circle{
   cursor: pointer;
 }
+
+.node.fixed {
+  fill: #f00;
+}

@@ -6,7 +6,7 @@ var svg = d3.select("body").append("svg")
     .attr("height", height);
 
 var force = d3.layout.force()
-    .gravity(.05)
+    .gravity(.03)
     .distance(100)
     .charge(-100)
     .size([width, height]);
@@ -32,13 +32,21 @@ d3.json("data.json", function(json) {
   node.append("circle")
       .attr("r","15")
       .style("fill", "#545454")
-      .style("stroke", "#0d77e2")
+      .style("stroke", "#545454")
       .style("stroke-width", "3")
-      .on("click", function() {
-        prevColor = d3.rgb(d3.select(this).style("fill")).toString();
-        currColor = (prevColor == "#545454") ? "#0d77e2" : "#545454";
-        d3.select(this).style("fill", currColor);
-      });
+      .on("mousedown", function(d) { 
+        d3.select(this).style("fill", "#0d77e2");
+        if (d3.event.ctrlKey) {
+          d3.select(this)
+            .style("stroke", "#0d77e2")
+            .classed("fixed", d.fixed = true);
+        } else {
+          d3.select(this)
+            .style("stroke", "#545454")
+            .classed("fixed", d.fixed = false);
+        }
+      })
+      .on("mouseup", function() { d3.select(this).style("fill", "#545454"); });
 
   node.append("text")
       .attr("dx", 22)
@@ -54,3 +62,6 @@ d3.json("data.json", function(json) {
     node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
   });
 });
+
+        // prevColor = d3.rgb(d3.select(this).style("fill")).toString();
+        // currColor = (prevColor == "#545454") ? "#0d77e2" : "#545454";
