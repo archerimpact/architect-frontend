@@ -45,6 +45,7 @@ class Entity extends Component {
     server.getBackendNode(neo4j_id)
       .then(data => {
         //returns items in the format: [neo4j_data]
+        debugger
         this.setState({nodeData: data[0]})
       })
       .catch(err => {

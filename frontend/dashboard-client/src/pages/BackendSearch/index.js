@@ -74,6 +74,7 @@ class BackendSearch extends Component {
   searchBackendNodes(idsArray){
     server.getBackendNodes(idsArray)
       .then(data => {
+        debugger
           this.setState({nodesData: data});      
       })
       .catch(err => {

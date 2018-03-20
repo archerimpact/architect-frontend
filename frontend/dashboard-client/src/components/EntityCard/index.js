@@ -19,14 +19,14 @@ class EntityCard extends Component {
       return(    
         <div className="outerBox">
           <div className="heading">
-            <div className="titleName">
+            <div className="titleName underline">
               <Link to={"/entity/" + nodeItem.metadata.id}><h2 className="titleText">{nodeItem.data.name}</h2></Link>
             </div>      
             <AddToProject entity={nodeItem}/>
           </div>
           <i>Person</i>
           <div className="identifyingInfo">
-            <div className="info">{nodeItem.data.nationality} </div>
+            <div className="info">[United Kingdom Companies House Business Registry] </div>
           </div>
         </div>
       );
@@ -34,7 +34,7 @@ class EntityCard extends Component {
       return (
         <div className="outerBox">
           <div className="heading">
-            <div className="titleName">
+            <div className="titleName underline">
               <Link to={"/entity/" + nodeItem.metadata.id}><h2 className="titleText">{nodeItem.data.name}</h2></Link>
             </div>
             <div className="status">

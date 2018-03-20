@@ -1,8 +1,10 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400);
+
 .outerBox{
   display: block;
   background-color: white;
   padding: 12px;
-  font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+  font-family: "Open Sans", Arial, sans-serif;
 }
 
 .heading, .identifyingInfo{
@@ -11,6 +13,10 @@
 
 .titleName, .info, .status, .actions{
   display:inline-block;
+}
+
+.info{
+  font-weight: 400;
 }
 
 .info{

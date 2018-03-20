@@ -10,9 +10,17 @@ hr{
   padding:0px;
   margin:0px;
 }
-
 a:link, a:visited, a:hover, a:active{
   text-decoration: none
+}
+
+a:link {
+    color: black;
+
+}
+
+.underline {
+  border-bottom: 5px solid #25DEB4;
 }
 
 .app {
@@ -24,6 +32,6 @@ a:link, a:visited, a:hover, a:active{
   font-family:"Open Sans", sans-serif;
 }
 
-h3, h2, h1 {
-  font-family: Open Sans, sans-serif; 
+h3, h2 {
+  font-family: Futura, sans-serif; 
 }
