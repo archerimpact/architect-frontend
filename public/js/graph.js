@@ -26,7 +26,11 @@ d3.json("data.json", function(json) {
       .data(json.nodes)
       .enter().append("g")
       .attr("class", "node")
-      .call(force.drag().on("drag", dragged));
+      .call(force.drag()
+        .on("dragstart", dragstart)
+        .on("drag", dragged)
+        .on("dragend", dragend)
+      );
 
   node.append("circle")
       .attr("r","15")
@@ -53,7 +57,8 @@ d3.json("data.json", function(json) {
 
 function dragstart(d) {
   d3.select(this)
-    .classed("active", true);
+    .classed("active", true)
+    .classed("fixed", d.fixed = true);
 } 
 
 function dragged(d) {
@@ -63,7 +68,6 @@ function dragged(d) {
 }
 
 function dragend(d) {
-  console.log("de fire");
   d3.selectAll("circle")
     .classed("active", false);
 }

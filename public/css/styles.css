@@ -23,7 +23,7 @@ svg {
 }
 
 .node .fixed {
-  fill: #f00;
+  fill: #545454;
 }
 
 .node .active {
