@@ -20,24 +20,21 @@ d3.json("data.json", function(json) {
   var link = svg.selectAll(".link")
       .data(json.links)
       .enter().append("line")
-      .attr("class", "link")
-      .style("stroke-width", "3");
+      .attr("class", "link");
 
   var node = svg.selectAll(".node")
       .data(json.nodes)
       .enter().append("g")
       .attr("class", "node")
-      .call(force.drag()
-          .on("dragstart", dragstart)
-          .on("drag", dragged)
-          .on("dragend", dragend));
+      .call(force.drag().on("drag", dragged));
 
-  var test;
   node.append("circle")
       .attr("r","15")
-      .style("stroke", "#aaaaaa")
-      .style("fill", "#aaaaaa")
-      .style("stroke-width", "3");
+      .call(force.drag()
+        .on("dragstart", dragstart)
+        .on("drag", dragged)
+        .on("dragend", dragend)
+      );
 
   node.append("text")
       .attr("dx", 22)
@@ -66,7 +63,9 @@ function dragged(d) {
 }
 
 function dragend(d) {
-
+  console.log("de fire");
+  d3.selectAll("circle")
+    .classed("active", false);
 }
 
 

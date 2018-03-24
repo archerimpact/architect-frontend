@@ -4,6 +4,12 @@ svg {
 
 .link {
   stroke: #aaa;
+  stroke-width: 3px;
+}
+
+.node {
+  fill: #aaa;
+  stroke: #aaa;
 }
 
 .node text {
@@ -13,6 +19,7 @@ svg {
 
 .node circle{
   cursor: pointer;
+  stroke-width: 2px;
 }
 
 .node .fixed {
@@ -20,5 +27,6 @@ svg {
 }
 
 .node .active {
-  fill: #000;
+  stroke: #000;
+  stroke-width: 2px;
 }
