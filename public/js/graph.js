@@ -1,5 +1,7 @@
+let selectedNodes = [];
+
 const width = 960,
-      height = 500
+      height = 500;
 
 const svg = d3.select("body").append("svg")
       .attr("width", width)
@@ -38,7 +40,12 @@ d3.json("data.json", function(json) {
         .on("dragstart", dragstart)
         .on("drag", dragged)
         .on("dragend", dragend)
-      );
+      )
+      .on("mousedown", function(d) {
+        selectedNodes.push(d);
+        d3.select(this)
+          .classed("selected", d3.event.ctrlKey);
+      });
 
   node.append("text")
       .attr("dx", 22)
@@ -57,7 +64,7 @@ d3.json("data.json", function(json) {
 
 function dragstart(d) {
   d3.select(this)
-    .classed("active", true)
+    //.classed("active", true)
     .classed("fixed", d.fixed = true);
 } 
 

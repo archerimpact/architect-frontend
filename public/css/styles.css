@@ -19,7 +19,7 @@ svg {
 
 .node circle{
   cursor: pointer;
-  stroke-width: 2px;
+  stroke-width: 4px;
 }
 
 .node .fixed {
@@ -28,5 +28,10 @@ svg {
 
 .node .active {
   stroke: #000;
-  stroke-width: 2px;
+  stroke-width: 4px;
+}
+
+.node .selected {
+  stroke: #0d77e2;
+  stroke-width: 4px;
 }
