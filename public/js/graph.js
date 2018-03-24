@@ -7,7 +7,7 @@ const svg = d3.select("body").append("svg")
       .attr("width", width)
       .attr("height", height);
 
-const force = d3.layout.force()
+let force = d3.layout.force()
       .gravity(.03)
       .distance(100)
       .charge(-100)
@@ -42,9 +42,8 @@ d3.json("data.json", function(json) {
         .on("dragend", dragend)
       )
       .on("mousedown", function(d) {
-        selectedNodes.push(d);
         d3.select(this)
-          .classed("selected", d3.event.ctrlKey);
+          .classed("selected", d3.event.ctrlKey && !d3.select(this).classed("selected"));
       });
 
   node.append("text")
@@ -78,22 +77,3 @@ function dragend(d) {
   d3.selectAll("circle")
     .classed("active", false);
 }
-
-
-      // .on("mousedown", function(d) {
-      //   d3.select(this)
-      //     .style("stroke", "#545454")
-      //     .style("fill", "#545454")
-      //     .classed("fixed", d.fixed = d3.event.ctrlKey);
-      // })
-      // .on("mouseup", function(d) { 
-      //   if (0) {
-      //     d3.select(this)
-      //       .style("stroke", "#545454")
-      //       .style("fill", "#545454")
-      //   } else {
-      //     d3.select(this)
-      //       .style("stroke", "#aaaaaa")
-      //       .style("fill", "#aaaaaa")
-      //   }
-      // });
