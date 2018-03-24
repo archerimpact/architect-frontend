@@ -15,6 +15,10 @@ svg {
   cursor: pointer;
 }
 
-.node.fixed {
+.node .fixed {
   fill: #f00;
+}
+
+.node .active {
+  fill: #000;
 }
