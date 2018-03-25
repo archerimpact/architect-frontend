@@ -11,16 +11,18 @@ let force = d3.layout.force()
       .charge(-100)
       .size([width, height]);
 
+// Graph manipulation keycodes
 d3.select("body")
   .on("keydown", function() {
-    // u: unpin selected nodes
+    // u: Unpin selected nodes
     if (d3.event.keyCode == 85) {
       svg.selectAll("circle.selected")
         .each(function(d) { d.fixed = false; })
         .classed("fixed", false);
     }
   })
-  
+
+// Click on canvas to unselect selected nodes
 d3.select("svg")
   .on("click", function() {
     console.log("svg click fire");
