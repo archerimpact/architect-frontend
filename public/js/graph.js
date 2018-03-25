@@ -15,10 +15,17 @@ d3.select("body")
   .on("keydown", function() {
     // u: unpin selected nodes
     if (d3.event.keyCode == 85) {
-      svg.selectAll("circle")
+      svg.selectAll("circle.selected")
         .each(function(d) { d.fixed = false; })
         .classed("fixed", false);
     }
+  })
+  
+d3.select("svg")
+  .on("click", function() {
+    console.log("svg click fire");
+    svg.selectAll("circle")
+      .classed("selected", false);
   });
 
 d3.json("data.json", function(json) {
@@ -52,6 +59,9 @@ d3.json("data.json", function(json) {
       .on("mousedown", function(d) {
         d3.select(this)
           .classed("selected", d3.event.ctrlKey && !d3.select(this).classed("selected"));
+      })
+      .on("click", function() {
+        d3.event.stopPropagation();
       });
 
   node.append("text")
