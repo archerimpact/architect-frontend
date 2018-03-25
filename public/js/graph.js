@@ -1,11 +1,24 @@
-const width = 960,
-      height = 500;
+var width = 960,
+    height = 500,
+    brushX = d3.scale.linear().range([0, width]),
+    brushY = d3.scale.linear().range([0, height]);
 
-const svg = d3.select("body").append("svg")
+const svg = d3.select("body")
+      .append("svg")
       .attr("width", width)
       .attr("height", height);
 
-let force = d3.layout.force()
+var brush = d3.svg.brush()
+  .on("brushstart", brushstart)
+  .on("brush", brushing)
+  .on("brushend", brushend)
+  .x(brushX).y(brushY);
+
+svg.append("g")
+  .attr("class", "brush")
+  .call(brush);
+
+const force = d3.layout.force()
       .gravity(.03)
       .distance(100)
       .charge(-100)
@@ -25,9 +38,8 @@ d3.select("body")
 // Click on canvas to unselect selected nodes
 d3.select("svg")
   .on("click", function() {
-    console.log("svg click fire");
-    svg.selectAll("circle")
-      .classed("selected", false);
+    // svg.selectAll("circle")
+    //   .classed("selected", false);
   });
 
 d3.json("data.json", function(json) {
@@ -47,7 +59,7 @@ d3.json("data.json", function(json) {
       .attr("class", "node")
       .call(force.drag()
         .on("dragstart", dragstart)
-        .on("drag", dragged)
+        .on("drag", dragging)
         .on("dragend", dragend)
       );
 
@@ -55,7 +67,7 @@ d3.json("data.json", function(json) {
       .attr("r","15")
       .call(force.drag()
         .on("dragstart", dragstart)
-        .on("drag", dragged)
+        .on("drag", dragging)
         .on("dragend", dragend)
       )
       .on("mousedown", function(d) {
@@ -87,7 +99,7 @@ function dragstart(d) {
     .classed("fixed", d.fixed = true);
 } 
 
-function dragged(d) {
+function dragging(d) {
   d3.select(this)
     .attr("cx", d.x = d3.event.x)
     .attr("cy", d.y = d3.event.y);
@@ -96,4 +108,24 @@ function dragged(d) {
 function dragend(d) {
   d3.selectAll("circle")
     .classed("active", false);
+}
+
+function brushstart() {
+
+}
+
+function brushing() {
+  var extent = brush.extent();
+  svg.selectAll("circle")
+    .classed("selected", function (d) {
+      var xPos = brushX.invert(d.x);
+      var yPos = brushY.invert(d.y);
+      return extent[0][0] <= xPos && xPos <= extent[1][0]
+          && extent[0][1] <= yPos && yPos <= extent[1][1];
+    });
+}
+
+function brushend() {
+  brush.clear();
+  svg.selectAll('.brush').call(brush);
 }

@@ -4,7 +4,7 @@ svg {
 
 .link {
   stroke: #aaa;
-  stroke-width: 3px;
+  stroke-width: 6px;
 }
 
 .node {
@@ -34,4 +34,8 @@ svg {
 .node .selected {
   stroke: #0d77e2;
   stroke-width: 4px;
+}
+
+rect.extent {
+  fill: #ccc;
 }
