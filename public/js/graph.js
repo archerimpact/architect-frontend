@@ -35,13 +35,6 @@ d3.select("body")
     }
   })
 
-// Click on canvas to unselect selected nodes
-d3.select("svg")
-  .on("click", function() {
-    // svg.selectAll("circle")
-    //   .classed("selected", false);
-  });
-
 d3.json("data.json", function(json) {
   force
       .nodes(json.nodes)
@@ -94,6 +87,7 @@ d3.json("data.json", function(json) {
 });
 
 function dragstart(d) {
+  var fixed = 
   d3.select(this)
     .classed("active", true)
     .classed("fixed", d.fixed = true);
@@ -116,25 +110,14 @@ function brushstart() {
 
 function brushing() {
   var extent = brush.extent();
-  if (d3.event.sourceEvent.ctrlKey) {
-    svg.selectAll("circle")
-      .filter(function() { return !this.classList.contains("selected"); })
-      .classed("selected", function (d) {
-        var xPos = brushX.invert(d.x);
-        var yPos = brushY.invert(d.y);
-        return extent[0][0] <= xPos && xPos <= extent[1][0]
-            && extent[0][1] <= yPos && yPos <= extent[1][1];
-      });
-  } else {
-    console.log("wat");
-    svg.selectAll("circle")
-      .classed("selected", function (d) {
-        var xPos = brushX.invert(d.x);
-        var yPos = brushY.invert(d.y);
-        return extent[0][0] <= xPos && xPos <= extent[1][0]
-            && extent[0][1] <= yPos && yPos <= extent[1][1];
-      });
-  }
+  svg.selectAll("circle")
+    .classed("selected", function (d) {
+      var xPos = brushX.invert(d.x);
+      var yPos = brushY.invert(d.y);
+      return (extent[0][0] <= xPos && xPos <= extent[1][0]
+          && extent[0][1] <= yPos && yPos <= extent[1][1])
+          || (this.classList.contains("selected") && d3.event.sourceEvent.ctrlKey);
+    });
 }
 
 function brushend() {
