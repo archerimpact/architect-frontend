@@ -116,13 +116,25 @@ function brushstart() {
 
 function brushing() {
   var extent = brush.extent();
-  svg.selectAll("circle")
-    .classed("selected", function (d) {
-      var xPos = brushX.invert(d.x);
-      var yPos = brushY.invert(d.y);
-      return extent[0][0] <= xPos && xPos <= extent[1][0]
-          && extent[0][1] <= yPos && yPos <= extent[1][1];
-    });
+  if (d3.event.sourceEvent.ctrlKey) {
+    svg.selectAll("circle")
+      .filter(function() { return !this.classList.contains("selected"); })
+      .classed("selected", function (d) {
+        var xPos = brushX.invert(d.x);
+        var yPos = brushY.invert(d.y);
+        return extent[0][0] <= xPos && xPos <= extent[1][0]
+            && extent[0][1] <= yPos && yPos <= extent[1][1];
+      });
+  } else {
+    console.log("wat");
+    svg.selectAll("circle")
+      .classed("selected", function (d) {
+        var xPos = brushX.invert(d.x);
+        var yPos = brushY.invert(d.y);
+        return extent[0][0] <= xPos && xPos <= extent[1][0]
+            && extent[0][1] <= yPos && yPos <= extent[1][1];
+      });
+  }
 }
 
 function brushend() {
