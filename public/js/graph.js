@@ -1,5 +1,3 @@
-let selectedNodes = [];
-
 const width = 960,
       height = 500;
 
@@ -12,6 +10,16 @@ let force = d3.layout.force()
       .distance(100)
       .charge(-100)
       .size([width, height]);
+
+d3.select("body")
+  .on("keydown", function() {
+    // u: unpin selected nodes
+    if (d3.event.keyCode == 85) {
+      svg.selectAll("circle")
+        .each(function(d) { d.fixed = false; })
+        .classed("fixed", false);
+    }
+  });
 
 d3.json("data.json", function(json) {
   force
@@ -63,7 +71,7 @@ d3.json("data.json", function(json) {
 
 function dragstart(d) {
   d3.select(this)
-    //.classed("active", true)
+    .classed("active", true)
     .classed("fixed", d.fixed = true);
 } 
 
