@@ -32,6 +32,7 @@ d3.select("body")
       svg.selectAll("circle.selected")
         .each(function(d) { d.fixed = false; })
         .classed("fixed", false);
+      force.start();
     }
   })
 
@@ -58,18 +59,14 @@ d3.json("data.json", function(json) {
 
   node.append("circle")
       .attr("r","15")
+      .attr("dragfix", false)
+      .attr("dragselect", false)
+      .on("click", clicked)
       .call(force.drag()
         .on("dragstart", dragstart)
         .on("drag", dragging)
         .on("dragend", dragend)
-      )
-      .on("mousedown", function(d) {
-        d3.select(this)
-          .classed("selected", d3.event.ctrlKey && !d3.select(this).classed("selected"));
-      })
-      .on("click", function() {
-        d3.event.stopPropagation();
-      });
+      );
 
   node.append("text")
       .attr("dx", 22)
@@ -85,24 +82,6 @@ d3.json("data.json", function(json) {
     node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
   });
 });
-
-function dragstart(d) {
-  var fixed = 
-  d3.select(this)
-    .classed("active", true)
-    .classed("fixed", d.fixed = true);
-} 
-
-function dragging(d) {
-  d3.select(this)
-    .attr("cx", d.x = d3.event.x)
-    .attr("cy", d.y = d3.event.y);
-}
-
-function dragend(d) {
-  d3.selectAll("circle")
-    .classed("active", false);
-}
 
 function brushstart() {
 
@@ -124,3 +103,42 @@ function brushend() {
   brush.clear();
   svg.selectAll('.brush').call(brush);
 }
+
+function clicked(d, i) {
+  if (d3.event.defaultPrevented) return;
+  var node = d3.select(this);
+  var fixed = node.attr("dragfix") == "true";
+  var selected = node.attr("dragselect") == "true";
+
+  node
+    .classed("fixed", d.fixed = (fixed == d3.event.ctrlKey))
+    .classed("selected", selected != d3.event.ctrlKey);
+
+  node
+    .attr("dragfix", node.classed("fixed"))
+    .attr("dragselect", node.classed("selected"));
+
+  d3.event.stopPropagation();
+}
+
+function dragstart(d) {
+  var node = d3.select(this);
+  node
+    .attr("dragfix", node.classed("fixed"))
+    .attr("dragselect", node.classed("selected"))
+    .classed("active", true)
+    .classed("fixed", d.fixed = true)
+    .classed("selected", d3.event.sourceEvent.ctrlKey);
+} 
+
+function dragging(d) {
+  d3.select(this)
+    .attr("cx", d.x = d3.event.x)
+    .attr("cy", d.y = d3.event.y);
+}
+
+function dragend(d) {
+  d3.selectAll("circle")
+    .classed("active", false);
+}
+
