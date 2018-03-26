@@ -8,6 +8,9 @@ Making Architect look snazzy~
 2. Install relevant node modules ('npm install')
 3. Run 'node server.js' and navigate to localhost:4567 in browser
 
+## Usage
+Click and drag on nodes to move and pin them. Click again to unpin. Ctrl-click or drag to select multiple nodes, and ctrl-click again to deselect. Press 'u' to unpin selected nodes.
+
 ## Next steps
 1. ~~Drag to select multiple nodes at once~~
 2. Group selected nodes
@@ -16,7 +19,7 @@ Making Architect look snazzy~
 
 ## Design decisions
 ### dragfix, dragselect
-The following table details what should happen to each node (which is originally selected or unselected) upon various mouse interactions. The second row in each cell denotes whether or not the node should be fixed in place after the interaction; toggle indicates !d.fixed.
+The following table details what should happen to each node (which is originally selected or unselected) upon various mouse interactions. The second entry in each cell denotes whether or not the node should be fixed in place after the interaction; toggle indicates !d.fixed.
 
 |            | drag              | ctrl-drag       | click              | ctrl-click       |
 |------------|-------------------|-----------------|--------------------|------------------|
