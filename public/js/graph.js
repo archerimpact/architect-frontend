@@ -109,15 +109,9 @@ function clicked(d, i) {
   var node = d3.select(this);
   var fixed = node.attr("dragfix") == "true";
   var selected = node.attr("dragselect") == "true";
-
   node
     .classed("fixed", d.fixed = (fixed == d3.event.ctrlKey))
     .classed("selected", selected != d3.event.ctrlKey);
-
-  node
-    .attr("dragfix", node.classed("fixed"))
-    .attr("dragselect", node.classed("selected"));
-
   d3.event.stopPropagation();
 }
 
