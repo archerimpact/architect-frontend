@@ -25,7 +25,8 @@ svg {
 }
 
 .node text {
-  stroke: #333;
+  stroke: #545454;
+  fill: #545454;
   cursor: pointer;
 }
 
@@ -49,5 +50,7 @@ svg {
 }
 
 rect.extent {
-  fill: #ccc;
+  stroke: #ccc;
+  stroke-width: 2px;
+  fill: #edf5fc;
 }

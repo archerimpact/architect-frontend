@@ -142,22 +142,9 @@ function dragend(d) {
     .classed('active', false);
 }
 
-function selectLinksByNode(node) {
-  var isSelected = node.classed('selected');
-  console.log(isSelected);
-  if (isSelected) {
+function selectLinks(node) {
     svg.selectAll('.link')
-      .filter(function(d) {
-        console.log(d);
-        return (d.source === node && d.target.classed('selected')) 
-            || (d.target === node && d.source.classed('selected'));
-      })
-      .style('stroke', '#545454');
-  } else {
-    svg.selectAll('.link')
-      .filter(function(d) {
-        return (d.source === node) || (d.target === node);
-      })
-      .style('stroke', '#545454');
-  }
+      .style('stroke', function() {
+        
+      });
 }
