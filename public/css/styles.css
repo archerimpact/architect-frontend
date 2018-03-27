@@ -19,6 +19,10 @@ svg {
   stroke-width: 5px;
 }
 
+.link.selected {
+  stroke: #0d77e2;
+}
+
 .node {
   fill: #ebebeb;
   stroke: #545454;

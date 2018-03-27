@@ -3,6 +3,8 @@ const width = $(window).width() - 225,
     brushX = d3.scale.linear().range([0, width]),
     brushY = d3.scale.linear().range([0, height]);
 
+const nodeSelection = {};
+
 const svg = d3.select('body')
       .append('svg')
       .attr('width', width)
@@ -94,14 +96,14 @@ function brushing() {
     .classed('selected', function (d) {
       const xPos = brushX.invert(d.x);
       const yPos = brushY.invert(d.y);
-      return (extent[0][0] <= xPos && xPos <= extent[1][0]
-          && extent[0][1] <= yPos && yPos <= extent[1][1])
-          || (this.classList.contains('selected') && d3.event.sourceEvent.ctrlKey);
+      const selected = (extent[0][0] <= xPos && xPos <= extent[1][0]
+                && extent[0][1] <= yPos && yPos <= extent[1][1])
+                || (this.classList.contains('selected') && d3.event.sourceEvent.ctrlKey);
+      nodeSelection[d.index] = selected;
+      return selected;
     });
-  svg.selectAll('.link')
-  .style('stroke', function(d) {
-    console.log(d);
-  });
+
+  selectLinksFromAllNodes();
 }
 
 function brushend() {
@@ -109,28 +111,36 @@ function brushend() {
   svg.selectAll('.brush').call(brush);
 }
 
-// Click method for single-node interactions
+// Single-node interactions
 function clicked(d, i) {
   if (d3.event.defaultPrevented) return;
   const node = d3.select(this);
-  const fixed = node.attr('dragfix') == 'true';
-  const selected = node.attr('dragselect') == 'true';
+  const ctrlPressed = d3.event.ctrlKey.toString();
+  const fixed = node.attr('dragfix') == ctrlPressed;
+  const selected = node.attr('dragselect') != ctrlPressed;
+
   node
-    .classed('fixed', d.fixed = (fixed == d3.event.ctrlKey))
-    .classed('selected', selected != d3.event.ctrlKey);
+    .classed('fixed', d.fixed = fixed)
+    .classed('selected', selected);
+  nodeSelection[d.index] = selected;
+  selectLinksFromNode(node[0]);
+
   force.start();
   d3.event.stopPropagation();
 }
 
-// Drag methods for click-drag node interactions
+// Click-drag node interactions
 function dragstart(d) {
   const node = d3.select(this);
+  const selected = d3.event.sourceEvent.ctrlKeys;
   node
     .attr('dragfix', node.classed('fixed'))
     .attr('dragselect', node.classed('selected'))
     .classed('active', true)
     .classed('fixed', d.fixed = true)
-    .classed('selected', d3.event.sourceEvent.ctrlKey);
+    .classed('selected', selected);
+  nodeSelection[d.index] = selected;
+  selectLinksFromNode(node[0]);
 } 
 
 function dragging(d) {
@@ -142,4 +152,24 @@ function dragging(d) {
 function dragend(d) {
   d3.selectAll('circle')
     .classed('active', false);
+  force.start();
+}
+
+// Link selection
+function selectLinksFromAllNodes() {
+  svg.selectAll('.link')
+    .classed('selected', function(d, i) {
+      return nodeSelection[d.source.index] && nodeSelection[d.target.index];
+    });
+}
+
+function selectLinksFromNode(node) {
+  node = node[0].__data__.index;
+  svg.selectAll('.link')
+    .filter(function(d, i) {
+      return d.source.index == node || d.target.index == node;
+    })
+    .classed('selected', function(d, i) {
+      return nodeSelection[d.source.index] && nodeSelection[d.target.index];
+    });
 }
