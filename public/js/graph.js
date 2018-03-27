@@ -1,5 +1,5 @@
 const width = $(window).width() - 225,
-    height = $(window).height() - 1,
+    height = $(window).height(),
     brushX = d3.scale.linear().range([0, width]),
     brushY = d3.scale.linear().range([0, height]);
 
@@ -103,7 +103,7 @@ function brushing() {
       return selected;
     });
 
-  selectLinksFromAllNodes();
+  highlightLinksFromAllNodes();
 }
 
 function brushend() {
@@ -123,7 +123,7 @@ function clicked(d, i) {
     .classed('fixed', d.fixed = fixed)
     .classed('selected', selected);
   nodeSelection[d.index] = selected;
-  selectLinksFromNode(node[0]);
+  highlightLinksFromNode(node[0]);
 
   force.start();
   d3.event.stopPropagation();
@@ -140,7 +140,7 @@ function dragstart(d) {
     .classed('fixed', d.fixed = true)
     .classed('selected', selected);
   nodeSelection[d.index] = selected;
-  selectLinksFromNode(node[0]);
+  highlightLinksFromNode(node[0]);
 } 
 
 function dragging(d) {
@@ -155,15 +155,15 @@ function dragend(d) {
   force.start();
 }
 
-// Link selection
-function selectLinksFromAllNodes() {
+// Link highlighting
+function highlightLinksFromAllNodes() {
   svg.selectAll('.link')
     .classed('selected', function(d, i) {
       return nodeSelection[d.source.index] && nodeSelection[d.target.index];
     });
 }
 
-function selectLinksFromNode(node) {
+function highlightLinksFromNode(node) {
   node = node[0].__data__.index;
   svg.selectAll('.link')
     .filter(function(d, i) {
