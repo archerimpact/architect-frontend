@@ -1,0 +1,128 @@
+@font-face {
+  font-family: 'source-code-pro';
+  src: url('fonts/sourcecodepro-regular-webfont.woff2') format('woff2'),
+       url('fonts/sourcecodepro-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Horizontal navbar */
+#transparent-navbar {
+  display: flex;
+  justify-content: flex-end;
+  background: transparent;
+  width: 100%;
+  height: 80px;
+  bottom: 0px;
+  padding-right: 10px;
+  position: fixed;
+  background: transparent;
+  animation-delay: 0.3s;
+}
+
+.navbar-item {
+  cursor: pointer;
+  font-size: 36px;
+  margin: auto 0px;
+  padding: 10px;
+  color: #ccc;
+}
+
+.navbar-item > i:active {
+  color: #0d77e2;
+}
+
+.navbar-item > i.blue {
+  color: #0d77e2;
+}
+
+@media screen and (max-width: 1000px) {
+  .navbar-item > i {
+    color: transparent;
+    cursor: default;
+  }
+}
+
+/* Sidebar popup */
+#sidebar {
+  height: 100%;
+  width: 300px;
+  position: fixed;
+  z-index: 1;
+  top: 0px;
+  right: 0px;
+  background-color: #FFFFFF;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  overflow-x: hidden;
+  transition: 0.5s;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+#close-button {
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  left: 0px;
+  font-size: 16px;
+  margin-left: 265px;
+  color: #777777;
+  transition: 0.3s;
+}
+
+#close-button:hover {
+  color: #0D77E2;
+}
+
+#sidebar-content-area {
+  margin: 25px 20px 25px 20px;
+}
+
+.content-entry {
+  border-bottom: 1px solid #CCCCCC;
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+}
+
+.sidebar-title {
+  font-size: 20px;
+  border-bottom: 1.5px solid #0D77E2;
+  padding: 5px;
+  margin-top: 10px;
+  color: #0D77E2;
+}
+
+.sidebar-left {
+  margin: auto;
+  margin-left: 0px;
+  max-width: 165px;
+}
+
+.sidebar-right {
+  margin: auto;
+  margin-right: 0px;
+  display: flex;
+  flex-direction: row;
+  font-size: 14px;
+  max-width: 165px;
+}
+
+.sidebar-text {
+  font-size: 14px;
+  color: #000;
+  letter-spacing: 1px;
+}
+
+.sidebar-right .sidebar-text { 
+  padding-top: 2px;
+  color: #545454;
+}
+
+.sidebar-code {
+  font-family: 'source-code-pro', monospace;
+  font-size: 13px;
+  padding: 0px 5px;
+  background-color: #F0F0F0;
+  border-radius: 5px;
+}
