@@ -7,20 +7,21 @@
 body {
   min-width: 900px;
   font: normal 16px arial, sans-serif;
+  overflow: hidden;
 }
 
 svg {
-  border: 3px solid #aaa;
+  border: 3px solid #fff;
 }
 
 .link {
-  stroke: #aaa;
-  stroke-width: 6px;
+  stroke: #545454;
+  stroke-width: 5px;
 }
 
 .node {
-  fill: #aaa;
-  stroke: #aaa;
+  fill: #ebebeb;
+  stroke: #545454;
 }
 
 .node text {
@@ -34,7 +35,7 @@ svg {
 }
 
 .node .fixed {
-  fill: #545454;
+  fill: #bbbbbb;
 }
 
 .node .active {
