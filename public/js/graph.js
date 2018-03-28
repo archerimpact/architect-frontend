@@ -51,6 +51,7 @@ d3.json('34192.json', function(json) {
     //create selectors
     link = svg.append("g").selectAll(".link")
     node = svg.append("g").selectAll(".node")
+    console.log("about to call update")
 
     //updates nodes and links according to current data
     update(nodes, links)
