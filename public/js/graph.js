@@ -3,7 +3,7 @@ const width = $(window).width() - 225,
     brushX = d3.scale.linear().range([0, width]),
     brushY = d3.scale.linear().range([0, height]);
 
-var node, link, nodes, links;
+var nodeSelector, linkSelector, nodes, links;
 
 var nodeSelection = {};
 
@@ -37,50 +37,71 @@ d3.json('34192.json', function(json) {
 
 
     //create selectors
-    link = svg.append("g").selectAll(".link")
-    node = svg.append("g").selectAll(".node")
+
+    linkSelector = svg.append("g").selectAll(".link")
+    nodeSelector = svg.append("g").selectAll(".node")
+
 
     //updates nodes and links according to current data
-    update(nodes, links)
+    update()
 
   force.on('tick', function() {
-    link.attr('x1', function(d) { return d.source.x; })
+    linkSelector.attr('x1', function(d) { return d.source.x; })
         .attr('y1', function(d) { return d.source.y; })
         .attr('x2', function(d) { return d.target.x; })
         .attr('y2', function(d) { return d.target.y; });
 
-    node.attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; });
+    nodeSelector.attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; });
   });
 });
 
-    function update(nodes, links){
+    function update(){
 
-      link = svg.selectAll(".link").data(links);
+      svg.selectAll("circle").remove()
+      svg.selectAll("text").remove()
+
+      force.nodes(nodes)
+        .links(links)
+      
+      linkSelector = linkSelector.data(links);
 
       //Access ENTER selection (hangs off UPDATE selection)
       //This represents newly added data that dont have DOM elements
       //so we create and add a "line" element for each of these data
-      link
+
+     
+
+      linkSelector
         .enter().append("line")
         .attr("class", "link")
+
+            linkSelector
+          .exit().remove(); 
 
       //Access EXIT selection (hangs off UPDATE selection)
       //This represents DOM elements for which there is now no corresponding data element
       //so we remove these from DOM
-      link
-          .exit().remove(); 
 
-      node = svg.selectAll(".node").data(nodes)
-      node
+      nodeSelector = nodeSelector.data(nodes, function(d, i){
+        return i
+      })
+
+      console.log("Updating on new data: ", nodes)
+
+      console.log("new selector: ", nodeSelector)
+
+
+      var nodeEnter = nodeSelector
         .enter().append('g')
         .attr('class', 'node')
         .call(force.drag()
           .on('dragstart', dragstart)
           .on('drag', dragging)
           .on('dragend', dragend)
-        );
-
-      node.append('circle')
+        )
+        
+      console.log("new Enter: ", nodeEnter)
+      nodeSelector.append('circle')
         .attr('r','15')
         .attr('dragfix', false)
         .attr('dragselect', false)
@@ -89,13 +110,19 @@ d3.json('34192.json', function(json) {
           .on('dragstart', dragstart)
           .on('drag', dragging)
           .on('dragend', dragend)
-        );
+        )
+      console.log("new Enter2: ", nodeEnter)
 
-      node.append('text')
+      nodeSelector.append('text')
         .attr('dx', 22)
         .attr('dy', '.35em')
-        .text(function(d) { return d.name });
-      node.exit().remove();
+        .text(function(d) { 
+          console.log("getting text from d: ", d)
+          return d.name });
+
+      nodeSelector.exit().remove();
+
+
 
       /*d3.selectAll("circle")
         .filter(function(d){ 
@@ -116,9 +143,11 @@ d3.json('34192.json', function(json) {
           return d.type == "Document"
         })
         .classed("documentNode", true)
+
+      force.start()
         //.classed("centerNode", false)
 
-      force.start();    
+      //force.start();    
 
       /*link.classed("centerNode", function (o) {
         return o.source === centerNode || o.target === centerNode ? true : false; //highlight all connected links
@@ -241,29 +270,40 @@ function removeSelectedNodes() {
     var remove = {};
   var select = svg.selectAll('circle.selected')
     .filter((d) => {
-      console.log("removing this node: ", d.id)
-
+      console.log("I am removing this d.id: ", d.id, " name: ", d.name)
       remove[d.id]=true
 
-      console.log("Position of this node: ", nodes.indexOf(d))
+      if (nodes.indexOf(d) === -1) {
+        console.log("Error, wasn't in there and node is: ", d, " and nodes is: ", nodes)
+      }
     });
+  //console.log("select: ", select)
 
-  nodes.slice().map((node) => {
+  var nodesCopy = nodes.slice()
+  nodesCopy.map((node) => {
 
     if (remove[node.id] === true) {
       var index = nodes.indexOf(node)
-      nodes.splice(index, 1)
+      //console.log("removing node: ", node, " at index: ", index, "from nodes: ", nodes, " and node at index is: ", nodes[index])
+
+      var removed = nodes.splice(index, 1)
+
+      console.log("removed node is : ", removed)
+
     }
   })
-        links.slice().filter(function(l) {
-          if( remove[l.source.id] !== true && remove[l.target.id] !== true) {
-            return;
-          } else {
-            links.splice(links.indexOf(l), 1) //important: changes the original array
-          }
-        });
-  console.log("select: ", select)
+  links.slice().filter(function(l) {
+    if( remove[l.source.id] !== true && remove[l.target.id] !== true) {
+      return;
+    } else {
+      links.splice(links.indexOf(l), 1) //important: changes the original array
+    }
+  });
+  console.log("nodeSelection at this time: ", nodeSelection)
   nodeSelection = {}
-  link.classed("selected", false)
-  update(nodes, links)
+  console.log("nodeSelection at this time: ", nodeSelection)
+
+  linkSelector.classed("selected", false)
+  //nodeSelector.classed("selected", false)
+  update()
 }
