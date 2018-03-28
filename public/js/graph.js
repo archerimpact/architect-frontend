@@ -3,6 +3,8 @@ const width = $(window).width() - 225,
     brushX = d3.scale.linear().range([0, width]),
     brushY = d3.scale.linear().range([0, height]);
 
+var node, link;
+
 const nodeSelection = {};
 
 const svg = d3.select('body')
@@ -39,41 +41,19 @@ d3.select('body')
   })
 
 d3.json('34192.json', function(json) {
-  force
-      .nodes(json.nodes)
-      .links(json.links)
-      .start();
+    var nodes = json.nodes
+    var links = json.links
+    force
+      .nodes(nodes)
+      .links(links)
 
-  const link = svg.selectAll('.link')
-      .data(json.links)
-      .enter().append('line')
-      .attr('class', 'link');
 
-  const node = svg.selectAll('.node')
-      .data(json.nodes)
-      .enter().append('g')
-      .attr('class', 'node')
-      .call(force.drag()
-        .on('dragstart', dragstart)
-        .on('drag', dragging)
-        .on('dragend', dragend)
-      );
+    //create selectors
+    link = svg.append("g").selectAll(".link")
+    node = svg.append("g").selectAll(".node")
 
-  node.append('circle')
-      .attr('r','15')
-      .attr('dragfix', false)
-      .attr('dragselect', false)
-      .on('click', clicked)
-      .call(force.drag()
-        .on('dragstart', dragstart)
-        .on('drag', dragging)
-        .on('dragend', dragend)
-      );
-
-  node.append('text')
-      .attr('dx', 22)
-      .attr('dy', '.35em')
-      .text(function(d) { return d.name });
+    //updates nodes and links according to current data
+    update(nodes, links)
 
   force.on('tick', function() {
     link.attr('x1', function(d) { return d.source.x; })
@@ -84,6 +64,85 @@ d3.json('34192.json', function(json) {
     node.attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; });
   });
 });
+
+    function update(nodes, links){
+      console.log("made i to update")
+
+      link = link.data(links);
+
+      //Access ENTER selection (hangs off UPDATE selection)
+      //This represents newly added data that dont have DOM elements
+      //so we create and add a "line" element for each of these data
+      link
+        .enter().append("line")
+        .attr("class", "link")
+
+      //Access EXIT selection (hangs off UPDATE selection)
+      //This represents DOM elements for which there is now no corresponding data element
+      //so we remove these from DOM
+      link
+          .exit().remove(); 
+
+      node = node.data(nodes)
+      node
+        .enter().append('g')
+        .attr('class', 'node')
+        .call(force.drag()
+          .on('dragstart', dragstart)
+          .on('drag', dragging)
+          .on('dragend', dragend)
+        );
+
+      node.append('circle')
+        .attr('r','15')
+        .attr('dragfix', false)
+        .attr('dragselect', false)
+        .on('click', clicked)
+        .call(force.drag()
+          .on('dragstart', dragstart)
+          .on('drag', dragging)
+          .on('dragend', dragend)
+        );
+
+      node.append('text')
+        .attr('dx', 22)
+        .attr('dy', '.35em')
+        .text(function(d) { return d.name });
+      node.exit().remove();
+
+      /*d3.selectAll("circle")
+        .filter(function(d){ 
+          console.log("d: ", d)
+          console.log(d3.select(this))
+          if (d.id == neo4j_id) {
+            console.log("d.id: ", d.id)
+            centerNode = d
+          }
+          return d.id == neo4j_id
+        })
+        .classed("center", true);*/
+
+      d3.selectAll("circle")
+        .filter(function(d){ 
+          console.log("d: ", d)
+          console.log(d3.select(this))
+          if (d.type == "Document") {
+            console.log("type: ", d.type)
+          }
+          return d.type == "Document"
+        })
+        .classed("documentNode", true)
+        //.classed("centerNode", false)
+
+      force.start();    
+
+      /*link.classed("centerNode", function (o) {
+        return o.source === centerNode || o.target === centerNode ? true : false; //highlight all connected links
+      });
+      node.classed("centerNode", function (o) {
+        return neighboring (centerNode,o) ? true : false; //highligh connected nodes
+      }); */         
+    }
 
 // Brush methods for click-drag node selection
 function brushstart() {
