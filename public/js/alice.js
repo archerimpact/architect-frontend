@@ -107,7 +107,7 @@ function loadGraph(neo4j_id=null) {
 
       node.exit().remove();
 
-      d3.selectAll("circle")
+      /*d3.selectAll("circle")
         .filter(function(d){ 
           console.log("d: ", d)
           console.log(d3.select(this))
@@ -117,16 +117,28 @@ function loadGraph(neo4j_id=null) {
           }
           return d.id == neo4j_id
         })
-        .classed("centerNode", true);
+        .classed("center", true);*/
+
+      d3.selectAll("circle")
+        .filter(function(d){ 
+          console.log("d: ", d)
+          console.log(d3.select(this))
+          if (d.type == "Document") {
+            console.log("type: ", d.type)
+          }
+          return d.type == "Document"
+        })
+        .classed("documentNode", true)
+        //.classed("centerNode", false)
 
       force.start();    
 
-      link.classed("centerNode", function (o) {
+      /*link.classed("centerNode", function (o) {
         return o.source === centerNode || o.target === centerNode ? true : false; //highlight all connected links
       });
       node.classed("centerNode", function (o) {
         return neighboring (centerNode,o) ? true : false; //highligh connected nodes
-      });          
+      }); */         
     }
 
     function dragstart(d) {

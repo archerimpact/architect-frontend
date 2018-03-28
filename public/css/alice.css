@@ -23,3 +23,12 @@
 .node.centerNode, .link.centerNode{
   stroke: #25DEB4;  
 }
+
+.node.center {
+  stroke: #FA78E6;
+}
+
+.node.documentNode {
+  stroke: #241CEF;
+  fill: #EBEBEB;
+}
