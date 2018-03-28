@@ -53,7 +53,6 @@ d3.json('34192.json', function(json) {
   });
 });
 
-<<<<<<< HEAD
     function update(nodes, links){
 
       link = link.data(links);
@@ -132,10 +131,8 @@ d3.json('34192.json', function(json) {
       }); */         
     }
 
-// Brush methods for click-drag node selection
-=======
 // Click-drag node selection
->>>>>>> 8e10441f79dc90a5dd39b078958a83086bee24f6
+
 function brushstart() {
 
 }
