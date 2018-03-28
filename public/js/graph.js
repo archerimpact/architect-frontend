@@ -132,7 +132,7 @@ function clicked(d, i) {
 // Click-drag node interactions
 function dragstart(d) {
   const node = d3.select(this);
-  const selected = d3.event.sourceEvent.ctrlKeys;
+  const selected = d3.event.sourceEvent.ctrlKey;
   node
     .attr('dragfix', node.classed('fixed'))
     .attr('dragselect', node.classed('selected'))
@@ -172,4 +172,9 @@ function highlightLinksFromNode(node) {
     .classed('selected', function(d, i) {
       return nodeSelection[d.source.index] && nodeSelection[d.target.index];
     });
+}
+
+// Update - add/remove nodes
+function update() {
+
 }
