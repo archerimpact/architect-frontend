@@ -26,18 +26,6 @@ const force = d3.layout.force()
       .charge(-100)
       .size([width, height]);
 
-// Graph manipulation keycodes
-d3.select('body')
-  .on('keydown', function() {
-    // u: Unpin selected nodes
-    if (d3.event.keyCode == 85) {
-      svg.selectAll('circle.selected')
-        .each(function(d) { d.fixed = false; })
-        .classed('fixed', false);
-      force.start();
-    }
-  })
-
 d3.json('34192.json', function(json) {
   force
       .nodes(json.nodes)
@@ -85,7 +73,7 @@ d3.json('34192.json', function(json) {
   });
 });
 
-// Brush methods for click-drag node selection
+// Click-drag node selection
 function brushstart() {
 
 }
@@ -155,6 +143,18 @@ function dragend(d) {
   force.start();
 }
 
+// Graph manipulation keycodes
+d3.select('body')
+  .on('keydown', function() {
+    // u: Unpin selected nodes
+    if (d3.event.keyCode == 85) {
+      svg.selectAll('circle.selected')
+        .each(function(d) { d.fixed = false; })
+        .classed('fixed', false);
+      force.start();
+    }
+  })
+
 // Link highlighting
 function highlightLinksFromAllNodes() {
   svg.selectAll('.link')
@@ -174,7 +174,7 @@ function highlightLinksFromNode(node) {
     });
 }
 
-// Update - add/remove nodes
-function update() {
+// Add/remove nodes
+function restart() {
 
 }
