@@ -38,7 +38,7 @@ d3.select('body')
     }
   })
 
-d3.json('data.json', function(json) {
+d3.json('34192.json', function(json) {
   force
       .nodes(json.nodes)
       .links(json.links)
