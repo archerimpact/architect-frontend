@@ -3,7 +3,7 @@ const width = $(window).width() - 225,
     brushX = d3.scale.linear().range([0, width]),
     brushY = d3.scale.linear().range([0, height]);
 
-var node, link, nodes, links;
+var node, link;
 
 const nodeSelection = {};
 
@@ -41,8 +41,8 @@ d3.select('body')
   })
 
 d3.json('34192.json', function(json) {
-    nodes = json.nodes
-    links = json.links
+    var nodes = json.nodes
+    var links = json.links
     force
       .nodes(nodes)
       .links(links)
@@ -51,10 +51,9 @@ d3.json('34192.json', function(json) {
     //create selectors
     link = svg.append("g").selectAll(".link")
     node = svg.append("g").selectAll(".node")
-    console.log("about to call update", update)
 
     //updates nodes and links according to current data
-    update()
+    update(nodes, links)
 
   force.on('tick', function() {
     link.attr('x1', function(d) { return d.source.x; })
@@ -66,8 +65,7 @@ d3.json('34192.json', function(json) {
   });
 });
 
-    function update(){
-      console.log("made i to update")
+    function update(nodes, links){
 
       link = link.data(links);
 
