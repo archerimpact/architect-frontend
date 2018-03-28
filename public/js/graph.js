@@ -3,9 +3,9 @@ const width = $(window).width() - 225,
     brushX = d3.scale.linear().range([0, width]),
     brushY = d3.scale.linear().range([0, height]);
 
-var node, link;
+var node, link, nodes, links;
 
-const nodeSelection = {};
+var nodeSelection = {};
 
 const svg = d3.select('body')
       .append('svg')
@@ -29,8 +29,8 @@ const force = d3.layout.force()
       .size([width, height]);
 
 d3.json('34192.json', function(json) {
-    var nodes = json.nodes
-    var links = json.links
+    nodes = json.nodes
+    links = json.links
     force
       .nodes(nodes)
       .links(links)
@@ -55,7 +55,7 @@ d3.json('34192.json', function(json) {
 
     function update(nodes, links){
 
-      link = link.data(links);
+      link = svg.selectAll(".link").data(links);
 
       //Access ENTER selection (hangs off UPDATE selection)
       //This represents newly added data that dont have DOM elements
@@ -70,7 +70,7 @@ d3.json('34192.json', function(json) {
       link
           .exit().remove(); 
 
-      node = node.data(nodes)
+      node = svg.selectAll(".node").data(nodes)
       node
         .enter().append('g')
         .attr('class', 'node')
@@ -111,10 +111,7 @@ d3.json('34192.json', function(json) {
 
       d3.selectAll("circle")
         .filter(function(d){ 
-          console.log("d: ", d)
-          console.log(d3.select(this))
           if (d.type == "Document") {
-            console.log("type: ", d.type)
           }
           return d.type == "Document"
         })
@@ -236,4 +233,37 @@ function highlightLinksFromNode(node) {
 // Add/remove nodes
 function restart() {
 
+}
+
+//remove selected nodes
+
+function removeSelectedNodes() {
+    var remove = {};
+  var select = svg.selectAll('circle.selected')
+    .filter((d) => {
+      console.log("removing this node: ", d.id)
+
+      remove[d.id]=true
+
+      console.log("Position of this node: ", nodes.indexOf(d))
+    });
+
+  nodes.slice().map((node) => {
+
+    if (remove[node.id] === true) {
+      var index = nodes.indexOf(node)
+      nodes.splice(index, 1)
+    }
+  })
+        links.slice().filter(function(l) {
+          if( remove[l.source.id] !== true && remove[l.target.id] !== true) {
+            return;
+          } else {
+            links.splice(links.indexOf(l), 1) //important: changes the original array
+          }
+        });
+  console.log("select: ", select)
+  nodeSelection = {}
+  link.classed("selected", false)
+  update(nodes, links)
 }
