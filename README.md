@@ -48,5 +48,36 @@ The third method introduces the possibility of dealing with a large nuber of sel
 
 The reason we must use the dictionary is that the link datum gives the origin/terminal node indices, but does not include references to the nodes themselves, so we cannot check the class of each node to determine whether or not it is selected. To address this obstacle, we must either store a mapping between node index and node reference or node index and selection state, where we utilize the latter approach.
 
+### Updating data
+We want to have a generic update function that can handle any case of nodes and links being deleted, added, modified, grouped, and so on. Thus I've implemented one update() function that calls .data() on the global nodes and links variables. Whenever a function wants to alter the nodes and links on the SVG, it should follow this flow:
+
+1. Edit the global nodes & links variables directly to reflect the new display
+2. Each entry in links and nodes should have an id field that contains a unique id 
+3. Call update()
+
+This makes for a relatively abstract updating process. As long as you're confident that the global links and nodes variables contain the right set of data, calling update() will display the visualization correctly.
+
+Update works as follows for nodes:
+
+1. Call .data() on the new data
+  ** note: the keys in .data(values, keys) are important -- I remapped all of the keys to the id of the datum to ensure that the references in the data would be updated according to the new order of the data
+2. Create a nodeEnter = node.enter().append('g')
+  ** note: .enter() creates a placeholder attached to the datum, .append('g') connects the new 'g' element to the placeholder
+3. Call .exit().remove() to remove fields that are no longer attached to a piece of data
+4. Append circle and text to the enter in order for it to be called only on newly updated or moved nodes, instead of all nodes
 
 
+### Removing Nodes
+We want to remove all the selected nodes and all the links that have either a target or source linking to a selected node. Thus I created a dictionary called remove that maps an id of a node to "true" if the node is being removed. When iterating through all links to check if a link should be removed, we can then easily check if the target or source are being removed, significantly reducing runtime.
+
+### Grouping Nodes
+We want to remember which groups map to which nodes. This is for three reasons:
+1. to be able to display all members of the group to the user
+2. to be able to reverse the grouping and ungroup nodes
+3. to be able to easily group together nodes that are already groups.
+
+I thus decided to create a global variable called groups, which is a dictionary where the key is the id of the group node and the value is the array of nodes in the group.
+
+When we create a new group, we want to remove all of the node and link elements of the nodes about to be grouped. We then want to create a new node representing the group and re-draw links that point to members of the nodes in the group to point to the new node instead.
+
+I chose to give the new nodes representing a group a negative id, so that it will never overlap with the id from a neo4j node.
