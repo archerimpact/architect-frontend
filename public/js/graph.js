@@ -306,6 +306,8 @@ function groupSelectedNodes() {
       linkid -=1
     }
   });
+  nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
+
   $('#sidebar-group-info').trigger('contentchanged');
   update()
 }
@@ -334,6 +336,8 @@ function ungroupSelectedNodes() {
       links.splice(links.indexOf(l), 1); //remove all links connected to the old group node
     }      
   })
+  nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
+
   $('#sidebar-group-info').trigger('contentchanged');
   update()
 }
