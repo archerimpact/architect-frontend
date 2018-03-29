@@ -104,6 +104,7 @@
   margin: auto;
   margin-right: 0px;
   display: flex;
+  text-align: right;
   flex-direction: row;
   font-size: 14px;
   max-width: 165px;
@@ -135,9 +136,9 @@
 }
 
 #sidebar-group-info {
-    font-size: 14px;
-    color: #000;
-    letter-spacing: 1px;
+  font-size: 14px;
+  color: #000;
+  letter-spacing: 1px;
   margin: 25px 20px 25px 20px;
 
 }
