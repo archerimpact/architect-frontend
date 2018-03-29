@@ -4,6 +4,7 @@ const width = $(window).width() - 300,
     brushY = d3.scale.linear().range([0, height]);
 
 var node, link, nodes, links;
+var linkid = -1;
 
 var groups = {}
 
@@ -238,50 +239,44 @@ function removeSelectedNodes() {
 
 function groupSelectedNodes() {
   var remove = {}
-  var nodesToIndex = {}
-  var index = -1*(Object.keys(groups).length + 1) //when it's 0 groups, first index should be -1
-  groups[index] = [] //initialize empty array to hold the nodes
-  var newGroupNodes = groups[index]
-  var linkId = -1*(links.length + 1)
+  var nodeIdsToIndex = {}
+  var groupId = -1*(Object.keys(groups).length + 1) //when it's 0 groups, first index should be -1
+  var groupNodes = [] //initialize empty array to hold the nodes
+  groups[groupId] = groupNodes
+
   svg.selectAll('circle.selected')
     .filter((d) => {
-      if (groups[d.id]) {
-      debugger //this node is already a group
+      if (groups[d.id]) { //this node is already a group
         var newNodes = groups[d.id]
         newNodes.map((node)=>{
-          newGroupNodes.push(node)
+          groupNodes.push(node) //add each of the nodes in the old group to the list of nodes in the new group
         })
-        remove[d.id] = true;
+        remove[d.id] = true; //remove this node from the DOM
         nodes.splice(nodes.indexOf(d), 1)
       } else {
-        newGroupNodes.push(d)
-        remove[d.id] = true;
+        groupNodes.push(d) //add this node to the list of nodes in the group
+        remove[d.id] = true; //remove this node from the DOM
         nodes.splice(nodes.indexOf(d), 1)
       }
     }); 
-  nodes.push({id: index, name: "Group " + -1*index})
+  nodes.push({id: groupId, name: "Group " + -1*groupId}) //add the new node for the group
   nodes.map((node, i)=> {
-    nodesToIndex[node.id] = i
+    nodeIdsToIndex[node.id] = i //map all nodeIds to their new index
   })
-  console.log("new nodes: ", nodes)
-  console.log("Groups: ", groups)
-  console.log("Nodes to index: ", nodesToIndex)
-  console.log("Nodes to remove: ", remove)
 
   links.slice().map((l) => {
-    if(remove[l.source.id] === true || remove[l.target.id] === true) { //remove all links connected to a node to remove
-      var linkindex = links.indexOf(l);
-      links.splice(linkindex, 1);
+    if(remove[l.source.id] === true || remove[l.target.id] === true) { //remove all links connected to the old nodes
+      links.splice(links.indexOf(l), 1);
     }
     if(remove[l.source.id] === true && remove[l.target.id] !== true) {
-      console.log("this is the l.source: ", l.source)
-      links.push({id: linkId, source: nodesToIndex[index], target: nodesToIndex[l.target.id]})
-      linkId -= 1
+      //add new links with appropriate connection to the new group node
+      //source and target refer to the index of the node
+      links.push({id: linkid, source: nodeIdsToIndex[groupId], target: nodeIdsToIndex[l.target.id]})
+      linkid -= 1
     } else if (remove[l.source.id] !== true && remove[l.target.id] === true){
-      links.push({id: linkId, source: nodesToIndex[l.source.id], target: nodesToIndex[index]})
-      linkId -=1
+      links.push({id: linkid, source: nodeIdsToIndex[l.source.id], target: nodeIdsToIndex[groupId]})
+      linkid -=1
     }
   });
-  console.log("new links: ", links)
   update()
 }

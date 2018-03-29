@@ -55,7 +55,7 @@ $(document).ready(function() {
   appendContentEntry('(un)pin node', 'click');
   appendContentEntry('unpin selected nodes', 'U');
 
-
+  console.log("groups: " , groups)
   let altDown = false;
   $(document).keydown(function(e) {
     // Listen for alt/command press
