@@ -242,7 +242,7 @@ function groupSelectedNodes() {
   var nodeIdsToIndex = {}
   var groupId = -1*(Object.keys(groups).length + 1) //when it's 0 groups, first index should be -1
   var groupItems = {links: [], nodes: []} //initialize empty array to hold the nodes
-  groups[groupId] = groupitems
+  groups[groupId] = groupItems
   var groupNodes = groupItems.nodes
   var groupLinks = groupItems.links
 
@@ -294,5 +294,5 @@ function ungroupSelectedNodes() {
           nodes.push(node)
         })
       }
-    }
+    })
 }
