@@ -49,12 +49,22 @@ $("#transparent-navbar i").click(function() {
   $(this).toggleClass("blue");
 });
 
+$('#sidebar-group-info').on('contentchanged', function() {
+  var keys = Object.keys(groups)
+  $('#sidebar-group-info').html('<div></div>')
+  keys.map((key)=> {
+    $('#sidebar-group-info').append('<div class="group" id=group' + -1*key +'> group ' + -1*key + '</div>')
+    groups[key].map((node) => {
+      $('#group' + -1*key).append('<div class="group-entry" id=node' + node.id +'> Name: ' + node.name + ', Type: ' + node.type + '</div><hr></hr>')
+    })
+  })
+})
+
 $(document).ready(function() {
   appendContentEntry('select nodes', 'click', '+', 'drag');
   appendContentEntry('(un)select node', 'ctrl', '+', 'click');
   appendContentEntry('(un)pin node', 'click');
   appendContentEntry('unpin selected nodes', 'U');
-
 
   let altDown = false;
   $(document).keydown(function(e) {

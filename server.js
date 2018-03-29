@@ -14,3 +14,7 @@ app.get("/", function(req, res) {
   res.redirect("/index.html");
 });
 
+app.get("/alice", function(req, res) {
+  res.redirect("/alice.html");
+});
+

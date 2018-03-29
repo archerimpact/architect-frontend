@@ -3,7 +3,12 @@ const width = $(window).width() - 300,
     brushX = d3.scale.linear().range([0, width]),
     brushY = d3.scale.linear().range([0, height]);
 
-const nodeSelection = {};
+var node, link, nodes, links;
+var linkid = -1;
+
+var groups = {}
+
+var nodeSelection = {};
 
 const svg = d3.select('body')
       .append('svg')
@@ -33,42 +38,25 @@ const force = d3.layout.force()
       .linkDistance(110)
       .size([width, height]);
 
-
-// Load data and init graph
-d3.json('data.json', function(json) {
-  force
+d3.json('34192.json', function(json) {
+    nodes = json.nodes
+    links = json.links
+    force
       .gravity(1 / json.nodes.length)
       .charge(-1 * Math.max(Math.pow(json.nodes.length, 2), 750))
       .friction(json.nodes.length < 15 ? .75 : .9)
-      .nodes(json.nodes)
-      .links(json.links)
-      .start();
+      .nodes(nodes)
+      .links(links)
 
-  const link = svg.selectAll('.link')
-      .data(json.links)
-      .enter().append('line')
-      .attr('class', 'link');
 
-  const node = svg.selectAll('.node')
-      .data(json.nodes)
-      .enter().append('g')
-      .attr('class', 'node')
-      .attr('dragfix', false)
-      .attr('dragselect', false)
-      .on('click', clicked)
-      .call(force.drag()
-        .on('dragstart', dragstart)
-        .on('drag', dragging)
-        .on('dragend', dragend)
-      );
+    //create selectors
 
-  node.append('circle')
-      .attr('r','15');
+    link = svg.append("g").selectAll(".link")
+    node = svg.append("g").selectAll(".node")
 
-  node.append('text')
-      .attr('dx', 22)
-      .attr('dy', '.35em')
-      .text(function(d) { return d.name });
+
+    //updates nodes and links according to current data
+    update()
 
   force.on('tick', function() {
     force.resume();
@@ -81,7 +69,47 @@ d3.json('data.json', function(json) {
   });
 });
 
+function update(){
+  
+  link = link.data(links, function(d) {return d.id}); //resetting the key is important because otherwise it maps the new data to the old data in order
+
+  link
+    .enter().append("line")
+    .attr("class", "link");
+
+  link.exit().remove(); 
+
+  node = node.data(nodes, function(d){return d.id});
+
+  var nodeEnter = node
+    .enter().append('g')
+      .attr('class', 'node')
+      .attr('dragfix', false)
+      .attr('dragselect', false)
+      .on('click', clicked)
+      .classed('fixed', function(d){return d.fixed})
+      .call(force.drag()
+        .on('dragstart', dragstart)
+        .on('drag', dragging)
+        .on('dragend', dragend)
+      );
+
+
+  nodeEnter.append('circle')
+      .attr('r','15');
+
+  nodeEnter.append('text')
+      .attr('dx', 22)
+      .attr('dy', '.35em')
+      .text(function(d) { return d.name });
+    
+  node.exit().remove();
+
+  force.start();   
+}
+
 // Click-drag node selection
+
 function brushstart() {
 
 }
@@ -198,4 +226,81 @@ function highlightLinksFromNode(node) {
     .classed('selected', function(d, i) {
       return nodeSelection[d.source.index] && nodeSelection[d.target.index];
     });
+}
+
+// Add/remove nodes
+function restart() {
+
+}
+
+//remove selected nodes
+
+function removeSelectedNodes() {
+  var remove = {}; //dictionary that maps node ids to whether they should be removed
+  svg.selectAll('.node.selected')
+    .filter((d) => {
+      remove[d.id]=true;
+      if (nodes.indexOf(d) === -1) {
+        console.log("Error, wasn't in there and node is: ", d, " and nodes is: ", nodes)
+      }
+    });
+  nodes.slice().map((node) => {
+    if (remove[node.id] === true) {
+      var index = nodes.indexOf(node); //get the index on the spot in case removing elements changed the index
+      nodes.splice(index, 1); //splice modifies the original data
+    }
+  });
+  links.slice().map((l) => {
+    if(remove[l.source.id] === true || remove[l.target.id] === true) { //remove all links connected to a node to remove
+      var index = links.indexOf(l);
+      links.splice(index, 1);
+    }
+  });
+  nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
+  update();
+}
+
+function groupSelectedNodes() {
+  var remove = {}
+  var nodeIdsToIndex = {}
+  var groupId = -1*(Object.keys(groups).length + 1) //when it's 0 groups, first index should be -1
+  var groupNodes = [] //initialize empty array to hold the nodes
+  groups[groupId] = groupNodes
+
+  svg.selectAll('.node.selected')
+    .filter((d) => {
+      if (groups[d.id]) { //this node is already a group
+        var newNodes = groups[d.id]
+        newNodes.map((node)=>{
+          groupNodes.push(node) //add each of the nodes in the old group to the list of nodes in the new group
+        })
+        remove[d.id] = true; //remove this node from the DOM
+        nodes.splice(nodes.indexOf(d), 1)
+      } else {
+        groupNodes.push(d) //add this node to the list of nodes in the group
+        remove[d.id] = true; //remove this node from the DOM
+        nodes.splice(nodes.indexOf(d), 1)
+      }
+    }); 
+  nodes.push({id: groupId, name: "Group " + -1*groupId}) //add the new node for the group
+  nodes.map((node, i)=> {
+    nodeIdsToIndex[node.id] = i //map all nodeIds to their new index
+  })
+
+  links.slice().map((l) => {
+    if(remove[l.source.id] === true || remove[l.target.id] === true) { //remove all links connected to the old nodes
+      links.splice(links.indexOf(l), 1);
+    }
+    if(remove[l.source.id] === true && remove[l.target.id] !== true) {
+      //add new links with appropriate connection to the new group node
+      //source and target refer to the index of the node
+      links.push({id: linkid, source: nodeIdsToIndex[groupId], target: nodeIdsToIndex[l.target.id]})
+      linkid -= 1
+    } else if (remove[l.source.id] !== true && remove[l.target.id] === true){
+      links.push({id: linkid, source: nodeIdsToIndex[l.source.id], target: nodeIdsToIndex[groupId]})
+      linkid -=1
+    }
+  });
+  $('#sidebar-group-info').trigger('contentchanged');
+  update()
 }
