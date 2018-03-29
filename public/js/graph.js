@@ -1,5 +1,5 @@
-const width = $(window).width() - 225,
-    height = $(window).height(),
+const width = $(window).width() - 300,
+    height = $(window).height() + 50,
     brushX = d3.scale.linear().range([0, width]),
     brushY = d3.scale.linear().range([0, height]);
 
@@ -23,15 +23,16 @@ svg.append('g')
   .call(brush);
 
 const force = d3.layout.force()
-      .gravity(.03)
-      .distance(100)
-      .charge(-100)
+      .linkDistance(110)
       .size([width, height]);
 
 d3.json('34192.json', function(json) {
     nodes = json.nodes
     links = json.links
     force
+      .gravity(1 / json.nodes.length)
+      .charge(-1 * Math.max(Math.pow(json.nodes.length, 2), 750))
+      .friction(json.nodes.length < 15 ? .75 : .9)
       .nodes(nodes)
       .links(links)
 
@@ -46,6 +47,7 @@ d3.json('34192.json', function(json) {
     update()
 
   force.on('tick', function() {
+    force.resume();
     link.attr('x1', function(d) { return d.source.x; })
         .attr('y1', function(d) { return d.source.y; })
         .attr('x2', function(d) { return d.target.x; })
@@ -138,7 +140,7 @@ function clicked(d, i) {
   nodeSelection[d.index] = selected;
   highlightLinksFromNode(node[0]);
 
-  force.start();
+  force.resume();
   d3.event.stopPropagation();
 }
 
@@ -165,7 +167,7 @@ function dragging(d) {
 function dragend(d) {
   d3.selectAll('circle')
     .classed('active', false);
-  force.start();
+  force.resume();
 }
 
 // Graph manipulation keycodes
@@ -176,7 +178,7 @@ d3.select('body')
       svg.selectAll('circle.selected')
         .each(function(d) { d.fixed = false; })
         .classed('fixed', false);
-      force.start();
+      force.resume();
     }
   })
 
@@ -198,6 +200,7 @@ function highlightLinksFromNode(node) {
       return nodeSelection[d.source.index] && nodeSelection[d.target.index];
     });
 }
+
 
 // Add/remove nodes
 function restart() {
