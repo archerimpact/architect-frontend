@@ -278,5 +278,6 @@ function groupSelectedNodes() {
       linkid -=1
     }
   });
+  $('#sidebar-group-info').trigger('contentchanged');
   update()
 }
