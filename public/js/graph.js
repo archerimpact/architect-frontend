@@ -3,7 +3,7 @@ const width = $(window).width() - 225,
     brushX = d3.scale.linear().range([0, width]),
     brushY = d3.scale.linear().range([0, height]);
 
-var nodeSelector, linkSelector, nodes, links;
+var node, link, nodes, links;
 
 var nodeSelection = {};
 
@@ -38,102 +38,64 @@ d3.json('34192.json', function(json) {
 
     //create selectors
 
-    linkSelector = svg.append("g").selectAll(".link")
-    nodeSelector = svg.append("g").selectAll(".node")
+    link = svg.append("g").selectAll(".link")
+    node = svg.append("g").selectAll(".node")
 
 
     //updates nodes and links according to current data
     update()
 
   force.on('tick', function() {
-    linkSelector.attr('x1', function(d) { return d.source.x; })
+    link.attr('x1', function(d) { return d.source.x; })
         .attr('y1', function(d) { return d.source.y; })
         .attr('x2', function(d) { return d.target.x; })
         .attr('y2', function(d) { return d.target.y; });
 
-    nodeSelector.attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; });
+    node.attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; });
   });
 });
 
-    function update(){
+function update(){
+  
+  link = link.data(links, function(d) {return d.id}); //resetting the key is important because otherwise it maps the new data to the old data in order
 
-      force.nodes(nodes)
-        .links(links)
-      
-      linkSelector = linkSelector.data(links, function(d) {return d.id});
+  link
+    .enter().append("line")
+    .attr("class", "link");
 
-      linkSelector
-        .enter().append("line")
-        .attr("class", "link")
+  link.exit().remove(); 
 
-      linkSelector.exit().remove(); 
+  node = node.data(nodes, function(d){return d.id});
 
-      nodeSelector = nodeSelector.data(nodes, function(d){return d.id})
+  var nodeEnter = node
+    .enter().append('g')
+    .attr('class', 'node')
+    .call(force.drag()
+      .on('dragstart', dragstart)
+      .on('drag', dragging)
+      .on('dragend', dragend)
+    );
+    
+  node.exit().remove();
 
-      var nodeEnter = nodeSelector
-        .enter().append('g')
-        .attr('class', 'node')
-        .call(force.drag()
-          .on('dragstart', dragstart)
-          .on('drag', dragging)
-          .on('dragend', dragend)
-        )
-        
-      nodeSelector.exit().remove();
+  nodeEnter.append('circle')
+    .attr('r','15')
+    .attr('dragfix', false)
+    .attr('dragselect', false)
+    .on('click', clicked)
+    .classed('fixed',function(d) {return d.fixed}) //whether it's classed fixed depends on whether it's fixed
+    .call(force.drag()
+      .on('dragstart', dragstart)
+      .on('drag', dragging)
+      .on('dragend', dragend)
+    );
+  nodeEnter.append('text')
+    .attr('dx', 22)
+    .attr('dy', '.35em')
+    .text(function(d) { return d.name });
 
-      nodeEnter.append('circle')
-        .attr('r','15')
-        .attr('dragfix', false)
-        .attr('dragselect', false)
-        .on('click', clicked)
-        .classed('fixed',function(d) {
-           return d.fixed
-        } )
-        .call(force.drag()
-          .on('dragstart', dragstart)
-          .on('drag', dragging)
-          .on('dragend', dragend)
-        )
-      nodeEnter.append('text')
-        .attr('dx', 22)
-        .attr('dy', '.35em')
-        .text(function(d) { return d.name });
-
-
-
-
-      /*d3.selectAll("circle")
-        .filter(function(d){ 
-          console.log("d: ", d)
-          console.log(d3.select(this))
-          if (d.id == neo4j_id) {
-            console.log("d.id: ", d.id)
-            centerNode = d
-          }
-          return d.id == neo4j_id
-        })
-        .classed("center", true);*/
-
-      d3.selectAll("circle")
-        .filter(function(d){ 
-          if (d.type == "Document") {
-          }
-          return d.type == "Document"
-        })
-        .classed("documentNode", true)
-
-      force.start()
-        //.classed("centerNode", false)
-
-      //force.start();    
-
-      /*link.classed("centerNode", function (o) {
-        return o.source === centerNode || o.target === centerNode ? true : false; //highlight all connected links
-      });
-      node.classed("centerNode", function (o) {
-        return neighboring (centerNode,o) ? true : false; //highligh connected nodes
-      }); */         
-    }
+  force.start();   
+}
 
 // Click-drag node selection
 
@@ -245,29 +207,26 @@ function restart() {
 //remove selected nodes
 
 function removeSelectedNodes() {
-  var remove = {};
-  var select = svg.selectAll('circle.selected')
+  var remove = {}; //dictionary that maps node ids to whether they should be removed
+  svg.selectAll('circle.selected')
     .filter((d) => {
-      remove[d.id]=true
+      remove[d.id]=true;
       if (nodes.indexOf(d) === -1) {
         console.log("Error, wasn't in there and node is: ", d, " and nodes is: ", nodes)
       }
     });
-
   nodes.slice().map((node) => {
     if (remove[node.id] === true) {
-      var index = nodes.indexOf(node)
-      var removed = nodes.splice(index, 1)
-    }
-  })
-  links.slice().filter(function(l) {
-    if(remove[l.source.id] !== true && remove[l.target.id] !== true) {
-      return;
-    } else {
-      links.splice(links.indexOf(l), 1) //important: changes the original array
+      var index = nodes.indexOf(node); //get the index on the spot in case removing elements changed the index
+      nodes.splice(index, 1); //splice modifies the original data
     }
   });
-  nodeSelection = {}
-
-  update()
+  links.slice().map((l) => {
+    if(remove[l.source.id] === true || remove[l.target.id] === true) { //remove all links connected to a node to remove
+      var index = links.indexOf(l);
+      links.splice(index, 1);
+    }
+  });
+  nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
+  update();
 }

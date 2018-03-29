@@ -14,6 +14,27 @@ svg {
   border: 3px solid #fff;
 }
 
+.button {
+    font-size: 14px;
+    color: #000;
+    letter-spacing: 1px;
+    background-color: white;
+    border: 1px solid gray;
+    border-radius: 4px;
+    padding: 10px;
+    margin-left: 20px;
+}
+
+.button:hover {
+  color: white;
+  background-color: #0d77e2;
+  border: none;
+}
+
+.button:focus {
+  outline: none;
+}
+
 .link {
   stroke: #545454;
   stroke-width: 5px;
