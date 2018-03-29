@@ -14,6 +14,17 @@ svg {
   border: 3px solid #fff;
 }
 
+svg rect.extent {
+  stroke: #ccc;
+  stroke-width: 2px;
+  fill: #edf5fc;
+}
+
+svg rect.background {
+/*  cursor: -webkit-grab !important;
+  cursor: grab !important;*/
+}
+
 .link {
   stroke: #545454;
   stroke-width: 5px;
@@ -32,6 +43,7 @@ svg {
   stroke: #545454;
   fill: #545454;
   cursor: pointer;
+  stroke-width: 1px; 
 }
 
 .node circle{
@@ -39,22 +51,17 @@ svg {
   stroke-width: 4px;
 }
 
-.node .fixed {
+.node.fixed circle {
   fill: #bbbbbb;
 }
 
-.node .active {
+.node.active circle {
   stroke: #000;
   stroke-width: 4px;
 }
 
-.node .selected {
+.node.selected circle {
   stroke: #0d77e2;
   stroke-width: 4px;
 }
 
-rect.extent {
-  stroke: #ccc;
-  stroke-width: 2px;
-  fill: #edf5fc;
-}
