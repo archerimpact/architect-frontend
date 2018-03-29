@@ -289,7 +289,6 @@ function groupSelectedNodes() {
     nodeIdsToIndex[node.id] = i //map all nodeIds to their new index
   })
 
-  console.log("links before grouping: ", links)
 
   links.slice().map((l) => {
     if(remove[l.source.id] === true || remove[l.target.id] === true) { //remove all links connected to the old nodes
@@ -307,40 +306,32 @@ function groupSelectedNodes() {
       linkid -=1
     }
   });
-  console.log("links after grouping: ", links)
   $('#sidebar-group-info').trigger('contentchanged');
   update()
 }
 
 function ungroupSelectedNodes() {
-  console.log("ungrouping")
   var remove = {}
-  console.log("links before ungrouping: ", links)
   svg.selectAll('.node.selected')
     .filter((d) => {
-      console.log("This is what we're ungrouping: ", d)
       if (groups[d.id]) { //this node is a group
         remove[d.id] = true; //this is a node to be removed from the DOM
-        var groupNodes = groups[d.id].nodes
+        var groupNodes = groups[d.id].nodes //groupNodes contains all nodes in the group
         nodes.splice(nodes.indexOf(d), 1)//remove this group node
         groupNodes.map((node) => {
           nodes.push(node) //add all nodes in the group to global nodes
         })
 
-        var groupLinks = groups[d.id].links
+        var groupLinks = groups[d.id].links //groupLinks contains all links in the group
         groupLinks.map((link) => {
           links.push(link) //add all links in the group to global links
         })
       }
       delete groups[d.id] //delete this group from the global groups
     })
-  console.log("links: ", links)
   links.slice().map((l)=> {
-    if (typeof(l.target) === "undefined" || typeof(l.source) === "undefined") {
-      console.log("undefined l.source, l.source: ", l.source, " or undefined l.target: ", l.target, " and l: ", l)
-    }
-    if(remove[l.source.id] === true || remove[l.target.id] === true) { //remove all links connected to the old nodes
-      links.splice(links.indexOf(l), 1);
+    if(remove[l.source.id] === true || remove[l.target.id] === true) { 
+      links.splice(links.indexOf(l), 1); //remove all links connected to the old group node
     }      
   })
   $('#sidebar-group-info').trigger('contentchanged');
