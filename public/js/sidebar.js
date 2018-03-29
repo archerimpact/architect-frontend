@@ -1,21 +1,21 @@
 function appendContentEntry(key) {
   var leftText = document.createElement('div');
   leftText.className = 'sidebar-left';
-  leftText.append(createDivElement('sidebar-text', key));
+  $(leftText).append(createDivElement('sidebar-text', key));
 
   var rightText = document.createElement('div')
   rightText.className = 'sidebar-right';
   let text = false;
   for (let arg of Array.prototype.slice.call(arguments, 1)) {
     var element = text ? createDivElement('sidebar-text', arg) : createDivElement('sidebar-code', arg);
-    rightText.append(element);
+    $(rightText).append(element);
     text = !text;
   }
 
   var contentEntry = document.createElement('div');
   contentEntry.className = 'content-entry';
-  contentEntry.append(leftText);
-  contentEntry.append(rightText);
+  $(contentEntry).append(leftText);
+  $(contentEntry).append(rightText);
   $('#sidebar-content-area').append(contentEntry);
 }
 

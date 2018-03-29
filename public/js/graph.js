@@ -13,18 +13,27 @@ var nodeSelection = {};
 const svg = d3.select('body')
       .append('svg')
       .attr('width', width)
-      .attr('height', height);
+      .attr('height', height)
+      .on("contextmenu", function (d, i) {
+        d3.event.preventDefault();
+      });
 
+// Setting up brush
 const brush = d3.svg.brush()
   .on('brushstart', brushstart)
   .on('brush', brushing)
   .on('brushend', brushend)
   .x(brushX).y(brushY);
 
-svg.append('g')
+const svgBrush = svg.append('g')
   .attr('class', 'brush')
   .call(brush);
 
+svg.on('mousedown', () => {
+  svgBrush.style('opacity', d3.event.button == 2 ? 1 : 0);
+});
+
+// Create force
 const force = d3.layout.force()
       .linkDistance(110)
       .size([width, height]);
@@ -74,30 +83,27 @@ function update(){
 
   var nodeEnter = node
     .enter().append('g')
-    .attr('class', 'node')
-    .call(force.drag()
-      .on('dragstart', dragstart)
-      .on('drag', dragging)
-      .on('dragend', dragend)
-    );
-    
-  node.exit().remove();
+      .attr('class', 'node')
+      .attr('dragfix', false)
+      .attr('dragselect', false)
+      .on('click', clicked)
+      .classed('fixed', function(d){return d.fixed})
+      .call(force.drag()
+        .on('dragstart', dragstart)
+        .on('drag', dragging)
+        .on('dragend', dragend)
+      );
+
 
   nodeEnter.append('circle')
-    .attr('r','15')
-    .attr('dragfix', false)
-    .attr('dragselect', false)
-    .on('click', clicked)
-    .classed('fixed',function(d) {return d.fixed}) //whether it's classed fixed depends on whether it's fixed
-    .call(force.drag()
-      .on('dragstart', dragstart)
-      .on('drag', dragging)
-      .on('dragend', dragend)
-    );
+      .attr('r','15');
+
   nodeEnter.append('text')
-    .attr('dx', 22)
-    .attr('dy', '.35em')
-    .text(function(d) { return d.name });
+      .attr('dx', 22)
+      .attr('dy', '.35em')
+      .text(function(d) { return d.name });
+    
+  node.exit().remove();
 
   force.start();   
 }
@@ -109,19 +115,21 @@ function brushstart() {
 }
 
 function brushing() {
-  const extent = brush.extent();
-  svg.selectAll('circle')
-    .classed('selected', function (d) {
-      const xPos = brushX.invert(d.x);
-      const yPos = brushY.invert(d.y);
-      const selected = (extent[0][0] <= xPos && xPos <= extent[1][0]
-                && extent[0][1] <= yPos && yPos <= extent[1][1])
-                || (this.classList.contains('selected') && d3.event.sourceEvent.ctrlKey);
-      nodeSelection[d.index] = selected;
-      return selected;
-    });
+  if (d3.event.sourceEvent.which == 3 || d3.event.sourceEvent.button == 2) {
+    const extent = brush.extent();
+    svg.selectAll('.node')
+      .classed('selected', function (d) {
+        const xPos = brushX.invert(d.x);
+        const yPos = brushY.invert(d.y);
+        const selected = (extent[0][0] <= xPos && xPos <= extent[1][0]
+                  && extent[0][1] <= yPos && yPos <= extent[1][1])
+                  || (this.classList.contains('selected') && d3.event.sourceEvent.ctrlKey);
+        nodeSelection[d.index] = selected;
+        return selected;
+      });
 
-  highlightLinksFromAllNodes();
+    highlightLinksFromAllNodes();
+  }
 }
 
 function brushend() {
@@ -133,43 +141,59 @@ function brushend() {
 function clicked(d, i) {
   if (d3.event.defaultPrevented) return;
   const node = d3.select(this);
-  const ctrlPressed = d3.event.ctrlKey.toString();
-  const fixed = node.attr('dragfix') == ctrlPressed;
-  const selected = node.attr('dragselect') != ctrlPressed;
-
-  node
-    .classed('fixed', d.fixed = fixed)
-    .classed('selected', selected);
-  nodeSelection[d.index] = selected;
-  highlightLinksFromNode(node[0]);
+  const fixed = !(node.attr('dragfix') == 'true');
+  if (d3.event.which == 1 || d3.event.button == 0) {
+    node.classed('fixed', d.fixed = fixed);
+  }
 
   force.resume();
   d3.event.stopPropagation();
 }
 
+function rightclicked(node, d) {
+  const fixed = node.attr('dragfix') == 'true';
+  const selected = !(node.attr('dragselect') == 'true');
+  node.classed('fixed', d.fixed = fixed)
+      .classed('selected', nodeSelection[d.index] = selected);
+  highlightLinksFromNode(node[0]);
+  force.resume();
+}
+
 // Click-drag node interactions
 function dragstart(d) {
   const node = d3.select(this);
-  const selected = d3.event.sourceEvent.ctrlKey;
   node
     .attr('dragfix', node.classed('fixed'))
     .attr('dragselect', node.classed('selected'))
-    .classed('active', true)
-    .classed('fixed', d.fixed = true)
-    .classed('selected', selected);
-  nodeSelection[d.index] = selected;
-  highlightLinksFromNode(node[0]);
+    .attr('dragdistance', 0)
+    // .classed('active', true)
+
+  node.classed('fixed', d.fixed = true);
+  if (d3.event.sourceEvent.which == 3 || d3.event.sourceEvent.button == 2) {
+    node.classed('selected', nodeSelection[d.index] = true);
+    highlightLinksFromNode(node[0]);
+  }
 } 
 
 function dragging(d) {
-  d3.select(this)
+  const node = d3.select(this);
+  node
     .attr('cx', d.x = d3.event.x)
-    .attr('cy', d.y = d3.event.y);
+    .attr('cy', d.y = d3.event.y)
+    .attr('dragdistance', parseInt(node.attr('dragdistance')) + 1);
 }
 
 function dragend(d) {
-  d3.selectAll('circle')
-    .classed('active', false);
+  
+  // d3.selectAll('circle')
+  //   .classed('active', false);
+  const node = d3.select(this);
+  console.log('dragend', node)
+  console.log('selected: '+node.classed('selected')+', dragselect: '+node.attr('dragselect'));
+  if (!parseInt(node.attr('dragdistance')) && (d3.event.sourceEvent.which == 3 || d3.event.sourceEvent.button == 2)) {
+    rightclicked(node, d);
+  }
+
   force.resume();
 }
 
@@ -178,12 +202,12 @@ d3.select('body')
   .on('keydown', function() {
     // u: Unpin selected nodes
     if (d3.event.keyCode == 85) {
-      svg.selectAll('circle.selected')
+      svg.selectAll('.node.selected')
         .each(function(d) { d.fixed = false; })
         .classed('fixed', false);
       force.resume();
     }
-  })
+  });
 
 // Link highlighting
 function highlightLinksFromAllNodes() {
@@ -204,7 +228,6 @@ function highlightLinksFromNode(node) {
     });
 }
 
-
 // Add/remove nodes
 function restart() {
 
@@ -214,7 +237,7 @@ function restart() {
 
 function removeSelectedNodes() {
   var remove = {}; //dictionary that maps node ids to whether they should be removed
-  svg.selectAll('circle.selected')
+  svg.selectAll('.node.selected')
     .filter((d) => {
       remove[d.id]=true;
       if (nodes.indexOf(d) === -1) {
@@ -246,7 +269,7 @@ function groupSelectedNodes() {
   var groupNodes = groupItems.nodes
   var groupLinks = groupItems.links
 
-  svg.selectAll('circle.selected')
+  svg.selectAll('.node.selected')
     .filter((d) => {
       if (groups[d.id]) { //this node is already a group
         var newNodes = groups[d.id].nodes
