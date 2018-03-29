@@ -57,39 +57,18 @@ d3.json('34192.json', function(json) {
 
     function update(){
 
-      svg.selectAll("circle").remove()
-      svg.selectAll("text").remove()
-
       force.nodes(nodes)
         .links(links)
       
-      linkSelector = linkSelector.data(links);
-
-      //Access ENTER selection (hangs off UPDATE selection)
-      //This represents newly added data that dont have DOM elements
-      //so we create and add a "line" element for each of these data
-
-     
+      linkSelector = linkSelector.data(links, function(d) {return d.id});
 
       linkSelector
         .enter().append("line")
         .attr("class", "link")
 
-            linkSelector
-          .exit().remove(); 
+      linkSelector.exit().remove(); 
 
-      //Access EXIT selection (hangs off UPDATE selection)
-      //This represents DOM elements for which there is now no corresponding data element
-      //so we remove these from DOM
-
-      nodeSelector = nodeSelector.data(nodes, function(d, i){
-        return i
-      })
-
-      console.log("Updating on new data: ", nodes)
-
-      console.log("new selector: ", nodeSelector)
-
+      nodeSelector = nodeSelector.data(nodes, function(d){return d.id})
 
       var nodeEnter = nodeSelector
         .enter().append('g')
@@ -100,27 +79,26 @@ d3.json('34192.json', function(json) {
           .on('dragend', dragend)
         )
         
-      console.log("new Enter: ", nodeEnter)
-      nodeSelector.append('circle')
+      nodeSelector.exit().remove();
+
+      nodeEnter.append('circle')
         .attr('r','15')
         .attr('dragfix', false)
         .attr('dragselect', false)
         .on('click', clicked)
+        .classed('fixed',function(d) {
+           return d.fixed
+        } )
         .call(force.drag()
           .on('dragstart', dragstart)
           .on('drag', dragging)
           .on('dragend', dragend)
         )
-      console.log("new Enter2: ", nodeEnter)
-
-      nodeSelector.append('text')
+      nodeEnter.append('text')
         .attr('dx', 22)
         .attr('dy', '.35em')
-        .text(function(d) { 
-          console.log("getting text from d: ", d)
-          return d.name });
+        .text(function(d) { return d.name });
 
-      nodeSelector.exit().remove();
 
 
 
@@ -267,43 +245,29 @@ function restart() {
 //remove selected nodes
 
 function removeSelectedNodes() {
-    var remove = {};
+  var remove = {};
   var select = svg.selectAll('circle.selected')
     .filter((d) => {
-      console.log("I am removing this d.id: ", d.id, " name: ", d.name)
       remove[d.id]=true
-
       if (nodes.indexOf(d) === -1) {
         console.log("Error, wasn't in there and node is: ", d, " and nodes is: ", nodes)
       }
     });
-  //console.log("select: ", select)
 
-  var nodesCopy = nodes.slice()
-  nodesCopy.map((node) => {
-
+  nodes.slice().map((node) => {
     if (remove[node.id] === true) {
       var index = nodes.indexOf(node)
-      //console.log("removing node: ", node, " at index: ", index, "from nodes: ", nodes, " and node at index is: ", nodes[index])
-
       var removed = nodes.splice(index, 1)
-
-      console.log("removed node is : ", removed)
-
     }
   })
   links.slice().filter(function(l) {
-    if( remove[l.source.id] !== true && remove[l.target.id] !== true) {
+    if(remove[l.source.id] !== true && remove[l.target.id] !== true) {
       return;
     } else {
       links.splice(links.indexOf(l), 1) //important: changes the original array
     }
   });
-  console.log("nodeSelection at this time: ", nodeSelection)
   nodeSelection = {}
-  console.log("nodeSelection at this time: ", nodeSelection)
 
-  linkSelector.classed("selected", false)
-  //nodeSelector.classed("selected", false)
   update()
 }
