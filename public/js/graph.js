@@ -35,37 +35,30 @@ svg.on('mousedown', () => {
 
 // Create force
 const force = d3.layout.force()
-      .linkDistance(110)
+      .linkDistance(90)
       .size([width, height]);
 
 d3.json('34192.json', function(json) {
-  nodes = json.nodes
-  links = json.links
+  nodes = json.nodes;
+  links = json.links;
   force
     .gravity(1 / json.nodes.length)
     .charge(-1 * Math.max(Math.pow(json.nodes.length, 2), 750))
-    .friction(json.nodes.length < 15 ? .75 : .9)
+    .friction(json.nodes.length < 15 ? .75 : .65)
     .nodes(nodes)
-    .links(links)
+    .links(links);
 
 
   // Create selectors
-  link = svg.append("g").selectAll(".link")
-  node = svg.append("g").selectAll(".node")
+  link = svg.append("g").selectAll(".link");
+  node = svg.append("g").selectAll(".node");
 
 
   // Updates nodes and links according to current data
-  update()
+  update();
 
-  force.on('tick', function() {
-    force.resume();
-    link.attr('x1', function(d) { return d.source.x; })
-        .attr('y1', function(d) { return d.source.y; })
-        .attr('x2', function(d) { return d.target.x; })
-        .attr('y2', function(d) { return d.target.y; });
-
-    node.attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; });
-  });
+  for (var i = 25; i > 0; --i) force.tick();
+  force.on('tick', ticked);
 });
 
 function update(){
@@ -99,6 +92,17 @@ function update(){
 
   node.exit().remove();
   force.start();   
+}
+
+// Occurs each tick of simulation
+function ticked() {
+  force.resume();
+  link.attr('x1', function(d) { return d.source.x; })
+      .attr('y1', function(d) { return d.source.y; })
+      .attr('x2', function(d) { return d.target.x; })
+      .attr('y2', function(d) { return d.target.y; });
+
+  node.attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; });
 }
 
 // Click-drag node selection
