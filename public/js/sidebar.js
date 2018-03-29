@@ -53,12 +53,9 @@ $('#sidebar-group-info').on('contentchanged', function() {
   var keys = Object.keys(groups)
   $('#sidebar-group-info').html('<div></div>')
   keys.map((key)=> {
-    console.log("This is a group: ", groups[key])
     $('#sidebar-group-info').append('<div class="group" id=group' + -1*key +'> group ' + -1*key + '</div>')
-
     groups[key].map((node) => {
       $('#group' + -1*key).append('<div class="group-entry" id=node' + node.id +'> Name: ' + node.name + ', Type: ' + node.type + '</div><hr></hr>')
-
     })
   })
 })
