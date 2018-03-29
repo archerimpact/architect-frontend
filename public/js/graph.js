@@ -293,7 +293,6 @@ function groupSelectedNodes() {
   links.slice().map((l) => {
     if(remove[l.source.id] === true || remove[l.target.id] === true) { //remove all links connected to the old nodes
       var removedLink = links.splice(links.indexOf(l), 1);
-      console.log("removed link: ", removedLink)
       groupLinks.push(removedLink[0])
     }
     if(remove[l.source.id] === true && remove[l.target.id] !== true) {
