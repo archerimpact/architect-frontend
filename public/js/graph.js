@@ -5,6 +5,8 @@ const width = $(window).width() - 300,
 
 var node, link, nodes, links;
 
+var groups = {}
+
 var nodeSelection = {};
 
 const svg = d3.select('body')
@@ -232,4 +234,54 @@ function removeSelectedNodes() {
   });
   nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
   update();
+}
+
+function groupSelectedNodes() {
+  var remove = {}
+  var nodesToIndex = {}
+  var index = -1*(Object.keys(groups).length + 1) //when it's 0 groups, first index should be -1
+  groups[index] = [] //initialize empty array to hold the nodes
+  var newGroupNodes = groups[index]
+  var linkId = -1*(links.length + 1)
+  svg.selectAll('circle.selected')
+    .filter((d) => {
+      if (groups[d.id]) {
+      debugger //this node is already a group
+        var newNodes = groups[d.id]
+        newNodes.map((node)=>{
+          newGroupNodes.push(node)
+        })
+        remove[d.id] = true;
+        nodes.splice(nodes.indexOf(d), 1)
+      } else {
+        newGroupNodes.push(d)
+        remove[d.id] = true;
+        nodes.splice(nodes.indexOf(d), 1)
+      }
+    }); 
+  nodes.push({id: index, name: "Group " + -1*index})
+  nodes.map((node, i)=> {
+    nodesToIndex[node.id] = i
+  })
+  console.log("new nodes: ", nodes)
+  console.log("Groups: ", groups)
+  console.log("Nodes to index: ", nodesToIndex)
+  console.log("Nodes to remove: ", remove)
+
+  links.slice().map((l) => {
+    if(remove[l.source.id] === true || remove[l.target.id] === true) { //remove all links connected to a node to remove
+      var linkindex = links.indexOf(l);
+      links.splice(linkindex, 1);
+    }
+    if(remove[l.source.id] === true && remove[l.target.id] !== true) {
+      console.log("this is the l.source: ", l.source)
+      links.push({id: linkId, source: nodesToIndex[index], target: nodesToIndex[l.target.id]})
+      linkId -= 1
+    } else if (remove[l.source.id] !== true && remove[l.target.id] === true){
+      links.push({id: linkId, source: nodesToIndex[l.source.id], target: nodesToIndex[index]})
+      linkId -=1
+    }
+  });
+  console.log("new links: ", links)
+  update()
 }
