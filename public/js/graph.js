@@ -241,13 +241,15 @@ function groupSelectedNodes() {
   var remove = {}
   var nodeIdsToIndex = {}
   var groupId = -1*(Object.keys(groups).length + 1) //when it's 0 groups, first index should be -1
-  var groupNodes = [] //initialize empty array to hold the nodes
-  groups[groupId] = groupNodes
+  var groupItems = {links: [], nodes: []} //initialize empty array to hold the nodes
+  groups[groupId] = groupitems
+  var groupNodes = groupItems.nodes
+  var groupLinks = groupItems.links
 
   svg.selectAll('circle.selected')
     .filter((d) => {
       if (groups[d.id]) { //this node is already a group
-        var newNodes = groups[d.id]
+        var newNodes = groups[d.id].nodes
         newNodes.map((node)=>{
           groupNodes.push(node) //add each of the nodes in the old group to the list of nodes in the new group
         })
@@ -266,7 +268,8 @@ function groupSelectedNodes() {
 
   links.slice().map((l) => {
     if(remove[l.source.id] === true || remove[l.target.id] === true) { //remove all links connected to the old nodes
-      links.splice(links.indexOf(l), 1);
+      var removedLink = links.splice(links.indexOf(l), 1);
+      groupLinks.push(removedLink)
     }
     if(remove[l.source.id] === true && remove[l.target.id] !== true) {
       //add new links with appropriate connection to the new group node
@@ -280,4 +283,16 @@ function groupSelectedNodes() {
   });
   $('#sidebar-group-info').trigger('contentchanged');
   update()
+}
+
+function ungroupSelectedNodes() {
+  svg.selectAll('circle.selected')
+    .filter((d) => {
+      if (groups[d.id]) {
+        var groupNodes = groups[d.id]
+        groupNodes.map((node) => {
+          nodes.push(node)
+        })
+      }
+    }
 }
