@@ -4,7 +4,8 @@ const width = $(window).width() - 300,
     brushY = d3.scale.linear().range([0, height]);
 
 let node, link, hull, nodes, links, hulls;
-let linkid = -1;
+let globallinkid = -1;
+let globalgroupid = -1;
 
 const groups = {}
 const expandedGroups = {}
@@ -293,11 +294,15 @@ function highlightLinksFromNode(node) {
 
 function removeNode(removedNodes, node) {
   let removedNode;
+  var groupIds = Object.keys(groups)
   
   //remove node if it's in the dictionary of removed nodes
   if (removedNodes[node.id] === true) {
     const index = nodes.indexOf(node); //get the index on the spot in case removing elements changed the index
     removedNode = nodes.splice(index, 1)[0]; //splice modifies the original data
+    if (isInArray(node.id, groupIds)) {
+      delete groups[node.id]
+    }
   }
   return removedNode;
 }
@@ -312,6 +317,37 @@ function removeLink(removedNodes, link) {
   }
   return removedLink;
 }
+
+function reattachLink(link, newNodeId, removedNodes, nodeIdsToIndex) {
+  let linkid = globallinkid;
+  if (removedNodes[link.source.id] === true && removedNodes[link.target.id] !== true) {
+    //add new links with appropriate connection to the new group node
+    //source and target refer to the index of the node
+    links.push({id: linkid, source: nodeIdsToIndex[newNodeId], target: nodeIdsToIndex[link.target.id]});
+    globallinkid -= 1;
+  } else if (removedNodes[link.source.id] !== true && removedNodes[link.target.id] === true) {
+    links.push({id: linkid, source: nodeIdsToIndex[link.source.id], target: nodeIdsToIndex[newNodeId]});
+    globallinkid -=1;
+  }
+}
+
+function moveLinksFromOldNodesToGroup(removedNodes, group, nodeIdsToIndex) {
+  links.slice().map((link) => {
+    const removedLink = removeLink(removedNodes, link);
+    if (removedLink) {
+      group.links.push(removedLink);
+    }
+    reattachLink(link, group.id, removedNodes, nodeIdsToIndex);
+  });
+}
+
+function isInArray(value, array) {
+  return array.indexOf(value) > -1;
+}
+
+//
+// HELPER FUNCTIONS END
+// ------------------------------------------------------------
 
 // Multi-node manipulation methods
 function removeSelectedNodes() {
@@ -335,45 +371,31 @@ function removeSelectedNodes() {
   update();
 }
 
-function reattachLink(link, newNodeId, removedNodes, nodeIdsToIndex) {
-      if (removedNodes[link.source.id] === true && removedNodes[link.target.id] !== true) {
-      //add new links with appropriate connection to the new group node
-      //source and target refer to the index of the node
-      links.push({id: linkid, source: nodeIdsToIndex[newNodeId], target: nodeIdsToIndex[link.target.id]});
-      linkid -= 1;
-    } else if (removedNodes[link.source.id] !== true && removedNodes[link.target.id] === true) {
-      links.push({id: linkid, source: nodeIdsToIndex[link.source.id], target: nodeIdsToIndex[newNodeId]});
-      linkid -=1;
-    }
-}
-
-function moveLinksFromOldNodesToGroup(removedNodes, group, nodeIdsToIndex) {
-  links.slice().map((link) => {
-    const removedLink = removeLink(removedNodes, link);
-    if (removedLink) {
-      group.links.push(removedLink);
-    }
-    reattachLink(link, group.id, removedNodes, nodeIdsToIndex);
-  });
-}
-
-//
-// HELPER FUNCTIONS END
-// ------------------------------------------------------------
-
 function groupSelectedNodes() {
   const removedNodes = {};
   const nodeIdsToIndex = {};
-  const groupId = -1*(Object.keys(groups).length + 1); //when it's 0 groups, first index should be -1
+  const groupId = globalgroupid;
   const group = groups[groupId] = {links: [], nodes: [], id: groupId}; //initialize empty array to hold the nodes
 
-  svg.selectAll('.node.selected')
+  var select = svg.selectAll('.node.selected')
+
+  if (select[0].length <= 1) { //do nothing if nothing is selected & if there's one node
+    return
+  }
+
+  select
     .each((d) => {
       if (groups[d.id]) { //this node is already a group
-        const newNodes = groups[d.id].nodes;
+        console.log("grouping this group nodes: ", groups[d.id].nodes)
+        var newNodes = groups[d.id].nodes;
+        var newLinks = groups[d.id].links
         newNodes.map((node) => {
-          group.nodes.push(node); //add each of the nodes in the old group to the list of nodes in the new group
+          group.nodes.push(node); //add each of the nodes in the old group to the list of nodes in the new group        
         });
+        newLinks.map((link) => {
+          group.links.push(link);
+        })
+        delete groups[d.id]
       } else {
         group.nodes.push(d); //add this node to the list of nodes in the group
       }
@@ -381,6 +403,7 @@ function groupSelectedNodes() {
       nodes.splice(nodes.indexOf(d), 1);
     }); 
 
+  console.log("all nodes in the group: ", group.nodes)
   nodes.push({id: groupId, name: `Group ${-1*groupId}`}); //add the new node for the group
   nodes.map((node, i) => {
     nodeIdsToIndex[node.id] = i //map all nodeIds to their new index
@@ -388,6 +411,7 @@ function groupSelectedNodes() {
 
   moveLinksFromOldNodesToGroup(removedNodes, group, nodeIdsToIndex)
 
+  globalgroupid -=1;
   nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
   $('#sidebar-group-info').trigger('contentchanged');
   update()
@@ -397,12 +421,14 @@ function groupSelectedNodes() {
 function deleteSelectedGroups() {
   var select = svg.selectAll('.node.selected')
 
+
   expandSelectedGroupNodes()
 
   select.filter((d) => {
     delete groups[d.id] //delete this group from the global groups
   })
   nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
+  node.classed("selected", false)
   $('#sidebar-group-info').trigger('contentchanged');
   update();
 }
@@ -438,9 +464,6 @@ function collapseGroupNodes(group) {
 
   svg.selectAll('.node')
     .each((d) => {
-      function isInArray(value, array) {
-        return array.indexOf(value) > -1;
-      }
       if (isInArray(d.id, groupNodeIds)) {
         removedNodes[d.id] = true; //remove this node from the DOM
         nodes.splice(nodes.indexOf(d), 1);      
