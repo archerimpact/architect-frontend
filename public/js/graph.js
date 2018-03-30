@@ -335,7 +335,13 @@ function moveLinksFromOldNodesToGroup(removedNodes, group, nodeIdsToIndex) {
   links.slice().map((link) => {
     const removedLink = removeLink(removedNodes, link);
     if (removedLink) {
-      group.links.push(removedLink);
+      const groupids = Object.keys(groups).map((key) => {return parseInt(key)})
+      if (isInArray(link.target.id, groupids) || isInArray(link.source.id, groupids)) {
+        // do nothing if the removed link was attached to a group
+
+      } else {
+        group.links.push(removedLink);
+      }
     }
     reattachLink(link, group.id, removedNodes, nodeIdsToIndex);
   });
@@ -353,7 +359,7 @@ function isInArray(value, array) {
 function removeSelectedNodes() {
   const removedNodes = {}; //dictionary that maps node ids to whether they should be removed
   svg.selectAll('.node.selected')
-    .filter((d) => {
+    .each((d) => {
       removedNodes[d.id] = true;
       if (nodes.indexOf(d) === -1) {
         console.log("Error, wasn't in there and node is: ", d, " and nodes is: ", nodes);
@@ -376,26 +382,24 @@ function groupSelectedNodes() {
   const nodeIdsToIndex = {};
   const groupId = globalgroupid;
   const group = groups[groupId] = {links: [], nodes: [], id: groupId}; //initialize empty array to hold the nodes
+  const removedGroups = []
 
   var select = svg.selectAll('.node.selected')
 
   if (select[0].length <= 1) { //do nothing if nothing is selected & if there's one node
     return
   }
-
   select
     .each((d) => {
       if (groups[d.id]) { //this node is already a group
-        console.log("grouping this group nodes: ", groups[d.id].nodes)
         var newNodes = groups[d.id].nodes;
         var newLinks = groups[d.id].links
         newNodes.map((node) => {
           group.nodes.push(node); //add each of the nodes in the old group to the list of nodes in the new group        
         });
         newLinks.map((link) => {
-          group.links.push(link);
+          group.links.push(link); //add all the links inside the old group to the new group
         })
-        delete groups[d.id]
       } else {
         group.nodes.push(d); //add this node to the list of nodes in the group
       }
@@ -403,13 +407,18 @@ function groupSelectedNodes() {
       nodes.splice(nodes.indexOf(d), 1);
     }); 
 
-  console.log("all nodes in the group: ", group.nodes)
   nodes.push({id: groupId, name: `Group ${-1*groupId}`}); //add the new node for the group
   nodes.map((node, i) => {
     nodeIdsToIndex[node.id] = i //map all nodeIds to their new index
   });
 
   moveLinksFromOldNodesToGroup(removedNodes, group, nodeIdsToIndex)
+
+  select.each((d)=> {
+    // delete any groups that were selected AFTER all nodes & links are deleted
+    // and properly inserted into the global variable entry for the new group
+    delete groups[d.id]
+  })
 
   globalgroupid -=1;
   nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
@@ -421,12 +430,12 @@ function groupSelectedNodes() {
 function deleteSelectedGroups() {
   var select = svg.selectAll('.node.selected')
 
-
   expandSelectedGroupNodes()
 
-  select.filter((d) => {
+  select.each((d) => {
     delete groups[d.id] //delete this group from the global groups
   })
+
   nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
   node.classed("selected", false)
   $('#sidebar-group-info').trigger('contentchanged');
@@ -510,7 +519,6 @@ function toggleGroupView(groupId) {
   if (!groups[groupId]) {
     console.log("error, the group doesn't exist even when it should");
   }
-  const centered = true
   const group = groups[groupId]
 
   if (expandedGroups[groupId]) {
