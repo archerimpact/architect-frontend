@@ -410,6 +410,47 @@ function ungroupSelectedNodes(centered=false) {
   update();
 }
 
+function groupNodes(groupItems, centered=false) {
+  const remove = {};
+  const nodeIdsToIndex = {};
+  const groupId = groupItems.id; //when it's 0 groups, first index should be -1
+  const groupNodes = groupItems.nodes;
+  const groupLinks = groupItems.links;
+
+  svg.selectAll('.node')
+    .filter((d) => {
+      if (d.id === groupId) { //this node is the group in question
+        groupNodes.map
+        remove[d.id] = true; //remove this node from the DOM
+        nodes.splice(nodes.indexOf(d), 1);
+      }
+    }); 
+
+  nodes.push({id: groupId, name: `Group ${-1*groupId}`, px: groupItems.startX, py: groupItems.startY, fixed: true}); //add the new node for the group
+  nodes.map((node, i) => {
+    nodeIdsToIndex[node.id] = i //map all nodeIds to their new index
+  });
+
+
+  links.slice().map((l) => {
+    if (remove[l.source.id] === true || remove[l.target.id] === true) { //remove all links connected to the old nodes
+      const removedLink = links.splice(links.indexOf(l), 1);
+      groupLinks.push(removedLink[0]);
+    }
+
+    if (remove[l.source.id] === true && remove[l.target.id] !== true) {
+      //add new links with appropriate connection to the new group node
+      //source and target refer to the index of the node
+      links.push({id: linkid, source: nodeIdsToIndex[groupId], target: nodeIdsToIndex[l.target.id]});
+      linkid -= 1;
+    } else if (remove[l.source.id] !== true && remove[l.target.id] === true) {
+      links.push({id: linkid, source: nodeIdsToIndex[l.source.id], target: nodeIdsToIndex[groupId]});
+      linkid -=1;
+    }
+  });
+  $('#sidebar-group-info').trigger('contentchanged');
+}
+
 function ungroupNode(groupId, centered=false) {
   force.stop()
   const remove = {}
@@ -419,6 +460,8 @@ function ungroupNode(groupId, centered=false) {
         var groupX = d.x;
         var groupY = d.y;
         if (groups[d.id]) { //this node is a group
+          groups[d.id].startX = groupX
+          groups[d.id].startY = groupY
           remove[d.id] = true; //this is a node to be removed from the DOM
           const groupNodes = groups[d.id].nodes //groupNodes contains all nodes in the group
           nodes.splice(nodes.indexOf(d), 1)//remove this group node
@@ -456,13 +499,20 @@ function toggleGroupView(groupId) {
   if (!groups[groupId]) {
     console.log("error, the group doesn't exist even when it should");
   }
+  const centered = true
 
   if (expandedGroups[groupId]) {
+    groupNodes(groups[groupId], centered)
+    hulls.map((hull, i) => {
+      if (hull.group === groupId) {
+        hulls.splice(i, 1)
+      }
+    })
     expandedGroups[groupId] = false;
+    update()
   } else {
     console.log("expanding your group!")
     expandedGroups[groupId] = true;
-    const centered = true
     ungroupNode(groupId, centered) 
 
     hulls.push(createHull(groups[groupId]))
