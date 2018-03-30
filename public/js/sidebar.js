@@ -123,6 +123,7 @@ $(document).ready(function() {
   appendGraphUsageEntry('group selected nodes', 'G');
   appendGraphUsageEntry('ungroup selected nodes', 'H');
   appendGraphUsageEntry('remove selected nodes', 'R', 'or', 'del');
+  appendGraphUsageEntry('add node to selected', 'A');
 
   let altDown = false;
   $(document).keydown(function(e) {

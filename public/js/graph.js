@@ -5,7 +5,7 @@ const width = $(window).width() - 300,
 
 let node, link, hull, nodes, links, hulls;
 let globallinkid = -1;
-let globalgroupid = -1;
+let globalnodeid = -1;
 
 //store groupNodeId --> {links: [], nodes: [], groupid: int}
 const groups = {}
@@ -299,6 +299,12 @@ d3.select('body')
       removeSelectedNodes();
       force.resume();
     }
+
+    // a: Add node linked to selected
+    else if (d3.event.keyCode == 65) {
+      addNodeToSelected();
+      force.resume();
+    }
   });
 
 // Link highlighting
@@ -407,12 +413,37 @@ function removeSelectedNodes() {
 
   nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
   update();
+
+}
+
+function addNodeToSelected(){
+  const nodeid = globalnodeid;
+  const linkid = globallinkid;
+  const newnode = {id: nodeid, name: `Node ${-1*nodeid}`, type: "Custom"}
+
+  globalnodeid -= 1;
+  nodes.push(newnode)
+  var select = svg.selectAll('.node.selected')
+
+  if (select[0].length === 0) { //if nothing is selected, don't add a node for now because it flies away
+    return
+  }
+
+  select
+    .each((d) => {
+      links.push({id: globallinkid, source: nodes.length-1, target: nodes.indexOf(d)})
+      globallinkid -= 1;
+    })
+  node.classed("selected", false);
+  link.classed("selected", false)
+  nodeSelection = {}
+  update();
 }
 
 function groupSelectedNodes() {
   const removedNodes = {};
   const nodeIdsToIndex = {};
-  const groupId = globalgroupid;
+  const groupId = globalnodeid;
   const group = groups[groupId] = {links: [], nodes: [], id: groupId}; //initialize empty array to hold the nodes
   const removedGroups = []
 
@@ -452,7 +483,7 @@ function groupSelectedNodes() {
     delete groups[d.id]
   })
 
-  globalgroupid -=1;
+  globalnodeid -=1;
   nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
   update();
   displayGroupInfo(groups);
@@ -493,7 +524,6 @@ function expandSelectedGroupNodes() {
   links.slice().map((link)=> {
     removeLink(removedNodes, link)  
   })
-
 }
 
 function collapseGroupNodes(group) {
@@ -569,6 +599,8 @@ function toggleGroupView(groupId) {
   update()
 }
 
+
+//Hull functions
 function createHull(group) {
   var vertices = [];
   var offset = 30;
