@@ -3,10 +3,12 @@ const width = $(window).width() - 300,
     brushX = d3.scale.linear().range([0, width]),
     brushY = d3.scale.linear().range([0, height]);
 
-let node, link, hull, nodes, links;
+let node, link, hull, nodes, links, hulls;
 let linkid = -1;
 
 const groups = {}
+const expandedGroups = {}
+
 let nodeSelection = {};
 
 const svg = d3.select('body')
@@ -16,6 +18,10 @@ const svg = d3.select('body')
       .on("contextmenu", function (d, i) {
         d3.event.preventDefault();
       });
+
+const curve = d3.svg.line()
+  .interpolate("cardinal-closed")
+  .tension(.85);
 
 // Setting up brush
 const brush = d3.svg.brush()
@@ -41,6 +47,7 @@ const force = d3.layout.force()
 d3.json('34192.json', function(json) {
   nodes = json.nodes
   links = json.links
+  hulls = []
   force
     .gravity(1 / json.nodes.length)
     .charge(-1 * Math.max(Math.pow(json.nodes.length, 2), 750))
@@ -50,9 +57,9 @@ d3.json('34192.json', function(json) {
 
 
   // Create selectors
+  hull = svg.append("g").selectAll(".hull")
   link = svg.append("g").selectAll(".link")
   node = svg.append("g").selectAll(".node")
-  hull = svg.append("g").selectAll(".hull")
 
 
   // Updates nodes and links according to current data
@@ -60,20 +67,35 @@ d3.json('34192.json', function(json) {
 
   force.on('tick', function() {
     force.resume();
+    if (!hull.empty()) {
+      calculateAllHulls()
+      hull.data(hulls)
+        .attr("d", drawHull)  
+    }
+
+
     link.attr('x1', function(d) { return d.source.x; })
         .attr('y1', function(d) { return d.source.y; })
         .attr('x2', function(d) { return d.target.x; })
         .attr('y2', function(d) { return d.target.y; });
-
+    //node.attr("cx", function(d) { return d.x; })
+      //  .attr("cy", function(d) { return d.y; });
     node.attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; });
   });
 });
 
 function update(){
+  force.stop()
+  force.nodes(nodes)
+    .links(links)
   link = link.data(links, function(d) {return d.id}); //resetting the key is important because otherwise it maps the new data to the old data in order
   link
     .enter().append("line")
-    .attr("class", "link");
+    .attr("class", "link")
+      .attr("x1", function(d) { return d.source.x; })
+      .attr("y1", function(d) { return d.source.y; })
+      .attr("x2", function(d) { return d.target.x; })
+      .attr("y2", function(d) { return d.target.y; });
   link.exit().remove(); 
 
   node = node.data(nodes, function(d){return d.id});
@@ -83,7 +105,14 @@ function update(){
       .attr('dragfix', false)
       .attr('dragselect', false)
       .on('click', clicked)
-      .classed('fixed', function(d){return d.fixed})
+      .attr("cx", function(d) {
+        return d.x
+      })
+      .attr("cy", function(d) {
+        return d.y
+      })
+      .classed('fixed', function(d){
+        return d.fixed})
       .call(force.drag()
         .on('dragstart', dragstart)
         .on('drag', dragging)
@@ -91,7 +120,11 @@ function update(){
       )
   
   nodeEnter.append('circle')
-      .attr('r','15');
+      .attr('r','15')
+      // .attr("cx", function (d) { 
+      //   console.log
+      //   return d.x; })
+      // .attr("cy", function (d) { return d.y; })
 
   nodeEnter.append('text')
       .attr('dx', 22)
@@ -99,6 +132,19 @@ function update(){
       .text(function(d) { return d.name });
 
   node.exit().remove();
+  console.log("new hulls: ", hulls)
+hull = hull.data(hulls)
+
+  hull
+    .enter().append('path')
+    .attr('class', 'hull')
+    .attr('d', drawHull)
+    .on('click', function(d) {
+      collapseHull(d);
+      update();
+    })
+  hull.exit().remove();
+
   force.start();   
 }
 
@@ -138,6 +184,8 @@ function clicked(d, i) {
   if (d3.event.which == 1 || d3.event.button == 0) {
     node.classed('fixed', d.fixed = fixed);
   }
+
+  console.log("this is the node: ", node)
 
   force.resume();
   d3.event.stopPropagation();
@@ -209,7 +257,7 @@ d3.select('body')
 
     // h: Ungroup selected nodes
     else if (d3.event.keyCode == 72) {
-      ungroupSelectedNodes();
+      deleteSelectedGroupings();
       force.resume();
     }
 
@@ -272,7 +320,7 @@ function groupSelectedNodes() {
   const remove = {};
   const nodeIdsToIndex = {};
   const groupId = -1*(Object.keys(groups).length + 1); //when it's 0 groups, first index should be -1
-  const groupItems = {links: [], nodes: []}; //initialize empty array to hold the nodes
+  const groupItems = {links: [], nodes: [], id: groupId}; //initialize empty array to hold the nodes
   groups[groupId] = groupItems;
   const groupNodes = groupItems.nodes;
   const groupLinks = groupItems.links;
@@ -322,7 +370,19 @@ function groupSelectedNodes() {
   update()
 }
 
-function ungroupSelectedNodes() {
+function deleteSelectedGroupings() {
+  var select = svg.selectAll('.node.selected')
+
+  ungroupSelectedNodes()
+
+  select.filter((d) => {
+    delete groups[d.id] //delete this group from the global groups
+  })
+
+  nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
+}
+
+function ungroupSelectedNodes(centered=false) {
   const remove = {}
   svg.selectAll('.node.selected')
     .filter((d) => {
@@ -339,7 +399,6 @@ function ungroupSelectedNodes() {
           links.push(link) //add all links in the group to global links
         })
       }
-      delete groups[d.id] //delete this group from the global groups
     })
   links.slice().map((l)=> {
     if(remove[l.source.id] === true || remove[l.target.id] === true) { 
@@ -347,11 +406,90 @@ function ungroupSelectedNodes() {
     }      
   })
 
-  nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
   $('#sidebar-group-info').trigger('contentchanged');
   update();
 }
 
-function createHulls() {
+function ungroupNode(groupId, centered=false) {
+  force.stop()
+  const remove = {}
+  svg.selectAll('.node')
+    .each((d) => {
+      if (d.id === groupId) {
+        var groupX = d.x;
+        var groupY = d.y;
+        if (groups[d.id]) { //this node is a group
+          remove[d.id] = true; //this is a node to be removed from the DOM
+          const groupNodes = groups[d.id].nodes //groupNodes contains all nodes in the group
+          nodes.splice(nodes.indexOf(d), 1)//remove this group node
+          groupNodes.map((node) => {
+            nodes.push(node) //add all nodes in the group to global nodes
+            node.fixed = true;
+
+            // console.log("this is the node you're trying to change: ", node.x + ", " + node.y)
+            //console.log("these are the group values: ", groupX + ", " + groupY)
+            node.x = node.px= groupX + Math.floor(Math.random() * 200) + 1  ;
+            node.y = node.py =groupY + Math.floor(Math.random() * 200) + 1  
+             //console.log("this is the node after change: ", node.x + ", " + node.y)
+            
+            // console.log("this is the node after change: ", node)
+          })
+          //groups[d.id].nodes = groupNodes
+          const groupLinks = groups[d.id].links //groupLinks contains all links in the group
+          groupLinks.map((link) => {
+            links.push(link) //add all links in the group to global links
+          })
+        }
+      }
+    })
+  links.slice().map((l)=> {
+    if(remove[l.source.id] === true || remove[l.target.id] === true) { 
+      links.splice(links.indexOf(l), 1); //remove all links connected to the old group node
+    }      
+  })
+
+  $('#sidebar-group-info').trigger('contentchanged');
+}
+
+function toggleGroupView(groupId) {
+  console.log("toggle this group: ", typeof(groupId));
+  if (!groups[groupId]) {
+    console.log("error, the group doesn't exist even when it should");
+  }
+
+  if (expandedGroups[groupId]) {
+    expandedGroups[groupId] = false;
+  } else {
+    console.log("expanding your group!")
+    expandedGroups[groupId] = true;
+    const centered = true
+    ungroupNode(groupId, centered) 
+
+    hulls.push(createHull(groups[groupId]))
+
+    console.log("new hulls in toggleGroupView: ", hulls)
+    update()
+  }
+
+}
+
+function createHull(group) {
+  var vertices = [];
+  var offset = 30;
+  group.nodes.map(function(d){
+    //vertices.push([d.px + offset, d.py + offset], [d.px - offset, d.py + offset], [d.px - offset, d.py - offset], [d.px + offset, d.py - offset])
+    vertices.push([d.x + offset, d.y + offset], [d.x - offset, d.y + offset], [d.x - offset, d.y - offset], [d.x + offset, d.y - offset])
   
+  })
+  return {group: group.id, path: d3.geom.hull(vertices)}
+}
+
+function calculateAllHulls() {
+  hulls.map((hull, i) => {
+    hulls[i] = createHull(groups[hull.group])
+  })
+}
+
+function drawHull(d) {
+  return curve(d.path)
 }

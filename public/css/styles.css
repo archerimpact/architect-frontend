@@ -86,3 +86,9 @@ button:focus {
   stroke-width: 4px;
 }
 
+.hull {
+  fill: blue;
+  fill-opacity: 0.3;
+}
+}
+

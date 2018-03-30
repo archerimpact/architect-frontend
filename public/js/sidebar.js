@@ -91,7 +91,7 @@ $('#sidebar-group-info').on('contentchanged', function() {
   const keys = Object.keys(groups)
   $('#sidebar-group-info').html('<div></div>')
   keys.map((key)=> {
-    $('#sidebar-group-info').append('<div class="group" id=group' + -1*key +'><div class="sidebar-title"> Group ' + -1*key + '</div><button onclick = "toggleGroupView()""> Toggle Group View</button></div>')
+    $('#sidebar-group-info').append('<div class="group" id=group' + -1*key +'><div class="sidebar-title"> Group ' + -1*key + '</div><button onclick = "toggleGroupView(' + key + ')""> Toggle Group View</button></div>')
     groups[key].nodes.map((node) => {
       $('#group' + -1*key).append('<div class="group-entry" id=node' + node.id +'> Name: ' + node.name + ', Type: ' + node.type + '</div><hr></hr>')
     })
