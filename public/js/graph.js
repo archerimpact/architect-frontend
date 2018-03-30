@@ -3,7 +3,7 @@ const width = $(window).width() - 300,
     brushX = d3.scale.linear().range([0, width]),
     brushY = d3.scale.linear().range([0, height]);
 
-let node, link, nodes, links;
+let node, link, hull, nodes, links;
 let linkid = -1;
 
 const groups = {}
@@ -52,6 +52,7 @@ d3.json('34192.json', function(json) {
   // Create selectors
   link = svg.append("g").selectAll(".link")
   node = svg.append("g").selectAll(".node")
+  hull = svg.append("g").selectAll(".hull")
 
 
   // Updates nodes and links according to current data
@@ -349,4 +350,8 @@ function ungroupSelectedNodes() {
   nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
   $('#sidebar-group-info').trigger('contentchanged');
   update();
+}
+
+function createHulls() {
+  
 }
