@@ -12,6 +12,7 @@ body {
 
 svg {
   border: 3px solid #fff;
+  z-index: -1;
 }
 
 
@@ -24,6 +25,11 @@ svg rect.extent {
 svg rect.background {
 /*  cursor: -webkit-grab !important;
   cursor: grab !important;*/
+}
+
+svg line {
+  stroke: #ebebeb;
+  stroke-width: 1.5px; 
 }
 
 .button {

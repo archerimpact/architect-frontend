@@ -1,5 +1,5 @@
-const width = $(window).width() - 300,
-    height = $(window).height() + 50,
+const height = $(window).height() + 50,
+    width = Math.max($(window).width() - 300, height),
     brushX = d3.scale.linear().range([0, width]),
     brushY = d3.scale.linear().range([0, height]);
 
@@ -16,6 +16,7 @@ let isBrushing = false;
 // Keep track of node emphasis to end node emphasis on drag
 let isEmphasized = false;
 
+// Create canvas
 const svg = d3.select('body')
       .append('svg')
       .attr('width', width)
@@ -23,6 +24,39 @@ const svg = d3.select('body')
       .on("contextmenu", function (d, i) {
         d3.event.preventDefault();
       });
+
+// Draw gridlines
+const svgGrid = svg.append('g');
+const gridLength = 80;
+const numTicks = width / gridLength;
+
+svgGrid
+  .append('g')
+    .attr('class', 'x-ticks')
+  .selectAll('line')
+    .data(d3.range(0, (numTicks + 1) * gridLength, gridLength))
+  .enter().append('line')
+    .attr('x1', function(d) { return d; })
+    .attr('y1', function(d) { return -1 * gridLength; })
+    .attr('x2', function(d) { return d; })
+    .attr('y2', function(d) { return height + gridLength; });
+
+svgGrid
+  .append('g')
+    .attr('class', 'y-ticks')
+  .selectAll('line')
+    .data(d3.range(0, (numTicks + 1) * gridLength, gridLength))
+  .enter().append('line')
+  .attr('x1', function(d) { return -1 * gridLength; })
+  .attr('y1', function(d) { return d; })
+  .attr('x2', function(d) { return width + gridLength; })
+  .attr('y2', function(d) { return d; });
+
+// Set up zooming & panning
+var zoom = d3.behavior.zoom()
+    .scaleExtent([1, 10])
+    .on("zoom", zoomed);
+svg.call(zoom);
 
 // Setting up brush
 const brush = d3.svg.brush()
@@ -61,7 +95,6 @@ d3.json('34192.json', function(json) {
 
   // Updates nodes and links according to current data
   update();
-  //reloadNeighbors();
 
   for (let i = 25; i > 0; --i) force.tick();
   force.on('tick', ticked);
@@ -84,6 +117,7 @@ function update(){
       .on('mouseout', mouseout)
       .classed('fixed', function(d){ return d.fixed; })
       .call(force.drag()
+        .origin(function(d) { return d; })
         .on('dragstart', dragstart)
         .on('drag', dragging)
         .on('dragend', dragend)
@@ -166,6 +200,7 @@ function rightclicked(node, d) {
 
 // Click-drag node interactions
 function dragstart(d) {
+  d3.event.sourceEvent.stopPropagation();
   if (isEmphasized) mouseout();
   isDragging = true;
   displayNodeInfo(d);
@@ -235,6 +270,17 @@ function reloadNeighbors() {
   links.forEach(function(d) {
     linkedByIndex[d.source.index + "," + d.target.index] = true;
   });
+}
+
+// Zoom & pan
+function zoomed() {
+  svgGrid.attr("transform", "translate(" + d3.event.translate[0] % (gridLength * d3.event.scale) 
+    + "," + d3.event.translate[1] % (gridLength * d3.event.scale) + ")scale(" + d3.event.scale + ")");
+  console.log(d3.event.translate);
+
+  link.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+  nodeEnter.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+  force.tick();
 }
 
 // Graph manipulation keycodes

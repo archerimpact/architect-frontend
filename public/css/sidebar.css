@@ -16,7 +16,7 @@
   bottom: 0px;
   right: 0px;
   padding-right: 10px;
-  position: fixed;
+  position: absolute;
   background: transparent;
   animation-delay: 0.3s;
 }
@@ -54,10 +54,9 @@
   right: 0px;
   background-color: #FFFFFF;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  overflow-x: hidden;
   transition: 0.5s;
   overflow: hidden;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 #close-button {
