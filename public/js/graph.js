@@ -6,8 +6,13 @@ const width = $(window).width() - 300,
 let node, link, nodes, links;
 let linkid = -1;
 const groups = {}
-let nodeSelection = {};
-const linkedByIndex = {};
+// Store node.index --> selection state
+let nodeSelection = {}; 
+// Store each pair of neighboring nodes
+let linkedByIndex = {}; 
+// Keep track of dragging to disallow node emphasis on drag
+let isDragging = false; 
+let isBrushing = false;
 
 const svg = d3.select('body')
       .append('svg')
@@ -54,11 +59,7 @@ d3.json('34192.json', function(json) {
 
   // Updates nodes and links according to current data
   update();
-
-  // Update linkedByIndex to keep track of neighboring nodes
-  links.forEach(function(d) {
-    linkedByIndex[d.source.index + "," + d.target.index] = true;
-  });
+  //reloadNeighbors();
 
   for (let i = 25; i > 0; --i) force.tick();
   force.on('tick', ticked);
@@ -95,7 +96,8 @@ function update(){
       .text(function(d) { return d.name; });
 
   node.exit().remove();
-  force.start();   
+  force.start();
+  reloadNeighbors(); // TODO: revisit this and figure out WHY d.source.index --> d.source if this is moved one line up  
 }
 
 // Occurs each tick of simulation
@@ -111,7 +113,7 @@ function ticked() {
 
 // Click-drag node selection
 function brushstart() {
-
+  isBrushing = true;
 }
 
 function brushing() {
@@ -135,6 +137,7 @@ function brushing() {
 function brushend() {
   brush.clear();
   svg.selectAll('.brush').call(brush);
+  isBrushing = false;
 }
 
 // Single-node interactions
@@ -161,6 +164,7 @@ function rightclicked(node, d) {
 
 // Click-drag node interactions
 function dragstart(d) {
+  isDragging = true;
   displayNodeInfo(d);
   const node = d3.select(this);
   node
@@ -189,21 +193,24 @@ function dragend(d) {
     rightclicked(node, d);
   }
 
+  isDragging = false;
   force.resume();
 }
 
 // Node emphasis
 function mouseover(d) {
-  node
-    .filter(function(o) {
-      return !neighbors(d, o);
-    })
-    .style('stroke-opacity', .15)
-    .style('fill-opacity', .4);
+  if (!isDragging && !isBrushing) {
+    node
+      .filter(function(o) {
+        return !neighbors(d, o);
+      })
+      .style('stroke-opacity', .15)
+      .style('fill-opacity', .4);
 
-  link.style('stroke-opacity', function(o) {
-    return (o.source == d || o.target == d) ? 1 : .05;
-  });
+    link.style('stroke-opacity', function(o) {
+      return (o.source == d || o.target == d) ? 1 : .05;
+    });
+  }
 }
 
 function mouseout() {
@@ -216,6 +223,13 @@ function neighbors(a, b) {
   return linkedByIndex[a.index + ',' + b.index] 
       || linkedByIndex[b.index + ',' + a.index]  
       || a.index == b.index;
+}
+
+function reloadNeighbors() {
+  linkedByIndex = {};
+  links.forEach(function(d) {
+    linkedByIndex[d.source.index + "," + d.target.index] = true;
+  });
 }
 
 // Graph manipulation keycodes
@@ -324,7 +338,7 @@ function groupSelectedNodes() {
 
   nodes.push({id: groupId, name: `Group ${-1*groupId}`}); //add the new node for the group
   nodes.map((node, i) => {
-    nodeIdsToIndex[node.id] = i //map all nodeIds to their new index
+    nodeIdsToIndex[node.id] = i; //map all nodeIds to their new index
   });
 
 
