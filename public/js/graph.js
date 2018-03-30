@@ -96,8 +96,8 @@ d3.json('34192.json', function(json) {
   // Updates nodes and links according to current data
   update();
 
-  for (let i = 25; i > 0; --i) force.tick();
   force.on('tick', ticked);
+  for (let i = 750; i > 0; --i) force.tick();
 });
 
 function update(){
