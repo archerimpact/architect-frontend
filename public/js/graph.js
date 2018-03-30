@@ -13,6 +13,8 @@ let linkedByIndex = {};
 // Keep track of dragging to disallow node emphasis on drag
 let isDragging = false; 
 let isBrushing = false;
+// Keep track of node emphasis to end node emphasis on drag
+let isEmphasized = false;
 
 const svg = d3.select('body')
       .append('svg')
@@ -164,6 +166,7 @@ function rightclicked(node, d) {
 
 // Click-drag node interactions
 function dragstart(d) {
+  if (isEmphasized) mouseout();
   isDragging = true;
   displayNodeInfo(d);
   const node = d3.select(this);
@@ -200,6 +203,7 @@ function dragend(d) {
 // Node emphasis
 function mouseover(d) {
   if (!isDragging && !isBrushing) {
+    isEmphasized = true;
     node
       .filter(function(o) {
         return !neighbors(d, o);
@@ -217,6 +221,7 @@ function mouseout() {
   node.style('stroke-opacity', 1)
       .style('fill-opacity', 1);
   link.style('stroke-opacity', 1);
+  isEmphasized = false;
 }
 
 function neighbors(a, b) {
