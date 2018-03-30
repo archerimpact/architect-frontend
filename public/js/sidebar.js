@@ -1,20 +1,17 @@
 // Populate graph usage section
 function appendGraphUsageEntry(key) {
-  const leftText = document.createElement('div');
-  leftText.className = 'sidebar-left';
-  $(leftText).append(createDivElement('sidebar-text', key));
+  const leftText = createDivElement('sidebar-left');
+  $(leftText).append(createTextElement('sidebar-text', key));
 
-  const rightText = document.createElement('div')
-  rightText.className = 'sidebar-right';
+  const rightText = createDivElement('sidebar-right');
   let text = false;
   for (let arg of Array.prototype.slice.call(arguments, 1)) {
-    const element = text ? createDivElement('sidebar-text', `&nbsp;${arg}&nbsp;`) : createDivElement('sidebar-code', arg);
+    const element = text ? createTextElement('sidebar-text', `&nbsp;${arg}&nbsp;`) : createTextElement('sidebar-code', arg);
     $(rightText).append(element);
     text = !text;
   }
 
-  const contentEntry = document.createElement('div');
-  contentEntry.className = 'content-entry';
+  const contentEntry = createDivElement('content-entry');
   $(contentEntry).append(leftText);
   $(contentEntry).append(rightText);
   $('#graph-usage').append(contentEntry);
@@ -22,16 +19,11 @@ function appendGraphUsageEntry(key) {
 
 // Populate node info section
 function createNodeInfoEntry(key, value) {
-  const leftText = document.createElement('div');
-  leftText.className = 'sidebar-left';
-  $(leftText).append(createDivElement('sidebar-text', key));
-
-  const rightText = document.createElement('div')
-  rightText.className = 'sidebar-right';
-  $(rightText).append(createDivElement('sidebar-text', value));
-
-  const contentEntry = document.createElement('div');
-  contentEntry.className = 'content-entry';
+  const leftText = createDivElement('sidebar-left');
+  $(leftText).append(createTextElement('sidebar-text', key));
+  const rightText = createDivElement('sidebar-right');
+  $(rightText).append(createTextElement('sidebar-text', value));
+  const contentEntry = createDivElement('content-entry');
   $(contentEntry).append(leftText);
   $(contentEntry).append(rightText);
   return contentEntry;
@@ -39,11 +31,9 @@ function createNodeInfoEntry(key, value) {
 
 function displayNodeInfo(info) {
   clearNodeInfo();
-  const titleElement = createTitleElement('Node info');
-  $('#node-info').append(titleElement);
+  $('#node-info').append(createTitleElement('sidebar-title', 'Node info'));
   for (key in info) {
-    const contentEntry = createNodeInfoEntry(key, info[key]);
-    $('#node-info').append(contentEntry);
+    $('#node-info').append(createNodeInfoEntry(key, info[key]));
   }
 }
 
@@ -51,23 +41,61 @@ function clearNodeInfo() {
   $('#node-info').html('');
 }
 
+// Populate group info section
+function appendGroupEntry(key, val) {
+  console.log(val);
+  $('#group-info').append(createTitleElement('sidebar-subtitle', `Group ${-1 * key}`)); 
+  const attributeList = ['name', 'type'];
+  let groupElement, groupEntry, leftText, rightText, attr;
+  for (let id in val.nodes) {
+    groupElement = createDivElement('entity');
+    for (let i = 0; i < attributeList.length; i++) {
+      attr = attributeList[i];
+      groupEntry = createDivElement('entity-entry');
+      leftText = createDivElement('sidebar-left');
+      $(leftText).append(createTextElement('sidebar-text', attr.charAt(0).toUpperCase() + attr.slice(1)));
+      rightText = createDivElement('sidebar-right');
+      $(rightText).append(createTextElement('sidebar-text', val.nodes[id][attr]));
+      $(groupEntry).append(leftText);
+      $(groupEntry).append(rightText);
+      $(groupElement).append(groupEntry);
+    }
+
+    $("#group-info").append(groupElement);
+  }
+}
+
+function displayGroupInfo(groups) {
+  clearGroupInfo();
+  $('#group-info').append(createTitleElement('sidebar-title', 'Group info'));
+  for (let group_id in groups) {
+    appendGroupEntry(group_id, groups[group_id]);
+  }
+}
+
+function clearGroupInfo () {
+  $('#group-info').html('');
+}
+
 // General element creation
-function createDivElement(className, text) {
-  const textElement = document.createElement('div');
-  textElement.className = className;
+function createTextElement(className, text) {
+  const textElement = createDivElement(className);
   textElement.innerHTML = text;
   return textElement;
 }
 
-function createTitleElement(title) {
-  const titleElement = document.createElement('div');
-  titleElement.className = 'sidebar-title';
-
+function createTitleElement(className, title) {
+  const titleElement = createDivElement(className);
   const titleText = document.createElement('p');
-  titleElement.innerHTML = title;
-
+  titleText.innerHTML = title;
   $(titleElement).append(titleText);
   return titleElement;
+}
+
+function createDivElement(className) {
+  const divElement = document.createElement('div');
+  divElement.className = className;
+  return divElement;
 }
 
 // Toggle sidebar
@@ -85,18 +113,6 @@ function closeSidebar() {
 $("#transparent-navbar i").click(function() {
   $(this).toggleClass("blue");
 });
-
-// Alice content append
-$('#sidebar-group-info').on('contentchanged', function() {
-  const keys = Object.keys(groups)
-  $('#sidebar-group-info').html('<div></div>')
-  keys.map((key)=> {
-    $('#sidebar-group-info').append('<div class="group" id=group' + -1*key +'> group ' + -1*key + '</div>')
-    groups[key].nodes.map((node) => {
-      $('#group' + -1*key).append('<div class="group-entry" id=node' + node.id +'> Name: ' + node.name + ', Type: ' + node.type + '</div><hr></hr>')
-    })
-  })
-})
 
 // Content population & keycodes
 $(document).ready(function() {

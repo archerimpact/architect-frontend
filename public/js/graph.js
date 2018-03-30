@@ -365,8 +365,8 @@ function groupSelectedNodes() {
   });
 
   nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
-  $('#sidebar-group-info').trigger('contentchanged');
   update();
+  displayGroupInfo(groups);
 }
 
 function ungroupSelectedNodes() {
@@ -395,6 +395,6 @@ function ungroupSelectedNodes() {
   });
 
   nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
-  $('#sidebar-group-info').trigger('contentchanged');
   update();
+  displayGroupInfo(groups);
 }
