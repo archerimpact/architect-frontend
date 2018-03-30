@@ -257,7 +257,7 @@ d3.select('body')
 
     // h: Ungroup selected nodes
     else if (d3.event.keyCode == 72) {
-      deleteSelectedGroupings();
+      deleteSelectedGroups();
       force.resume();
     }
 
@@ -287,58 +287,163 @@ function highlightLinksFromNode(node) {
     });
 }
 
+// ------------------------------------------------------------
+// HELPER FUNCTIONS START
+//
+
+function removeNode(removedNodes, node) {
+  let removedNode;
+  
+  //remove node if it's in the dictionary of removed nodes
+  if (removedNodes[node.id] === true) {
+    const index = nodes.indexOf(node); //get the index on the spot in case removing elements changed the index
+    removedNode = nodes.splice(index, 1)[0]; //splice modifies the original data
+  }
+  return removedNode;
+}
+
+function removeLink(removedNodes, link) {
+  let removedLink;
+  
+  //only remove a link if it's attached to a removed node
+  if(removedNodes[link.source.id] === true || removedNodes[link.target.id] === true) { //remove all links connected to a node to remove
+    const index = links.indexOf(link);
+    removedLink = links.splice(index, 1)[0];
+  }
+  return removedLink;
+}
+
 // Multi-node manipulation methods
 function removeSelectedNodes() {
-  const remove = {}; //dictionary that maps node ids to whether they should be removed
+  const removedNodes = {}; //dictionary that maps node ids to whether they should be removed
   svg.selectAll('.node.selected')
     .filter((d) => {
-      remove[d.id] = true;
+      removedNodes[d.id] = true;
       if (nodes.indexOf(d) === -1) {
         console.log("Error, wasn't in there and node is: ", d, " and nodes is: ", nodes);
       }
     });
-
   nodes.slice().map((node) => {
-    if (remove[node.id] === true) {
-      const index = nodes.indexOf(node); //get the index on the spot in case removing elements changed the index
-      nodes.splice(index, 1); //splice modifies the original data
-    }
+    removeNode(removedNodes, node)
   });
 
-  links.slice().map((l) => {
-    if(remove[l.source.id] === true || remove[l.target.id] === true) { //remove all links connected to a node to remove
-      const index = links.indexOf(l);
-      links.splice(index, 1);
-    }
+  links.slice().map((link) => {
+    removeLink(removedNodes, link)
   });
 
   nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
   update();
 }
 
+function reattachLink(link, newNodeId, removedNodes, nodeIdsToIndex) {
+      if (removedNodes[link.source.id] === true && removedNodes[link.target.id] !== true) {
+      //add new links with appropriate connection to the new group node
+      //source and target refer to the index of the node
+      links.push({id: linkid, source: nodeIdsToIndex[newNodeId], target: nodeIdsToIndex[link.target.id]});
+      linkid -= 1;
+    } else if (removedNodes[link.source.id] !== true && removedNodes[link.target.id] === true) {
+      links.push({id: linkid, source: nodeIdsToIndex[link.source.id], target: nodeIdsToIndex[newNodeId]});
+      linkid -=1;
+    }
+}
+
+function moveLinksFromOldNodesToGroup(removedNodes, group, nodeIdsToIndex) {
+  links.slice().map((link) => {
+    const removedLink = removeLink(removedNodes, link);
+    if (removedLink) {
+      group.links.push(removedLink);
+    }
+    reattachLink(link, group.id, removedNodes, nodeIdsToIndex);
+  });
+}
+
+//
+// HELPER FUNCTIONS END
+// ------------------------------------------------------------
+
 function groupSelectedNodes() {
-  const remove = {};
+  const removedNodes = {};
   const nodeIdsToIndex = {};
   const groupId = -1*(Object.keys(groups).length + 1); //when it's 0 groups, first index should be -1
-  const groupItems = {links: [], nodes: [], id: groupId}; //initialize empty array to hold the nodes
-  groups[groupId] = groupItems;
-  const groupNodes = groupItems.nodes;
-  const groupLinks = groupItems.links;
+  const group = groups[groupId] = {links: [], nodes: [], id: groupId}; //initialize empty array to hold the nodes
 
   svg.selectAll('.node.selected')
-    .filter((d) => {
+    .each((d) => {
       if (groups[d.id]) { //this node is already a group
         const newNodes = groups[d.id].nodes;
         newNodes.map((node) => {
-          groupNodes.push(node); //add each of the nodes in the old group to the list of nodes in the new group
+          group.nodes.push(node); //add each of the nodes in the old group to the list of nodes in the new group
         });
-
-        remove[d.id] = true; //remove this node from the DOM
-        nodes.splice(nodes.indexOf(d), 1);
       } else {
-        groupNodes.push(d); //add this node to the list of nodes in the group
-        remove[d.id] = true; //remove this node from the DOM
-        nodes.splice(nodes.indexOf(d), 1);
+        group.nodes.push(d); //add this node to the list of nodes in the group
+      }
+      removedNodes[d.id] = true; //remove this node from the DOM
+      nodes.splice(nodes.indexOf(d), 1);
+    }); 
+
+  nodes.push({id: groupId, name: `Group ${-1*groupId}`}); //add the new node for the group
+  nodes.map((node, i) => {
+    nodeIdsToIndex[node.id] = i //map all nodeIds to their new index
+  });
+
+  moveLinksFromOldNodesToGroup(removedNodes, group, nodeIdsToIndex)
+
+  nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
+  $('#sidebar-group-info').trigger('contentchanged');
+  update()
+}
+
+
+function deleteSelectedGroups() {
+  var select = svg.selectAll('.node.selected')
+
+  expandSelectedGroupNodes()
+
+  select.filter((d) => {
+    delete groups[d.id] //delete this group from the global groups
+  })
+  nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
+  $('#sidebar-group-info').trigger('contentchanged');
+  update();
+}
+
+
+
+function expandSelectedGroupNodes() {
+  const removedNodes = {}
+  svg.selectAll('.node.selected')
+    .each((d) => {
+      const group = groups[d.id]
+      if (group) { //this node is a group
+        removedNodes[d.id] = true; //this is a node to be removed from the DOM
+        nodes.splice(nodes.indexOf(d), 1)//remove this group node
+        group.nodes.map((node) => {
+          nodes.push(node) //add all nodes in the group to global nodes
+        })
+        group.links.map((link) => {
+          links.push(link) //add all links in the group to global links
+        })
+      }
+    })
+  links.slice().map((link)=> {
+    removeLink(removedNodes, link)  
+  })
+}
+
+function collapseGroupNodes(group) {
+  const removedNodes = {};
+  const nodeIdsToIndex = {};
+  const groupId = group.id; 
+  const groupNodeIds = group.nodes.map((node) => {return node.id})
+
+  svg.selectAll('.node')
+    .each((d) => {
+      function isInArray(value, array) {
+        return array.indexOf(value) > -1;
+      }
+      if (isInArray(d.id, groupNodeIds)) {
+        removedNodes[d.id] = true; //remove this node from the DOM
+        nodes.splice(nodes.indexOf(d), 1);      
       }
     }); 
 
@@ -347,197 +452,79 @@ function groupSelectedNodes() {
     nodeIdsToIndex[node.id] = i //map all nodeIds to their new index
   });
 
-
-  links.slice().map((l) => {
-    if (remove[l.source.id] === true || remove[l.target.id] === true) { //remove all links connected to the old nodes
-      const removedLink = links.splice(links.indexOf(l), 1);
-      groupLinks.push(removedLink[0]);
-    }
-
-    if (remove[l.source.id] === true && remove[l.target.id] !== true) {
-      //add new links with appropriate connection to the new group node
-      //source and target refer to the index of the node
-      links.push({id: linkid, source: nodeIdsToIndex[groupId], target: nodeIdsToIndex[l.target.id]});
-      linkid -= 1;
-    } else if (remove[l.source.id] !== true && remove[l.target.id] === true) {
-      links.push({id: linkid, source: nodeIdsToIndex[l.source.id], target: nodeIdsToIndex[groupId]});
-      linkid -=1;
-    }
-  });
-
-  nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
-  $('#sidebar-group-info').trigger('contentchanged');
-  update()
+  moveLinksFromOldNodesToGroup(removedNodes, group, nodeIdsToIndex)
 }
 
-function deleteSelectedGroupings() {
-  var select = svg.selectAll('.node.selected')
-
-  ungroupSelectedNodes()
-
-  select.filter((d) => {
-    delete groups[d.id] //delete this group from the global groups
-  })
-
-  nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
-}
-
-function ungroupSelectedNodes(centered=false) {
-  const remove = {}
-  svg.selectAll('.node.selected')
-    .filter((d) => {
-      if (groups[d.id]) { //this node is a group
-        remove[d.id] = true; //this is a node to be removed from the DOM
-        const groupNodes = groups[d.id].nodes //groupNodes contains all nodes in the group
-        nodes.splice(nodes.indexOf(d), 1)//remove this group node
-        groupNodes.map((node) => {
-          nodes.push(node) //add all nodes in the group to global nodes
-        })
-
-        const groupLinks = groups[d.id].links //groupLinks contains all links in the group
-        groupLinks.map((link) => {
-          links.push(link) //add all links in the group to global links
-        })
-      }
-    })
-  links.slice().map((l)=> {
-    if(remove[l.source.id] === true || remove[l.target.id] === true) { 
-      links.splice(links.indexOf(l), 1); //remove all links connected to the old group node
-    }      
-  })
-
-  $('#sidebar-group-info').trigger('contentchanged');
-  update();
-}
-
-function groupNodes(groupItems, centered=false) {
-  const remove = {};
-  const nodeIdsToIndex = {};
-  const groupId = groupItems.id; //when it's 0 groups, first index should be -1
-  const groupNodes = groupItems.nodes;
-  const groupLinks = groupItems.links;
-
-  svg.selectAll('.node')
-    .filter((d) => {
-      if (d.id === groupId) { //this node is the group in question
-        groupNodes.map
-        remove[d.id] = true; //remove this node from the DOM
-        nodes.splice(nodes.indexOf(d), 1);
-      }
-    }); 
-
-  nodes.push({id: groupId, name: `Group ${-1*groupId}`, px: groupItems.startX, py: groupItems.startY, fixed: true}); //add the new node for the group
-  nodes.map((node, i) => {
-    nodeIdsToIndex[node.id] = i //map all nodeIds to their new index
-  });
-
-
-  links.slice().map((l) => {
-    if (remove[l.source.id] === true || remove[l.target.id] === true) { //remove all links connected to the old nodes
-      const removedLink = links.splice(links.indexOf(l), 1);
-      groupLinks.push(removedLink[0]);
-    }
-
-    if (remove[l.source.id] === true && remove[l.target.id] !== true) {
-      //add new links with appropriate connection to the new group node
-      //source and target refer to the index of the node
-      links.push({id: linkid, source: nodeIdsToIndex[groupId], target: nodeIdsToIndex[l.target.id]});
-      linkid -= 1;
-    } else if (remove[l.source.id] !== true && remove[l.target.id] === true) {
-      links.push({id: linkid, source: nodeIdsToIndex[l.source.id], target: nodeIdsToIndex[groupId]});
-      linkid -=1;
-    }
-  });
-  $('#sidebar-group-info').trigger('contentchanged');
-}
-
-function ungroupNode(groupId, centered=false) {
+function expandGroupNode(groupId) {
   force.stop()
   const remove = {}
   svg.selectAll('.node')
     .each((d) => {
-      if (d.id === groupId) {
-        var groupX = d.x;
-        var groupY = d.y;
-        if (groups[d.id]) { //this node is a group
-          groups[d.id].startX = groupX
-          groups[d.id].startY = groupY
-          remove[d.id] = true; //this is a node to be removed from the DOM
-          const groupNodes = groups[d.id].nodes //groupNodes contains all nodes in the group
-          nodes.splice(nodes.indexOf(d), 1)//remove this group node
-          groupNodes.map((node) => {
-            nodes.push(node) //add all nodes in the group to global nodes
-            node.fixed = true;
-
-            // console.log("this is the node you're trying to change: ", node.x + ", " + node.y)
-            //console.log("these are the group values: ", groupX + ", " + groupY)
-            node.x = node.px= groupX + Math.floor(Math.random() * 200) + 1  ;
-            node.y = node.py =groupY + Math.floor(Math.random() * 200) + 1  
-             //console.log("this is the node after change: ", node.x + ", " + node.y)
-            
-            // console.log("this is the node after change: ", node)
-          })
-          //groups[d.id].nodes = groupNodes
-          const groupLinks = groups[d.id].links //groupLinks contains all links in the group
-          groupLinks.map((link) => {
-            links.push(link) //add all links in the group to global links
-          })
-        }
+      if (d.id === groupId && groups[d.id]) {
+        const group = groups[d.id];
+        remove[d.id] = true; //this is a node to be removed from the DOM
+        nodes.splice(nodes.indexOf(d), 1)//remove this group node
+        
+        group.nodes.map((node) => {
+          group.fixedX = d.x //store the coordinates of the group node
+          group.fixedY = d.y
+          node.x = node.px = group.fixedX + Math.floor(Math.random() * 200) + 1;
+          node.y = node.py = group.fixedY + Math.floor(Math.random() * 200) + 1; 
+          node.fixed = true;            
+          nodes.push(node) //add all nodes in the group to global nodes
+        })
+        group.links.map((link) => {
+          links.push(link) //add all links in the group to global links
+        })
       }
     })
-  links.slice().map((l)=> {
-    if(remove[l.source.id] === true || remove[l.target.id] === true) { 
-      links.splice(links.indexOf(l), 1); //remove all links connected to the old group node
-    }      
+  links.slice().map((link)=> {
+    removeLink(remove, link)    
   })
-
-  $('#sidebar-group-info').trigger('contentchanged');
 }
 
 function toggleGroupView(groupId) {
-  console.log("toggle this group: ", typeof(groupId));
   if (!groups[groupId]) {
     console.log("error, the group doesn't exist even when it should");
   }
   const centered = true
+  const group = groups[groupId]
 
   if (expandedGroups[groupId]) {
-    groupNodes(groups[groupId], centered)
+    collapseGroupNodes(group)
     hulls.map((hull, i) => {
-      if (hull.group === groupId) {
-        hulls.splice(i, 1)
+      if (hull.groupId === groupId) {
+        hulls.splice(i, 1) // remove this hull from the global list of hulls
       }
     })
     expandedGroups[groupId] = false;
-    update()
   } else {
-    console.log("expanding your group!")
+    expandGroupNode(groupId) 
+    hulls.push(createHull(group))
     expandedGroups[groupId] = true;
-    ungroupNode(groupId, centered) 
-
-    hulls.push(createHull(groups[groupId]))
-
-    console.log("new hulls in toggleGroupView: ", hulls)
-    update()
   }
-
+  $('#sidebar-group-info').trigger('contentchanged');
+  update()
 }
 
 function createHull(group) {
   var vertices = [];
   var offset = 30;
   group.nodes.map(function(d){
-    //vertices.push([d.px + offset, d.py + offset], [d.px - offset, d.py + offset], [d.px - offset, d.py - offset], [d.px + offset, d.py - offset])
-    vertices.push([d.x + offset, d.y + offset], [d.x - offset, d.y + offset], [d.x - offset, d.y - offset], [d.x + offset, d.y - offset])
-  
-  })
-  return {group: group.id, path: d3.geom.hull(vertices)}
+    vertices.push(
+      [d.x + offset, d.y + offset], 
+      [d.x - offset, d.y + offset], 
+      [d.x - offset, d.y - offset], 
+      [d.x + offset, d.y - offset]
+    );
+  });
+  return {groupId: group.id, path: d3.geom.hull(vertices)}
 }
 
 function calculateAllHulls() {
   hulls.map((hull, i) => {
-    hulls[i] = createHull(groups[hull.group])
-  })
+    hulls[i] = createHull(groups[hull.groupId])
+  });
 }
 
 function drawHull(d) {
