@@ -106,14 +106,7 @@ function update(){
       .attr('dragfix', false)
       .attr('dragselect', false)
       .on('click', clicked)
-      .attr("cx", function(d) {
-        return d.x
-      })
-      .attr("cy", function(d) {
-        return d.y
-      })
-      .classed('fixed', function(d){
-        return d.fixed})
+      .classed('fixed', function(d){return d.fixed})
       .call(force.drag()
         .on('dragstart', dragstart)
         .on('drag', dragging)
@@ -122,10 +115,7 @@ function update(){
   
   nodeEnter.append('circle')
       .attr('r','15')
-      // .attr("cx", function (d) { 
-      //   console.log
-      //   return d.x; })
-      // .attr("cy", function (d) { return d.y; })
+
 
   nodeEnter.append('text')
       .attr('dx', 22)
@@ -133,7 +123,6 @@ function update(){
       .text(function(d) { return d.name });
 
   node.exit().remove();
-  console.log("new hulls: ", hulls)
 hull = hull.data(hulls)
 
   hull
@@ -185,8 +174,6 @@ function clicked(d, i) {
   if (d3.event.which == 1 || d3.event.button == 0) {
     node.classed('fixed', d.fixed = fixed);
   }
-
-  console.log("this is the node: ", node)
 
   force.resume();
   d3.event.stopPropagation();
