@@ -45,6 +45,7 @@ function clearNodeInfo() {
 function appendGroupEntry(key, val) {
   console.log(val);
   $('#group-info').append(createTitleElement('sidebar-subtitle', `Group ${-1 * key}`)); 
+  $("#group-info").append('<button onclick = "toggleGroupView(' + key + ')""> Toggle Group View</button>')
   const attributeList = ['name', 'type'];
   let groupElement, groupEntry, leftText, rightText, attr;
   for (let id in val.nodes) {
@@ -60,7 +61,6 @@ function appendGroupEntry(key, val) {
       $(groupEntry).append(rightText);
       $(groupElement).append(groupEntry);
     }
-
     $("#group-info").append(groupElement);
   }
 }
