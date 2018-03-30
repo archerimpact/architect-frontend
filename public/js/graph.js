@@ -5,9 +5,9 @@ const width = $(window).width() - 300,
 
 let node, link, nodes, links;
 let linkid = -1;
-
 const groups = {}
 let nodeSelection = {};
+const linkedByIndex = {};
 
 const svg = d3.select('body')
       .append('svg')
@@ -48,39 +48,43 @@ d3.json('34192.json', function(json) {
     .nodes(nodes)
     .links(links);
 
-
   // Create selectors
   link = svg.append("g").selectAll(".link");
   node = svg.append("g").selectAll(".node");
 
-
   // Updates nodes and links according to current data
   update();
 
-  for (var i = 25; i > 0; --i) force.tick();
+  // Update linkedByIndex to keep track of neighboring nodes
+  links.forEach(function(d) {
+    linkedByIndex[d.source.index + "," + d.target.index] = true;
+  });
+
+  for (let i = 25; i > 0; --i) force.tick();
   force.on('tick', ticked);
 });
 
 function update(){
-  link = link.data(links, function(d) {return d.id}); //resetting the key is important because otherwise it maps the new data to the old data in order
+  link = link.data(links, function(d) { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
   link
     .enter().append("line")
     .attr("class", "link");
   link.exit().remove(); 
 
-  node = node.data(nodes, function(d){return d.id});
-  const nodeEnter = node
-    .enter().append('g')
+  node = node.data(nodes, function(d){ return d.id; });
+  const nodeEnter = node.enter().append('g')
       .attr('class', 'node')
       .attr('dragfix', false)
       .attr('dragselect', false)
       .on('click', clicked)
-      .classed('fixed', function(d){return d.fixed})
+      .on('mouseover', mouseover)
+      .on('mouseout', mouseout)
+      .classed('fixed', function(d){ return d.fixed; })
       .call(force.drag()
         .on('dragstart', dragstart)
         .on('drag', dragging)
         .on('dragend', dragend)
-      )
+      );
   
   nodeEnter.append('circle')
       .attr('r','15');
@@ -88,7 +92,7 @@ function update(){
   nodeEnter.append('text')
       .attr('dx', 22)
       .attr('dy', '.35em')
-      .text(function(d) { return d.name });
+      .text(function(d) { return d.name; });
 
   node.exit().remove();
   force.start();   
@@ -162,8 +166,7 @@ function dragstart(d) {
   node
     .attr('dragfix', node.classed('fixed'))
     .attr('dragselect', node.classed('selected'))
-    .attr('dragdistance', 0)
-    // .classed('active', true)
+    .attr('dragdistance', 0);
 
   node.classed('fixed', d.fixed = true);
   if (d3.event.sourceEvent.which == 3 || d3.event.sourceEvent.button == 2) {
@@ -178,19 +181,41 @@ function dragging(d) {
     .attr('cx', d.x = d3.event.x)
     .attr('cy', d.y = d3.event.y)
     .attr('dragdistance', parseInt(node.attr('dragdistance')) + 1);
-}
+  }
 
 function dragend(d) {
-  // d3.selectAll('circle')
-  //   .classed('active', false);
   const node = d3.select(this);
-  console.log('dragend', node)
-  console.log('selected: '+node.classed('selected')+', dragselect: '+node.attr('dragselect'));
   if (!parseInt(node.attr('dragdistance')) && (d3.event.sourceEvent.which == 3 || d3.event.sourceEvent.button == 2)) {
     rightclicked(node, d);
   }
 
   force.resume();
+}
+
+// Node emphasis
+function mouseover(d) {
+  node
+    .filter(function(o) {
+      return !neighbors(d, o);
+    })
+    .style('stroke-opacity', .15)
+    .style('fill-opacity', .4);
+
+  link.style('stroke-opacity', function(o) {
+    return (o.source == d || o.target == d) ? 1 : .05;
+  });
+}
+
+function mouseout() {
+  node.style('stroke-opacity', 1)
+      .style('fill-opacity', 1);
+  link.style('stroke-opacity', 1);
+}
+
+function neighbors(a, b) {
+  return linkedByIndex[a.index + ',' + b.index] 
+      || linkedByIndex[b.index + ',' + a.index]  
+      || a.index == b.index;
 }
 
 // Graph manipulation keycodes
@@ -322,33 +347,33 @@ function groupSelectedNodes() {
 
   nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
   $('#sidebar-group-info').trigger('contentchanged');
-  update()
+  update();
 }
 
 function ungroupSelectedNodes() {
-  const remove = {}
+  const remove = {};
   svg.selectAll('.node.selected')
     .filter((d) => {
       if (groups[d.id]) { //this node is a group
         remove[d.id] = true; //this is a node to be removed from the DOM
-        const groupNodes = groups[d.id].nodes //groupNodes contains all nodes in the group
-        nodes.splice(nodes.indexOf(d), 1)//remove this group node
+        const groupNodes = groups[d.id].nodes; //groupNodes contains all nodes in the group
+        nodes.splice(nodes.indexOf(d), 1); //remove this group node
         groupNodes.map((node) => {
-          nodes.push(node) //add all nodes in the group to global nodes
-        })
+          nodes.push(node); //add all nodes in the group to global nodes
+        });
 
-        const groupLinks = groups[d.id].links //groupLinks contains all links in the group
+        const groupLinks = groups[d.id].links; //groupLinks contains all links in the group
         groupLinks.map((link) => {
-          links.push(link) //add all links in the group to global links
-        })
+          links.push(link); //add all links in the group to global links
+        });
       }
-      delete groups[d.id] //delete this group from the global groups
-    })
+      delete groups[d.id]; //delete this group from the global groups
+    });
   links.slice().map((l)=> {
-    if(remove[l.source.id] === true || remove[l.target.id] === true) { 
+    if (remove[l.source.id] === true || remove[l.target.id] === true) { 
       links.splice(links.indexOf(l), 1); //remove all links connected to the old group node
     }      
-  })
+  });
 
   nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
   $('#sidebar-group-info').trigger('contentchanged');
