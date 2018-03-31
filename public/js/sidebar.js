@@ -119,10 +119,12 @@ $(document).ready(function() {
   appendGraphUsageEntry('select nodes', 'r-click', '+', 'drag');
   appendGraphUsageEntry('(un)select node', 'r-click');
   appendGraphUsageEntry('(un)pin node', 'l-click');
+  appendGraphUsageEntry('move canvas', 'l-click', '+', 'drag');
+  appendGraphUsageEntry('zoom in/out', 'scroll');
   appendGraphUsageEntry('unpin selected nodes', 'U');
+  appendGraphUsageEntry('remove selected nodes', 'R', 'or', 'del');
   appendGraphUsageEntry('group selected nodes', 'G');
   appendGraphUsageEntry('ungroup selected nodes', 'H');
-  appendGraphUsageEntry('remove selected nodes', 'R', 'or', 'del');
 
   let altDown = false;
   $(document).keydown(function(e) {
