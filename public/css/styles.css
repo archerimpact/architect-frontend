@@ -36,7 +36,7 @@ svg line {
   stroke-width: 1.5px; 
 }
 
-.button {
+button {
     font-size: 14px;
     color: #000;
     letter-spacing: 1px;
@@ -46,13 +46,13 @@ svg line {
     padding: 10px;
 }
 
-.button:hover {
+button:hover {
   color: white;
   background-color: #0d77e2;
   border: none;
 }
 
-.button:focus {
+button:focus {
   outline: none;
 }
 
@@ -94,5 +94,11 @@ svg line {
 .node.selected circle {
   stroke: #0d77e2;
   stroke-width: 4px;
+}
+
+.hull {
+  fill: blue;
+  fill-opacity: 0.3;
+}
 }
 
