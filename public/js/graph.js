@@ -99,6 +99,19 @@ d3.json('34192.json', function(json) {
   links = json.links
   hulls = []
 
+/*  Needed this code when loading 43.json to prevent it from disappearing forever
+
+var index
+  nodes.map((node, i)=> {
+    if (node.id===43) {
+      index = i
+    }
+  })
+
+  nodes[index].fixed = true;
+  nodes[index].px = width/2
+  nodes[index].py = height/2; */
+
   force
     .gravity(1 / json.nodes.length)
     .charge(-1 * Math.max(Math.pow(json.nodes.length, 2), 750))
@@ -116,7 +129,8 @@ d3.json('34192.json', function(json) {
 
   force.on('tick', ticked);
   // Avoid initial chaos and skip the wait for graph to drift back onscreen
-  for (let i = 750; i > 0; --i) force.tick();
+  //for (let i = 750; i > 0; --i) force.tick();
+
 });
 
 function update(){
