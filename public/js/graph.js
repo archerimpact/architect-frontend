@@ -28,6 +28,13 @@ const zoom = d3.behavior.zoom()
   .scaleExtent([1, 10])
   .on('zoom', zoomed);
 
+// Setting up brush
+const brush = d3.svg.brush()
+  .on('brushstart', brushstart)
+  .on('brush', brushing)
+  .on('brushend', brushend)
+  .x(brushX).y(brushY);
+
 // Create canvas
 const svg = d3.select('#graph-container').append('svg')
       .attr('id', 'canvas')
@@ -35,6 +42,10 @@ const svg = d3.select('#graph-container').append('svg')
       .attr('height', height)
       .call(zoom)
       .append('g');
+
+const svgBrush = svg.append('g')
+  .attr('class', 'brush')
+  .call(brush);
 
 // Draw gridlines
 const svgGrid = svg.append('g');
@@ -66,17 +77,6 @@ svgGrid
 const curve = d3.svg.line()
   .interpolate("cardinal-closed")
   .tension(.85);
-
-// Setting up brush
-const brush = d3.svg.brush()
-  .on('brushstart', brushstart)
-  .on('brush', brushing)
-  .on('brushend', brushend)
-  .x(brushX).y(brushY);
-
-const svgBrush = svg.append('g')
-  .attr('class', 'brush')
-  .call(brush);
 
 // Extent invisible on left click
 svg.on('mousedown', () => {
@@ -149,6 +149,7 @@ function update(){
   node.append('text')
       .attr('dx', 22)
       .attr('dy', '.35em')
+      .attr('pointer-events', 'none')
       .text(function(d) { return d.name; });
 
   node.exit().remove();
@@ -313,18 +314,16 @@ function reloadNeighbors() {
 // Zoom & pan
 function zoomed() {
   const e = d3.event;
-  if (e.sourceEvent.which != 3 && e.sourceEvent.button != 2) {
-    const transform = "translate(" + (((e.translate[0]/e.scale) % gridLength) - e.translate[0]/e.scale)
-      + "," + (((e.translate[1]/e.scale) % gridLength) - e.translate[1]/e.scale) + ")scale(" + 1 + ")";
-    svgGrid.attr("transform", transform);
-    svg.attr("transform", "translate(" + e.translate + ")scale(" + e.scale + ")");
-  }
+  console.log(e);
+  const transform = "translate(" + (((e.translate[0]/e.scale) % gridLength) - e.translate[0]/e.scale)
+    + "," + (((e.translate[1]/e.scale) % gridLength) - e.translate[1]/e.scale) + ")scale(" + 1 + ")";
+  svgGrid.attr("transform", transform);
+  svg.attr("transform", "translate(" + e.translate + ")scale(" + e.scale + ")");
 }
 
 // Graph manipulation keycodes
 d3.select('body')
   .on('keydown', function() {
-    console.log(d3.event.keyCode)
     // u: Unpin selected nodes
     if (d3.event.keyCode == 85) {
       svg.selectAll('.node.selected')

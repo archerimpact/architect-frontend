@@ -59,6 +59,8 @@ button:focus {
 .link {
   stroke: #545454;
   stroke-width: 5px;
+  transition-duration: 100ms;
+  transition-delay: 100ms;
 }
 
 .link.selected {
@@ -68,6 +70,9 @@ button:focus {
 .node {
   fill: #ebebeb;
   stroke: #545454;
+  transition-duration: 100ms;
+  transition-property: stroke-opacity, fill-opacity;
+  transition-delay: 100ms;
 }
 
 .node text {
@@ -77,7 +82,7 @@ button:focus {
   stroke-width: 1px; 
 }
 
-.node circle{
+.node circle {
   cursor: pointer;
   stroke-width: 4px;
 }
@@ -100,5 +105,3 @@ button:focus {
   fill: blue;
   fill-opacity: 0.3;
 }
-}
-
