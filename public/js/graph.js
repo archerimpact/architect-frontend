@@ -76,16 +76,15 @@ const svgBrush = svg.append('g')
   .attr('class', 'brush')
   .call(brush);
 
-// Prevent default l-drag, r-click actions
-svg
-  .on('mousedown', () => {
-    // Extent invisible on left click
-    svgBrush.style('opacity', (d3.event.which == 3 || d3.event.button == 2) ? 1 : 0);
-  })
-  .on('contextmenu', function (d, i) {
-    // Disable context menu from popping up on right click
-    d3.event.preventDefault();
-  });
+// Extent invisible on left click
+svg.on('mousedown', () => {
+  svgBrush.style('opacity', (d3.event.which == 3 || d3.event.button == 2) ? 1 : 0);
+})
+
+// Disable context menu from popping up on right click
+svg.on('contextmenu', function (d, i) {
+  d3.event.preventDefault();
+});
 
 // Create force
 const force = d3.layout.force()
@@ -312,7 +311,7 @@ function reloadNeighbors() {
 // Zoom & pan
 function zoomed() {
   const e = d3.event;
-  if (e.sourceEvent.which == 1) {
+  if (e.sourceEvent.which != 3 && e.sourceEvent.button != 2) {
     const transform = "translate(" + (((e.translate[0]/e.scale) % gridLength) - e.translate[0]/e.scale)
       + "," + (((e.translate[1]/e.scale) % gridLength) - e.translate[1]/e.scale) + ")scale(" + 1 + ")";
     svgGrid.attr("transform", transform);
