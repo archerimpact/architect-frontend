@@ -16,14 +16,18 @@ let isBrushing = false;
 // Keep track of node emphasis to end node emphasis on drag
 let isEmphasized = false;
 
+// Setting up zoom
+const zoom = d3.behavior.zoom()
+  .scaleExtent([1, 10])
+  .on('zoom', zoomed);
+
 // Create canvas
-const svg = d3.select('body')
-      .append('svg')
+const svg = d3.select('#graph-container').append('svg')
+      .attr('id', 'canvas')
       .attr('width', width)
       .attr('height', height)
-      .on("contextmenu", function (d, i) {
-        d3.event.preventDefault();
-      });
+      .call(zoom)
+      .append('g');
 
 // Draw gridlines
 const svgGrid = svg.append('g');
@@ -52,12 +56,6 @@ svgGrid
   .attr('x2', function(d) { return width + gridLength; })
   .attr('y2', function(d) { return d; });
 
-// Set up zooming & panning
-var zoom = d3.behavior.zoom()
-    .scaleExtent([1, 10])
-    .on("zoom", zoomed);
-svg.call(zoom);
-
 // Setting up brush
 const brush = d3.svg.brush()
   .on('brushstart', brushstart)
@@ -69,10 +67,16 @@ const svgBrush = svg.append('g')
   .attr('class', 'brush')
   .call(brush);
 
-svg.on('mousedown', () => {
-  // Extent invisible on left click
-  svgBrush.style('opacity', (d3.event.which == 3 || d3.event.button == 2) ? 1 : 0);
-});
+// Prevent default l-drag, r-click actions
+svg
+  .on('mousedown', () => {
+    // Extent invisible on left click
+    svgBrush.style('opacity', (d3.event.which == 3 || d3.event.button == 2) ? 1 : 0);
+  })
+  .on('contextmenu', function (d, i) {
+    // Disable context menu from popping up on right click
+    d3.event.preventDefault();
+  });
 
 // Create force
 const force = d3.layout.force()
@@ -97,18 +101,18 @@ d3.json('34192.json', function(json) {
   update();
 
   force.on('tick', ticked);
+  // Avoid initial chaos and skip the wait for graph to drift back onscreen
   for (let i = 750; i > 0; --i) force.tick();
 });
 
 function update(){
   link = link.data(links, function(d) { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
-  link
-    .enter().append("line")
-    .attr("class", "link");
+  link.enter().append("line")
+      .attr("class", "link");
   link.exit().remove(); 
 
   node = node.data(nodes, function(d){ return d.id; });
-  const nodeEnter = node.enter().append('g')
+  node.enter().append('g')
       .attr('class', 'node')
       .attr('dragfix', false)
       .attr('dragselect', false)
@@ -123,10 +127,10 @@ function update(){
         .on('dragend', dragend)
       );
   
-  nodeEnter.append('circle')
+  node.append('circle')
       .attr('r','15');
 
-  nodeEnter.append('text')
+  node.append('text')
       .attr('dx', 22)
       .attr('dy', '.35em')
       .text(function(d) { return d.name; });
@@ -200,6 +204,7 @@ function rightclicked(node, d) {
 
 // Click-drag node interactions
 function dragstart(d) {
+  d3.event.sourceEvent.preventDefault();
   d3.event.sourceEvent.stopPropagation();
   if (isEmphasized) mouseout();
   isDragging = true;
@@ -274,13 +279,11 @@ function reloadNeighbors() {
 
 // Zoom & pan
 function zoomed() {
-  svgGrid.attr("transform", "translate(" + d3.event.translate[0] % (gridLength * d3.event.scale) 
-    + "," + d3.event.translate[1] % (gridLength * d3.event.scale) + ")scale(" + d3.event.scale + ")");
-  console.log(d3.event.translate);
-
-  link.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-  nodeEnter.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-  force.tick();
+  const e = d3.event;
+  const transform = "translate(" + (((e.translate[0]/e.scale) % gridLength) - e.translate[0]/e.scale)
+    + "," + (((e.translate[1]/e.scale) % gridLength) - e.translate[1]/e.scale) + ")scale(" + 1 + ")";
+  svgGrid.attr("transform", transform);
+  svg.attr("transform", "translate(" + e.translate + ")scale(" + e.scale + ")");
 }
 
 // Graph manipulation keycodes
