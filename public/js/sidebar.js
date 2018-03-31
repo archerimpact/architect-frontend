@@ -126,6 +126,7 @@ $(document).ready(function() {
   appendGraphUsageEntry('remove selected nodes', 'R', 'or', 'del');
   appendGraphUsageEntry('group selected nodes', 'G');
   appendGraphUsageEntry('ungroup selected nodes', 'H');
+  appendGraphUsageEntry('toggle view of document nodes', 'D');  
 
   let altDown = false;
   $(document).keydown(function(e) {

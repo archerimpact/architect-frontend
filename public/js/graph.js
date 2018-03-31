@@ -11,6 +11,8 @@ let globalnodeid = -1;
 const groups = {}
 //store groupNodeId --> expansion state
 const expandedGroups = {}
+// store all links and nodes that are hidden
+const hidden = {links: [], nodes: []}
 // Store node.index --> selection state
 let nodeSelection = {}; 
 // Store each pair of neighboring nodes
@@ -322,6 +324,7 @@ function zoomed() {
 // Graph manipulation keycodes
 d3.select('body')
   .on('keydown', function() {
+    console.log(d3.event.keyCode)
     // u: Unpin selected nodes
     if (d3.event.keyCode == 85) {
       svg.selectAll('.node.selected')
@@ -351,6 +354,12 @@ d3.select('body')
     // a: Add node linked to selected
     else if (d3.event.keyCode == 65) {
       addNodeToSelected();
+      force.resume();
+    }
+
+    // d: hide document nodes
+    else if (d3.event.keyCode == 68) {
+      toggleDocumentView();
       force.resume();
     }
   });
@@ -486,6 +495,54 @@ function addNodeToSelected(){
   link.classed("selected", false)
   nodeSelection = {}
   update();
+}
+
+function toggleDocumentView() {
+  if (hidden.links.length === 0 && hidden.nodes.length ===0) { //nothing is hidden, hide them
+    hideDocumentNodes();
+  } else {
+    showHiddenNodes();
+  }
+}
+
+function hideDocumentNodes() {
+  var select = svg.selectAll('.node')
+    .filter((d) => {
+      if (d.type === "Document") {
+        return d
+      }
+    })
+  hideNodes(select);
+  update();
+}
+
+function hideNodes(select) {
+  const removedNodes = {};
+  const nodeIdsToIndex = {};
+  select
+    .each((d)=>{
+      hidden.nodes.push(d)
+      removedNodes[d.id] = true;
+      nodes.splice(nodes.indexOf(d),1);
+    })
+  links.slice().map((link)=>{
+    const removedLink = removeLink(removedNodes, link);
+    if (removedLink) {
+      hidden.links.push(removedLink)
+    }
+  })
+}
+
+function showHiddenNodes() {
+  hidden.nodes.slice().map((node) => {
+    nodes.push(node)
+  })
+  hidden.links.slice().map((link)=> {
+    links.push(link)
+  })
+  update();
+  hidden.links =[];
+  hidden.nodes = [];
 }
 
 function groupSelectedNodes() {
