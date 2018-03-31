@@ -7,7 +7,7 @@
 body {
   min-width: 900px;
   font: normal 16px arial, sans-serif;
-  /*overflow: hidden;*/
+  overflow: hidden;
 }
 
 #graph-container {

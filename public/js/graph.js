@@ -1,4 +1,4 @@
-const height = $(window).height() + 50,
+const height = $(window).height(),
     width = Math.max($(window).width() - 300, height),
     brushX = d3.scale.linear().range([0, width]),
     brushY = d3.scale.linear().range([0, height]);
@@ -312,10 +312,12 @@ function reloadNeighbors() {
 // Zoom & pan
 function zoomed() {
   const e = d3.event;
-  const transform = "translate(" + (((e.translate[0]/e.scale) % gridLength) - e.translate[0]/e.scale)
-    + "," + (((e.translate[1]/e.scale) % gridLength) - e.translate[1]/e.scale) + ")scale(" + 1 + ")";
-  svgGrid.attr("transform", transform);
-  svg.attr("transform", "translate(" + e.translate + ")scale(" + e.scale + ")");
+  if (e.sourceEvent.which == 1) {
+    const transform = "translate(" + (((e.translate[0]/e.scale) % gridLength) - e.translate[0]/e.scale)
+      + "," + (((e.translate[1]/e.scale) % gridLength) - e.translate[1]/e.scale) + ")scale(" + 1 + ")";
+    svgGrid.attr("transform", transform);
+    svg.attr("transform", "translate(" + e.translate + ")scale(" + e.scale + ")");
+  }
 }
 
 // Graph manipulation keycodes
