@@ -152,6 +152,7 @@ function update(){
       .attr('dragfix', false)
       .attr('dragselect', false)
       .on('click', clicked)
+      .on('dblclick', dblclicked)
       .on('mouseover', mouseover)
       .on('mouseout', mouseout)
       .classed('fixed', function(d){ return d.fixed; })
@@ -206,7 +207,6 @@ function ticked() {
 
 // Click-drag node selection
 function brushstart() {
-  console.log('brush')
   isBrushing = true;
 }
 
@@ -246,13 +246,16 @@ function clicked(d, i) {
 }
 
 function rightclicked(node, d) {
-  console.log('hi')
   const fixed = node.attr('dragfix') == 'true';
   const selected = !(node.attr('dragselect') == 'true');
   node.classed('fixed', d.fixed = fixed)
       .classed('selected', nodeSelection[d.index] = selected);
   highlightLinksFromNode(node[0]);
   force.resume();
+}
+
+function dblclicked(node, d) {
+  d3.event.stopPropagation();
 }
 
 // Click helper
