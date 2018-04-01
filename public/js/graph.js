@@ -719,8 +719,12 @@ function expandGroupNode(groupId) {
         group.nodes.map((node) => {
           group.fixedX = d.x //store the coordinates of the group node
           group.fixedY = d.y
-          node.x = node.px = group.fixedX + Math.floor(Math.random() * 200) + 1;
-          node.y = node.py = group.fixedY + Math.floor(Math.random() * 200) + 1; 
+          const offset = group.nodes.length * 15;
+          const xboundlower = group.fixedX - offset;
+          const yboundlower = group.fixedY - offset;
+
+          node.x = node.px = Math.floor(Math.random() * offset * 2) + xboundlower;
+          node.y = node.py = Math.floor(Math.random() * offset * 2) + yboundlower; 
           node.fixed = true;            
           nodes.push(node) //add all nodes in the group to global nodes
         })
