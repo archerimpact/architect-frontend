@@ -260,6 +260,10 @@ function clickLink(d) {
 }
 
 function dblclicked(d) {
+  if (d.id < 0) {
+    toggleGroupView(d.id);
+  }
+
   d3.event.stopPropagation();
 }
 
@@ -751,7 +755,6 @@ function toggleGroupView(groupId) {
   $('#sidebar-group-info').trigger('contentchanged');
   update()
 }
-
 
 //Hull functions
 function createHull(group) {
