@@ -180,8 +180,8 @@ function update(){
     .enter().append('path')
     .attr('class', 'hull')
     .attr('d', drawHull)
-    .on('click', function(d) {
-      collapseHull(d);
+    .on('dblclick', function(d) {
+      toggleGroupView(d.groupId);
       update();
     })
   hull.exit().remove();
@@ -735,7 +735,7 @@ function expandGroupNode(groupId) {
 
 function toggleGroupView(groupId) {
   if (!groups[groupId]) {
-    console.log("error, the group doesn't exist even when it should");
+    console.log("error, the group doesn't exist even when it should: ", groupId);
   }
   const group = groups[groupId]
 
