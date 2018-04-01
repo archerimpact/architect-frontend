@@ -99,11 +99,23 @@ const force = d3.layout.force()
       .linkDistance(90)
       .size([width, height]);
 
-d3.json('34192.json', function(json) {
+d3.json('test_data/34192.json', function(json) {
 
   nodes = json.nodes
   links = json.links
   hulls = []
+
+//  Needed this code when loading 43.json to prevent it from disappearing forever by pinning the initial node
+// var index
+//   nodes.map((node, i)=> {
+//     if (node.id===43) {
+//       index = i
+//     }
+//   })
+
+//   nodes[index].fixed = true;
+//   nodes[index].px = width/2
+//   nodes[index].py = height/2; 
 
   force
     .gravity(1 / json.nodes.length)
@@ -123,6 +135,7 @@ d3.json('34192.json', function(json) {
   force.on('tick', ticked);
   // Avoid initial chaos and skip the wait for graph to drift back onscreen
   for (let i = 750; i > 0; --i) force.tick();
+
 });
 
 function update(){

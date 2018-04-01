@@ -29,7 +29,7 @@ function getGraph(neo4j_id){
   };
 
   var data = {
-  "query" : "MATCH (g)-[r*0..5]-(p) WHERE id(g)={neo4j_id} UNWIND r as rel RETURN COLLECT(distinct rel) AS collected, COLLECT(distinct p) AS nodes, g",
+  "query" : "MATCH (g)-[r*0..6]-(p) WHERE id(g)={neo4j_id} UNWIND r as rel RETURN COLLECT(distinct rel) AS collected, COLLECT(distinct p) AS nodes, g",
     'params': {
       'neo4j_id': parseInt(neo4j_id)
     } 
