@@ -1,7 +1,8 @@
 const height = $(window).height(),
     width = Math.max($(window).width() - 300, height),
     brushX = d3.scale.linear().range([0, width]),
-    brushY = d3.scale.linear().range([0, height]);
+    brushY = d3.scale.linear().range([0, height]),
+    maxTextLength = 20;
 
 let node, link, hull, nodes, links, hulls;
 let globallinkid = -1;
@@ -105,7 +106,7 @@ d3.json('data/34192.json', function(json) {
   links = json.links
   hulls = []
 
-//  Needed this code when loading 43.json to prevent it from disappearing forever by pinning the initial node
+ // Needed this code when loading 43.json to prevent it from disappearing forever by pinning the initial node
 // var index
 //   nodes.map((node, i)=> {
 //     if (node.id===43) {
@@ -143,7 +144,7 @@ function update(){
   link
     .enter().append('line')
     .attr('class', 'link')
-    .on('mouseover', clickLink);
+    .on('mouseover', mouseoverLink);
 
   link.exit().remove(); 
 
@@ -171,7 +172,7 @@ function update(){
       .attr('dx', 22)
       .attr('dy', '.35em')
       .attr('pointer-events', 'none')
-      .text(function(d) { return d.name; });
+      .text(function(d) { return processNodeText(d.name)});
 
   node.exit().remove();
   hull = hull.data(hulls)
@@ -255,10 +256,6 @@ function rightclicked(node, d) {
   force.resume();
 }
 
-function clickLink(d) {
-  displayLinkInfo(d);
-}
-
 function dblclicked(d) {
   if (d.id < 0) {
     toggleGroupView(d.id);
@@ -326,6 +323,10 @@ function mouseover(d) {
       return (o.source == d || o.target == d) ? 1 : .05;
     });
   }
+}
+
+function mouseoverLink(d) {
+  displayLinkInfo(d);
 }
 
 function mouseout() {
@@ -434,73 +435,6 @@ function highlightLinksFromNode(node) {
       return nodeSelection[d.source.index] && nodeSelection[d.target.index];
     });
 }
-
-// ------------------------------------------------------------
-// HELPER FUNCTIONS START
-//
-
-function removeNode(removedNodes, node) {
-  let removedNode;
-  var groupIds = Object.keys(groups)
-  
-  //remove node if it's in the dictionary of removed nodes
-  if (removedNodes[node.id] === true) {
-    const index = nodes.indexOf(node); //get the index on the spot in case removing elements changed the index
-    removedNode = nodes.splice(index, 1)[0]; //splice modifies the original data
-    if (isInArray(node.id, groupIds)) {
-      delete groups[node.id]
-    }
-  }
-  return removedNode;
-}
-
-function removeLink(removedNodes, link) {
-  let removedLink;
-  
-  //only remove a link if it's attached to a removed node
-  if(removedNodes[link.source.id] === true || removedNodes[link.target.id] === true) { //remove all links connected to a node to remove
-    const index = links.indexOf(link);
-    removedLink = links.splice(index, 1)[0];
-  }
-  return removedLink;
-}
-
-function reattachLink(link, newNodeId, removedNodes, nodeIdsToIndex) {
-  let linkid = globallinkid;
-  if (removedNodes[link.source.id] === true && removedNodes[link.target.id] !== true) {
-    //add new links with appropriate connection to the new group node
-    //source and target refer to the index of the node
-    links.push({id: linkid, source: nodeIdsToIndex[newNodeId], target: nodeIdsToIndex[link.target.id]});
-    globallinkid -= 1;
-  } else if (removedNodes[link.source.id] !== true && removedNodes[link.target.id] === true) {
-    links.push({id: linkid, source: nodeIdsToIndex[link.source.id], target: nodeIdsToIndex[newNodeId]});
-    globallinkid -=1;
-  }
-}
-
-function moveLinksFromOldNodesToGroup(removedNodes, group, nodeIdsToIndex) {
-  links.slice().map((link) => {
-    const removedLink = removeLink(removedNodes, link);
-    if (removedLink) {
-      const groupids = Object.keys(groups).map((key) => {return parseInt(key)})
-      if (isInArray(link.target.id, groupids) || isInArray(link.source.id, groupids)) {
-        // do nothing if the removed link was attached to a group
-
-      } else {
-        group.links.push(removedLink);
-      }
-    }
-    reattachLink(link, group.id, removedNodes, nodeIdsToIndex);
-  });
-}
-
-function isInArray(value, array) {
-  return array.indexOf(value) > -1;
-}
-
-//
-// HELPER FUNCTIONS END
-// ------------------------------------------------------------
 
 // Multi-node manipulation methods
 function removeSelectedNodes() {
@@ -779,4 +713,97 @@ function calculateAllHulls() {
 
 function drawHull(d) {
   return curve(d.path)
+}
+
+// ================
+// HELPER FUNCTIONS
+// ================
+
+// Normalize node text to same casing conventions and length
+function processNodeText(str, printFull) {
+  if (!str) {
+    return '';
+  }
+
+  // Capitalization
+  str = str.trim(); 
+  const delims = [' ', '.', '('];
+  for (let i = 0; i < delims.length; i++) {
+    str = splitAndCapitalize(str, delims[i]);
+  }
+
+  // Length truncation
+  return (str.length > maxTextLength && !printFull) ? `${str.slice(0, maxTextLength).trim()}...` : str;
+}
+
+function splitAndCapitalize(str, splitChar) {
+  let tokens = str.split(splitChar);
+  tokens = tokens.map(function(token, idx) {
+    return capitalize(token, splitChar == ' ');
+  });
+
+  return tokens.join(splitChar);
+}
+
+function capitalize(str, first) {
+  return str.charAt(0).toUpperCase() + (first ? str.slice(1).toLowerCase() : str.slice(1));
+}
+
+function removeNode(removedNodes, node) {
+  let removedNode;
+  var groupIds = Object.keys(groups)
+  
+  //remove node if it's in the dictionary of removed nodes
+  if (removedNodes[node.id] === true) {
+    const index = nodes.indexOf(node); //get the index on the spot in case removing elements changed the index
+    removedNode = nodes.splice(index, 1)[0]; //splice modifies the original data
+    if (isInArray(node.id, groupIds)) {
+      delete groups[node.id]
+    }
+  }
+  return removedNode;
+}
+
+function removeLink(removedNodes, link) {
+  let removedLink;
+  
+  //only remove a link if it's attached to a removed node
+  if(removedNodes[link.source.id] === true || removedNodes[link.target.id] === true) { //remove all links connected to a node to remove
+    const index = links.indexOf(link);
+    removedLink = links.splice(index, 1)[0];
+  }
+  return removedLink;
+}
+
+function reattachLink(link, newNodeId, removedNodes, nodeIdsToIndex) {
+  let linkid = globallinkid;
+  if (removedNodes[link.source.id] === true && removedNodes[link.target.id] !== true) {
+    //add new links with appropriate connection to the new group node
+    //source and target refer to the index of the node
+    links.push({id: linkid, source: nodeIdsToIndex[newNodeId], target: nodeIdsToIndex[link.target.id]});
+    globallinkid -= 1;
+  } else if (removedNodes[link.source.id] !== true && removedNodes[link.target.id] === true) {
+    links.push({id: linkid, source: nodeIdsToIndex[link.source.id], target: nodeIdsToIndex[newNodeId]});
+    globallinkid -=1;
+  }
+}
+
+function moveLinksFromOldNodesToGroup(removedNodes, group, nodeIdsToIndex) {
+  links.slice().map((link) => {
+    const removedLink = removeLink(removedNodes, link);
+    if (removedLink) {
+      const groupids = Object.keys(groups).map((key) => {return parseInt(key)})
+      if (isInArray(link.target.id, groupids) || isInArray(link.source.id, groupids)) {
+        // do nothing if the removed link was attached to a group
+
+      } else {
+        group.links.push(removedLink);
+      }
+    }
+    reattachLink(link, group.id, removedNodes, nodeIdsToIndex);
+  });
+}
+
+function isInArray(value, array) {
+  return array.indexOf(value) > -1;
 }
