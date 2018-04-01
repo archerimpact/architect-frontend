@@ -18,7 +18,7 @@ function appendGraphUsageEntry(key) {
 }
 
 // Populate node info section
-function createNodeInfoEntry(key, value) {
+function createInfoTextEntry(key, value) {
   const leftText = createDivElement('sidebar-left');
   $(leftText).append(createTextElement('sidebar-text', key));
   const rightText = createDivElement('sidebar-right');
@@ -29,11 +29,26 @@ function createNodeInfoEntry(key, value) {
   return contentEntry;
 }
 
+function createInfoObjectEntry(key, object, attrs) {
+  const entries = [];
+  if (attrs) {
+    for (let i = 0; i < attrs.length; i++) {
+      entries.push(createInfoTextEntry(`${key} ${attrs[i]}`, object[attrs[i]]));
+    }
+  } else {
+    for (let objectKey in object) {
+      entries.push(createInfoTextEntry(`${key} ${objectKey}`, object[objectKey]));
+    }
+  }
+
+  return entries;
+}
+
 function displayNodeInfo(info) {
   clearNodeInfo();
   $('#node-info').append(createTitleElement('sidebar-title', 'Node info'));
-  for (key in info) {
-    $('#node-info').append(createNodeInfoEntry(key, info[key]));
+  for (let key in info) {
+    $('#node-info').append(createInfoTextEntry(key, info[key]));
   }
 }
 
@@ -41,9 +56,31 @@ function clearNodeInfo() {
   $('#node-info').html('');
 }
 
+// Populate link info section 
+function displayLinkInfo(info) {
+  clearLinkInfo();
+  $('#link-info').append(createTitleElement('sidebar-title', 'Link info'));
+
+  let attr, appendTarget;
+  for (let key in info) {
+    attr = info[key];
+    if (attr !== null && typeof attr === 'object') {
+      appendTarget = createInfoObjectEntry(key, attr, ['name', 'type'])
+      for (let i = 0; i < appendTarget.length; i++) {
+        $('#link-info').append(appendTarget[i]);
+      }
+    } else {
+      $('#link-info').append(createInfoTextEntry(key, info[key]));
+    }
+  }
+}
+
+function clearLinkInfo() {
+  $('#link-info').html('');
+}
+
 // Populate group info section
 function appendGroupEntry(key, val) {
-  console.log(val);
   $('#group-info').append(createTitleElement('sidebar-subtitle', `Group ${-1 * key}`)); 
   $("#group-info").append('<button onclick = "toggleGroupView(' + key + ')""> Toggle Group View</button>')
   const attributeList = ['name', 'type'];

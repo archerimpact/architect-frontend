@@ -7,11 +7,11 @@ let node, link, hull, nodes, links, hulls;
 let globallinkid = -1;
 let globalnodeid = -1;
 
-//store groupNodeId --> {links: [], nodes: [], groupid: int}
+// Store groupNodeId --> {links: [], nodes: [], groupid: int}
 const groups = {}
-//store groupNodeId --> expansion state
+// Store groupNodeId --> expansion state
 const expandedGroups = {}
-// store all links and nodes that are hidden
+// Store all links and nodes that are hidden
 const hidden = {links: [], nodes: []}
 // Store node.index --> selection state
 let nodeSelection = {}; 
@@ -99,7 +99,7 @@ const force = d3.layout.force()
       .linkDistance(90)
       .size([width, height]);
 
-d3.json('test_data/34192.json', function(json) {
+d3.json('data/34192.json', function(json) {
 
   nodes = json.nodes
   links = json.links
@@ -141,8 +141,9 @@ d3.json('test_data/34192.json', function(json) {
 function update(){
   link = link.data(links, function(d) { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
   link
-    .enter().append("line")
-    .attr("class", "link");
+    .enter().append('line')
+    .attr('class', 'link')
+    .on('mouseover', clickLink);
 
   link.exit().remove(); 
 
@@ -254,7 +255,11 @@ function rightclicked(node, d) {
   force.resume();
 }
 
-function dblclicked(node, d) {
+function clickLink(d) {
+  displayLinkInfo(d);
+}
+
+function dblclicked(d) {
   d3.event.stopPropagation();
 }
 
