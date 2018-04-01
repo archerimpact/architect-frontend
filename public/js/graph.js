@@ -22,11 +22,17 @@ let isDragging = false;
 let isBrushing = false;
 // Keep track of node emphasis to end node emphasis on drag
 let isEmphasized = false;
+// Keep track of original zoom state to restore after right-drag
+let zoomTranslate = [0, 0];
+let zoomScale = 1;
 
 // Setting up zoom
+const minScale = 0.5;
 const zoom = d3.behavior.zoom()
-  .scaleExtent([1, 10])
-  .on('zoom', zoomed);
+  .scaleExtent([minScale, 5])
+  .on('zoomstart', zoomstart)
+  .on('zoom', zooming)
+  .on('zoomend', zoomend);
 
 // Setting up brush
 const brush = d3.svg.brush()
@@ -50,7 +56,7 @@ const svgBrush = svg.append('g')
 // Draw gridlines
 const svgGrid = svg.append('g');
 const gridLength = 80;
-const numTicks = width / gridLength;
+const numTicks = width / gridLength * (1/minScale);
 
 svgGrid
   .append('g')
@@ -61,7 +67,7 @@ svgGrid
     .attr('x1', function(d) { return d; })
     .attr('y1', function(d) { return -1 * gridLength; })
     .attr('x2', function(d) { return d; })
-    .attr('y2', function(d) { return height + gridLength; });
+    .attr('y2', function(d) { return (1/minScale) * height + gridLength; });
 
 svgGrid
   .append('g')
@@ -71,7 +77,7 @@ svgGrid
   .enter().append('line')
   .attr('x1', function(d) { return -1 * gridLength; })
   .attr('y1', function(d) { return d; })
-  .attr('x2', function(d) { return width + gridLength; })
+  .attr('x2', function(d) { return (1/minScale) * width + gridLength; })
   .attr('y2', function(d) { return d; });
 
 const curve = d3.svg.line()
@@ -80,8 +86,8 @@ const curve = d3.svg.line()
 
 // Extent invisible on left click
 svg.on('mousedown', () => {
-  svgBrush.style('opacity', (d3.event.which == 3 || d3.event.button == 2) ? 1 : 0);
-})
+  svgBrush.style('opacity', isRightClick() ? 1 : 0);
+});
 
 // Disable context menu from popping up on right click
 svg.on('contextmenu', function (d, i) {
@@ -187,11 +193,12 @@ function ticked() {
 
 // Click-drag node selection
 function brushstart() {
+  console.log('brush')
   isBrushing = true;
 }
 
 function brushing() {
-  if (d3.event.sourceEvent.which == 3 || d3.event.sourceEvent.button == 2) {
+  if (isRightClick()) {
     const extent = brush.extent();
     svg.selectAll('.node')
       .classed('selected', function (d) {
@@ -219,21 +226,26 @@ function clicked(d, i) {
   if (d3.event.defaultPrevented) return;
   const node = d3.select(this);
   const fixed = !(node.attr('dragfix') == 'true');
-  if (d3.event.which == 1 || d3.event.button == 0) {
-    node.classed('fixed', d.fixed = fixed);
-  }
+  node.classed('fixed', d.fixed = fixed);
 
   force.resume();
   d3.event.stopPropagation();
 }
 
 function rightclicked(node, d) {
+  console.log('hi')
   const fixed = node.attr('dragfix') == 'true';
   const selected = !(node.attr('dragselect') == 'true');
   node.classed('fixed', d.fixed = fixed)
       .classed('selected', nodeSelection[d.index] = selected);
   highlightLinksFromNode(node[0]);
   force.resume();
+}
+
+// Click helper
+function isRightClick() {
+  return (d3.event && (d3.event.which == 3 || d3.event.button == 2))
+      || (d3.event.sourceEvent && (d3.event.sourceEvent.which == 3 || d3.event.sourceEvent.button == 2));
 }
 
 // Click-drag node interactions
@@ -249,8 +261,8 @@ function dragstart(d) {
     .attr('dragselect', node.classed('selected'))
     .attr('dragdistance', 0);
 
-  node.classed('fixed', d.fixed = true);
-  if (d3.event.sourceEvent.which == 3 || d3.event.sourceEvent.button == 2) {
+  node.classed('fixed', d.fixed = true); 
+  if (isRightClick()) {
     node.classed('selected', nodeSelection[d.index] = true);
     highlightLinksFromNode(node[0]);
   }
@@ -266,7 +278,7 @@ function dragging(d) {
 
 function dragend(d) {
   const node = d3.select(this);
-  if (!parseInt(node.attr('dragdistance')) && (d3.event.sourceEvent.which == 3 || d3.event.sourceEvent.button == 2)) {
+  if (!parseInt(node.attr('dragdistance')) && isRightClick()) {
     rightclicked(node, d);
   }
 
@@ -312,14 +324,30 @@ function reloadNeighbors() {
 }
 
 // Zoom & pan
-function zoomed() {
+function zoomstart() {
   const e = d3.event;
-  console.log(e);
-  const transform = "translate(" + (((e.translate[0]/e.scale) % gridLength) - e.translate[0]/e.scale)
-    + "," + (((e.translate[1]/e.scale) % gridLength) - e.translate[1]/e.scale) + ")scale(" + 1 + ")";
-  svgGrid.attr("transform", transform);
-  svg.attr("transform", "translate(" + e.translate + ")scale(" + e.scale + ")");
+  if (isRightClick()) {
+    zoomTranslate = zoom.translate();
+    zoomScale = zoom.scale();
+  }
 }
+
+function zooming() {
+  if (!isRightClick()) {
+    const e = d3.event;
+    const transform = "translate(" + (((e.translate[0]/e.scale) % gridLength) - e.translate[0]/e.scale)
+      + "," + (((e.translate[1]/e.scale) % gridLength) - e.translate[1]/e.scale) + ")scale(" + 1 + ")";
+    svgGrid.attr("transform", transform);
+    svg.attr("transform", "translate(" + e.translate + ")scale(" + e.scale + ")");
+  }
+}
+
+function zoomend() {
+  if (isRightClick()) {
+    zoom.translate(zoomTranslate);
+    zoom.scale(zoomScale);
+  }
+} 
 
 // Graph manipulation keycodes
 d3.select('body')
