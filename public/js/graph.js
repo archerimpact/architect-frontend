@@ -182,6 +182,7 @@ function update(){
     .attr('d', drawHull)
     .on('dblclick', function(d) {
       toggleGroupView(d.groupId);
+      d3.event.stopPropagation();
       update();
     })
   hull.exit().remove();
