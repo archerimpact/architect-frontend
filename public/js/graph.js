@@ -478,24 +478,26 @@ function deleteSelectedNodes() {
 
   var groupIds = Object.keys(groups)
   var select = svg.selectAll('.node.selected')
+  let group;
 
   var removedNodes = removeNodesFromDOM(select);
   var removedLinks = removeNodeLinksFromDOM(removedNodes)
-  removedLinks.map((link)=> {
+
+  removedLinks.map((link)=> { //remove links from their corresponding group
     if (link.target.group) {
-      const group = groups[link.target.group];
+      group = groups[link.target.group];
       group.links.splice(group.links.indexOf(link), 1)
     } if (link.source.group) {
-      const group = groups[link.source.group];
+      group = groups[link.source.group];
       group.links.splice(group.links.indexOf(link), 1)
     }
   })
-  removedNodes.map((node) => {
+  removedNodes.map((node) => {// remove nodes from their corresponding group & if the node is a group delete the group
     if (isInArray(node.id, groupIds)) {
       delete groups[node.id]
     }
     if (node.group) {
-      const group = groups[node.group]
+      group = groups[node.group]
       group.nodes.splice(group.nodes.indexOf(node), 1)
     }
   });
