@@ -26,6 +26,8 @@ let isEmphasized = false;
 // Keep track of original zoom state to restore after right-drag
 let zoomTranslate = [0, 0];
 let zoomScale = 1;
+// Allow user to toggle between full and abbreviated node text
+let printFull = false;
 
 // Setting up zoom
 const minScale = 0.5;
@@ -87,7 +89,7 @@ svgGrid
   .attr('y2', function(d) { return d; });
 
 const curve = d3.svg.line()
-  .interpolate("cardinal-closed")
+  .interpolate('cardinal-closed')
   .tension(.85);
 
 // Extent invisible on left click
@@ -131,9 +133,9 @@ d3.json('data/34192.json', function(json) {
     .links(links);
 
   // Create selectors
-  hull = container.append("g").selectAll(".hull")  
-  link = container.append("g").selectAll(".link");
-  node = container.append("g").selectAll(".node");
+  hull = container.append('g').selectAll('.hull')  
+  link = container.append('g').selectAll('.link');
+  node = container.append('g').selectAll('.node');
 
   // Updates nodes and links according to current data
   update();
@@ -176,8 +178,7 @@ function update(){
   node.append('text')
       .attr('dx', 22)
       .attr('dy', '.35em')
-      //.attr('pointer-events', 'none')
-      .text(function(d) { return processNodeText(d.name, false)})
+      .text(function(d) { return processNodeText(d.name, printFull)})
       .on('click', clickedText)
       .on('mouseover', mouseoverText)
       .on('mouseout', mouseoutText)
@@ -286,7 +287,6 @@ function isRightClick() {
 
 // Click-drag node interactions
 function dragstart(d) {
-  console.log('drag')
   d3.event.sourceEvent.preventDefault();
   d3.event.sourceEvent.stopPropagation();
   if (isEmphasized) mouseout();
@@ -359,14 +359,15 @@ function zoomstart() {
 function zooming() {
   if (!isRightClick()) {
     const e = d3.event;
-    const transform = "translate(" + (((e.translate[0]/e.scale) % gridLength) - e.translate[0]/e.scale)
-      + "," + (((e.translate[1]/e.scale) % gridLength) - e.translate[1]/e.scale) + ")scale(" + 1 + ")";
-    svgGrid.attr("transform", transform);
-    container.attr("transform", "translate(" + e.translate + ")scale(" + e.scale + ")");
+    const transform = 'translate(' + (((e.translate[0]/e.scale) % gridLength) - e.translate[0]/e.scale)
+      + ',' + (((e.translate[1]/e.scale) % gridLength) - e.translate[1]/e.scale) + ')scale(' + 1 + ')';
+    svgGrid.attr('transform', transform);
+    container.attr('transform', 'translate(' + e.translate + ')scale(' + e.scale + ')');
   }
 }
 
 function zoomend() {
+  svg.attr('cursor', 'move');
   if (isRightClick()) {
     zoom.translate(zoomTranslate);
     zoom.scale(zoomScale);
@@ -398,12 +399,12 @@ function mouseoverLink(d) {
 }
 
 function mouseoverText(d) {
-  d3.select(this).text(processNodeText(d.name, true));
+  if (!printFull) d3.select(this).text(processNodeText(d.name, true));
   d3.event.stopPropagation();
 }
 
 function mouseoutText(d) {
-  d3.select(this).text(processNodeText(d.name, false));
+  if (!printFull) d3.select(this).text(processNodeText(d.name, false));
   d3.event.stopPropagation();
 }
 
@@ -415,38 +416,41 @@ d3.select('body')
       svg.selectAll('.node.selected')
         .each(function(d) { d.fixed = false; })
         .classed('fixed', false);
-      force.resume();
     }
 
     // g: Group selected nodes
     else if (d3.event.keyCode == 71) {
       groupSelectedNodes();
-      force.resume();
     }
 
     // h: Ungroup selected nodes
     else if (d3.event.keyCode == 72) {
       deleteSelectedGroups();
-      force.resume();
     }
 
     // r: Remove selected nodes
     else if (d3.event.keyCode == 82 || d3.event.keyCode == 46) {
       removeSelectedNodes();
-      force.resume();
     }
 
     // a: Add node linked to selected
     else if (d3.event.keyCode == 65) {
       addNodeToSelected();
-      force.resume();
     }
 
-    // d: hide document nodes
+    // d: Hide document nodes
     else if (d3.event.keyCode == 68) {
       toggleDocumentView();
-      force.resume();
     }
+
+    // p: Toggle btwn full/abbrev text
+    else if (d3.event.keyCode == 80) {
+      printFull = !printFull;
+      d3.selectAll('text')
+        .text(function(d) { return processNodeText(d.name, printFull) });
+    }
+
+    force.resume()
   });
 
 // Link highlighting

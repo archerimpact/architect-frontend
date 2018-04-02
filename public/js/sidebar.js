@@ -163,7 +163,8 @@ $(document).ready(function() {
   appendGraphUsageEntry('remove selected nodes', 'R', 'or', 'del');
   appendGraphUsageEntry('group selected nodes', 'G');
   appendGraphUsageEntry('ungroup selected nodes', 'H');
-  appendGraphUsageEntry('toggle view of document nodes', 'D');  
+  appendGraphUsageEntry('toggle view of document nodes', 'D'); 
+  appendGraphUsageEntry('toggle node text abbreviation', 'P');  
 
   let altDown = false;
   $(document).keydown(function(e) {
