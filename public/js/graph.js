@@ -720,9 +720,9 @@ function drawHull(d) {
   return curve(d.path)
 }
 
-// ================
-// HELPER FUNCTIONS
-// ================
+// ==============
+// HELPER METHODS
+// ==============
 
 // Normalize node text to same casing conventions and length
 function processNodeText(str, printFull) {
@@ -730,15 +730,19 @@ function processNodeText(str, printFull) {
     return '';
   }
 
+  // Length truncation
+  str = str.trim();
+  if (str.length > maxTextLength && !printFull) {
+    str = `${str.slice(0, maxTextLength).trim()}...`;
+  }
+
   // Capitalization
-  str = str.trim(); 
   const delims = [' ', '.', '('];
   for (let i = 0; i < delims.length; i++) {
     str = splitAndCapitalize(str, delims[i]);
   }
 
-  // Length truncation
-  return (str.length > maxTextLength && !printFull) ? `${str.slice(0, maxTextLength).trim()}...` : str;
+  return str;
 }
 
 function splitAndCapitalize(str, splitChar) {
@@ -811,4 +815,16 @@ function moveLinksFromOldNodesToGroup(removedNodes, group, nodeIdsToIndex) {
 
 function isInArray(value, array) {
   return array.indexOf(value) > -1;
+}
+
+// =================
+// DEBUGGING METHODS
+// =================
+
+function isObject(input) {
+  return input !== null && typeof input === 'object';
+}
+
+function printObject(object) {
+  console.log(JSON.stringify(object, null, 4));
 }

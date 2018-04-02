@@ -64,7 +64,7 @@ function displayLinkInfo(info) {
   let attr, appendTarget;
   for (let key in info) {
     attr = info[key];
-    if (attr !== null && typeof attr === 'object') {
+    if (isObject(attr)) {
       appendTarget = createInfoObjectEntry(key, attr, ['name', 'type'])
       for (let i = 0; i < appendTarget.length; i++) {
         $('#link-info').append(appendTarget[i]);
