@@ -47,15 +47,20 @@ const svg = d3.select('#graph-container').append('svg')
       .attr('id', 'canvas')
       .attr('width', width)
       .attr('height', height)
-      .call(zoom)
-      .append('g');
+      .call(zoom);
 
+// Normally we append a g element right after call(zoom), but in this case we don't
+// want panning to translate the brush off the screen (disabling all mouse events).
 const svgBrush = svg.append('g')
   .attr('class', 'brush')
   .call(brush);
 
+// We need this reference because selectAll and listener calls will refer to svg, 
+// whereas new append calls must be within the same g, in order for zoom to work.
+const container = svg.append('g');
+
 // Draw gridlines
-const svgGrid = svg.append('g');
+const svgGrid = container.append('g');
 const gridLength = 80;
 const numTicks = width / gridLength * (1/minScale);
 
@@ -126,9 +131,9 @@ d3.json('data/34192.json', function(json) {
     .links(links);
 
   // Create selectors
-  hull = svg.append("g").selectAll(".hull")  
-  link = svg.append("g").selectAll(".link");
-  node = svg.append("g").selectAll(".node");
+  hull = container.append("g").selectAll(".hull")  
+  link = container.append("g").selectAll(".link");
+  node = container.append("g").selectAll(".node");
 
   // Updates nodes and links according to current data
   update();
@@ -226,8 +231,8 @@ function brushing() {
     const extent = brush.extent();
     svg.selectAll('.node')
       .classed('selected', function (d) {
-        const xPos = brushX.invert(d.x);
-        const yPos = brushY.invert(d.y);
+        const xPos = brushX.invert(d.x * zoomScale + zoomTranslate[0]);
+        const yPos = brushY.invert(d.y * zoomScale + zoomTranslate[1]);
         const selected = (extent[0][0] <= xPos && xPos <= extent[1][0]
                   && extent[0][1] <= yPos && yPos <= extent[1][1])
                   || (this.classList.contains('selected') && d3.event.sourceEvent.ctrlKey);
@@ -357,7 +362,7 @@ function zooming() {
     const transform = "translate(" + (((e.translate[0]/e.scale) % gridLength) - e.translate[0]/e.scale)
       + "," + (((e.translate[1]/e.scale) % gridLength) - e.translate[1]/e.scale) + ")scale(" + 1 + ")";
     svgGrid.attr("transform", transform);
-    svg.attr("transform", "translate(" + e.translate + ")scale(" + e.scale + ")");
+    container.attr("transform", "translate(" + e.translate + ")scale(" + e.scale + ")");
   }
 }
 
@@ -366,6 +371,9 @@ function zoomend() {
     zoom.translate(zoomTranslate);
     zoom.scale(zoomScale);
   }
+
+  zoomTranslate = zoom.translate();
+  zoomScale = zoom.scale();
 } 
 
 // Node text mouse handlers
