@@ -13,12 +13,3 @@ app.listen(port);
 app.get("/", function(req, res) {
   res.redirect("/index.html");
 });
-
-app.get("/alice", function(req, res) {
-  res.redirect("/alice.html");
-});
-
-app.get("/createdata", function(req, res) {
-  res.redirect("/createdata.html");
-});
-
