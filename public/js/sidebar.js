@@ -1,5 +1,40 @@
 // Populate graph usage section
-function appendGraphUsageEntry(key) {
+let isGraphUsageHidden = false;
+function displayGraphUsage() {
+  const graphUsageTitle = createTitleElement('sidebar-title', 'Graph usage');
+  graphUsageTitle.id = 'graph-usage-title';
+  graphUsageTitle.onclick = () => {
+    if (isGraphUsageHidden) {
+      $('#graph-usage-title').addClass('open');
+      $('#graph-usage-body').css('max-height', 500);
+    } else { 
+      $('#graph-usage-title').removeClass('open');
+      $('#graph-usage-body').css('max-height', 0);
+    }
+
+    isGraphUsageHidden = !isGraphUsageHidden;
+  }
+
+  const graphUsageBody = document.createElement('div');
+  graphUsageBody.id = 'graph-usage-body'; 
+  $(graphUsageBody).append(createGraphUsageEntry('select nodes', 'r-click', '+', 'drag'));
+  $(graphUsageBody).append(createGraphUsageEntry('(un)select node', 'r-click'));
+  $(graphUsageBody).append(createGraphUsageEntry('(un)pin node', 'l-click'));
+  $(graphUsageBody).append(createGraphUsageEntry('move canvas', 'l-click', '+', 'drag'));
+  $(graphUsageBody).append(createGraphUsageEntry('zoom in/out', 'scroll'));
+  $(graphUsageBody).append(createGraphUsageEntry('unpin selected nodes', 'U'));
+  $(graphUsageBody).append(createGraphUsageEntry('add node to selected', 'A'));
+  $(graphUsageBody).append(createGraphUsageEntry('remove selected nodes', 'R', 'or', 'del'));
+  $(graphUsageBody).append(createGraphUsageEntry('group selected nodes', 'G'));
+  $(graphUsageBody).append(createGraphUsageEntry('ungroup selected nodes', 'H'));
+  $(graphUsageBody).append(createGraphUsageEntry('toggle view of document nodes', 'D')); 
+  $(graphUsageBody).append(createGraphUsageEntry('toggle node text abbreviation', 'P'));  
+
+  $('#graph-usage').append(graphUsageTitle);
+  $('#graph-usage').append(graphUsageBody);
+}
+
+function createGraphUsageEntry(key) {
   const leftText = createDivElement('sidebar-left');
   $(leftText).append(createTextElement('sidebar-text', key));
 
@@ -14,10 +49,145 @@ function appendGraphUsageEntry(key) {
   const contentEntry = createDivElement('content-entry');
   $(contentEntry).append(leftText);
   $(contentEntry).append(rightText);
-  $('#graph-usage').append(contentEntry);
+  return contentEntry;
 }
 
 // Populate node info section
+let isNodeInfoHidden = false;
+function displayNodeInfo(info) {
+  clearNodeInfo();
+
+  const nodeInfoTitle = createTitleElement('sidebar-title', 'Node info');
+  nodeInfoTitle.id = 'node-info-title';
+  nodeInfoTitle.onclick = () => {
+    if (isNodeInfoHidden) {
+      $('#node-info-title').addClass('open');
+      $('#node-info-body').css('max-height', 500);
+    } else { 
+      $('#node-info-title').removeClass('open');
+      $('#node-info-body').css('max-height', 0);
+    }
+
+    isNodeInfoHidden = !isNodeInfoHidden;
+  }
+
+  const nodeInfoBody = document.createElement('div');
+  nodeInfoBody.id = 'node-info-body';
+  for (let key in info) {
+    $(nodeInfoBody).append(createInfoTextEntry(key, info[key]));
+  }
+
+  $('#node-info').append(nodeInfoTitle);
+  $('#node-info').append(nodeInfoBody);
+}
+
+function clearNodeInfo() {
+  isNodeInfoHidden = false;
+  $('#node-info').html('');
+}
+
+// Populate link info section 
+let isLinkBodyHidden = false;
+function displayLinkInfo(info) {
+  clearLinkInfo();
+  const linkInfoTitle = createTitleElement('sidebar-title', 'Link info');
+  linkInfoTitle.id = 'link-info-title';
+  linkInfoTitle.onclick = () => {
+    if (isLinkBodyHidden) {
+      $('#link-info-title').addClass('open');
+      $('#link-info-body').css('max-height', 250);
+    } else { 
+      $('#link-info-title').removeClass('open');
+      $('#link-info-body').css('max-height', 0);
+    }
+
+    isLinkBodyHidden = !isLinkBodyHidden;
+  }
+
+  let attr, appendTarget;
+  const linkInfoBody = document.createElement('div');
+  linkInfoBody.id = 'link-info-body';
+  for (let key in info) {
+    attr = info[key];
+    if (isObject(attr)) {
+      appendTarget = createInfoObjectEntry(key, attr, ['name', 'type'])
+      for (let i = 0; i < appendTarget.length; i++) {
+        $(linkInfoBody).append(appendTarget[i]);
+      }
+    } else {
+      $(linkInfoBody).append(createInfoTextEntry(key, info[key]));
+    }
+  }
+
+  $('#link-info').append(linkInfoTitle);
+  $('#link-info').append(linkInfoBody);
+}
+
+function clearLinkInfo() {
+  isLinkBodyHidden = false;
+  $('#link-info').html('');
+}
+
+// Populate group info section
+let isGroupInfoHidden = false;
+function displayGroupInfo(groups) {
+  clearGroupInfo();
+  const groupInfoTitle = createTitleElement('sidebar-title', 'Group info');
+  groupInfoTitle.id = 'group-info-title';
+  groupInfoTitle.onclick = () => {
+    if (isGroupInfoHidden) {
+      $('#group-info-title').addClass('open');
+      $('#group-info-body').css('max-height', 5000);
+    } else { 
+      $('#group-info-title').removeClass('open');
+      $('#group-info-body').css('max-height', 0);
+    }
+
+    isGroupInfoHidden = !isGroupInfoHidden;
+  }
+
+  const groupInfoBody = document.createElement('div');
+  groupInfoBody.id = 'group-info-body';
+  for (let group_id in groups) {
+    $(groupInfoBody).append(createGroupEntry(group_id, groups[group_id]));
+  }
+
+  $('#group-info').append(groupInfoTitle);
+  $('#group-info').append(groupInfoBody);
+}
+
+function createGroupEntry(key, val) {
+  const retElement = document.createElement('div');
+  $(retElement).append(createTitleElement('sidebar-subtitle', `Group ${-1 * key}`)); 
+  $(retElement).append('<button onclick = "toggleGroupView(' + key + ')""> Toggle view</button>')
+  const attributeList = ['name', 'type'];
+  let groupElement, groupEntry, leftText, rightText, attr;
+  for (let id in val.nodes) {
+    groupElement = createDivElement('entity');
+    for (let i = 0; i < attributeList.length; i++) {
+      attr = attributeList[i];
+      groupEntry = createDivElement('entity-entry');
+      leftText = createDivElement('sidebar-left');
+      $(leftText).append(createTextElement('sidebar-text', attr.charAt(0).toUpperCase() + attr.slice(1)));
+      rightText = createDivElement('sidebar-right');
+      $(rightText).append(createTextElement('sidebar-text', val.nodes[id][attr]));
+      $(groupEntry).append(leftText);
+      $(groupEntry).append(rightText);
+      $(groupElement).append(groupEntry);
+    }
+    
+    $(retElement).append(groupElement);
+  }
+
+  return retElement;
+}
+
+function clearGroupInfo () {
+  isGroupInfoHidden = false;
+  $('#group-info').html('');
+}
+
+// General element creation
 function createInfoTextEntry(key, value) {
   const leftText = createDivElement('sidebar-left');
   $(leftText).append(createTextElement('sidebar-text', key));
@@ -44,89 +214,26 @@ function createInfoObjectEntry(key, object, attrs) {
   return entries;
 }
 
-function displayNodeInfo(info) {
-  clearNodeInfo();
-  $('#node-info').append(createTitleElement('sidebar-title', 'Node info'));
-  for (let key in info) {
-    $('#node-info').append(createInfoTextEntry(key, info[key]));
+function createTitleElement(className, title) {
+  const titleElement = createDivElement(className + ' open');
+  const titleText = document.createElement('p');
+  titleText.className = 'unselectable';
+  titleText.innerHTML = title;
+  $(titleElement).append(titleText);
+
+  if (className == 'sidebar-title') {
+    const icon = document.createElement('i');
+    icon.className = 'fa fa-chevron-up';
+    $(titleElement).append(icon);
   }
+
+  return titleElement;
 }
 
-function clearNodeInfo() {
-  $('#node-info').html('');
-}
-
-// Populate link info section 
-function displayLinkInfo(info) {
-  clearLinkInfo();
-  $('#link-info').append(createTitleElement('sidebar-title', 'Link info'));
-
-  let attr, appendTarget;
-  for (let key in info) {
-    attr = info[key];
-    if (isObject(attr)) {
-      appendTarget = createInfoObjectEntry(key, attr, ['name', 'type'])
-      for (let i = 0; i < appendTarget.length; i++) {
-        $('#link-info').append(appendTarget[i]);
-      }
-    } else {
-      $('#link-info').append(createInfoTextEntry(key, info[key]));
-    }
-  }
-}
-
-function clearLinkInfo() {
-  $('#link-info').html('');
-}
-
-// Populate group info section
-function appendGroupEntry(key, val) {
-  $('#group-info').append(createTitleElement('sidebar-subtitle', `Group ${-1 * key}`)); 
-  $("#group-info").append('<button onclick = "toggleGroupView(' + key + ')""> Toggle Group View</button>')
-  const attributeList = ['name', 'type'];
-  let groupElement, groupEntry, leftText, rightText, attr;
-  for (let id in val.nodes) {
-    groupElement = createDivElement('entity');
-    for (let i = 0; i < attributeList.length; i++) {
-      attr = attributeList[i];
-      groupEntry = createDivElement('entity-entry');
-      leftText = createDivElement('sidebar-left');
-      $(leftText).append(createTextElement('sidebar-text', attr.charAt(0).toUpperCase() + attr.slice(1)));
-      rightText = createDivElement('sidebar-right');
-      $(rightText).append(createTextElement('sidebar-text', val.nodes[id][attr]));
-      $(groupEntry).append(leftText);
-      $(groupEntry).append(rightText);
-      $(groupElement).append(groupEntry);
-    }
-    $("#group-info").append(groupElement);
-  }
-}
-
-function displayGroupInfo(groups) {
-  clearGroupInfo();
-  $('#group-info').append(createTitleElement('sidebar-title', 'Group info'));
-  for (let group_id in groups) {
-    appendGroupEntry(group_id, groups[group_id]);
-  }
-}
-
-function clearGroupInfo () {
-  $('#group-info').html('');
-}
-
-// General element creation
 function createTextElement(className, text) {
   const textElement = createDivElement(className);
   textElement.innerHTML = text;
   return textElement;
-}
-
-function createTitleElement(className, title) {
-  const titleElement = createDivElement(className);
-  const titleText = document.createElement('p');
-  titleText.innerHTML = title;
-  $(titleElement).append(titleText);
-  return titleElement;
 }
 
 function createDivElement(className) {
@@ -153,18 +260,7 @@ $("#transparent-navbar i").click(function() {
 
 // Content population & keycodes
 $(document).ready(function() {
-  appendGraphUsageEntry('select nodes', 'r-click', '+', 'drag');
-  appendGraphUsageEntry('(un)select node', 'r-click');
-  appendGraphUsageEntry('(un)pin node', 'l-click');
-  appendGraphUsageEntry('move canvas', 'l-click', '+', 'drag');
-  appendGraphUsageEntry('zoom in/out', 'scroll');
-  appendGraphUsageEntry('unpin selected nodes', 'U');
-  appendGraphUsageEntry('add node to selected', 'A');
-  appendGraphUsageEntry('remove selected nodes', 'R', 'or', 'del');
-  appendGraphUsageEntry('group selected nodes', 'G');
-  appendGraphUsageEntry('ungroup selected nodes', 'H');
-  appendGraphUsageEntry('toggle view of document nodes', 'D'); 
-  appendGraphUsageEntry('toggle node text abbreviation', 'P');  
+  displayGraphUsage();
 
   let altDown = false;
   $(document).keydown(function(e) {
