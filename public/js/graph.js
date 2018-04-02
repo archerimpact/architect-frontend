@@ -171,8 +171,16 @@ function update(){
   node.append('text')
       .attr('dx', 22)
       .attr('dy', '.35em')
-      .attr('pointer-events', 'none')
-      .text(function(d) { return processNodeText(d.name)});
+      //.attr('pointer-events', 'none')
+      .text(function(d) { return processNodeText(d.name, false)})
+      .on('click', clickedText)
+      .on('mouseover', mouseoverText)
+      .on('mouseout', mouseoutText)
+      .call(d3.behavior.drag()
+        .on('dragstart', dragstartText)
+        .on('dragstart', draggingText)
+        .on('dragstart', dragendText)
+      );
 
   node.exit().remove();
   hull = hull.data(hulls)
@@ -273,6 +281,7 @@ function isRightClick() {
 
 // Click-drag node interactions
 function dragstart(d) {
+  console.log('drag')
   d3.event.sourceEvent.preventDefault();
   d3.event.sourceEvent.stopPropagation();
   if (isEmphasized) mouseout();
@@ -326,28 +335,11 @@ function mouseover(d) {
   }
 }
 
-function mouseoverLink(d) {
-  displayLinkInfo(d);
-}
-
 function mouseout() {
   node.style('stroke-opacity', 1)
       .style('fill-opacity', 1);
   link.style('stroke-opacity', 1);
   isEmphasized = false;
-}
-
-function neighbors(a, b) {
-  return linkedByIndex[a.index + ',' + b.index] 
-      || linkedByIndex[b.index + ',' + a.index]  
-      || a.index == b.index;
-}
-
-function reloadNeighbors() {
-  linkedByIndex = {};
-  links.forEach(function(d) {
-    linkedByIndex[d.source.index + "," + d.target.index] = true;
-  });
 }
 
 // Zoom & pan
@@ -375,6 +367,37 @@ function zoomend() {
     zoom.scale(zoomScale);
   }
 } 
+
+// Node text mouse handlers
+function clickedText(d, i) {
+  d3.event.stopPropagation();
+}
+
+function dragstartText(d) {
+  d3.event.sourceEvent.stopPropagation();
+}
+
+function draggingText(d) {
+  d3.event.sourceEvent.stopPropagation();
+}
+
+function dragendText(d) {
+  d3.event.sourceEvent.stopPropagation();
+}
+
+function mouseoverLink(d) {
+  displayLinkInfo(d);
+}
+
+function mouseoverText(d) {
+  d3.select(this).text(processNodeText(d.name, true));
+  d3.event.stopPropagation();
+}
+
+function mouseoutText(d) {
+  d3.select(this).text(processNodeText(d.name, false));
+  d3.event.stopPropagation();
+}
 
 // Graph manipulation keycodes
 d3.select('body')
@@ -756,6 +779,20 @@ function splitAndCapitalize(str, splitChar) {
 
 function capitalize(str, first) {
   return str.charAt(0).toUpperCase() + (first ? str.slice(1).toLowerCase() : str.slice(1));
+}
+
+// Track neighboring nodes
+function neighbors(a, b) {
+  return linkedByIndex[a.index + ',' + b.index] 
+      || linkedByIndex[b.index + ',' + a.index]  
+      || a.index == b.index;
+}
+
+function reloadNeighbors() {
+  linkedByIndex = {};
+  links.forEach(function(d) {
+    linkedByIndex[d.source.index + "," + d.target.index] = true;
+  });
 }
 
 function removeNode(removedNodes, node) {
