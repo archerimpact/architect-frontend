@@ -102,7 +102,7 @@ button:focus {
   stroke-width: 4px;
 }
 
-.hull {
+path {
   fill: blue;
   fill-opacity: 0.3;
 }

@@ -61,6 +61,11 @@ const svgBrush = svg.append('g')
 // whereas new append calls must be within the same g, in order for zoom to work.
 const container = svg.append('g');
 
+//set up how to draw the hulls
+const curve = d3.svg.line()
+  .interpolate('cardinal-closed')
+  .tension(.85);
+
 // Draw gridlines
 const svgGrid = container.append('g');
 const gridLength = 80;
@@ -87,10 +92,6 @@ svgGrid
   .attr('y1', function(d) { return d; })
   .attr('x2', function(d) { return (1/minScale) * width + gridLength; })
   .attr('y2', function(d) { return d; });
-
-const curve = d3.svg.line()
-  .interpolate('cardinal-closed')
-  .tension(.85);
 
 // Extent invisible on left click
 svg.on('mousedown', () => {
@@ -172,8 +173,12 @@ function update(){
         .on('dragend', dragend)
       );
   
-  node.append('circle')
-      .attr('r','15');
+  node
+      .append('circle')
+      .attr('r',function(d) {
+        if (groups[d.id] && expandedGroups[d.id]) {return '30'}
+        else {return '15'}
+      });
 
   node.append('text')
       .attr('dx', 22)
@@ -213,6 +218,7 @@ function ticked() {
     hull.data(hulls)
       .attr("d", drawHull)  
   }
+ 
   link.attr('x1', function(d) { return d.source.x; })
       .attr('y1', function(d) { return d.source.y; })
       .attr('x2', function(d) { return d.target.x; })
@@ -543,9 +549,7 @@ function toggleDocumentView() {
 function hideDocumentNodes() {
   var select = svg.selectAll('.node')
     .filter((d) => {
-      if (d.type === "Document") {
-        return d
-      }
+      if (d.type === "Document") {return d}
     })
   hideNodes(select);
 }
@@ -567,12 +571,8 @@ function hideNodes(select) {
 
 function showHiddenNodes() {
   /* add all hidden nodes and links back to the DOM display */
-  hidden.nodes.slice().map((node) => {
-    nodes.push(node);
-  })
-  hidden.links.slice().map((link)=> {
-    links.push(link);
-  });
+  hidden.nodes.slice().map((node) => {nodes.push(node);})
+  hidden.links.slice().map((link)=> {links.push(link);});
   hidden.links =[];
   hidden.nodes = [];
 }
@@ -691,8 +691,10 @@ function toggleGroupView(groupId) {
     })
     expandedGroups[groupId] = false;
   } else {
-    expandGroup(groupId) 
+    //expandGrou    nodes
+
     hulls.push(createHull(group))
+    console.log("new hulls: ", hulls, "groups: ", groups)
     expandedGroups[groupId] = true;
   }
   update()
