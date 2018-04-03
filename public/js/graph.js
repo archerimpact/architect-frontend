@@ -598,6 +598,7 @@ function groupSelectedNodes() {
 
   nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
   update();
+  fillGroupNodes();
   displayGroupInfo(groups);
 }
 
@@ -675,6 +676,7 @@ function collapseGroupNodes(groupId) {
 
   nodes.push({id: group.id, name: `Group ${-1*group.id}`, type: "Group"}); //add the new node for the group
   moveLinksFromOldNodesToGroup(removedNodes, group);
+  fillGroupNodes();
 }
 
 function toggleGroupView(groupId) {
@@ -827,7 +829,8 @@ function moveLinksFromOldNodesToGroup(removedNodes, group) {
 
   removedNodes.map((node) => {
     removedNodesDict[node.id] = true;
-  })
+  });
+
   nodes.map((node, i) => {
     nodeIdsToIndex[node.id] = i; //map all nodeIds to their new index
   });
@@ -835,13 +838,13 @@ function moveLinksFromOldNodesToGroup(removedNodes, group) {
   links.slice().map((link) => {
     const removedLink = removeLink(removedNodesDict, link);
     if (removedLink) {
-      const groupids = Object.keys(groups).map((key) => {return parseInt(key)})
+      const groupids = Object.keys(groups).map((key) => { return parseInt(key); });
       if (isInArray(link.target.id, groupids) || isInArray(link.source.id, groupids)) {
         // do nothing if the removed link was attached to a group
-
       } else {
         group.links.push(removedLink);
       }
+
       reattachLink(link, group.id, removedNodesDict, nodeIdsToIndex);
     }
   });
@@ -919,6 +922,11 @@ function createGroupFromSelect(select){
   return group;
 }
 
+// Fill group nodes blue
+function fillGroupNodes() {
+  svg.selectAll('.node')
+    .classed('grouped', function(d) { return d.id < 0; });
+}
 
 // =================
 // DEBUGGING METHODS
