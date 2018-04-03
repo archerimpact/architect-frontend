@@ -676,7 +676,6 @@ function collapseGroupNodes(groupId) {
 
   nodes.push({id: group.id, name: `Group ${-1*group.id}`, type: "Group"}); //add the new node for the group
   moveLinksFromOldNodesToGroup(removedNodes, group);
-  fillGroupNodes();
 }
 
 function toggleGroupView(groupId) {
@@ -703,6 +702,7 @@ function toggleGroupView(groupId) {
   }
 
   update();
+  fillGroupNodes();
 }
 
 //Hull functions

@@ -81,6 +81,7 @@ button:focus {
   fill: #545454;
   cursor: pointer;
   stroke-width: 1px; 
+  shape-rendering: crispEdges;
 }
 
 .node circle {
