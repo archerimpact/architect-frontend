@@ -17,7 +17,8 @@ function populateGraphUsageBody(graphUsageBody) {
   $(graphUsageBody).append(createGraphUsageEntry('remove selected nodes', 'R', 'or', 'del'));
   $(graphUsageBody).append(createGraphUsageEntry('group selected nodes', 'G'));
   $(graphUsageBody).append(createGraphUsageEntry('ungroup selected nodes', 'H'));
-  $(graphUsageBody).append(createGraphUsageEntry('toggle view of document nodes', 'D')); 
+  $(graphUsageBody).append(createGraphUsageEntry('toggle grouped nodes view', 'dbl-click')); 
+  $(graphUsageBody).append(createGraphUsageEntry('toggle document nodes', 'D')); 
   $(graphUsageBody).append(createGraphUsageEntry('toggle node text abbreviation', 'P'));  
 }
 

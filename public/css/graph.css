@@ -102,7 +102,11 @@ button:focus {
   stroke-width: 4px;
 }
 
+.node.grouped circle {
+  fill: #0d77e2;
+}
+
 .hull {
-  fill: blue;
+  fill: #0d77e2;
   fill-opacity: 0.3;
 }
