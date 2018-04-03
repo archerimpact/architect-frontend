@@ -398,12 +398,12 @@ function mouseoverLink(d) {
 }
 
 function mouseoverText(d) {
-  if (!printFull && !isBrushing) d3.select(this).text(processNodeText(d.name, true));
+  if (!printFull && !isBrushing && !isDragging) d3.select(this).text(processNodeText(d.name, true));
   d3.event.stopPropagation();
 }
 
 function mouseoutText(d) {
-  if (!printFull && !isBrushing) d3.select(this).text(processNodeText(d.name, false));
+  if (!printFull && !isBrushing && !isDragging) d3.select(this).text(processNodeText(d.name, false));
   d3.event.stopPropagation();
 }
 
