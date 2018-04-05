@@ -9,10 +9,12 @@ let globallinkid = -1;
 let globalnodeid = -1;
 
 // FontAwesome icon unicode-to-node type dict
+// Use this to find codes for FA icons: https://fontawesome.com/cheatsheet
 const icons = {
   "person": "",
   "Document": "",
-  "corporation": ""
+  "corporation": "",
+  "Group": ""
 };
 
 // Store groupNodeId --> {links: [], nodes: [], groupid: int}
@@ -33,8 +35,8 @@ let isEmphasized = false;
 // Keep track of original zoom state to restore after right-drag
 let zoomTranslate = [0, 0];
 let zoomScale = 1;
-// Allow user to toggle between full and abbreviated node text
-let printFull = false;
+// Allow user to toggle node text length
+let printFull = 0;
 
 // Setting up zoom
 const minScale = 0.5;
@@ -183,6 +185,7 @@ function update(){
       .attr('r','20');
 
   node.append('text')
+    .attr('class', 'icon')
     .attr('text-anchor', 'middle')
     .attr('dominant-baseline', 'central')
     .attr('font-family', 'FontAwesome')
@@ -190,17 +193,18 @@ function update(){
     .text(function(d) { return (d.type && icons[d.type]) ? icons[d.type] : ''; });
 
   node.append('text')
-      .attr('dx', 22)
-      .attr('dy', '.35em')
-      .text(function(d) { return processNodeText(d.name, printFull)})
-      .on('click', clickedText)
-      .on('mouseover', mouseoverText)
-      .on('mouseout', mouseoutText)
-      .call(d3.behavior.drag()
-        .on('dragstart', dragstartText)
-        .on('dragstart', draggingText)
-        .on('dragstart', dragendText)
-      );
+    .attr('class', 'node-name')
+    .attr('dx', 25)
+    .attr('dy', '.35em')
+    .text(function(d) { return processNodeName(d.name, printFull)})
+    .on('click', clickedText)
+    .on('mouseover', mouseoverText)
+    .on('mouseout', mouseoutText)
+    .call(d3.behavior.drag()
+      .on('dragstart', dragstartText)
+      .on('dragstart', draggingText)
+      .on('dragstart', dragendText)
+    );
 
   node.exit().remove();
   hull = hull.data(hulls)
@@ -350,14 +354,18 @@ function mouseover(d) {
     link.style('stroke-opacity', function(o) {
       return (o.source == d || o.target == d) ? 1 : .05;
     });
+
+    if (printFull == 0) d3.select(this).select('.node-name').text(processNodeName(d.name, 2));
   }
 }
 
-function mouseout() {
+function mouseout(d) {
+  isEmphasized = false;
   node.style('stroke-opacity', 1)
       .style('fill-opacity', 1);
   link.style('stroke-opacity', 1);
-  isEmphasized = false;
+
+  if (printFull != 1) d3.select(this).select('.node-name').text(processNodeName(d.name, printFull));
 }
 
 // Zoom & pan
@@ -390,6 +398,11 @@ function zoomend() {
   zoomScale = zoom.scale();
 } 
 
+// Link mouse handlers
+function mouseoverLink(d) {
+  displayLinkInfo(d);
+}
+
 // Node text mouse handlers
 function clickedText(d, i) {
   d3.event.stopPropagation();
@@ -407,17 +420,20 @@ function dragendText(d) {
   d3.event.sourceEvent.stopPropagation();
 }
 
-function mouseoverLink(d) {
-  displayLinkInfo(d);
-}
-
 function mouseoverText(d) {
-  if (!printFull && !isBrushing && !isDragging) d3.select(this).text(processNodeText(d.name, true));
+  if (printFull == 0 && !isBrushing && !isDragging) {
+    //console.log(d3.select(this)[0][0].classList.contains('node-name'))
+    d3.select(this).text(processNodeName(d.name, 2));
+  }
+
   d3.event.stopPropagation();
 }
 
 function mouseoutText(d) {
-  if (!printFull && !isBrushing && !isDragging) d3.select(this).text(processNodeText(d.name, false));
+  if (printFull == 0 && !isBrushing && !isDragging) {
+    d3.select(this).text(processNodeName(d.name, 0));
+  }
+
   d3.event.stopPropagation();
 }
 
@@ -458,9 +474,8 @@ d3.select('body')
 
     // p: Toggle btwn full/abbrev text
     else if (d3.event.keyCode == 80) {
-      printFull = !printFull;
-      d3.selectAll('text')
-        .text(function(d) { return processNodeText(d.name, printFull) });
+      printFull = (printFull + 1) % 3;
+      selectAllNodeNames().text(function(d) { return processNodeName(d.name, printFull); });
     }
 
     force.resume()
@@ -746,19 +761,30 @@ function drawHull(d) {
   return curve(d.path);
 }
 
+// =================
+// SELECTION METHODS
+// =================
+
+// Get all node text elements
+function selectAllNodeNames() {
+  return d3.selectAll('text')
+      .filter(function(d) { return d3.select(this).classed('node-name'); });
+}
+
 // ==============
 // HELPER METHODS
 // ==============
 
 // Normalize node text to same casing conventions and length
-function processNodeText(str, printFull) {
-  if (!str) {
+// printFull states - 0: abbrev, 1: none, 2: full
+function processNodeName(str, printFull) {
+  if (!str || printFull == 1) {
     return '';
   }
 
   // Length truncation
   str = str.trim();
-  if (str.length > maxTextLength && !printFull) {
+  if (str.length > maxTextLength && printFull == 0) {
     str = `${str.slice(0, maxTextLength).trim()}...`;
   }
 
@@ -784,7 +810,7 @@ function capitalize(str, first) {
   return str.charAt(0).toUpperCase() + (first ? str.slice(1).toLowerCase() : str.slice(1));
 }
 
-// Track neighboring nodes
+// Determine if neighboring nodes
 function neighbors(a, b) {
   return linkedByIndex[a.index + ',' + b.index] 
       || linkedByIndex[b.index + ',' + a.index]  
