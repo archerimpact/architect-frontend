@@ -8,6 +8,13 @@ let node, link, hull, nodes, links, hulls;
 let globallinkid = -1;
 let globalnodeid = -1;
 
+// FontAwesome icon unicode-to-node type dict
+const icons = {
+  "person": "",
+  "Document": "",
+  "corporation": ""
+};
+
 // Store groupNodeId --> {links: [], nodes: [], groupid: int}
 const groups = {}
 // Store groupNodeId --> expansion state
@@ -173,7 +180,14 @@ function update(){
       );
   
   node.append('circle')
-      .attr('r','15');
+      .attr('r','20');
+
+  node.append('text')
+    .attr('text-anchor', 'middle')
+    .attr('dominant-baseline', 'central')
+    .attr('font-family', 'FontAwesome')
+    .attr('font-size', '20px')
+    .text(function(d) { return (d.type && icons[d.type]) ? icons[d.type] : ''; });
 
   node.append('text')
       .attr('dx', 22)
