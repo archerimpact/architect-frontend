@@ -104,6 +104,10 @@ button:focus {
 }
 
 .node.grouped circle {
+  fill: #7cbdff;
+}
+
+.node.grouped.fixed circle {
   fill: #0d77e2;
 }
 
