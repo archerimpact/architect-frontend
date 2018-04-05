@@ -138,6 +138,7 @@ d3.json('data/34192.json', function(json) {
     .gravity(1 / json.nodes.length)
     .charge(-1 * Math.max(Math.pow(json.nodes.length, 2), 750))
     .friction(json.nodes.length < 15 ? .75 : .65)
+    .alpha(.8)
     .nodes(nodes)
     .links(links);
 
@@ -160,6 +161,7 @@ function update(){
   link
     .enter().append('line')
     .attr('class', 'link')
+    .style("stroke-dasharray", function(d){return d.type === "possibly_same_as" ? ("10,3"):false})
     .on('mouseover', mouseoverLink);
 
   link.exit().remove(); 
