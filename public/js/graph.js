@@ -135,7 +135,7 @@ d3.json('data/34192.json', function(json) {
 //   nodes[index].py = height/2; 
 
   force
-    .gravity(1 / json.nodes.length)
+    .gravity(.25)
     .charge(-1 * Math.max(Math.pow(json.nodes.length, 2), 750))
     .friction(json.nodes.length < 15 ? .75 : .65)
     .alpha(.8)
