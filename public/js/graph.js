@@ -161,7 +161,7 @@ function update(){
   link
     .enter().append('line')
     .attr('class', 'link')
-    .style("stroke-dasharray", function(d){return d.type === "possibly_same_as" ? ("10,3"):false})
+    .style("stroke-dasharray", function(d) { return d.type === 'possibly_same_as' ? ('20,5') : false; })
     .on('mouseover', mouseoverLink);
 
   link.exit().remove(); 
@@ -351,7 +351,7 @@ function mouseover(d) {
         return !neighbors(d, o);
       })
       .style('stroke-opacity', .15)
-      .style('fill-opacity', .4);
+      .style('fill-opacity', .15);
 
     link.style('stroke-opacity', function(o) {
       return (o.source == d || o.target == d) ? 1 : .05;

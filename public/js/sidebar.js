@@ -19,7 +19,7 @@ function populateGraphUsageBody(graphUsageBody) {
   $(graphUsageBody).append(createGraphUsageEntry('ungroup selected nodes', 'H'));
   $(graphUsageBody).append(createGraphUsageEntry('toggle grouped nodes view', 'dbl-click')); 
   $(graphUsageBody).append(createGraphUsageEntry('toggle document nodes', 'D')); 
-  $(graphUsageBody).append(createGraphUsageEntry('toggle node text abbreviation', 'P'));  
+  $(graphUsageBody).append(createGraphUsageEntry('toggle text length', 'P'));  
 }
 
 function createGraphUsageEntry(key) {
