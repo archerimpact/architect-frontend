@@ -276,7 +276,6 @@ function clicked(d, i) {
   const node = d3.select(this);
   const fixed = !(node.attr('dragfix') == 'true');
   node.classed('fixed', d.fixed = fixed);
-
   force.resume();
   d3.event.stopPropagation();
 }
@@ -308,7 +307,8 @@ function isRightClick() {
 function dragstart(d) {
   d3.event.sourceEvent.preventDefault();
   d3.event.sourceEvent.stopPropagation();
-  if (isEmphasized) mouseout();
+  if (isEmphasized) resetGraphOpacity();
+
   isDragging = true;
   displayNodeInfo(d);
   const node = d3.select(this);
@@ -362,11 +362,7 @@ function mouseover(d) {
 }
 
 function mouseout(d) {
-  isEmphasized = false;
-  node.style('stroke-opacity', 1)
-      .style('fill-opacity', 1);
-  link.style('stroke-opacity', 1);
-
+  resetGraphOpacity();
   if (printFull != 1) d3.select(this).select('.node-name').text(processNodeName(d.name, printFull));
 }
 
@@ -424,7 +420,6 @@ function dragendText(d) {
 
 function mouseoverText(d) {
   if (printFull == 0 && !isBrushing && !isDragging) {
-    //console.log(d3.select(this)[0][0].classList.contains('node-name'))
     d3.select(this).text(processNodeName(d.name, 2));
   }
 
@@ -968,6 +963,14 @@ function createGroupFromSelect(select){
 function fillGroupNodes() {
   svg.selectAll('.node')
     .classed('grouped', function(d) { return d.id < 0; });
+}
+
+// Reset all node/link opacities to 1
+function resetGraphOpacity() {
+  isEmphasized = false;
+  node.style('stroke-opacity', 1)
+      .style('fill-opacity', 1);
+  link.style('stroke-opacity', 1);
 }
 
 // =================
