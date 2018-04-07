@@ -58,7 +58,7 @@ button:focus {
 
 .link {
   stroke: #999999;
-  stroke-width: 5px;
+  stroke-width: 3px;
   transition-duration: 100ms;
   transition-property: stroke-opacity;
   transition-delay: 100ms;
@@ -90,7 +90,7 @@ button:focus {
 
 .node circle {
   cursor: pointer;
-  stroke-width: 4px;
+  stroke-width: 3px;
 }
 
 .node.fixed circle {
@@ -99,12 +99,12 @@ button:focus {
 
 .node.active circle {
   stroke: #000;
-  stroke-width: 4px;
+  stroke-width: 3px;
 }
 
 .node.selected circle {
   stroke: #0d77e2;
-  stroke-width: 4px;
+  stroke-width: 3px;
 }
 
 .node.grouped circle {

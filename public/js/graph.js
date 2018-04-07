@@ -14,7 +14,7 @@ const icons = {
   "person": "",
   "Document": "",
   "corporation": "",
-  "Group": ""
+  "group": ""
 };
 
 // Store groupNodeId --> {links: [], nodes: [], groupid: int}
@@ -161,7 +161,7 @@ function update(){
   link
     .enter().append('line')
     .attr('class', 'link')
-    .style("stroke-dasharray", function(d) { return d.type === 'possibly_same_as' ? ('20,5') : false; })
+    .style("stroke-dasharray", function(d) { return d.type === 'possibly_same_as' ? ('3,3') : false; })
     .on('mouseover', mouseoverLink);
 
   link.exit().remove(); 
@@ -351,7 +351,9 @@ function mouseover(d) {
         return !neighbors(d, o);
       })
       .style('stroke-opacity', .15)
-      .style('fill-opacity', .15);
+      .style('fill-opacity', .15)
+    .select('.node-name')
+      .text(function(d) { return processNodeName(d.name, 1); });
 
     link.style('stroke-opacity', function(o) {
       return (o.source == d || o.target == d) ? 1 : .05;
@@ -363,7 +365,7 @@ function mouseover(d) {
 
 function mouseout(d) {
   resetGraphOpacity();
-  if (printFull != 1) d3.select(this).select('.node-name').text(processNodeName(d.name, printFull));
+  if (printFull != 1) selectAllNodeNames().text(function(d) { return processNodeName(d.name, printFull); });
 }
 
 // Zoom & pan
@@ -530,7 +532,6 @@ function deleteSelectedNodes() {
 
   nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
   update();
-
 }
 
 function addNodeToSelected(){
@@ -615,7 +616,7 @@ function groupSelectedNodes() {
 
   const group = createGroupFromSelect(select);
   const removedNodes = removeNodesFromDOM(select);
-  nodes.push({id: group.id, name: `Group ${-1*group.id}`, type: "Group"}); //add the new node for the group
+  nodes.push({id: group.id, name: `Group ${-1*group.id}`, type: "group"}); //add the new node for the group
   moveLinksFromOldNodesToGroup(removedNodes, group);
 
   select.each((d)=> { delete groups[d.id]; });
@@ -699,8 +700,7 @@ function collapseGroupNodes(groupId) {
     });
 
   const removedNodes = removeNodesFromDOM(select);
-
-  nodes.push({id: group.id, name: `Group ${-1*group.id}`, type: "Group"}); //add the new node for the group
+  nodes.push({id: group.id, name: `Group ${-1*group.id}`, type: "group"}); //add the new node for the group
   moveLinksFromOldNodesToGroup(removedNodes, group);
 }
 
@@ -825,14 +825,13 @@ function removeLink(removedNodes, link) {
   /* takes in a list of removed nodes and the link to be removed
       if the one of the nodes in the link target or source has actually been removed, remove the link and return it
       if not, then don't remove */
-
   let removedLink;
-  
   //only remove a link if it's attached to a removed node
   if(removedNodes[link.source.id] === true || removedNodes[link.target.id] === true) { //remove all links connected to a node to remove
     const index = links.indexOf(link);
     removedLink = links.splice(index, 1)[0];
   }
+
   return removedLink;
 }
 
@@ -842,14 +841,13 @@ function reattachLink(link, newNodeId, removedNodes, nodeIdsToIndex) {
       create a new link with appropriate source/target mapping to index of the node
       if neither the source nor target were in removedNodes, do nothing */
   let linkid = globallinkid;
-
   if (removedNodes[link.source.id] === true && removedNodes[link.target.id] !== true) {
     //add new links with appropriate connection to the new group node
     //source and target refer to the index of the node
-    links.push({id: linkid, source: nodeIdsToIndex[newNodeId], target: nodeIdsToIndex[link.target.id], type: "Multiple"});
+    links.push({id: linkid, source: nodeIdsToIndex[newNodeId], target: nodeIdsToIndex[link.target.id], type: "multiple"});
     globallinkid -= 1;
   } else if (removedNodes[link.source.id] !== true && removedNodes[link.target.id] === true) {
-    links.push({id: linkid, source: nodeIdsToIndex[link.source.id], target: nodeIdsToIndex[newNodeId], type: "Multiple"});
+    links.push({id: linkid, source: nodeIdsToIndex[link.source.id], target: nodeIdsToIndex[newNodeId], type: "multiple"});
     globallinkid -=1;
   }
 }
