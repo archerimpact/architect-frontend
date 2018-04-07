@@ -73,10 +73,11 @@ class GraphContainer extends Component {
         <div></div>
       );
     } else {
+      const data = this.getDataForGraph(this.props.graphData)
       return (
           <Graph 
-            nodes={this.getDataForGraph(this.props.graphData).nodes} 
-            links={this.getDataForGraph(this.props.graphData).links} 
+            nodes={data.nodes} 
+            links={data.links} 
             centerid={this.props.graphData[0][2].metadata.id}
             height={600}
             width={1000}

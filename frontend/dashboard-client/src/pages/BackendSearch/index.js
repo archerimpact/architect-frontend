@@ -25,10 +25,10 @@ class BackendSearch extends Component {
 
   constructor(props) {
     super(props);
-    this.searchBackendText = this.searchBackendText.bind(this);
+    this.searchBackend = this.searchBackend.bind(this);
     this.searchBackendNodes = this.searchBackendNodes.bind(this);
-    this.submitSearch = this.submitSearch.bind(this);
-    this.updateSearch = this.updateSearch.bind(this);
+    this.fetchGraph = this.fetchGraph.bind(this);
+    this.renderGraph = this.renderGraph.bind(this);
     this.state={
       searchData: null,
       nodesData: null,
@@ -41,46 +41,21 @@ class BackendSearch extends Component {
       linking there directly. Only search if there's params */
 
     if (this.props.search != null ){
-      this.searchBackendText(this.props.search);
-      server.getGraph(34192)
-        .then((data) => {
-          /* neo4j returns items in this format: [connection, startNode, endNode] */
-          this.setState({graphData: data})
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      this.searchBackend(this.props.search);
     }    
   }
 
   componentWillReceiveProps(nextprops){
     /* handles the case when you are already on backend search and are
       searching again in the nav bar; react only recognizes that there's nextprops */
-
-    this.searchBackendText(nextprops.search);
-    server.getGraph(34192)
-      .then(data => {
-        /* neo4j returns items in this format: [connection, startNode, endNode] */
-        this.setState({graphData: data})
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    this.searchBackend(nextprops.search);
   }
 
-  submitSearch(query){
-    this.searchBackendText(query);
-    this.props.onChangeSearch(query);       
-  }
-
-  updateSearch(query){
-    this.searchBackendText(query);
-  }
-
-  searchBackendText(query){
+  searchBackend(query){
     server.searchBackendText(query)
       .then((data)=>{
         this.setState({searchData: data.hits.hits, nodesData: null})
+        this.fetchGraph(data.hits.hits[0]._source.neo4j_id)
         var ids = data.hits.hits.map((item) => {
           return item._source.neo4j_id
         });
@@ -99,21 +74,43 @@ class BackendSearch extends Component {
       })
   }
 
-  render() {
-    return(
-      <div>
-        <Neo4jGraphContainer graphData={this.state.graphData} />
+  fetchGraph(id){
+    server.getGraph(34192)
+      .then(data => {
+        /* neo4j returns items in this format: [connection, startNode, endNode] */
+        this.setState({graphData: data})
+      })
+      .catch(err => {
+        console.log(err)
+      }) 
+  }
 
-        <div className="search-side-container">
-          <div className="search-side">
-            <div className="search-bar">
-              <DatabaseSearchBar/>
+  renderGraph() { //render the graph separately in case the data takes a long time to load
+    if (this.state.graphData != null) {
+      return(<Neo4jGraphContainer graphData={this.state.graphData} />)
+    } 
+  }
+
+  render() {
+    if (this.state.searchData == null || this.state.nodesData == null) {
+      return (
+        <div>Loading</div>
+      );
+    } else {
+      return(
+        <div>
+        {this.renderGraph()}
+          <div className="search-side-container">
+            <div className="search-side">
+              <div className="search-bar">
+                <DatabaseSearchBar/>
+              </div>
+              <SearchDataList searchItems={this.state.searchData} nodeItems={this.state.nodesData}/>
             </div>
-            <SearchDataList searchItems={this.state.searchData} nodeItems={this.state.nodesData}/>
-          </div>
-        </div> 
-      </div>
-    );
+          </div> 
+        </div>
+      );
+    }
   }
 }
 

@@ -40,7 +40,14 @@ class Entity extends Component {
   }
 
   componentWillReceiveProps = (nextprops) => {
-    this.loadData(nextprops.match.params.neo4j_id) //load data when you change the url props
+    if (this.props.match.params.neo4j_id !== nextprops.match.params.neo4j_id) {
+      this.setState({
+        nodeData: null,
+        relationshipData: null,
+        graphData: null
+      })
+      this.loadData(nextprops.match.params.neo4j_id) //load data when you change the url props
+    }
   }
 
   loadData(neo4j_id) {
@@ -74,7 +81,7 @@ class Entity extends Component {
 
 
   render(){
-    if (this.state.nodeData== null || this.state.graphData==null) {
+    if (this.state.nodeData== null || this.state.relationshipData == null || this.state.graphData==null) {
       return (
         <div>Loading</div>
       );
