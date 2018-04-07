@@ -1,37 +1,25 @@
+// Constants
+const maxHeight = 100000;
+
 // Populate graph usage section
-let isGraphUsageHidden = false;
 function displayGraphUsage() {
-  const graphUsageTitle = createTitleElement('sidebar-title', 'Graph usage');
-  graphUsageTitle.id = 'graph-usage-title';
-  graphUsageTitle.onclick = () => {
-    if (isGraphUsageHidden) {
-      $('#graph-usage-title').addClass('open');
-      $('#graph-usage-body').css('max-height', 500);
-    } else { 
-      $('#graph-usage-title').removeClass('open');
-      $('#graph-usage-body').css('max-height', 0);
-    }
+  displaySidebarSection('Graph usage', 'sidebar-title', populateGraphUsageBody);
+}
 
-    isGraphUsageHidden = !isGraphUsageHidden;
-  }
-
-  const graphUsageBody = document.createElement('div');
-  graphUsageBody.id = 'graph-usage-body'; 
+function populateGraphUsageBody(graphUsageBody) {
   $(graphUsageBody).append(createGraphUsageEntry('select nodes', 'r-click', '+', 'drag'));
   $(graphUsageBody).append(createGraphUsageEntry('(un)select node', 'r-click'));
   $(graphUsageBody).append(createGraphUsageEntry('(un)pin node', 'l-click'));
-  $(graphUsageBody).append(createGraphUsageEntry('move canvas', 'l-click', '+', 'drag'));
+  $(graphUsageBody).append(createGraphUsageEntry('pan canvas', 'l-click', '+', 'drag'));
   $(graphUsageBody).append(createGraphUsageEntry('zoom in/out', 'scroll'));
   $(graphUsageBody).append(createGraphUsageEntry('unpin selected nodes', 'U'));
-  $(graphUsageBody).append(createGraphUsageEntry('add node to selected', 'A'));
+  $(graphUsageBody).append(createGraphUsageEntry('link new node to selected nodes', 'A'));
   $(graphUsageBody).append(createGraphUsageEntry('remove selected nodes', 'R', 'or', 'del'));
   $(graphUsageBody).append(createGraphUsageEntry('group selected nodes', 'G'));
   $(graphUsageBody).append(createGraphUsageEntry('ungroup selected nodes', 'H'));
-  $(graphUsageBody).append(createGraphUsageEntry('toggle view of document nodes', 'D')); 
-  $(graphUsageBody).append(createGraphUsageEntry('toggle node text abbreviation', 'P'));  
-
-  $('#graph-usage').append(graphUsageTitle);
-  $('#graph-usage').append(graphUsageBody);
+  $(graphUsageBody).append(createGraphUsageEntry('toggle grouped nodes view', 'dbl-click')); 
+  $(graphUsageBody).append(createGraphUsageEntry('toggle document nodes', 'D')); 
+  $(graphUsageBody).append(createGraphUsageEntry('toggle text length', 'P'));  
 }
 
 function createGraphUsageEntry(key) {
@@ -53,60 +41,23 @@ function createGraphUsageEntry(key) {
 }
 
 // Populate node info section
-let isNodeInfoHidden = false;
 function displayNodeInfo(info) {
-  clearNodeInfo();
+  displaySidebarSection('Node info', 'sidebar-title', populateNodeInfoBody, info);
+}
 
-  const nodeInfoTitle = createTitleElement('sidebar-title', 'Node info');
-  nodeInfoTitle.id = 'node-info-title';
-  nodeInfoTitle.onclick = () => {
-    if (isNodeInfoHidden) {
-      $('#node-info-title').addClass('open');
-      $('#node-info-body').css('max-height', 500);
-    } else { 
-      $('#node-info-title').removeClass('open');
-      $('#node-info-body').css('max-height', 0);
-    }
-
-    isNodeInfoHidden = !isNodeInfoHidden;
-  }
-
-  const nodeInfoBody = document.createElement('div');
-  nodeInfoBody.id = 'node-info-body';
+function populateNodeInfoBody(nodeInfoBody, info) {
   for (let key in info) {
     $(nodeInfoBody).append(createInfoTextEntry(key, info[key]));
   }
-
-  $('#node-info').append(nodeInfoTitle);
-  $('#node-info').append(nodeInfoBody);
-}
-
-function clearNodeInfo() {
-  isNodeInfoHidden = false;
-  $('#node-info').html('');
 }
 
 // Populate link info section 
-let isLinkBodyHidden = false;
 function displayLinkInfo(info) {
-  clearLinkInfo();
-  const linkInfoTitle = createTitleElement('sidebar-title', 'Link info');
-  linkInfoTitle.id = 'link-info-title';
-  linkInfoTitle.onclick = () => {
-    if (isLinkBodyHidden) {
-      $('#link-info-title').addClass('open');
-      $('#link-info-body').css('max-height', 250);
-    } else { 
-      $('#link-info-title').removeClass('open');
-      $('#link-info-body').css('max-height', 0);
-    }
+  displaySidebarSection('Link info', 'sidebar-title', populateLinkInfoBody, info);
+}
 
-    isLinkBodyHidden = !isLinkBodyHidden;
-  }
-
+function populateLinkInfoBody(linkInfoBody, info) {
   let attr, appendTarget;
-  const linkInfoBody = document.createElement('div');
-  linkInfoBody.id = 'link-info-body';
   for (let key in info) {
     attr = info[key];
     if (isObject(attr)) {
@@ -118,76 +69,81 @@ function displayLinkInfo(info) {
       $(linkInfoBody).append(createInfoTextEntry(key, info[key]));
     }
   }
-
-  $('#link-info').append(linkInfoTitle);
-  $('#link-info').append(linkInfoBody);
-}
-
-function clearLinkInfo() {
-  isLinkBodyHidden = false;
-  $('#link-info').html('');
 }
 
 // Populate group info section
-let isGroupInfoHidden = false;
 function displayGroupInfo(groups) {
-  clearGroupInfo();
-  const groupInfoTitle = createTitleElement('sidebar-title', 'Group info');
-  groupInfoTitle.id = 'group-info-title';
-  groupInfoTitle.onclick = () => {
-    if (isGroupInfoHidden) {
-      $('#group-info-title').addClass('open');
-      $('#group-info-body').css('max-height', 5000);
-    } else { 
-      $('#group-info-title').removeClass('open');
-      $('#group-info-body').css('max-height', 0);
-    }
-
-    isGroupInfoHidden = !isGroupInfoHidden;
+  displaySidebarSection('Group info', 'sidebar-title', populateGroupInfoBody, groups);
+  for (let groupId in groups) {
+    displayGroupEntry(groupId, groups[groupId]);
   }
-
-  const groupInfoBody = document.createElement('div');
-  groupInfoBody.id = 'group-info-body';
-  for (let group_id in groups) {
-    $(groupInfoBody).append(createGroupEntry(group_id, groups[group_id]));
-  }
-
-  $('#group-info').append(groupInfoTitle);
-  $('#group-info').append(groupInfoBody);
 }
 
-function createGroupEntry(key, val) {
-  const retElement = document.createElement('div');
-  $(retElement).append(createTitleElement('sidebar-subtitle', `Group ${-1 * key}`)); 
-  $(retElement).append('<button onclick = "toggleGroupView(' + key + ')""> Toggle view</button>')
+function populateGroupInfoBody(groupInfoBody, groups) {
+  let groupEntry;
+  for (let groupId in groups) {
+    groupEntry = document.createElement('div');
+    groupEntry.id = `group${groupId}`;
+    $(groupEntry).css('overflow', 'hidden');
+    $(groupInfoBody).append(groupEntry);
+  }
+}
+
+function displayGroupEntry(groupId, groupData) {
+  displaySidebarSection(`Group ${-1 * groupId}`, 'sidebar-subtitle', populateGroupEntry, groupData);
+}
+
+function populateGroupEntry(groupEntryBody, groupData) {
   const attributeList = ['name', 'type'];
   let groupElement, groupEntry, leftText, rightText, attr;
-  for (let id in val.nodes) {
+  for (let id in groupData.nodes) {
     groupElement = createDivElement('entity');
     for (let i = 0; i < attributeList.length; i++) {
       attr = attributeList[i];
       groupEntry = createDivElement('entity-entry');
       leftText = createDivElement('sidebar-left');
-      $(leftText).append(createTextElement('sidebar-text', attr.charAt(0).toUpperCase() + attr.slice(1)));
+      $(leftText).append(createTextElement('sidebar-text', attr));
       rightText = createDivElement('sidebar-right');
-      $(rightText).append(createTextElement('sidebar-text', val.nodes[id][attr]));
+      $(rightText).append(createTextElement('sidebar-text', groupData.nodes[id][attr]));
       $(groupEntry).append(leftText);
       $(groupEntry).append(rightText);
       $(groupElement).append(groupEntry);
     }
     
-    $(retElement).append(groupElement);
+    $(groupEntryBody).append(groupElement);
+  }
+}
+
+// General element creation & helper methods
+function displaySidebarSection(titleText, titleClass, populateBody) {
+  const targetId = deriveTargetIdFromTitleText(titleText);
+  $(`#${targetId}`).html('');
+
+  const sectionTitle = createTitleElement(titleClass, titleText);
+  sectionTitle.id = `${targetId}-title`;
+  const titleId = `#${sectionTitle.id}`;
+
+  const sectionBody = document.createElement('div');
+  sectionBody.id = `${targetId}-body`; 
+  const bodyId = `#${sectionBody.id}`;
+
+  sectionTitle.onclick = () => {
+    $(bodyId).css('max-height',  $(titleId).hasClass('open') ? 0 : maxHeight);
+    $(titleId).toggleClass('open');
   }
 
-  return retElement;
+  if (arguments.length > 3) {
+    const args = Array.prototype.slice.call(arguments, 3);
+    args.unshift(sectionBody);
+    populateBody.apply(null, args);
+  } else {
+    populateBody(sectionBody);
+  }
+
+  $(`#${targetId}`).append(sectionTitle);
+  $(`#${targetId}`).append(sectionBody);
 }
 
-function clearGroupInfo () {
-  isGroupInfoHidden = false;
-  $('#group-info').html('');
-}
-
-// General element creation
 function createInfoTextEntry(key, value) {
   const leftText = createDivElement('sidebar-left');
   $(leftText).append(createTextElement('sidebar-text', key));
@@ -221,11 +177,9 @@ function createTitleElement(className, title) {
   titleText.innerHTML = title;
   $(titleElement).append(titleText);
 
-  if (className == 'sidebar-title') {
-    const icon = document.createElement('i');
-    icon.className = 'fa fa-chevron-up';
-    $(titleElement).append(icon);
-  }
+  const icon = document.createElement('i');
+  icon.className = 'fa fa-chevron-up';
+  $(titleElement).append(icon);
 
   return titleElement;
 }
@@ -242,6 +196,11 @@ function createDivElement(className) {
   return divElement;
 }
 
+function deriveTargetIdFromTitleText(titleText) {
+  // Ex: 'Graph usage' --> 'graph-usage'
+  return titleText.split(' ').join('-').toLowerCase();
+}
+
 // Toggle sidebar
 function openSidebar() {
   $("#sidebar-content-area").css("margin-right", '20px');
@@ -254,6 +213,7 @@ function closeSidebar() {
   $("#transparent-navbar i").removeClass("blue");
 }
 
+// Color info icon onclick
 $("#transparent-navbar i").click(function() {
   $(this).toggleClass("blue");
 });
@@ -269,17 +229,12 @@ $(document).ready(function() {
       altDown = true;
     }
 
-    // Quick search with alt+s
-    if (altDown && e.which == 83) {
-      quickSearch();
-    }
-
-    // Open sidebar with alt+i
+    // alt+i: Open sidebar
     if (altDown && e.which == 73) {
       openSidebar();
     }
 
-    // Close sidebar with esc/enter
+    // esc/enter: Close sidebar
     else if (e.which == 27 || e.which == 13) {
       closeSidebar();
     }

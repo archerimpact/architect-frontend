@@ -57,8 +57,8 @@ button:focus {
 }
 
 .link {
-  stroke: #545454;
-  stroke-width: 5px;
+  stroke: #999999;
+  stroke-width: 3px;
   transition-duration: 100ms;
   transition-property: stroke-opacity;
   transition-delay: 100ms;
@@ -70,7 +70,7 @@ button:focus {
 
 .node {
   fill: #ebebeb;
-  stroke: #545454;
+  stroke: #999999;
   transition-duration: 100ms;
   transition-property: stroke-opacity, fill-opacity;
   transition-delay: 100ms;
@@ -83,9 +83,14 @@ button:focus {
   stroke-width: 1px; 
 }
 
+.node text.icon {
+  stroke: none;
+  fill: #999999;
+}
+
 .node circle {
   cursor: pointer;
-  stroke-width: 4px;
+  stroke-width: 3px;
 }
 
 .node.fixed circle {
@@ -94,15 +99,23 @@ button:focus {
 
 .node.active circle {
   stroke: #000;
-  stroke-width: 4px;
+  stroke-width: 3px;
 }
 
 .node.selected circle {
   stroke: #0d77e2;
-  stroke-width: 4px;
+  stroke-width: 3px;
 }
 
-path {
-  fill: blue;
+.node.grouped circle {
+  fill: #7cbdff;
+}
+
+.node.grouped.fixed circle {
+  fill: #0d77e2;
+}
+
+.hull, path {
+  fill: #0d77e2;
   fill-opacity: 0.3;
 }

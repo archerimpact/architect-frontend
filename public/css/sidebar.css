@@ -72,7 +72,7 @@
   top: 10px;
   left: 0px;
   font-size: 16px;
-  margin-left: 265px;
+  margin-left: 270px;
   color: #777777;
   transition: 0.3s;
 }
@@ -82,7 +82,7 @@
 }
 
 #sidebar-content-area {
-  margin: 25px 20px 25px 20px;
+  margin: 10px 20px;
 }
 
 .content-entry {
@@ -96,21 +96,21 @@
   font-size: 20px;
   border-bottom: 1.5px solid #0D77E2;
   padding: 5px;
-  margin-top: 10px;
+  margin-top: 20px;
   color: #0D77E2;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
 }
 
-.sidebar-title i.fa-chevron-up {
-  transition-duration: 500ms;
+i.fa-chevron-up {
+  transition-duration: 250ms;
   left: auto;
   font-size: 16px; 
 }
 
-.sidebar-title.open i.fa-chevron-up {
-  transition-duration: 500ms;
+.open i.fa-chevron-up {
+  transition-duration: 250ms;
   -webkit-transform: rotate(180deg);
   -moz-transform: rotate(180deg);
   -ms-transform: rotate(180deg);
@@ -165,47 +165,56 @@
 /* Graph usage specific styles */
 #graph-usage-body {
   overflow: hidden;
-  max-height: 1000px;
-  transition-duration: 500ms;
+  max-height: 100000px;
+  transition-duration: 250ms;
 }
 
 /* Node info specific styles */
 #node-info-body {
   overflow: hidden;
   max-height: 1000px;
-  transition-duration: 500ms;
+  transition-duration: 250ms;
 }
 
 /* Link info specific styles */
 #link-info-body {
   overflow: hidden;
   max-height: 1000px;
-  transition-duration: 500ms;
+  transition-duration: 250ms;
 }
 
 /* Group info specific styles */
-#group-info-body {
-  overflow: hidden;
-  max-height: 1000px;
-  transition-duration: 400ms;
-}
-
 .sidebar-subtitle {
   padding: 5px;
-  margin-top: 10px;
+  margin-top: 15px;
   color: #545454;
-  text-align: right;
+  font-weight: bolder;
   font-size: 16px;
   border-bottom: 1px solid #777;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+
+#group-info-body {
+  overflow: hidden;
+  max-height: 100000px;
+  transition-duration: 250ms;
 }
 
 .entity {
   border-bottom: 1px solid #CCCCCC;
   display: block;
+  overflow: hidden;
 }
 
 .entity-entry {
   display: flex;
+  /*border-bottom: 1px solid #CCCCCC;*/
   justify-content: space-between;
   padding: 5px;
 }
+
+/*.entity-entry.last {
+  border-bottom: none;
+}*/
