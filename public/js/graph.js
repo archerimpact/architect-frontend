@@ -39,7 +39,7 @@ let zoomScale = 1;
 let printFull = 0;
 
 // Setting up zoom
-const minScale = 0.5;
+const minScale = 0.1;
 const zoom = d3.behavior.zoom()
   .scaleExtent([minScale, 5])
   .on('zoomstart', zoomstart)
@@ -236,7 +236,7 @@ function ticked(e) {
       .attr('d', drawHull)  
   }
   node
-    .each(groupNodesForce(e.alpha))
+    .each(groupNodesForce(.3))
     .attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; });
 
   link.attr('x1', function(d) { return d.source.x; })

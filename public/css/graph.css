@@ -117,5 +117,7 @@ button:focus {
 
 .hull, path {
   fill: #0d77e2;
-  fill-opacity: 0.3;
+  fill-opacity: 0.2;
+  stroke: #7cbdff;
+  stroke-width: 2px;
 }
