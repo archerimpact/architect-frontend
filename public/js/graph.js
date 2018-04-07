@@ -185,7 +185,7 @@ function update(){
       );
 
   nodeEnter.append('circle')
-      .attr('r', '15');  
+      .attr('r', '20');  
 
   nodeEnter.append('text')
     .attr('class', 'icon')
@@ -198,7 +198,7 @@ function update(){
   nodeEnter.append('text')
     .attr('class', 'node-name')
     .attr('dx', 25)
-    .attr('dy', '.35em')
+    .attr('dy', '.45em')
     .text(function(d) { return processNodeName(d.name, printFull)})
     .on('click', clickedText)
     .on('mouseover', mouseoverText)
@@ -365,9 +365,9 @@ function mouseover(d) {
         return !neighbors(d, o);
       })
       .style('stroke-opacity', .15)
-      .style('fill-opacity', .15)
-    .select('.node-name')
-      .text(function(d) { return processNodeName(d.name, 1); });
+      .style('fill-opacity', .15);
+    // .select('.node-name')
+    //   .text(function(d) { return processNodeName(d.name, 1); });
 
     link.style('stroke-opacity', function(o) {
       return (o.source == d || o.target == d) ? 1 : .05;
@@ -379,7 +379,7 @@ function mouseover(d) {
 
 function mouseout(d) {
   resetGraphOpacity();
-  if (printFull != 1) selectAllNodeNames().text(function(d) { return processNodeName(d.name, printFull); });
+  if (printFull != 1) d3.select(this).select('.node-name').text(function(d) { return processNodeName(d.name, printFull); });
 }
 
 // Zoom & pan
@@ -979,6 +979,11 @@ function resetGraphOpacity() {
   node.style('stroke-opacity', 1)
       .style('fill-opacity', 1);
   link.style('stroke-opacity', 1);
+}
+
+// Sleep for duration ms
+function sleep(duration) {
+  return new Promise((resolve) => setTimeout(resolve, duration));
 }
 
 // =================
