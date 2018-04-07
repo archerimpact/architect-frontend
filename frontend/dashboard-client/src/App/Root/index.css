@@ -3,7 +3,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family:"Open Sans", sans-serif;
+  font-family: "Open Sans", Arial, sans-serif;
 }
 
 hr{
@@ -11,7 +11,8 @@ hr{
   margin:0px;
 }
 a:link, a:visited, a:hover, a:active{
-  text-decoration: none
+  text-decoration: none;
+  color: black;
 }
 
 a:link {
@@ -20,7 +21,7 @@ a:link {
 }
 
 .underline {
-  border-bottom: 5px solid #25DEB4;
+  border-bottom: 5px solid #0d77e2;
 }
 
 .app {
@@ -29,7 +30,7 @@ a:link {
 	top: 0; 
 	left: 0;
 	position: absolute;
-  font-family:"Open Sans", sans-serif;
+  font-family: "Open Sans", Arial, sans-serif;
 }
 
 h3, h2 {

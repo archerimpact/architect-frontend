@@ -13,6 +13,38 @@ class GraphContainer extends Component {
     this.getIdFromUrl = this.getIdFromUrl.bind(this);
   }
 
+  getDataForGraph(data) {  
+    data = data[0] //because the neo4j data resides in data[0]
+
+    function getidfromurl(neo4j_url){
+      return parseInt(neo4j_url.split('/').pop()); //neo4j relationship stores the url to the nodes, id is in the last part of the url
+    }
+    var nodesData = data[1] 
+    var neo4jtoindex = {}
+    var nodes;
+    var links;
+    nodes = nodesData.map((node, i)=> {
+      neo4jtoindex[parseInt(node.metadata.id)] = i //store a dictionary mapping neo4j_id to the index
+      return {id: parseInt(node.metadata.id), 
+        type: node.metadata.labels[0], 
+        name: node.data.name,
+        resigned_on: node.data.resigned_on,
+        occupation: node.data.occupation,
+        address: node.data.address,
+        nationality: node.data.nationality,
+        country_of_residence: node.data.country_of_residence,
+        date_of_birth: node.data.date_of_birth,
+        appointed_on: node.data.appointed_on
+      }
+    })
+    links = data[0].map((edge)=> {
+      //target and source have to reference the index of the node
+      return {id: edge.metadata.id, type: edge.metadata.type, source: neo4jtoindex[getidfromurl(edge.start)], target: neo4jtoindex[getidfromurl(edge.end)]}
+    })
+    return {nodes: nodes, links: links, centerid: data[2].metadata.id}
+  }
+
+
   getIdFromUrl(neo4j_url){
     return neo4j_url.split('/').pop();
   }
@@ -36,14 +68,21 @@ class GraphContainer extends Component {
   }
 
   render(){
-    return (
-        <Graph 
-          nodes={this.getNodesFromRelationshipData(this.props.relationshipData)} 
-          links={this.getLinks(this.props.relationshipData)} 
-          height={600}
-          width={1000}
-        />
-    )
+    if (this.props.graphData == null){
+      return (
+        <div></div>
+      );
+    } else {
+      return (
+          <Graph 
+            nodes={this.getDataForGraph(this.props.graphData).nodes} 
+            links={this.getDataForGraph(this.props.graphData).links} 
+            centerid={this.props.graphData[0][2].metadata.id}
+            height={600}
+            width={1000}
+          />
+      )
+    }
   }
 }
 

@@ -14,9 +14,7 @@ import CreateAccount from '../pages/CreateAccount/';
 import Home from '../pages/Home/';
 import Canvas from '../pages/Canvas/';
 import Source from '../pages/Source/';
-import Sources from '../pages/Sources/';
 import Entity from '../pages/Entity/';
-import Entities from '../pages/Entities/';
 import BackendSearch from '../pages/BackendSearch';
 import './style.css';
 class App extends Component {
@@ -36,21 +34,19 @@ class App extends Component {
     render() {
         return ( 
         	<div>
-    			<NavBar isAuthenticated={this.props.isAuthenticated} logOut={this.logOut.bind(this)} logIn={this.logIn.bind(this)} />
-                <SideBar isAuthenticated={this.props.isAuthenticated}/>
-                <div className="main">
-        			<Switch>
-        				<PrivateRoute exact path="/" component={Home} />
-        				<Route path="/login" component={Login} />
-                        <Route path="/create_account" component={CreateAccount} />
-        				<PrivateRoute path="/canvas/:id" component={Canvas} />				    		
-        				<PrivateRoute path="/source/:id" component={Source}/>
-                        <PrivateRoute path="/sources/:id" component={Sources}/>
-                        <PrivateRoute path="/entities/:id" component={Entities}/>
-                        <PrivateRoute path="/search" component={BackendSearch} />
-                        <PrivateRoute path="/entity/:neo4j_id" component={Entity} />
-    				</Switch>
-                </div>
+      			<NavBar isAuthenticated={this.props.isAuthenticated} logOut={this.logOut.bind(this)} logIn={this.logIn.bind(this)} />
+                  {/*<SideBar isAuthenticated={this.props.isAuthenticated}/>*/}
+            <div className="main">
+          			<Switch>
+          				<PrivateRoute exact path="/" component={Home} />
+          				<Route path="/login" component={Login} />
+                  <Route path="/create_account" component={CreateAccount} />
+          				<PrivateRoute path="/canvas/:id" component={Canvas} />				    		
+          				<PrivateRoute path="/source/:id" component={Source}/>
+                          <PrivateRoute path="/search" component={BackendSearch} />
+                          <PrivateRoute path="/entity/:neo4j_id" component={Entity} />
+      				</Switch>
+            </div>
         	</div>
         );
     }

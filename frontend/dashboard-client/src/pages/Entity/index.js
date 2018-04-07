@@ -4,6 +4,7 @@ import './style.css'
 
 import EntityCard from '../../components/EntityCard/';
 import Neo4jGraphContainer from '../../components/NodeGraph/containers/Neo4jContainer/'
+import DatabaseSearchBar from '../../components/SearchBar/databaseSearchBar'
 
 import SummaryInfo from './components/SummaryInfo/';
 import ConnectionsTab from './components/ConnectionsTab/';
@@ -28,7 +29,8 @@ class Entity extends Component {
     super(props);
     this.state ={
       nodeData: null,
-      relationshipData: null
+      relationshipData: null,
+      graphData: null
     }
     this.loadData = this.loadData.bind(this);
   }
@@ -45,7 +47,6 @@ class Entity extends Component {
     server.getBackendNode(neo4j_id)
       .then(data => {
         //returns items in the format: [neo4j_data]
-        debugger
         this.setState({nodeData: data[0]})
       })
       .catch(err => {
@@ -60,34 +61,52 @@ class Entity extends Component {
       .catch(err => {
         console.log(err)
       })
+    server.getGraph(neo4j_id)
+      .then(data => {
+        /* neo4j returns items in this format: [connection, startNode, endNode] */
+        this.setState({graphData: data})
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
 
 
   render(){
-    if (this.state.nodeData== null || this.state.relationshipData==null) {
+    if (this.state.nodeData== null || this.state.graphData==null) {
       return (
         <div>Loading</div>
       );
     } else {
       return(
-        <div className="entityInfo">
-          <EntityCard nodeItem={this.state.nodeData[0]} />
-          <hr></hr>
-          <SummaryInfo nodeItem={this.state.nodeData[0]} nodeRelationships={this.state.relationshipData}/>
-          <div className="tabs" style={{width:'100%'}}>
-            <Tabs className="tab">
-              <Tab label={"Connections (" + this.state.relationshipData.length + ")"} type="default" style={tab_style}>
-                <div className="connections-tab">
-                  <ConnectionsTab nodeRelationships={this.state.relationshipData}/>
-                </div>
-              </Tab>
-              <Tab label="Graph" style={tab_style}>
-                <div className="graph">
-                  <Neo4jGraphContainer relationshipData={this.state.relationshipData} />
-                </div>
-              </Tab>
-            </Tabs>
+      <div>
+        <Neo4jGraphContainer graphData={this.state.graphData} />
+
+        <div className="search-side-container">
+          <div className="search-side">
+            <div className="search-bar">
+              <DatabaseSearchBar/>
+            </div>
+            <div className="entityInfo">
+              <EntityCard nodeItem={this.state.nodeData[0]} />
+              <hr></hr>
+              <SummaryInfo nodeItem={this.state.nodeData[0]} nodeRelationships={this.state.relationshipData}/>
+              <div className="tabs" style={{width:'100%'}}>
+                <Tabs className="tab">
+                  <Tab label={"Connections (" + this.state.relationshipData.length + ")"} type="default" style={tab_style}>
+                    <div className="connections-tab">
+                      <ConnectionsTab nodeRelationships={this.state.relationshipData}/>
+                    </div>
+                  </Tab>
+                  <Tab label="Graph" style={tab_style}>
+                    <div className="graph">
+                    </div>
+                  </Tab>
+                </Tabs>
+              </div>          
+              </div>
+            </div> 
           </div>
         </div>
       );

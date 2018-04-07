@@ -10,7 +10,7 @@ const height = window.innerHeight,
     brushY = d3.scale.linear().range([0, height]),
     maxTextLength = 20;
 
-let node, link, hull, nodes, links, hulls, nodeEnter;
+var node, link, hull, nodes, links, hulls, nodeEnter;
 let globallinkid = -1;
 let globalnodeid = -1;
 
@@ -59,64 +59,13 @@ const brush = d3.svg.brush()
   .on('brushend', brushend)
   .x(brushX).y(brushY);
 
-// Create canvas
-const svg = d3.select('#graph-container').append('svg')
-      .attr('id', 'canvas')
-      .attr('width', width)
-      .attr('height', height)
-      .call(zoom);
-
-// Normally we append a g element right after call(zoom), but in this case we don't
-// want panning to translate the brush off the screen (disabling all mouse events).
-const svgBrush = svg.append('g')
-  .attr('class', 'brush')
-  .call(brush);
-
-// We need this reference because selectAll and listener calls will refer to svg, 
-// whereas new append calls must be within the same g, in order for zoom to work.
-const container = svg.append('g');
-
-//set up how to draw the hulls
-const curve = d3.svg.line()
-  .interpolate('cardinal-closed')
-  .tension(.85);
-
-// Draw gridlines
-const svgGrid = container.append('g');
-const gridLength = 80;
-const numTicks = width / gridLength * (1/minScale);
-
-svgGrid
-  .append('g')
-    .attr('class', 'x-ticks')
-  .selectAll('line')
-    .data(d3.range(0, (numTicks + 1) * gridLength, gridLength))
-  .enter().append('line')
-    .attr('x1', function(d) { return d; })
-    .attr('y1', function(d) { return -1 * gridLength; })
-    .attr('x2', function(d) { return d; })
-    .attr('y2', function(d) { return (1/minScale) * height + gridLength; });
-
-svgGrid
-  .append('g')
-    .attr('class', 'y-ticks')
-  .selectAll('line')
-    .data(d3.range(0, (numTicks + 1) * gridLength, gridLength))
-  .enter().append('line')
-  .attr('x1', function(d) { return -1 * gridLength; })
-  .attr('y1', function(d) { return d; })
-  .attr('x2', function(d) { return (1/minScale) * width + gridLength; })
-  .attr('y2', function(d) { return d; });
-
-// Extent invisible on left click
-svg.on('mousedown', () => {
-  svgBrush.style('opacity', isRightClick() ? 1 : 0);
-});
-
-// Disable context menu from popping up on right click
-svg.on('contextmenu', function (d, i) {
-  d3.event.preventDefault();
-});
+var svg = null,
+ svgBrush=null, 
+ container=null, 
+ curve = null,
+  svgGrid= null, 
+ gridLength=null, 
+ numTicks=null;
 
 // Create force
 const force = d3.layout.force()
@@ -124,7 +73,14 @@ const force = d3.layout.force()
       .size([width, height]);
 
 function update(){
-    link = link.data(links, function(d) { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
+    // this.setState({
+    //   link: this.state.link.data(links, function(d) { return d.id; }), //resetting the key is important because otherwise it maps the new data to the old data in order
+    //   node: this.state.node.data(nodes, function(d){ return d.id; })
+    // });
+
+    link = link.data(links, function(d) { return d.id; }), //resetting the key is important because otherwise it maps the new data to the old data in order
+    node = node.data(nodes, function(d){ return d.id; })
+
     link
       .enter().append('line')
       .attr('class', 'link')
@@ -133,7 +89,6 @@ function update(){
 
     link.exit().remove(); 
 
-    node = node.data(nodes, function(d){ return d.id; });
     nodeEnter = node.enter().append('g')
         .attr('class', 'node')
         .attr('dragfix', false)
@@ -973,40 +928,115 @@ class NodeGraph extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      text: true
+      text: true,
+      nodes: null,
+      links: null,
+      hulls: null,
+      link: null,
+      node: null,
+      hull: null,
+      nodeEnter: null
     };
   }
 
-  generateNetworkCanvas(inputnodes, inputlinks, includeText, width=500, height=300) {
+  generateNetworkCanvas(centerid, inputnodes, inputlinks, includeText, width=500, height=300) {
+  // Create canvas
+  svg = d3.select('#graph-container').append('svg')
+        .attr('id', 'canvas')
+        .attr('width', width)
+        .attr('height', height)
+        .call(zoom);
 
-    nodes = inputnodes
-    links = inputlinks
-    hulls = []
+  // Normally we append a g element right after call(zoom), but in this case we don't
+  // want panning to translate the brush off the screen (disabling all mouse events).
+  svgBrush = svg.append('g')
+    .attr('class', 'brush')
+    .call(brush);
 
+  // We need this reference because selectAll and listener calls will refer to svg, 
+  // whereas new append calls must be within the same g, in order for zoom to work.
+  container = svg.append('g');
+
+  //set up how to draw the hulls
+  curve = d3.svg.line()
+    .interpolate('cardinal-closed')
+    .tension(.85);
+
+  // Draw gridlines
+  svgGrid = container.append('g');
+  gridLength = 80;
+  numTicks = width / gridLength * (1/minScale);
+
+  svgGrid
+    .append('g')
+      .attr('class', 'x-ticks')
+    .selectAll('line')
+      .data(d3.range(0, (numTicks + 1) * gridLength, gridLength))
+    .enter().append('line')
+      .attr('x1', function(d) { return d; })
+      .attr('y1', function(d) { return -1 * gridLength; })
+      .attr('x2', function(d) { return d; })
+      .attr('y2', function(d) { return (1/minScale) * height + gridLength; });
+
+  svgGrid
+    .append('g')
+      .attr('class', 'y-ticks')
+    .selectAll('line')
+      .data(d3.range(0, (numTicks + 1) * gridLength, gridLength))
+    .enter().append('line')
+    .attr('x1', function(d) { return -1 * gridLength; })
+    .attr('y1', function(d) { return d; })
+    .attr('x2', function(d) { return (1/minScale) * width + gridLength; })
+    .attr('y2', function(d) { return d; });
+
+  // Extent invisible on left click
+  svg.on('mousedown', () => {
+    svgBrush.style('opacity', isRightClick() ? 1 : 0);
+  });
+
+  // Disable context menu from popping up on right click
+  svg.on('contextmenu', function (d, i) {
+    d3.event.preventDefault();
+  });
+
+    // this.setState({
+    //   nodes: inputnodes,
+    //   links: inputlinks,
+    //   hulls: []
+    // })
+    nodes = inputnodes;
+    links = inputlinks;
+    hulls = [];
    // Needed this code when loading 43.json to prevent it from disappearing forever by pinning the initial node
-  // var index
-  //   nodes.map((node, i)=> {
-  //     if (node.id===43) {
-  //       index = i
-  //     }
-  //   })
+    var index
+    nodes.map((node, i)=> {
+      if (node.id===centerid) {
+        index = i
+      }
+    })
 
-  //   nodes[index].fixed = true;
-  //   nodes[index].px = width/2
-  //   nodes[index].py = height/2; 
+    nodes[index].fixed = true;
+    nodes[index].px = width/2
+    nodes[index].py = height/2; 
 
     force
       .gravity(.25)
-      .charge(-1 * Math.max(Math.pow(nodes.length, 2), 750))
-      .friction(nodes.length < 15 ? .75 : .65)
+      .charge(-1 * Math.max(Math.pow(inputnodes.length, 2), 750))
+      .friction(inputnodes.length < 15 ? .75 : .65)
       .alpha(.8)
       .nodes(nodes)
       .links(links);
 
     // Create selectors
-    hull = container.append('g').selectAll('.hull')  
-    link = container.append('g').selectAll('.link');
-    node = container.append('g').selectAll('.node');
+    this.setState({
+      hull: container.append('g').selectAll('.hull'),
+      link: container.append('g').selectAll('.link'),
+      node: container.append('g').selectAll('.node')
+    });
+
+    hull = container.append('g').selectAll('.hull'),
+    link = container.append('g').selectAll('.link'),
+    node = container.append('g').selectAll('.node')
 
     // Updates nodes and links according to current data
     update();
@@ -1017,23 +1047,23 @@ class NodeGraph extends Component {
 
   };
 
-  updateGraph(inputnodes, inputlinks, text) {
-    const mountPoint = d3.select('#svgdiv');
+  updateGraph(centerid, inputnodes, inputlinks, text) {
+    const mountPoint = d3.select('#graph-container');
     mountPoint.selectAll("svg").remove();
-    this.generateNetworkCanvas(inputnodes, inputlinks, text, this.props.width, this.props.height);
+    this.generateNetworkCanvas(centerid, inputnodes, inputlinks, text, width, height);
   }
 
   componentWillReceiveProps(nextProps) {		
 		/* When the props update (aka when there's a new entity or relationship), 
 			delete the old graph and create a new one */
 
-		this.updateGraph(nextProps.nodes, nextProps.links, this.state.text, this.props.width, this.props.height);
+		this.updateGraph(nextProps.centerid, nextProps.nodes, nextProps.links, this.state.text)
 	};
 
 	componentDidMount = () => {
 		/* builds the first graph based on after the component mounted and mountPoint was created. */
 
-		this.generateNetworkCanvas(this.props.nodes,this.props.links, this.state.text, this.props.width, this.props.height);
+    this.generateNetworkCanvas(this.props.centerid, this.props.nodes,this.props.links, this.state.text, width, height);
 	};
 
   updateCheck() {
@@ -1046,15 +1076,8 @@ class NodeGraph extends Component {
 
 	render() {
 		return (
-			<div className="filled">
-        <div style={{position:"absolute"}}>
-          <Checkbox
-            label="Include Text"
-            checked={this.state.text}
-            onClick={this.updateCheck.bind(this)}
-          />
-        </div>
-				<div id="svgdiv" ref="mountPoint" />
+      <div>
+        <div id="graph-container"></div>
 			</div>
 		);
 	};

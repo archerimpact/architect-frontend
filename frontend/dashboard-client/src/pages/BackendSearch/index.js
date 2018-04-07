@@ -5,6 +5,7 @@ import './style.css'
 
 import DatabaseSearchBar from '../../components/SearchBar/databaseSearchBar'
 import SearchDataList from './components/SearchDataList/'
+import Neo4jGraphContainer from '../../components/NodeGraph/containers/Neo4jContainer/'
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -30,7 +31,8 @@ class BackendSearch extends Component {
     this.updateSearch = this.updateSearch.bind(this);
     this.state={
       searchData: null,
-      nodesData: null
+      nodesData: null,
+      graphData: null
     }
   }
 
@@ -40,6 +42,14 @@ class BackendSearch extends Component {
 
     if (this.props.search != null ){
       this.searchBackendText(this.props.search);
+      server.getGraph(34192)
+        .then((data) => {
+          /* neo4j returns items in this format: [connection, startNode, endNode] */
+          this.setState({graphData: data})
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }    
   }
 
@@ -48,6 +58,14 @@ class BackendSearch extends Component {
       searching again in the nav bar; react only recognizes that there's nextprops */
 
     this.searchBackendText(nextprops.search);
+    server.getGraph(34192)
+      .then(data => {
+        /* neo4j returns items in this format: [connection, startNode, endNode] */
+        this.setState({graphData: data})
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   submitSearch(query){
@@ -74,7 +92,6 @@ class BackendSearch extends Component {
   searchBackendNodes(idsArray){
     server.getBackendNodes(idsArray)
       .then(data => {
-        debugger
           this.setState({nodesData: data});      
       })
       .catch(err => {
@@ -84,14 +101,18 @@ class BackendSearch extends Component {
 
   render() {
     return(
-      <div className="search-side-container">
-        <div className="search-side">
-          <div className="search-bar">
-            <DatabaseSearchBar/>
+      <div>
+        <Neo4jGraphContainer graphData={this.state.graphData} />
+
+        <div className="search-side-container">
+          <div className="search-side">
+            <div className="search-bar">
+              <DatabaseSearchBar/>
+            </div>
+            <SearchDataList searchItems={this.state.searchData} nodeItems={this.state.nodesData}/>
           </div>
-          <SearchDataList searchItems={this.state.searchData} nodeItems={this.state.nodesData}/>
-        </div>
-      </div> 
+        </div> 
+      </div>
     );
   }
 }
