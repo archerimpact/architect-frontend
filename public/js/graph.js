@@ -744,7 +744,7 @@ function toggleGroupView(groupId) {
 //Hull functions
 function createHull(group) {
   var vertices = [];
-  var offset = 30; //arbitrary, 2* the size of the node radius
+  var offset = 20; //arbitrary, the size of the node radius
   group.nodes.map(function(d) {
     vertices.push(
       [d.x + offset, d.y + offset], // creates a buffer around the nodes so the hull is larger
@@ -862,7 +862,7 @@ function reattachLink(link, newNodeId, removedNodes, nodeIdsToIndex) {
   }
 }
 
-function moveLinksFromOldNodesToGroup(removedNodes, group) {
+function moveLinksFromOldNodesToGroup(removedNodes, group, ) {
   /* takes in an array of removedNodes and a group
     removes links attached to these nodes
     if the removed link was already attached to a group, don't add that link to the group's list of links 
@@ -871,6 +871,7 @@ function moveLinksFromOldNodesToGroup(removedNodes, group) {
     then reattach the link */
   const removedNodesDict = {};
   const nodeIdsToIndex = {};
+  const existingLinks = {};
 
   removedNodes.map((node) => {
     removedNodesDict[node.id] = true;
@@ -879,6 +880,9 @@ function moveLinksFromOldNodesToGroup(removedNodes, group) {
   nodes.map((node, i) => {
     nodeIdsToIndex[node.id] = i; //map all nodeIds to their new index
   });
+  group.links.map((link)=>{
+    existingLinks[link.target.id + ',' + link.source.id] = true;
+  })
 
   links.slice().map((link) => {
     const removedLink = removeLink(removedNodesDict, link);
@@ -886,10 +890,11 @@ function moveLinksFromOldNodesToGroup(removedNodes, group) {
       const groupids = Object.keys(groups).map((key) => { return parseInt(key); });
       if (isInArray(link.target.id, groupids) || isInArray(link.source.id, groupids)) {
         // do nothing if the removed link was attached to a group
+      } else if (existingLinks[link.target.id + ',' + link.source.id]) {
+        //do nothing if the link already exists in the group, i.e. if you're expanding
       } else {
         group.links.push(removedLink);
       }
-
       reattachLink(link, group.id, removedNodesDict, nodeIdsToIndex);
     }
   });
