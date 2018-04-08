@@ -5,12 +5,12 @@ import data from './dataReducer';
 const config = {
   key: 'root',
   storage
-}
+};
 
-config.debug = true
+config.debug = true;
 const reducers = {
   data
 };
 
 const reducer = persistCombineReducers(config, reducers);
-export default reducer
+export default reducer;

@@ -30,7 +30,7 @@ export function searchBackendText(searchQuery) {
         }
       }
     }
-  } 
+  };
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
         params: {
@@ -43,7 +43,7 @@ export function searchBackendText(searchQuery) {
     })
     .catch(function(error) {
       console.log(error);
-    })
+    });
   });
 }
 
@@ -58,7 +58,7 @@ export function getBackendNode(neo4j_id){
           }
     */
 
-  var url = configData.neo4j_url + '/db/data/cypher'
+  var url = configData.neo4j_url + '/db/data/cypher';
   var headers = {
     headers: {
       'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ export function getBackendNode(neo4j_id){
     params: {
       neo4j_id: parseInt(neo4j_id)
     }   
-  }
+  };
   return new Promise(function(fulfill, reject) {
     axios.post(url, data, headers)
     .then(function (response) {
@@ -78,7 +78,7 @@ export function getBackendNode(neo4j_id){
     })
     .catch(function(error) {
       console.log(error);
-    })
+    });
   }); 
 }
 
@@ -95,7 +95,7 @@ export function getBackendNodes(neo4j_ids){
 
   */
 
-  var url = configData.neo4j_url + '/db/data/cypher'
+  var url = configData.neo4j_url + '/db/data/cypher';
   var headers = {
     headers: {
       'Content-Type': 'application/json',
@@ -107,7 +107,8 @@ export function getBackendNodes(neo4j_ids){
     params: {
       neo4j_ids: neo4j_ids
     }   
-  }
+  };
+
   return new Promise(function(fulfill, reject) {
     axios.post(url, data, headers)
     .then(function (response) {
@@ -115,7 +116,7 @@ export function getBackendNodes(neo4j_ids){
     })
     .catch(function(error) {
       console.log(error);
-    })
+    });
   }); 
 }
 
@@ -130,7 +131,7 @@ export function getBackendRelationships(neo4j_id){
         }
   */
 
-  var url = configData.neo4j_url + '/db/data/cypher'
+  var url = configData.neo4j_url + '/db/data/cypher';
   var headers = {
     headers: {
       'Content-Type': 'application/json',
@@ -142,7 +143,8 @@ export function getBackendRelationships(neo4j_id){
     'params': {
       'neo4j_id': parseInt(neo4j_id)
     } 
-  }
+  };
+
   return new Promise(function(fulfill, reject) {
     axios.post(url, data, headers)
     .then(function (response) {
@@ -150,7 +152,7 @@ export function getBackendRelationships(neo4j_id){
     })
     .catch(function(error) {
       console.log(error);
-    })
+    });
   }); 
 }
 
@@ -175,7 +177,7 @@ export function getGraph(neo4j_id){
     }
   */
 
-  var url = 'http://35.203.167.230:7474/db/data/cypher'
+  var url = 'http://35.203.167.230:7474/db/data/cypher';
   var headers = {
     headers: {
       'Content-Type': 'application/json',
@@ -188,7 +190,8 @@ export function getGraph(neo4j_id){
     'params': {
       'neo4j_id': parseInt(neo4j_id)
     } 
-  }
+  };
+
   return new Promise(function(fulfill, reject) {
     axios.post(url, data, headers)
     .then(function (response) {
@@ -196,7 +199,7 @@ export function getGraph(neo4j_id){
     })
     .catch(function(error) {
       console.log(error);
-    })
+    });
   }); 
 
 }

@@ -87,31 +87,26 @@ class Entity extends Component {
       );
     } else {
       return(
-      <div>
-        <Neo4jGraphContainer graphData={this.state.graphData} />
-
-        <div className="search-side-container">
-          <div className="search-side">
-            <div className="search-bar">
-              <DatabaseSearchBar/>
-            </div>
-            <div className="entityInfo">
-              <EntityCard nodeItem={this.state.nodeData[0]} />
-              <hr></hr>
-              <SummaryInfo nodeItem={this.state.nodeData[0]} nodeRelationships={this.state.relationshipData}/>
-              <div className="tabs" style={{width:'100%'}}>
-                <Tabs className="tab">
-                  <Tab label={"Connections (" + this.state.relationshipData.length + ")"} type="default" style={tab_style}>
-                    <div className="connections-tab">
-                      <ConnectionsTab nodeRelationships={this.state.relationshipData}/>
-                    </div>
-                  </Tab>
-                  <Tab label="Graph" style={tab_style}>
-                    <div className="graph">
-                    </div>
-                  </Tab>
-                </Tabs>
-              </div>          
+        <div>
+          <Neo4jGraphContainer graphData={this.state.graphData} />
+          <div className="search-side-container">
+            <div className="search-side">
+              <div className="search-bar">
+                <DatabaseSearchBar/>
+              </div>
+              <div className="entityInfo">
+                <EntityCard nodeItem={this.state.nodeData[0]} />
+                <hr></hr>
+                <SummaryInfo nodeItem={this.state.nodeData[0]} nodeRelationships={this.state.relationshipData}/>
+                <div className="tabs" style={{width:'100%'}}>
+                  <Tabs className="tab">
+                    <Tab label={"Connections (" + this.state.relationshipData.length + ")"} type="default" style={tab_style}>
+                      <div className="connections-tab">
+                        <ConnectionsTab nodeRelationships={this.state.relationshipData}/>
+                      </div>
+                    </Tab>
+                  </Tabs>
+                </div>          
               </div>
             </div> 
           </div>
@@ -125,12 +120,12 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(actions, dispatch),
     dispatch: dispatch,
-  }
+  };
 }
 
 function mapStateToProps(state, props) {
   return{
-  }
+  };
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Entity));

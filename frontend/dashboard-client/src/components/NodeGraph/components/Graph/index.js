@@ -944,87 +944,84 @@ class NodeGraph extends Component {
   }
 
   generateNetworkCanvas(centerid, inputnodes, inputlinks, includeText, width=500, height=300) {
-  // Create canvas
-  svg = d3.select('#graph-container').append('svg')
-        .attr('id', 'canvas')
-        .attr('width', width)
-        .attr('height', height)
-        .call(zoom);
+    // Create canvas
+    svg = d3.select('#graph-container').append('svg')
+          .attr('id', 'canvas')
+          .attr('width', width)
+          .attr('height', height)
+          .call(zoom);
 
-  // Normally we append a g element right after call(zoom), but in this case we don't
-  // want panning to translate the brush off the screen (disabling all mouse events).
-  svgBrush = svg.append('g')
-    .attr('class', 'brush')
-    .call(brush);
+    // Normally we append a g element right after call(zoom), but in this case we don't
+    // want panning to translate the brush off the screen (disabling all mouse events).
+    svgBrush = svg.append('g')
+      .attr('class', 'brush')
+      .call(brush);
 
-  // We need this reference because selectAll and listener calls will refer to svg, 
-  // whereas new append calls must be within the same g, in order for zoom to work.
-  container = svg.append('g');
+    // We need this reference because selectAll and listener calls will refer to svg, 
+    // whereas new append calls must be within the same g, in order for zoom to work.
+    container = svg.append('g');
 
-  //set up how to draw the hulls
-  curve = d3.svg.line()
-    .interpolate('cardinal-closed')
-    .tension(.85);
+    //set up how to draw the hulls
+    curve = d3.svg.line()
+      .interpolate('cardinal-closed')
+      .tension(.85);
 
-  // Draw gridlines
-  svgGrid = container.append('g');
-  gridLength = 80;
-  numTicks = width / gridLength * (1/minScale);
+    // Draw gridlines
+    svgGrid = container.append('g');
+    gridLength = 80;
+    numTicks = width / gridLength * (1/minScale);
 
-  svgGrid
-    .append('g')
-      .attr('class', 'x-ticks')
-    .selectAll('line')
-      .data(d3.range(0, (numTicks + 1) * gridLength, gridLength))
-    .enter().append('line')
-      .attr('x1', function(d) { return d; })
-      .attr('y1', function(d) { return -1 * gridLength; })
-      .attr('x2', function(d) { return d; })
-      .attr('y2', function(d) { return (1/minScale) * height + gridLength; });
+    svgGrid
+      .append('g')
+        .attr('class', 'x-ticks')
+      .selectAll('line')
+        .data(d3.range(0, (numTicks + 1) * gridLength, gridLength))
+      .enter().append('line')
+        .attr('x1', function(d) { return d; })
+        .attr('y1', function(d) { return -1 * gridLength; })
+        .attr('x2', function(d) { return d; })
+        .attr('y2', function(d) { return (1/minScale) * height + gridLength; });
 
-  svgGrid
-    .append('g')
-      .attr('class', 'y-ticks')
-    .selectAll('line')
-      .data(d3.range(0, (numTicks + 1) * gridLength, gridLength))
-    .enter().append('line')
-    .attr('x1', function(d) { return -1 * gridLength; })
-    .attr('y1', function(d) { return d; })
-    .attr('x2', function(d) { return (1/minScale) * width + gridLength; })
-    .attr('y2', function(d) { return d; });
+    svgGrid
+      .append('g')
+        .attr('class', 'y-ticks')
+      .selectAll('line')
+        .data(d3.range(0, (numTicks + 1) * gridLength, gridLength))
+      .enter().append('line')
+      .attr('x1', function(d) { return -1 * gridLength; })
+      .attr('y1', function(d) { return d; })
+      .attr('x2', function(d) { return (1/minScale) * width + gridLength; })
+      .attr('y2', function(d) { return d; });
 
-  // Extent invisible on left click
-  svg.on('mousedown', () => {
-    svgBrush.style('opacity', isRightClick() ? 1 : 0);
-  });
+    // Extent invisible on left click
+    svg.on('mousedown', () => {
+      svgBrush.style('opacity', isRightClick() ? 1 : 0);
+    });
 
-  // Disable context menu from popping up on right click
-  svg.on('contextmenu', function (d, i) {
-    d3.event.preventDefault();
-  });
+    // Disable context menu from popping up on right click
+    svg.on('contextmenu', function (d, i) {
+      d3.event.preventDefault();
+    });
 
-    // this.setState({
-    //   nodes: inputnodes,
-    //   links: inputlinks,
-    //   hulls: []
-    // })
     hidden.links = [];
     hidden.nodes = [];
     nodes = inputnodes;
     links = inputlinks;
     hulls = [];
-   // Needed this code when loading 43.json to prevent it from disappearing forever by pinning the initial node
-    var index
+   
+   // pin the center node to the middle
+   var index;
     nodes.map((node, i)=> {
       if (node.id===centerid) {
-        index = i
+        index = i;
       }
-    })
+    });
 
     nodes[index].fixed = true;
-    nodes[index].px = width/2
+    nodes[index].px = width/2;
     nodes[index].py = height/2; 
 
+    //generate force
     force
       .gravity(.25)
       .charge(-1 * Math.max(Math.pow(inputnodes.length, 2), 750))
@@ -1049,7 +1046,7 @@ class NodeGraph extends Component {
 
   updateGraph(centerid, inputnodes, inputlinks, text) {
     const mountPoint = d3.select('#graph-container');
-    mountPoint.selectAll("svg").remove();
+    mountPoint.selectAll("svg").remove(); // TO-DO: implement updating of the graph to add/remove nodes instead of removing the SVG
     this.generateNetworkCanvas(centerid, inputnodes, inputlinks, text, width, height);
   }
 
@@ -1057,7 +1054,7 @@ class NodeGraph extends Component {
 		/* When the props update (aka when there's a new entity or relationship), 
 			delete the old graph and create a new one */
 
-		this.updateGraph(nextProps.centerid, nextProps.nodes, nextProps.links, this.state.text)
+		this.updateGraph(nextProps.centerid, nextProps.nodes, nextProps.links, this.state.text);
 	};
 
 	componentDidMount = () => {

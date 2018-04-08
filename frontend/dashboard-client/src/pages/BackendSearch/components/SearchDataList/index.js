@@ -44,8 +44,9 @@ class EntityResult extends Component {
     super(props);
     this.state = {
       toggled: false
-    }
+    };
   }
+  
   render() {
     return (
       <div className='entity-result' onClick={()=>this.setState({toggled:!this.state.toggled})}>

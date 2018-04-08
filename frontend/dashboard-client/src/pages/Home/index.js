@@ -34,7 +34,7 @@ class Login extends Component {
 
 class Home extends Component {
 
-    render() {
+  render() {
     return (
         <div className='home-container' style={{height:'100%'}}>
           <h1>ARCHITECT</h1>
@@ -44,21 +44,21 @@ class Home extends Component {
           </div>
         </div>
     );
-    }
+  }
 }
 
 function mapDispatchToProps(dispatch) {
-    return {
-        actions: bindActionCreators(actions, dispatch),
-        dispatch: dispatch,
-    };
+  return {
+    actions: bindActionCreators(actions, dispatch),
+    dispatch: dispatch,
+  };
 }
 
 function mapStateToProps(state) {
-    return {
-        savedEntities: state.data.savedEntities,
-        savedSources: state.data.savedSources
-    };
+  return {
+    savedEntities: state.data.savedEntities,
+    savedSources: state.data.savedSources
+  };
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Home));

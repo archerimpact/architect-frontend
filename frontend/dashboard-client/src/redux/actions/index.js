@@ -26,7 +26,7 @@ export function userLogOut() {
 				dispatch(userLogOutDispatch());
 			})
 			.catch(err => {
-				console.log(err)
-			})
-	}
+				console.log(err);
+			});
+	};
 }
