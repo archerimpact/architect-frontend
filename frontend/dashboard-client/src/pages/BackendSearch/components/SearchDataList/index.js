@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import EntityCard from '../../../../components/EntityCard/';
 import SummaryInfo from '../../../Entity/components/SummaryInfo/';
-import './style.css'
+import './style.css';
 
 class SearchDataList extends Component {
 
@@ -10,10 +10,8 @@ class SearchDataList extends Component {
     super(props);
     this.state = {
       toggled: false
-    }
+    };
   }
-
-
 
   render() {
     if (this.props.searchItems == null || this.props.nodeItems==null){
@@ -34,7 +32,6 @@ class SearchDataList extends Component {
             return(
               <EntityResult nodeItem={nodeItemData} key={key}/>
             );
-
           })}
         </div>
       );
@@ -49,18 +46,17 @@ class EntityResult extends Component {
       toggled: false
     }
   }
-
-    render() {
-      return (
-        <div className='entity-result' onClick={()=>this.setState({toggled:!this.state.toggled})}>
-          <EntityCard 
-            nodeItem={this.props.nodeItem} 
-            key={this.props.key} 
-          />
-          {this.state.toggled?<SummaryInfo nodeItem={this.props.nodeItem}/>: null }
-        </div>
-        )
-    }
+  render() {
+    return (
+      <div className='entity-result' onClick={()=>this.setState({toggled:!this.state.toggled})}>
+        <EntityCard 
+          nodeItem={this.props.nodeItem} 
+          key={this.props.key} 
+        />
+        {this.state.toggled?<SummaryInfo nodeItem={this.props.nodeItem}/>: null }
+      </div>
+    );
+  }
 }
 
 export default SearchDataList;

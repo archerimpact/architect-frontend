@@ -1,15 +1,5 @@
-/*
 .main {
-    margin-left: 220px; // Same as the width of the sidebar 
-    background-color: #F5F5F5;
-    min-height: calc(100% - 64px);
-    width: calc(100% - 220px);
-    position: absolute;
-    margin-top: 64px;
-}*/
-
-.main {
-    margin-left: 0px; // Same as the width of the sidebar 
+    margin-left: 0px;
     background-color: #F5F5F5;
     min-height: calc(100% - 64px);
     width: calc(100%);

@@ -54,40 +54,36 @@ class BackendSearch extends Component {
   searchBackend(query){
     server.searchBackendText(query)
       .then((data)=>{
-        this.setState({searchData: data.hits.hits, nodesData: null})
-        this.fetchGraph(data.hits.hits[0]._source.neo4j_id)
+        this.setState( {searchData: data.hits.hits, nodesData: null} );
+        this.fetchGraph(data.hits.hits[0]._source.neo4j_id);
         var ids = data.hits.hits.map((item) => {
           return item._source.neo4j_id
         });
         this.searchBackendNodes(ids); //use the neo4jids of the elastic results to get all data
       })
-      .catch((error) => {console.log(error)});
+      .catch((error) => { console.log(error); });
   }
 
   searchBackendNodes(idsArray){
     server.getBackendNodes(idsArray)
       .then(data => {
-          this.setState({nodesData: data});      
+          this.setState( {nodesData: data} );      
       })
-      .catch(err => {
-        console.log(err);
-      })
+      .catch(err => { console.log(err); });
   }
 
   fetchGraph(id){
-    server.getGraph(34192)
+    server.getGraph(id)
       .then(data => {
         /* neo4j returns items in this format: [connection, startNode, endNode] */
-        this.setState({graphData: data})
+        this.setState( {graphData: data} );
       })
-      .catch(err => {
-        console.log(err)
-      }) 
+      .catch(err => { console.log(err); });
   }
 
   renderGraph() { //render the graph separately in case the data takes a long time to load
     if (this.state.graphData != null) {
-      return(<Neo4jGraphContainer graphData={this.state.graphData} />)
+      return(<Neo4jGraphContainer graphData={this.state.graphData} />);
     } 
   }
 
@@ -118,12 +114,12 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(actions, dispatch),
     dispatch: dispatch,
-  }
+  };
 }
 
 function mapStateToProps(state, props) {
   return{
-  }
+  };
 }
 
 export default withRouter(addUrlProps({ urlPropsQueryConfig })(connect(mapStateToProps, mapDispatchToProps)(BackendSearch)));

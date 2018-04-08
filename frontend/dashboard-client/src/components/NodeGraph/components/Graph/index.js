@@ -1008,6 +1008,8 @@ class NodeGraph extends Component {
     //   links: inputlinks,
     //   hulls: []
     // })
+    hidden.links = [];
+    hidden.nodes = [];
     nodes = inputnodes;
     links = inputlinks;
     hulls = [];
@@ -1032,12 +1034,6 @@ class NodeGraph extends Component {
       .links(links);
 
     // Create selectors
-    this.setState({
-      hull: container.append('g').selectAll('.hull'),
-      link: container.append('g').selectAll('.link'),
-      node: container.append('g').selectAll('.node')
-    });
-
     hull = container.append('g').selectAll('.hull'),
     link = container.append('g').selectAll('.link'),
     node = container.append('g').selectAll('.node')

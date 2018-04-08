@@ -38,20 +38,20 @@ class NavBar extends Component {
     this.state={
       searchData: null,
       fireRedirect: false,
-    }
+    };
   }
 
   searchBackendText(query){
     server.searchBackendText(query)
       .then((data)=>{
-        this.setState({searchData: data.hits.hits})
+        this.setState({searchData: data.hits.hits});
       })
       .catch((error) => {console.log(error)});
   }
 
   goToSearchPage(query){
     this.setState({fireRedirect: true});
-    this.props.onChangeSearch(query)
+    this.props.onChangeSearch(query);
   }
 
 	render () {
@@ -85,7 +85,7 @@ class NavBar extends Component {
 		);
 
     if (this.state.fireRedirect) {
-      this.setState({fireRedirect:false})
+      this.setState({fireRedirect:false});
       return (
         <Redirect to={'/search?search=' + this.props.search}  />
       );

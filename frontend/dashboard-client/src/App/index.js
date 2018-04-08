@@ -26,41 +26,40 @@ class App extends Component {
 	}
 
 	logIn() {
-		return (<Redirect to={'/login'}/>)
+		return (<Redirect to={'/login'}/>);
 	}
 
-    render() {
-        return ( 
-        	<div>
-      			<NavBar isAuthenticated={this.props.isAuthenticated} logOut={this.logOut.bind(this)} logIn={this.logIn.bind(this)} />
-                  {/*<SideBar isAuthenticated={this.props.isAuthenticated}/>*/}
-            <div className="main">
-          			<Switch>
-          				<PrivateRoute exact path="/" component={Home} />
-          				<Route path="/login" component={Login} />
-                  <Route path="/create_account" component={CreateAccount} />
-                  <PrivateRoute path="/search" component={BackendSearch} />
-                  <PrivateRoute path="/entity/:neo4j_id" component={Entity} />
-      				</Switch>
-            </div>
-        	</div>
-        );
-    }
+  render() {
+    return ( 
+    	<div>
+  			<NavBar isAuthenticated={this.props.isAuthenticated} logOut={this.logOut.bind(this)} logIn={this.logIn.bind(this)} />
+          {/*<SideBar isAuthenticated={this.props.isAuthenticated}/>*/}
+        <div className="main">
+      		<Switch>
+    				<PrivateRoute exact path="/" component={Home} />
+    				<Route path="/login" component={Login} />
+            <Route path="/create_account" component={CreateAccount} />
+            <PrivateRoute path="/search" component={BackendSearch} />
+            <PrivateRoute path="/entity/:neo4j_id" component={Entity} />
+  				</Switch>
+        </div>
+    	</div>
+    );
+  }
 }
 
 
 function mapDispatchToProps(dispatch) {
-    return {
-        actions: bindActionCreators(actions, dispatch),
-        dispatch: dispatch,
-    };
+  return {
+    actions: bindActionCreators(actions, dispatch),
+    dispatch: dispatch,
+  };
 }
 
 function mapStateToProps(state) {
-    return {
-        isAuthenticated: state.data.user.isAuthenticated,
-    };
+  return {
+    isAuthenticated: state.data.user.isAuthenticated,
+  };
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
-

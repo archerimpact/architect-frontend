@@ -16,12 +16,12 @@ class SearchBar extends Component {
   }
 
   updateSearch() {
-    this.setState({searchQuery: this.refs.query.value})
+    this.setState({searchQuery: this.refs.query.value});
     this.props.onChange(this.state.searchQuery);
   }
 
   submitSearch() {
-    this.props.onSubmit(this.state.searchQuery)
+    this.props.onSubmit(this.state.searchQuery);
   }
 
   render (){
@@ -42,4 +42,4 @@ class SearchBar extends Component {
     );
   }
 }
-export default SearchBar
+export default SearchBar;
