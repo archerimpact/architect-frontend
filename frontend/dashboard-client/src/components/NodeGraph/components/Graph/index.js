@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 import './graph.css'
 
 const height = window.innerHeight,
-    width = Math.max(window.innerWidth - 300, height),
+    width = Math.max(window.innerWidth - 500),
     brushX = d3.scale.linear().range([0, width]),
     brushY = d3.scale.linear().range([0, height]),
     maxTextLength = 20;
