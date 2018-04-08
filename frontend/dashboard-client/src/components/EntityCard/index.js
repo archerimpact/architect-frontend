@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 
 import './style.css'
 
-import AddToProject from './components/AddToProject/';
-
 import { Link } from 'react-router-dom';
 
 class EntityCard extends Component {
@@ -22,7 +20,6 @@ class EntityCard extends Component {
             <div className="titleName underline">
               <Link to={"/entity/" + nodeItem.metadata.id}><h2 className="titleText">{nodeItem.data.name}</h2></Link>
             </div>      
-            <AddToProject entity={nodeItem}/>
           </div>
           <i>Person</i>
           <div className="identifyingInfo">
@@ -40,7 +37,6 @@ class EntityCard extends Component {
             <div className="status">
               {nodeItem.data.company_status}
             </div>
-            <AddToProject entity={nodeItem}/>
           </div>
           <i>Company</i>
           <div className="identifyingInfo">
@@ -54,7 +50,6 @@ class EntityCard extends Component {
       return (
         <div className="outerBox">
           <h2 className="titleText">Document</h2>
-          <AddToProject entity={nodeItem}/>
           <p>{"GCS Self: " + nodeItem.data.self}</p>
         </div>
       );

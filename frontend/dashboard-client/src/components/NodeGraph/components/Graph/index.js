@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
-import Checkbox from 'material-ui/Checkbox';
 
 import './graph.css'
 
@@ -792,6 +791,7 @@ function moveLinksFromOldNodesToGroup(removedNodes, group) {
     then reattach the link */
   const removedNodesDict = {};
   const nodeIdsToIndex = {};
+  const existingLinks = {};
 
   removedNodes.map((node) => {
     removedNodesDict[node.id] = true;
@@ -800,6 +800,9 @@ function moveLinksFromOldNodesToGroup(removedNodes, group) {
   nodes.map((node, i) => {
     nodeIdsToIndex[node.id] = i; //map all nodeIds to their new index
   });
+  group.links.map((link)=>{
+    existingLinks[link.target.id + ',' + link.source.id] = true;
+  })
 
   links.slice().map((link) => {
     const removedLink = removeLink(removedNodesDict, link);
@@ -807,10 +810,11 @@ function moveLinksFromOldNodesToGroup(removedNodes, group) {
       const groupids = Object.keys(groups).map((key) => { return parseInt(key); });
       if (isInArray(link.target.id, groupids) || isInArray(link.source.id, groupids)) {
         // do nothing if the removed link was attached to a group
+      } else if (existingLinks[link.target.id + ',' + link.source.id]) {
+        //do nothing if the link already exists in the group, i.e. if you're expanding
       } else {
         group.links.push(removedLink);
       }
-
       reattachLink(link, group.id, removedNodesDict, nodeIdsToIndex);
     }
   });
@@ -1065,14 +1069,6 @@ class NodeGraph extends Component {
 
     this.generateNetworkCanvas(this.props.centerid, this.props.nodes,this.props.links, this.state.text, width, height);
 	};
-
-  updateCheck() {
-    var newText = !this.state.text;
-    this.setState({
-      text: newText
-    });
-    this.updateGraph(this.props.nodes, this.props.links, newText);
-  }
 
 	render() {
 		return (

@@ -5,8 +5,6 @@ import * as actions from '../../redux/actions/';
 import React, { Component, PropTypes } from 'react';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 
-import AppBar from 'material-ui/AppBar';
-
 import DatabaseSearchBar from '../../components/SearchBar/databaseSearchBar'
 import {Link, withRouter} from 'react-router-dom';
 import { Redirect } from 'react-router'

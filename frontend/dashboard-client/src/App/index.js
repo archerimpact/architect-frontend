@@ -7,13 +7,11 @@ import { Route, Redirect, Switch, withRouter} from 'react-router-dom';
 import PrivateRoute from './PrivateRoute/';
 
 import NavBar from '../components/NavBar/';
-import SideBar from '../components/SideBar';
+// import SideBar from '../components/SideBar';
 
 import Login from '../pages/Login/';
 import CreateAccount from '../pages/CreateAccount/';
 import Home from '../pages/Home/';
-import Canvas from '../pages/Canvas/';
-import Source from '../pages/Source/';
 import Entity from '../pages/Entity/';
 import BackendSearch from '../pages/BackendSearch';
 import './style.css';
@@ -41,10 +39,8 @@ class App extends Component {
           				<PrivateRoute exact path="/" component={Home} />
           				<Route path="/login" component={Login} />
                   <Route path="/create_account" component={CreateAccount} />
-          				<PrivateRoute path="/canvas/:id" component={Canvas} />				    		
-          				<PrivateRoute path="/source/:id" component={Source}/>
-                          <PrivateRoute path="/search" component={BackendSearch} />
-                          <PrivateRoute path="/entity/:neo4j_id" component={Entity} />
+                  <PrivateRoute path="/search" component={BackendSearch} />
+                  <PrivateRoute path="/entity/:neo4j_id" component={Entity} />
       				</Switch>
             </div>
         	</div>

@@ -8,7 +8,6 @@ class SummaryInfo extends Component {
 
   render(){
     var nodeItem = this.props.nodeItem;    
-    var relationshipData = this.props.relationshipData
     return(    
       <div className="summaryInfo">
         <p>Address: <b>{nodeItem.data.address}</b></p>

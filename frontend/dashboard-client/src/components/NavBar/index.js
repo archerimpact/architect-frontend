@@ -3,8 +3,6 @@ import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 
 import './style.css'
 
-import AppBar from 'material-ui/AppBar';
-
 import SearchBar from '../SearchBar'
 import {Link, withRouter} from 'react-router-dom';
 import { Redirect } from 'react-router'
