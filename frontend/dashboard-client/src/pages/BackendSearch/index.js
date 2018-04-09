@@ -3,7 +3,7 @@ import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 
 import './style.css'
 
-import SearchBar from '../../components/SearchBar/'
+import DatabaseSearchBar from '../../components/SearchBar/databaseSearchBar'
 import SearchDataList from './components/SearchDataList/'
 
 import { Link } from 'react-router-dom';
@@ -83,9 +83,14 @@ class BackendSearch extends Component {
 
   render() {
     return(
-      <div className="entitiesList">
-        <SearchDataList searchItems={this.state.searchData} nodeItems={this.state.nodesData}/>
-      </div>
+      <div className="search-side-container">
+        <div className="search-side">
+          <div className="search-bar">
+            <DatabaseSearchBar/>
+          </div>
+          <SearchDataList searchItems={this.state.searchData} nodeItems={this.state.nodesData}/>
+        </div>
+      </div> 
     );
   }
 }

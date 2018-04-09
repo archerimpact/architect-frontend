@@ -28,6 +28,7 @@ class SearchBar extends Component {
     return(
       <div className="searchBody">
         <div className="input_container">
+        <form  onSubmit={() => this.submitSearch()}>
           <input className="input" 
             ref="query" 
             type="text" 
@@ -35,6 +36,7 @@ class SearchBar extends Component {
             onChange={(e) => this.updateSearch()}
           />
           <Search className="input_img" onClick={(e) => this.submitSearch()}/>
+        </form>
         </div>
       </div>
     );

@@ -9,7 +9,7 @@ const config = {
 
 config.debug = true
 const reducers = {
-	data
+  data
 };
 
 const reducer = persistCombineReducers(config, reducers);

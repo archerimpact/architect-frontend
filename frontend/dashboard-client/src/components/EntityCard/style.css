@@ -1,8 +1,8 @@
 .outerBox{
   display: block;
   background-color: white;
-  padding: 13px;
-  margin-bottom: 13px;
+  padding: 12px;
+  font-family: Futura, "Trebuchet MS", Arial, sans-serif;
 }
 
 .heading, .identifyingInfo{
