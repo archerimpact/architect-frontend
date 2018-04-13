@@ -460,8 +460,15 @@ d3.select('body')
         .classed('fixed', false);
     }
 
+    // e: Remove links
+    else if (d3.event.keyCode == 69) {
+      console.log("E IS PRESSED");
+      deleteSelectedLinks();
+    }
+
     // g: Group selected nodes
     else if (d3.event.keyCode == 71) {
+      console.log("G IS PRESSED");
       groupSelectedNodes();
     }
 
@@ -544,6 +551,42 @@ function deleteSelectedNodes() {
     }
   });
 
+  nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
+  update();
+}
+
+// Delete selected links
+function deleteSelectedLinks() {
+  /* remove selected nodes from DOM
+      if the node is a group, delete the group */
+  var groupIds = Object.keys(groups);
+  var select = svg.selectAll('.node.selected');
+  let group;
+
+  var removedLinks = removeNodeLinksSelectiveFromDOM(select);
+  //var removedLinks = removeNodeLinksFromDOM(removedNodes);
+
+  removedLinks.map((link)=> { //remove links from their corresponding group
+    if (link.target.group) {
+      group = groups[link.target.group];
+      group.links.splice(group.links.indexOf(link), 1);
+    } if (link.source.group) {
+      group = groups[link.source.group];
+      group.links.splice(group.links.indexOf(link), 1);
+    }
+  });
+
+  // removedNodes.map((node) => {// remove nodes from their corresponding group & if the node is a group delete the group
+  //   if (isInArray(node.id, groupIds)) {
+  //     delete groups[node.id];
+  //   }
+  //   if (node.group) {
+  //     group = groups[node.group];
+  //     group.nodes.splice(group.nodes.indexOf(node), 1);
+  //   }
+  // });
+
+  // MAYBE DO NOT DELETE THIS
   nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
   update();
 }
@@ -845,6 +888,20 @@ function removeLink(removedNodes, link) {
   return removedLink;
 }
 
+function removeSelectiveLink(nodesSelected, link) {
+  /* takes in a list of removed nodes and the link to be removed
+      if both of the nodes in the link target or source are in the list, remove the link and return it
+      if not, then don't remove */
+  let removedLink;
+  //only remove a link if it's attached to a removed node
+  if(nodesSelected[link.source.id] === true && nodesSelected[link.target.id] === true) { //remove all links connected to both nodes to remove
+    const index = links.indexOf(link);
+    removedLink = links.splice(index, 1)[0];
+  }
+
+  return removedLink;
+}
+
 function reattachLink(link, newNodeId, removedNodes, nodeIdsToIndex) {
   /* takes in a link, id of the new nodes, and a dict mapping ids of removed nodes to state
       depending on whether the link source or target will be newNodeId,
@@ -935,6 +992,40 @@ function removeNodeLinksFromDOM(removedNodes) {
 
   links.slice().map((link) => {
     removedLink = removeLink(removedNodesDict, link);
+    if (removedLink) {
+      removedLinks.push(removedLink);
+    }
+  });
+
+  return removedLinks;
+}
+
+function removeNodeLinksSelectiveFromDOM(select) {
+  /* iterates through select to gather list of nodes selected, and removes
+      link if both of its endpoint nodes are selected */
+
+  const nodesSelected = []
+  select
+    .each((d) => {
+      if (nodes.indexOf(d) === -1) {
+        console.log("Error, wasn't in there and node is: ", d, " and nodes is: ", nodes);
+      } else {
+        nodesSelected.push(d);
+      }
+    });
+
+  // NODES CONTAINS STUFF NOW
+
+  const removedLinks = [];
+  let removedLink;
+  const nodesDict = {};
+
+  nodesSelected.map((node) => {
+    nodesDict[node.id] = true;
+  })
+
+  links.slice().map((link) => {
+    removedLink = removeSelectiveLink(nodesDict, link);
     if (removedLink) {
       removedLinks.push(removedLink);
     }
