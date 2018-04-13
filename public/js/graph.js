@@ -462,13 +462,11 @@ d3.select('body')
 
     // e: Remove links
     else if (d3.event.keyCode == 69) {
-      console.log("E IS PRESSED");
       deleteSelectedLinks();
     }
 
     // g: Group selected nodes
     else if (d3.event.keyCode == 71) {
-      console.log("G IS PRESSED");
       groupSelectedNodes();
     }
 
@@ -588,6 +586,7 @@ function deleteSelectedLinks() {
 
   // MAYBE DO NOT DELETE THIS
   nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
+  node.classed("selected", false)
   update();
 }
 
