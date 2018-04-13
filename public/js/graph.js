@@ -562,7 +562,6 @@ function deleteSelectedLinks() {
   let group;
 
   var removedLinks = removeNodeLinksSelectiveFromDOM(select);
-  //var removedLinks = removeNodeLinksFromDOM(removedNodes);
 
   removedLinks.map((link)=> { //remove links from their corresponding group
     if (link.target.group) {
