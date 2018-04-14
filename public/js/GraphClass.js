@@ -19,9 +19,11 @@ class Graph {
     constructor() {
         this.height = null;
         this.width = null;
+        this.center = null;
         this.brushX = null;
         this.brushY = null;
         this.minScale = 0.1;
+        this.maxScale = 9.0;
         this.gridLength = 80;
         this.numTicks = null;
 
@@ -35,6 +37,7 @@ class Graph {
         this.isEmphasized = false; // Keep track of node emphasis to end node emphasis on drag
         this.zoomTranslate = [0, 0]; // Keep track of original zoom state to restore after right-drag
         this.zoomScale = 1;
+        this.zoomPressed = null;
         this.printFull = 0; // Allow user to toggle node text length
 
         this.node = null;
@@ -76,6 +79,8 @@ class Graph {
         this.initializeZoom = this.initializeZoom.bind(this);
         this.initializeBrush = this.initializeBrush.bind(this);
         this.drawHull = this.drawHull.bind(this);
+        this.zoomButton = this.zoomButton.bind(this);
+        this.initializeButton = this.initializeButton.bind(this);
 
         
         // this.dragend = this.dragend.bind(this);    
@@ -84,7 +89,7 @@ class Graph {
     initializeZoom() {
         var self = this;
         const zoom = d3.behavior.zoom()
-            .scaleExtent([this.minScale, 5])
+            .scaleExtent([this.minScale, this.maxScale])
             .on('zoomstart', function (d) { self.zoomstart(d, this) })
             .on('zoom', function (d) { self.zooming(d, this) })
             .on('zoomend', function (d) { self.zoomend(d, this) });
@@ -178,6 +183,7 @@ class Graph {
     generateNetworkCanvas(centerid, nodes, links, width, height) {
         this.width = width;
         this.height = height;
+        this.center = [this.width / 2, this.height /2];
         this.brushX = d3.scale.linear().range([0, width]),
         this.brushY = d3.scale.linear().range([0, height]);
 
@@ -191,6 +197,7 @@ class Graph {
         this.curve = this.initializeCurve();
         this.svgGrid = this.initializeSVGgrid();
         this.force = this.initializeForce();
+        this.initializeButton();
 
         this.setupKeycodes();
 
@@ -485,6 +492,94 @@ class Graph {
 
         this.zoomTranslate = this.zoom.translate();
         this.zoomScale = this.zoom.scale();
+    }
+
+    zoomed() {
+      this.container.attr('transform', 'translate(' + this.zoom.translate() + ')scale(' + this.zoom.scale() + ')');
+      const transform = 'translate(' + (((this.zoom.translate()[0]/this.zoom.scale()) % this.gridLength) - this.zoom.translate()[0]/this.zoom.scale())
+          + ',' + (((this.zoom.translate()[1]/this.zoom.scale()) % this.gridLength) - this.zoom.translate()[1]/this.zoom.scale()) + ')scale(' + 1 + ')';
+      this.svgGrid.attr('transform', transform);
+    }
+
+    //d3.select(this.frameElement).style("height", height + "px");
+
+    // Simplest possible buttons
+    initializeButton(){
+      var self = this;
+      this.svg.selectAll(".button")
+          //.data(['zoom_in', 'zoom_out'])
+          .data([{label: 'zoom_in'}, {label: 'zoom_out'}])
+          .enter()
+          //.append("text").text("hi")
+          .append("rect")
+          .attr("x", function(d,i){return 10 + 50*i})
+          .attr({y: 10, width: 40, height: 20, class: "button"})
+          .attr("id", function(d){return d.label})
+          .style("fill", function(d,i){ return i ? "red" : "green"})
+          // .attr("text", function(d,i){ return i ? "red" : "green"})
+          // .attr("label", function(d,i){ return i ? "red" : "green"})
+
+      // svg.selectAll(".button").append("text").text("hi")
+
+      // Control logic to zoom when buttons are pressed, keep zooming while they are
+      // pressed, stop zooming when released or moved off of, not snap-pan when
+      // moving off buttons, and restore pan on mouseup.
+
+        this.zoomPressed = false;
+      d3.selectAll('.button').on('mousedown', function() {
+          self.zoomPressed = true;
+          self.disableZoom();
+          self.zoomButton(this.id === 'zoom_in')
+      }).on('mouseup', function(){
+          self.zoomPressed = false;
+      }).on('mouseout', function(){
+          self.zoomPressed = false;
+      })
+      this.svg.on("mouseup", () => {this.svg.call(this.zoom)});      
+    }
+
+
+    disableZoom(){
+        this.svg.on("mousedown.zoom", null)
+           .on("touchstart.zoom", null)
+           .on("touchmove.zoom", null)
+           .on("touchend.zoom", null);
+    }
+
+    zoomButton(zoom_in){
+      var self = this;
+      var scale = this.zoom.scale(),
+          extent = this.zoom.scaleExtent(),
+          translate = this.zoom.translate(),
+          x = translate[0], y = translate[1],
+          factor = zoom_in ? 1.3 : 1/1.3,
+          target_scale = scale * factor;
+
+      // If we're already at an extent, done
+      if (target_scale === extent[0] || target_scale === extent[1]) { return false; }
+      // If the factor is too much, scale it down to reach the extent exactly
+      var clamped_target_scale = Math.max(extent[0], Math.min(extent[1], target_scale));
+      if (clamped_target_scale != target_scale){
+          target_scale = clamped_target_scale;
+          factor = target_scale / scale;
+      }
+
+      // Center each vector, stretch, then put back
+      x = (x - this.center[0]) * factor + this.center[0];
+      y = (y - this.center[1]) * factor + this.center[1];
+
+      // Transition to the new view over 100ms
+      d3.transition().duration(100).tween("zoom", function () {
+          var interpolate_scale = d3.interpolate(scale, target_scale),
+              interpolate_trans = d3.interpolate(translate, [x,y]);
+          return function (t) {
+              self.zoom.scale(interpolate_scale(t))
+                  .translate(interpolate_trans(t));
+              self.zoomed();
+          };
+      }).each("end", ()=>{
+          if (this.zoomPressed) this.zoomButton(zoom_in);
+      });
     }
 
     // Link mouse handlers
