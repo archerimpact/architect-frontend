@@ -42,8 +42,9 @@ let printFull = 0;
 
 // Setting up zoom
 const minScale = 0.1;
+const maxScale = 9.0
 const zoom = d3.behavior.zoom()
-  .scaleExtent([minScale, 5])
+  .scaleExtent([minScale, maxScale])
   .on('zoomstart', zoomstart)
   .on('zoom', zooming)
   .on('zoomend', zoomend);
@@ -171,13 +172,19 @@ d3.select(self.frameElement).style("height", height + "px");
 
 // Simplest possible buttons
 svg.selectAll(".button")
-    .data(['zoom_in', 'zoom_out'])
+    //.data(['zoom_in', 'zoom_out'])
+    .data([{label: 'zoom_in'}, {label: 'zoom_out'}])
     .enter()
+    //.append("text").text("hi")
     .append("rect")
     .attr("x", function(d,i){return 10 + 50*i})
     .attr({y: 10, width: 40, height: 20, class: "button"})
-    .attr("id", function(d){return d})
+    .attr("id", function(d){return d.label})
     .style("fill", function(d,i){ return i ? "red" : "green"})
+    // .attr("text", function(d,i){ return i ? "red" : "green"})
+    // .attr("label", function(d,i){ return i ? "red" : "green"})
+
+// svg.selectAll(".button").append("text").text("hi")
 
 // Control logic to zoom when buttons are pressed, keep zooming while they are
 // pressed, stop zooming when released or moved off of, not snap-pan when
@@ -187,6 +194,8 @@ var pressed = false;
 d3.selectAll('.button').on('mousedown', function(){
     pressed = true;
     disableZoom();
+    // console.log("ID: ");
+    // console.log(this.id);
     zoomButton(this.id === 'zoom_in')
 }).on('mouseup', function(){
     pressed = false;
@@ -196,7 +205,6 @@ d3.selectAll('.button').on('mousedown', function(){
 svg.on("mouseup", function(){svg.call(zoom)});
 
 function disableZoom(){
-    console.log("disable zoom function");
     svg.on("mousedown.zoom", null)
        .on("touchstart.zoom", null)
        .on("touchmove.zoom", null)
@@ -204,6 +212,8 @@ function disableZoom(){
 }
 
 function zoomButton(zoom_in){
+    console.log("zoom in or out?");
+    console.log(zoom_in);
     var scale = zoom.scale(),
         extent = zoom.scaleExtent(),
         translate = zoom.translate(),
