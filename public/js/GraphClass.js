@@ -527,74 +527,71 @@ class Graph {
 
     // Graph manipulation keycodes
     setupKeycodes() {
-        var self = this;
-        d3.select('body')
-            .on('keydown', function () {
-                // u: Unpin selected nodes
-                if (d3.event.keyCode == 85) {
-                    self.svg.selectAll('.node.selected')
-                        .each(function (d) { d.fixed = false; })
-                        .classed('fixed', false);
-                }
+      d3.select('body')
+        .on('keydown', () => {
+          // u: Unpin selected nodes
+          if (d3.event.keyCode == 85) {
+              this.svg.selectAll('.node.selected')
+                  .each(function (d) { d.fixed = false; })
+                  .classed('fixed', false);
+          }
 
-                // e: Remove links
-                else if (d3.event.keyCode == 69) {
-                    self.deleteSelectedLinks();
-                }
+          // e: Remove links
+          else if (d3.event.keyCode == 69) {
+              this.deleteSelectedLinks();
+          }
 
-                // g: Group selected nodes
-                else if (d3.event.keyCode == 71) {
-                    self.groupSelectedNodes();
-                }
+          // g: Group selected nodes
+          else if (d3.event.keyCode == 71) {
+              this.groupSelectedNodes();
+          }
 
-                // h: Ungroup selected nodes
-                else if (d3.event.keyCode == 72) {
-                    self.ungroupSelectedGroups();
-                }
+          // h: Ungroup selected nodes
+          else if (d3.event.keyCode == 72) {
+              this.ungroupSelectedGroups();
+          }
 
-                // r: Remove selected nodes
-                else if (d3.event.keyCode == 82 || d3.event.keyCode == 46) {
-                    self.deleteSelectedNodes();
-                }
+          // r: Remove selected nodes
+          else if (d3.event.keyCode == 82 || d3.event.keyCode == 46) {
+              this.deleteSelectedNodes();
+          }
 
-                // a: Add node linked to selected
-                else if (d3.event.keyCode == 65) {
-                    self.addNodeToSelected();
-                }
+          // a: Add node linked to selected
+          else if (d3.event.keyCode == 65) {
+              this.addNodeToSelected();
+          }
 
-                // d: Hide document nodes
-                else if (d3.event.keyCode == 68) {
-                    self.toggleDocumentView();
-                }
+          // d: Hide document nodes
+          else if (d3.event.keyCode == 68) {
+              this.toggleDocumentView();
+          }
 
-                // p: Toggle btwn full/abbrev text
-                else if (d3.event.keyCode == 80) {
-                    self.printFull = (self.printFull + 1) % 3;
-                    self.selectAllNodeNames().text(function (d) { return processNodeName(d.name, self.printFull); });
-                }
+          // p: Toggle btwn full/abbrev text
+          else if (d3.event.keyCode == 80) {
+              this.printFull = (this.printFull + 1) % 3;
+              this.selectAllNodeNames().text((d) => { return processNodeName(d.name, this.printFull); });
+          }
 
-                self.force.resume()
-            });
+          this.force.resume()
+        });
     }
 
     // Link highlighting
     highlightLinksFromAllNodes() {
-        var self = this;
         this.svg.selectAll('.link')
-            .classed('selected', function (d, i) {
-                return self.nodeSelection[d.source.index] && self.nodeSelection[d.target.index];
+            .classed('selected', (d, i) => {
+                return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index];
             });
     }
 
     highlightLinksFromNode(node) {
-        var self = this;
         node = node[0].__data__.index;
         this.svg.selectAll('.link')
-            .filter(function (d, i) {
+            .filter((d, i) => {
                 return d.source.index == node || d.target.index == node;
             })
-            .classed('selected', function (d, i) {
-                return self.nodeSelection[d.source.index] && self.nodeSelection[d.target.index];
+            .classed('selected', (d, i) => {
+                return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index];
             });
     }
 
@@ -602,7 +599,6 @@ class Graph {
     deleteSelectedNodes() {
         /* remove selected nodes from DOM
             if the node is a group, delete the group */
-        var self = this;
 
         var groupIds = Object.keys(this.groups);
         var select = this.svg.selectAll('.node.selected');
@@ -613,10 +609,10 @@ class Graph {
 
         removedLinks.map((link) => { //remove links from their corresponding group
             if (link.target.group) {
-                group = self.groups[link.target.group];
+                group = this.groups[link.target.group];
                 group.links.splice(group.links.indexOf(link), 1);
             } if (link.source.group) {
-                group = self.groups[link.source.group];
+                group = this.groups[link.source.group];
                 group.links.splice(group.links.indexOf(link), 1);
             }
         });
@@ -751,10 +747,9 @@ class Graph {
 
     ungroupSelectedGroups() {
         /* expand nodes and links in the selected groups, then delete the group from the global groups dict */
-        var self = this;
         var select = this.svg.selectAll('.node.selected')
             .filter((d) => {
-                if (self.groups[d.id]) { return d; }
+                if (this.groups[d.id]) { return d; }
             });
 
         const newNodes = this.expandGroups(select, false);
@@ -769,10 +764,9 @@ class Graph {
 
     expandGroup(groupId) {
         /* expand the group of the groupId passed in*/
-        var self = this;
         var select = this.svg.selectAll('.node')
             .filter((d) => {
-                if (d.id === groupId && self.groups[d.id]) { return d; }
+                if (d.id === groupId && this.groups[d.id]) { return d; }
             });
 
         this.expandGroups(select, true);
@@ -831,7 +825,6 @@ class Graph {
     toggleGroupView(groupId) {
         /* switch between viewing the group in expanded and collapsed state.
           When expanded, the nodes in the group will have a hull polygon encircling it */
-        const self = this;
         const group = this.groups[groupId];
 
         if (!group) {
@@ -842,7 +835,7 @@ class Graph {
             this.collapseGroupNodes(groupId);
             this.hulls.map((hull, i) => {
                 if (hull.groupId === groupId) {
-                    self.hulls.splice(i, 1); // remove this hull from the global list of hulls
+                    this.hulls.splice(i, 1); // remove this hull from the global list of hulls
                 }
             })
             this.expandedGroups[groupId] = false;
@@ -874,9 +867,8 @@ class Graph {
 
     calculateAllHulls() {
         /* calculates paths of all hulls in the global hulls list */
-        var self = this;
         this.hulls.map((hull, i) => {
-            self.hulls[i] = self.createHull(self.groups[hull.groupId]);
+            this.hulls[i] = this.createHull(this.groups[hull.groupId]);
         });
     }
 
@@ -905,9 +897,8 @@ class Graph {
 
     reloadNeighbors() {
         this.linkedByIndex = {};
-        var self = this;
-        this.links.forEach(function (d) {
-            self.linkedByIndex[d.source.index + "," + d.target.index] = true;
+        this.links.forEach((d) => {
+            this.linkedByIndex[d.source.index + "," + d.target.index] = true;
         });
     }
 
@@ -982,7 +973,7 @@ class Graph {
         this.links.slice().map((link) => {
             const removedLink = self.removeLink(removedNodesDict, link);
             if (removedLink) {
-                const groupids = Object.keys(self.groups).map((key) => { return parseInt(key); });
+                const groupids = Object.keys(this.groups).map((key) => { return parseInt(key); });
                 if (isInArray(link.target.id, groupids) || isInArray(link.source.id, groupids)) {
                     // do nothing if the removed link was attached to a group
                 } else if (existingLinks[link.target.id + ',' + link.source.id]) {
@@ -990,7 +981,7 @@ class Graph {
                 } else {
                     group.links.push(removedLink);
                 }
-                self.reattachLink(link, group.id, removedNodesDict, nodeIdsToIndex);
+                this.reattachLink(link, group.id, removedNodesDict, nodeIdsToIndex);
             }
         });
     }
@@ -999,15 +990,14 @@ class Graph {
     removeNodesFromDOM(select) {
         /* iterates through a select to remove each node, and returns an array of removed nodes */
 
-        var self = this;
         const removedNodes = []
         select
             .each((d) => {
-                if (self.nodes.indexOf(d) === -1) {
+                if (this.nodes.indexOf(d) === -1) {
                     console.log("Error, wasn't in there and node is: ", d, " and nodes is: ", self.nodes);
                 } else {
                     removedNodes.push(d);
-                    self.nodes.splice(self.nodes.indexOf(d), 1);
+                    this.nodes.splice(this.nodes.indexOf(d), 1);
                 }
             });
 
