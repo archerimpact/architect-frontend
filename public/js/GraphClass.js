@@ -72,9 +72,46 @@ class Graph {
     this.initializeBrush = this.initializeBrush.bind(this);
     this.drawHull = this.drawHull.bind(this);
 
-    this.loadData();
     this.setupKeycodes();
     // this.dragend = this.dragend.bind(this);    
+  }
+
+  generateNetworkCanvas(centerid, nodes, links) {
+      this.nodes = nodes
+      this.links = links
+      this.hulls = []
+
+     // Needed this code when loading 43.json to prevent it from disappearing forever by pinning the initial node
+    // var index
+    //   nodes.map((node, i)=> {
+    //     if (node.id===43) {
+    //       index = i
+    //     }
+    //   })
+
+    //   nodes[index].fixed = true;
+    //   nodes[index].px = width/2
+    //   nodes[index].py = height/2; 
+
+      this.force
+        .gravity(.25)
+        .charge(-1 * Math.max(Math.pow(this.nodes.length, 2), 750))
+        .friction(this.nodes.length < 15 ? .75 : .65)
+        .alpha(.8)
+        .nodes(this.nodes)
+        .links(this.links);
+
+      // Create selectors
+      this.hull = this.container.append('g').selectAll('.hull')  
+      this.link = this.container.append('g').selectAll('.link');
+      this.node = this.container.append('g').selectAll('.node');
+
+      // Updates nodes and links according to current data
+      this.update();
+
+      this.force.on('tick', (e) => {this.ticked(e, this)});
+      // Avoid initial chaos and skip the wait for graph to drift back onscreen
+      for (let i = 750; i > 0; --i) this.force.tick();
   }
 
   initializeZoom() {
@@ -171,48 +208,6 @@ class Graph {
       .linkDistance(90)
       .size([width, height]);
   }
-
-  loadData() {
-  	d3.json('data/well_connected.json', (json) => {
-		  this.nodes = json.nodes
-		  this.links = json.links
-		  this.hulls = []
-
-		 // Needed this code when loading 43.json to prevent it from disappearing forever by pinning the initial node
-		// var index
-		//   nodes.map((node, i)=> {
-		//     if (node.id===43) {
-		//       index = i
-		//     }
-		//   })
-
-		//   nodes[index].fixed = true;
-		//   nodes[index].px = width/2
-		//   nodes[index].py = height/2; 
-
-      this.force
-		    .gravity(.25)
-		    .charge(-1 * Math.max(Math.pow(json.nodes.length, 2), 750))
-		    .friction(json.nodes.length < 15 ? .75 : .65)
-		    .alpha(.8)
-		    .nodes(this.nodes)
-		    .links(this.links);
-
-		  // Create selectors
-		  this.hull = this.container.append('g').selectAll('.hull')  
-		  this.link = this.container.append('g').selectAll('.link');
-		  this.node = this.container.append('g').selectAll('.node');
-
-		  // Updates nodes and links according to current data
-		  this.update();
-
-		  this.force.on('tick', (e) => {this.ticked(e, this)});
-		  // Avoid initial chaos and skip the wait for graph to drift back onscreen
-		  for (let i = 750; i > 0; --i) this.force.tick();
-
-		});
-  }
-
 
  	update(){
     var self = this;
@@ -510,74 +505,71 @@ class Graph {
 
   // Graph manipulation keycodes
   setupKeycodes() {
-    var self = this;
     d3.select('body')
-      .on('keydown', function() {
+      .on('keydown', () => {
         // u: Unpin selected nodes
         if (d3.event.keyCode == 85) {
-          self.svg.selectAll('.node.selected')
+          this.svg.selectAll('.node.selected')
             .each(function(d) { d.fixed = false; })
             .classed('fixed', false);
         }
 
         // e: Remove links
         else if (d3.event.keyCode == 69) {
-          self.deleteSelectedLinks();
+          this.deleteSelectedLinks();
         }
 
         // g: Group selected nodes
         else if (d3.event.keyCode == 71) {
-          self.groupSelectedNodes();
+          this.groupSelectedNodes();
         }
 
         // h: Ungroup selected nodes
         else if (d3.event.keyCode == 72) {
-          self.ungroupSelectedGroups();
+          this.ungroupSelectedGroups();
         }
 
         // r: Remove selected nodes
         else if (d3.event.keyCode == 82 || d3.event.keyCode == 46) {
-          self.deleteSelectedNodes();
+          this.deleteSelectedNodes();
         }
 
         // a: Add node linked to selected
         else if (d3.event.keyCode == 65) {
-          self.addNodeToSelected();
+          this.addNodeToSelected();
         }
 
         // d: Hide document nodes
         else if (d3.event.keyCode == 68) {
-          self.toggleDocumentView();
+          this.toggleDocumentView();
         }
 
         // p: Toggle btwn full/abbrev text
         else if (d3.event.keyCode == 80) {
-          self.printFull = (self.printFull + 1) % 3;
-          self.selectAllNodeNames().text(function(d) { return processNodeName(d.name, self.printFull); });
+          this.printFull = (this.printFull + 1) % 3;
+          this.selectAllNodeNames().text((d) => { return processNodeName(d.name, this.printFull); });
         }
 
-        self.force.resume()
+        this.force.resume()
       });
     }
 
 	// Link highlighting
 	highlightLinksFromAllNodes() {
-    var self = this;
 	  this.svg.selectAll('.link')
-	    .classed('selected', function(d, i) {
-	      return self.nodeSelection[d.source.index] && self.nodeSelection[d.target.index];
+	    .classed('selected', (d, i) => {
+	      return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index];
 	    });
 	}
 
 	highlightLinksFromNode(node) {
-    var self = this;
 	  node = node[0].__data__.index;
 	  this.svg.selectAll('.link')
 	    .filter(function(d, i) {
 	      return d.source.index == node || d.target.index == node;
 	    })
-	    .classed('selected', function(d, i) {
-	      return self.nodeSelection[d.source.index] && self.nodeSelection[d.target.index];
+	    .classed('selected', (d, i) => {
+	      return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index];
 	    });
 	}
 
@@ -585,7 +577,6 @@ class Graph {
 	deleteSelectedNodes() {
 	  /* remove selected nodes from DOM
 	      if the node is a group, delete the group */
-	  var self = this;
 
     var groupIds = Object.keys(this.groups);
 	  var select = this.svg.selectAll('.node.selected');
@@ -596,10 +587,10 @@ class Graph {
 
 	  removedLinks.map((link)=> { //remove links from their corresponding group
 	    if (link.target.group) {
-	      group = self.groups[link.target.group];
+	      group = this.groups[link.target.group];
 	      group.links.splice(group.links.indexOf(link), 1);
 	    } if (link.source.group) {
-	      group = self.groups[link.source.group];
+	      group = this.groups[link.source.group];
 	      group.links.splice(group.links.indexOf(link), 1);
 	    }
 	  });
@@ -1153,4 +1144,8 @@ function capitalize(str, first) {
   return str.charAt(0).toUpperCase() + (first ? str.slice(1).toLowerCase() : str.slice(1));
 }
 const graph = new Graph();
+
+d3.json("/data/well_connected.json", function(json) {
+  graph.generateNetworkCanvas(34192, json.nodes, json.links)
+})
 // export default Graph;
