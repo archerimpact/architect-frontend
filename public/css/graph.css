@@ -88,6 +88,11 @@ button:focus {
   fill: #999999;
 }
 
+.node text.node-name {
+  width: 200px;
+  word-wrap: break-word;
+}
+
 .node circle {
   cursor: pointer;
   stroke-width: 3px;
