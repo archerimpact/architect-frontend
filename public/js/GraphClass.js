@@ -43,13 +43,12 @@ class Graph {
 		this.zoom = this.initializeZoom();
 		this.brush = this.initializeBrush();
 		this.svg = this.initializeSVG();
-		this.svgBrush = this.initializeSVGBrush();
+    this.svgBrush = this.initializeSVGBrush();
 		this.container = this.initializeContainer();
 		this.curve = this.initializeCurve();
 		this.svgGrid = this.initializeSVGgrid();
 		this.force = this.initializeForce();
-    this.loadData();
-    this.setupKeycodes();
+
     this.ticked = this.ticked.bind(this);
     this.brushstart = this.brushstart.bind(this);
     this.brushing = this.brushing.bind(this);
@@ -63,22 +62,36 @@ class Graph {
     this.dragend = this.dragend.bind(this);
     this.mouseover = this.mouseover.bind(this);
     this.mouseout = this.mouseout.bind(this);
+    this.dragstart = this.dragstart.bind(this);
+    this.dragging = this.dragging.bind(this);
+    this.dragend = this.dragend.bind(this);
+    this.zoomstart = this.zoomstart.bind(this);
+    this.zooming = this.zooming.bind(this);    
+    this.zoomend = this.zoomend.bind(this);
+    this.initializeZoom = this.initializeZoom.bind(this);
+    this.initializeBrush = this.initializeBrush.bind(this);
+
+    this.loadData();
+    this.setupKeycodes();
+    // this.dragend = this.dragend.bind(this);    
   }
 
   initializeZoom() {
+    var self = this;
 		const zoom = d3.behavior.zoom()
 		  .scaleExtent([minScale, 5])
-		  .on('zoomstart', this.zoomstart)
-		  .on('zoom', this.zooming)
-		  .on('zoomend', this.zoomend);
+		  .on('zoomstart', function(d){ self.zoomstart(d, this) })
+		  .on('zoom', function(d){ self.zooming(d, this) })
+		  .on('zoomend', function(d){ self.zoomend(d, this)});
 		return zoom;
   }
 
   initializeBrush() {
+    var self = this;
   	return d3.svg.brush()
-		  .on('brushstart', this.brushstart)
-		  .on('brush', this.brushing)
-		  .on('brushend', this.brushend)
+		  .on('brushstart', function(d){ self.brushstart(d, this) })
+		  .on('brush', function(d){ self.brushing(d, this) })
+		  .on('brushend', function(d){ self.brushend(d, this) })
 		  .x(brushX).y(brushY);
   }
 
@@ -89,10 +102,6 @@ class Graph {
       .attr('width', width)
       .attr('height', height)
       .call(this.zoom);
-    // Extent invisible on left click
-		svg.on('mousedown', () => {
-		  svgBrush.style('opacity', isRightClick() ? 1 : 0);
-		});
 
 		// Disable context menu from popping up on right click
 		svg.on('contextmenu', function (d, i) {
@@ -104,9 +113,16 @@ class Graph {
 	// Normally we append a g element right after call(zoom), but in this case we don't
 	// want panning to translate the brush off the screen (disabling all mouse events).
   initializeSVGBrush() {
-  	return this.svg.append('g')
-		  .attr('class', 'brush')
-		  .call(this.brush);
+    var self = this;
+    // Extent invisible on left click
+    const svgBrush = this.svg.append('g')
+      .attr('class', 'brush')
+      .call(this.brush);
+
+    this.svg.on('mousedown', () => {
+      svgBrush.style('opacity', self.isRightClick() ? 1 : 0);
+    });
+  	return svgBrush;
   }
 
 
@@ -200,6 +216,7 @@ class Graph {
 
 
  	update(){
+    var self = this;
 	  this.link = this.link.data(this.links, function(d) { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
 	  this.link
 	    .enter().append('line')
@@ -214,16 +231,16 @@ class Graph {
       .attr('class', 'node')
       .attr('dragfix', false)
       .attr('dragselect', false)
-      .on('click', this.clicked)
-      .on('dblclick', this.dblclicked)
-      .on('mouseover', this.mouseover)
-      .on('mouseout', this.mouseout)
+      .on('click', function(d){ self.clicked(d, this) })
+      .on('dblclick', function(d){ self.dblclicked(d, this) })
+      .on('mouseover', function(d){ self.mouseover(d, this) })
+      .on('mouseout', function(d){ self.mouseout(d, this) })
       .classed('fixed', function(d){ return d.fixed; })
       .call(this.force.drag()
         .origin(function(d) { return d; })
-        .on('dragstart', this.dragstart)
-        .on('drag', this.dragging)
-        .on('dragend', this.dragend)
+        .on('dragstart', function(d){ self.dragstart(d, this) })
+        .on('drag', function(d){ self.dragging(d, this) })
+        .on('dragend', function(d){ self.dragend(d, this) })
       );
 
     this.nodeEnter.append('circle')
@@ -303,7 +320,8 @@ class Graph {
   }
 
   brushing() {
-    if (isRightClick()) {
+    var self = this;
+    if (this.isRightClick()) {
       const extent = this.brush.extent();
       this.svg.selectAll('.node')
         .classed('selected', function (d) {
@@ -312,7 +330,7 @@ class Graph {
           const selected = (extent[0][0] <= xPos && xPos <= extent[1][0]
                     && extent[0][1] <= yPos && yPos <= extent[1][1])
                     || (this.classList.contains('selected') && d3.event.sourceEvent.ctrlKey);
-          this.nodeSelection[d.index] = selected;
+          self.nodeSelection[d.index] = selected;
           return selected;
         });
 
@@ -326,9 +344,9 @@ class Graph {
   }
 
   // Single-node interactions
-  clicked(d, i) {
+  clicked(d, self, i) {
     if (d3.event.defaultPrevented) return;
-    const node = d3.select(this);
+    const node = d3.select(self);
     const fixed = !(node.attr('dragfix') == 'true');
     node.classed('fixed', d.fixed = fixed);
     this.force.resume();
@@ -344,7 +362,7 @@ class Graph {
     this.force.resume();
   }
 
-  dblclicked(d) {
+  dblclicked(d, self) {
     if (this.groups[d.id]) {
       this.toggleGroupView(d.id);
     }
@@ -359,37 +377,37 @@ class Graph {
   }
 
   // Click-drag node interactions
-  dragstart(d) {
+  dragstart(d, self) {
     d3.event.sourceEvent.preventDefault();
     d3.event.sourceEvent.stopPropagation();
-    if (this.isEmphasized) resetGraphOpacity();
+    if (this.isEmphasized) this.resetGraphOpacity();
 
     this.isDragging = true;
     displayNodeInfo(d);
-    const node = d3.select(this);
+    const node = d3.select(self);
     node
       .attr('dragfix', node.classed('fixed'))
       .attr('dragselect', node.classed('selected'))
       .attr('dragdistance', 0);
 
     node.classed('fixed', d.fixed = true); 
-    if (isRightClick()) {
+    if (this.isRightClick()) {
       node.classed('selected', this.nodeSelection[d.index] = true);
-      highlightLinksFromNode(node[0]);
+      this.highlightLinksFromNode(node[0]);
     }
   } 
 
-	dragging(d) {
-	  const node = d3.select(this);
+	dragging(d, self) {
+	  const node = d3.select(self);
 	  node
 	    .attr('cx', d.x = d3.event.x)
 	    .attr('cy', d.y = d3.event.y)
 	    .attr('dragdistance', parseInt(node.attr('dragdistance')) + 1);
   }
 
-	dragend(d) {
-	  const node = d3.select(this);
-	  if (!this.parseInt(node.attr('dragdistance')) && this.isRightClick()) {
+	dragend(d, self) {
+	  const node = d3.select(self);
+	  if (!parseInt(node.attr('dragdistance')) && this.isRightClick()) {
 	    this.rightclicked(node, d);
 	  }
 
@@ -398,13 +416,13 @@ class Graph {
 	}
 
 	// Node emphasis
-	mouseover(d) {
-    var self = this;
+	mouseover(d, self) {
+    var classThis = this;
 	  if (!this.isDragging && !this.isBrushing) {
 	    this.isEmphasized = true;
 	    this.node
 	      .filter(function(o) {
-	        return !self.neighbors(d, o);
+	        return !classThis.neighbors(d, o);
 	      })
 	      .style('stroke-opacity', .15)
 	      .style('fill-opacity', .15);
@@ -414,28 +432,26 @@ class Graph {
 	    this.link.style('stroke-opacity', function(o) {
 	      return (o.source == d || o.target == d) ? 1 : .05;
       });
-      debugger
-	    if (this.printFull == 0) d3.select(this).select('.node-name').text(processNodeName(d.name, 2));
+	    if (this.printFull == 0) d3.select(self).select('.node-name').text(processNodeName(d.name, 2));
 	  }
 	}
 
-	mouseout(d) {
+	mouseout(d, self) {
     this.resetGraphOpacity();
-    var self = this;
-	  if (this.printFull != 1) d3.select(this).select('.node-name').text(function(d) { return processNodeName(d.name, self.printFull); });
+	  if (this.printFull != 1) d3.select(self).select('.node-name').text(function(d) { return processNodeName(d.name, this.printFull); });
 	}
 
 	// Zoom & pan
-	zoomstart() {
+	zoomstart(d, self) {
 	  const e = d3.event;
-	  if (isRightClick()) {
+	  if (this.isRightClick()) {
 	    this.zoomTranslate = this.zoom.translate();
 	    this.zoomScale = this.zoom.scale();
 	  }
 	}
 
-	zooming() {
-	  if (!isRightClick()) {
+	zooming(d, self) {
+	  if (!this.isRightClick()) {
 	    const e = d3.event;
 	    const transform = 'translate(' + (((e.translate[0]/e.scale) % gridLength) - e.translate[0]/e.scale)
 	      + ',' + (((e.translate[1]/e.scale) % gridLength) - e.translate[1]/e.scale) + ')scale(' + 1 + ')';
@@ -444,9 +460,9 @@ class Graph {
 	  }
 	}
 
-	zoomend() {
+	zoomend(d, self) {
 	  this.svg.attr('cursor', 'move');
-	  if (isRightClick()) {
+	  if (this.isRightClick()) {
 	    this.zoom.translate(zoomTranslate);
 	    this.zoom.scale(zoomScale);
 	  }
@@ -546,9 +562,10 @@ class Graph {
 
 	// Link highlighting
 	highlightLinksFromAllNodes() {
+    var self = this;
 	  this.svg.selectAll('.link')
 	    .classed('selected', function(d, i) {
-	      return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index];
+	      return self.nodeSelection[d.source.index] && self.nodeSelection[d.target.index];
 	    });
 	}
 
