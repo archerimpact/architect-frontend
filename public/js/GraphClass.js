@@ -183,6 +183,7 @@ class Graph {
             .linkDistance(90)
             .size([this.width, this.height]);
     }
+    
     generateNetworkCanvas(centerid, nodes, links, width, height) {
         this.width = width;
         this.height = height;
@@ -239,6 +240,13 @@ class Graph {
         this.force.on('tick', (e) => {this.ticked(e, this)});
         // Avoid initial chaos and skip the wait for graph to drift back onscreen
         for (let i = 750; i > 0; --i) this.force.tick();
+    }
+
+    refreshGraphData(centerid, nodes, links) {
+      this.nodes = nodes;
+      this.links = links;
+      this.hulls = [];
+      this.update();
     }
 
     update() {
