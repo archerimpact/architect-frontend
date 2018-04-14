@@ -194,8 +194,6 @@ var pressed = false;
 d3.selectAll('.button').on('mousedown', function(){
     pressed = true;
     disableZoom();
-    // console.log("ID: ");
-    // console.log(this.id);
     zoomButton(this.id === 'zoom_in')
 }).on('mouseup', function(){
     pressed = false;
@@ -212,8 +210,6 @@ function disableZoom(){
 }
 
 function zoomButton(zoom_in){
-    console.log("zoom in or out?");
-    console.log(zoom_in);
     var scale = zoom.scale(),
         extent = zoom.scaleExtent(),
         translate = zoom.translate(),
