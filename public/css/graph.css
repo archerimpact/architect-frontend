@@ -126,3 +126,23 @@ button:focus {
   stroke: #7cbdff;
   stroke-width: 2px;
 }
+
+.button {
+  fill: #0d77e2;
+  opacity: 0.4;
+}
+/*
+.button rect {
+  stroke: #999faa;
+  stroke-width: 2px;
+}
+
+.button text {
+  font-size: 30px;
+  fill: #eee;
+  pointer-events: none;
+  text-anchor: middle;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}*/

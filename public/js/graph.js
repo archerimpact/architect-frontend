@@ -4,6 +4,8 @@ const height = $(window).height(),
     brushY = d3.scale.linear().range([0, height]),
     maxTextLength = 20;
 
+var center = [width / 2, height / 2];
+
 let node, link, hull, nodes, links, hulls, nodeEnter;
 let globallinkid = -1;
 let globalnodeid = -1;
@@ -40,8 +42,9 @@ let printFull = 0;
 
 // Setting up zoom
 const minScale = 0.1;
+const maxScale = 9.0
 const zoom = d3.behavior.zoom()
-  .scaleExtent([minScale, 5])
+  .scaleExtent([minScale, maxScale])
   .on('zoomstart', zoomstart)
   .on('zoom', zooming)
   .on('zoomend', zoomend);
@@ -59,6 +62,7 @@ const svg = d3.select('#graph-container').append('svg')
       .attr('width', width)
       .attr('height', height)
       .call(zoom);
+      //.call(zoom.event);
 
 // Normally we append a g element right after call(zoom), but in this case we don't
 // want panning to translate the brush off the screen (disabling all mouse events).
@@ -155,6 +159,89 @@ d3.json('data/sdn.json', function(json) {
   for (let i = 750; i > 0; --i) force.tick();
 
 });
+
+function zoomed() {
+  container.attr('transform', 'translate(' + zoom.translate() + ')scale(' + zoom.scale() + ')');
+  const transform = 'translate(' + (((zoom.translate()[0]/zoom.scale()) % gridLength) - zoom.translate()[0]/zoom.scale())
+      + ',' + (((zoom.translate()[1]/zoom.scale()) % gridLength) - zoom.translate()[1]/zoom.scale()) + ')scale(' + 1 + ')';
+  svgGrid.attr('transform', transform);
+}
+
+d3.select(self.frameElement).style("height", height + "px");
+
+// Simplest possible buttons
+svg.selectAll(".button")
+    //.data(['zoom_in', 'zoom_out'])
+    .data([{label: 'zoom_in'}, {label: 'zoom_out'}])
+    .enter()
+    //.append("text").text("hi")
+    .append("rect")
+    .attr("x", function(d,i){return 10 + 50*i})
+    .attr({y: 10, width: 40, height: 20, class: "button"})
+    .attr("id", function(d){return d.label})
+    .style("fill", function(d,i){ return i ? "red" : "green"})
+    // .attr("text", function(d,i){ return i ? "red" : "green"})
+    // .attr("label", function(d,i){ return i ? "red" : "green"})
+
+// svg.selectAll(".button").append("text").text("hi")
+
+// Control logic to zoom when buttons are pressed, keep zooming while they are
+// pressed, stop zooming when released or moved off of, not snap-pan when
+// moving off buttons, and restore pan on mouseup.
+
+var pressed = false;
+d3.selectAll('.button').on('mousedown', function(){
+    pressed = true;
+    disableZoom();
+    zoomButton(this.id === 'zoom_in')
+}).on('mouseup', function(){
+    pressed = false;
+}).on('mouseout', function(){
+    pressed = false;
+})
+svg.on("mouseup", function(){svg.call(zoom)});
+
+function disableZoom(){
+    svg.on("mousedown.zoom", null)
+       .on("touchstart.zoom", null)
+       .on("touchmove.zoom", null)
+       .on("touchend.zoom", null);
+}
+
+function zoomButton(zoom_in){
+    var scale = zoom.scale(),
+        extent = zoom.scaleExtent(),
+        translate = zoom.translate(),
+        x = translate[0], y = translate[1],
+        factor = zoom_in ? 1.3 : 1/1.3,
+        target_scale = scale * factor;
+
+    // If we're already at an extent, done
+    if (target_scale === extent[0] || target_scale === extent[1]) { return false; }
+    // If the factor is too much, scale it down to reach the extent exactly
+    var clamped_target_scale = Math.max(extent[0], Math.min(extent[1], target_scale));
+    if (clamped_target_scale != target_scale){
+        target_scale = clamped_target_scale;
+        factor = target_scale / scale;
+    }
+
+    // Center each vector, stretch, then put back
+    x = (x - center[0]) * factor + center[0];
+    y = (y - center[1]) * factor + center[1];
+
+    // Transition to the new view over 100ms
+    d3.transition().duration(100).tween("zoom", function () {
+        var interpolate_scale = d3.interpolate(scale, target_scale),
+            interpolate_trans = d3.interpolate(translate, [x,y]);
+        return function (t) {
+            zoom.scale(interpolate_scale(t))
+                .translate(interpolate_trans(t));
+            zoomed();
+        };
+    }).each("end", function(){
+        if (pressed) zoomButton(zoom_in);
+    });
+}
 
 function update(){
   link = link.data(links, function(d) { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
@@ -472,9 +559,19 @@ d3.select('body')
         .classed('fixed', false);
     }
 
+    // d: Unstick the nodes
+    else if (d3.event.keyCode == 68) {
+      unstickNodes();
+    }
+
     // e: Remove links
     else if (d3.event.keyCode == 69) {
       deleteSelectedLinks();
+    }
+
+    // f: Stick all the nodes
+    else if (d3.event.keyCode == 70) {
+      stickNodes();
     }
 
     // g: Group selected nodes
@@ -527,6 +624,34 @@ function highlightLinksFromNode(node) {
     })
     .classed('selected', function(d, i) {
       return nodeSelection[d.source.index] && nodeSelection[d.target.index];
+    });
+}
+
+// Fix all the nodes in the same spot
+function stickNodes() {
+  d3.selectAll('g.node')  //here's how you get all the nodes
+    .each(function(d) {
+      const node = d3.select(this); // Transform to d3 Object
+      node
+        .attr('dragfix', node.classed('fixed'))
+        .attr('dragselect', node.classed('selected'))
+        .attr('dragdistance', 0);
+
+      node.classed('fixed', d.fixed = true); 
+    });
+}
+
+// Allow all the nodes to move again
+function unstickNodes() {
+  d3.selectAll('g.node')  //here's how you get all the nodes
+    .each(function(d) {
+      const node = d3.select(this); // Transform to d3 Object
+      node
+        .attr('dragfix', node.classed('fixed'))
+        .attr('dragselect', node.classed('selected'))
+        .attr('dragdistance', 0);
+
+      node.classed('fixed', d.fixed = false); 
     });
 }
 
