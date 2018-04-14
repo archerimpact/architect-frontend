@@ -546,8 +546,8 @@ d3.select('body')
         .classed('fixed', false);
     }
 
-    // d: Unstick the nodes
-    else if (d3.event.keyCode == 68) {
+    // c: Unstick the nodes
+    else if (d3.event.keyCode == 67) {
       unstickNodes();
     }
 
