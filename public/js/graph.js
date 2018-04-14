@@ -161,7 +161,10 @@ d3.json('data/34192.json', function(json) {
 });
 
 function zoomed() {
-  svgBrush.attr("transform", "translate(" + zoom.translate() + ")scale(" + zoom.scale() + ")");
+  container.attr('transform', 'translate(' + zoom.translate() + ')scale(' + zoom.scale() + ')');
+  const transform = 'translate(' + (((zoom.translate()[0]/zoom.scale()) % gridLength) - zoom.translate()[0]/zoom.scale())
+      + ',' + (((zoom.translate()[1]/zoom.scale()) % gridLength) - zoom.translate()[1]/zoom.scale()) + ')scale(' + 1 + ')';
+  svgGrid.attr('transform', transform);
 }
 
 d3.select(self.frameElement).style("height", height + "px");
@@ -193,6 +196,7 @@ d3.selectAll('.button').on('mousedown', function(){
 svg.on("mouseup", function(){svg.call(zoom)});
 
 function disableZoom(){
+    console.log("disable zoom function");
     svg.on("mousedown.zoom", null)
        .on("touchstart.zoom", null)
        .on("touchmove.zoom", null)
@@ -232,8 +236,6 @@ function zoomButton(zoom_in){
     }).each("end", function(){
         if (pressed) zoomButton(zoom_in);
     });
-    zoomed();
-
 }
 
 function update(){
@@ -541,13 +543,11 @@ d3.select('body')
 
     // e: Remove links
     else if (d3.event.keyCode == 69) {
-      console.log("E IS PRESSED");
       deleteSelectedLinks();
     }
 
     // g: Group selected nodes
     else if (d3.event.keyCode == 71) {
-      console.log("G IS PRESSED");
       groupSelectedNodes();
     }
 
