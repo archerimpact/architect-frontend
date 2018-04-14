@@ -546,9 +546,19 @@ d3.select('body')
         .classed('fixed', false);
     }
 
+    // d: Unstick the nodes
+    else if (d3.event.keyCode == 68) {
+      unstickNodes();
+    }
+
     // e: Remove links
     else if (d3.event.keyCode == 69) {
       deleteSelectedLinks();
+    }
+
+    // f: Stick all the nodes
+    else if (d3.event.keyCode == 70) {
+      stickNodes();
     }
 
     // g: Group selected nodes
@@ -601,6 +611,34 @@ function highlightLinksFromNode(node) {
     })
     .classed('selected', function(d, i) {
       return nodeSelection[d.source.index] && nodeSelection[d.target.index];
+    });
+}
+
+// Fix all the nodes in the same spot
+function stickNodes() {
+  d3.selectAll('g.node')  //here's how you get all the nodes
+    .each(function(d) {
+      const node = d3.select(this); // Transform to d3 Object
+      node
+        .attr('dragfix', node.classed('fixed'))
+        .attr('dragselect', node.classed('selected'))
+        .attr('dragdistance', 0);
+
+      node.classed('fixed', d.fixed = true); 
+    });
+}
+
+// Allow all the nodes to move again
+function unstickNodes() {
+  d3.selectAll('g.node')  //here's how you get all the nodes
+    .each(function(d) {
+      const node = d3.select(this); // Transform to d3 Object
+      node
+        .attr('dragfix', node.classed('fixed'))
+        .attr('dragselect', node.classed('selected'))
+        .attr('dragdistance', 0);
+
+      node.classed('fixed', d.fixed = false); 
     });
 }
 
