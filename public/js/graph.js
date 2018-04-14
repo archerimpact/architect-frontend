@@ -121,8 +121,7 @@ const force = d3.layout.force()
       .linkDistance(90)
       .size([width, height]);
 
-d3.json('data/34192.json', function(json) {
-
+d3.json('data/sdn.json', function(json) {
   nodes = json.nodes
   links = json.links
   hulls = []
@@ -649,7 +648,6 @@ function deleteSelectedLinks() {
   let group;
 
   var removedLinks = removeNodeLinksSelectiveFromDOM(select);
-  //var removedLinks = removeNodeLinksFromDOM(removedNodes);
 
   removedLinks.map((link)=> { //remove links from their corresponding group
     if (link.target.group) {
@@ -661,17 +659,6 @@ function deleteSelectedLinks() {
     }
   });
 
-  // removedNodes.map((node) => {// remove nodes from their corresponding group & if the node is a group delete the group
-  //   if (isInArray(node.id, groupIds)) {
-  //     delete groups[node.id];
-  //   }
-  //   if (node.group) {
-  //     group = groups[node.group];
-  //     group.nodes.splice(group.nodes.indexOf(node), 1);
-  //   }
-  // });
-
-  // MAYBE DO NOT DELETE THIS
   nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
   node.classed("selected", false)
   update();
@@ -979,7 +966,6 @@ function removeSelectiveLink(nodesSelected, link) {
       if both of the nodes in the link target or source are in the list, remove the link and return it
       if not, then don't remove */
   let removedLink;
-  //only remove a link if it's attached to a removed node
   if(nodesSelected[link.source.id] === true && nodesSelected[link.target.id] === true) { //remove all links connected to both nodes to remove
     const index = links.indexOf(link);
     removedLink = links.splice(index, 1)[0];
@@ -1099,8 +1085,6 @@ function removeNodeLinksSelectiveFromDOM(select) {
         nodesSelected.push(d);
       }
     });
-
-  // NODES CONTAINS STUFF NOW
 
   const removedLinks = [];
   let removedLink;
