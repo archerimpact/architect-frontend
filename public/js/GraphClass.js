@@ -70,6 +70,7 @@ class Graph {
     this.zoomend = this.zoomend.bind(this);
     this.initializeZoom = this.initializeZoom.bind(this);
     this.initializeBrush = this.initializeBrush.bind(this);
+    this.drawHull = this.drawHull.bind(this);
 
     this.loadData();
     this.setupKeycodes();
@@ -113,14 +114,13 @@ class Graph {
 	// Normally we append a g element right after call(zoom), but in this case we don't
 	// want panning to translate the brush off the screen (disabling all mouse events).
   initializeSVGBrush() {
-    var self = this;
     // Extent invisible on left click
     const svgBrush = this.svg.append('g')
       .attr('class', 'brush')
       .call(this.brush);
 
     this.svg.on('mousedown', () => {
-      svgBrush.style('opacity', self.isRightClick() ? 1 : 0);
+      svgBrush.style('opacity', this.isRightClick() ? 1 : 0);
     });
   	return svgBrush;
   }
@@ -173,11 +173,10 @@ class Graph {
   }
 
   loadData() {
-    var self = this;
-  	d3.json('data/well_connected.json', function(json) {
-		  self.nodes = json.nodes
-		  self.links = json.links
-		  self.hulls = []
+  	d3.json('data/well_connected.json', (json) => {
+		  this.nodes = json.nodes
+		  this.links = json.links
+		  this.hulls = []
 
 		 // Needed this code when loading 43.json to prevent it from disappearing forever by pinning the initial node
 		// var index
@@ -191,25 +190,25 @@ class Graph {
 		//   nodes[index].px = width/2
 		//   nodes[index].py = height/2; 
 
-      self.force
+      this.force
 		    .gravity(.25)
 		    .charge(-1 * Math.max(Math.pow(json.nodes.length, 2), 750))
 		    .friction(json.nodes.length < 15 ? .75 : .65)
 		    .alpha(.8)
-		    .nodes(self.nodes)
-		    .links(self.links);
+		    .nodes(this.nodes)
+		    .links(this.links);
 
 		  // Create selectors
-		  self.hull = self.container.append('g').selectAll('.hull')  
-		  self.link = self.container.append('g').selectAll('.link');
-		  self.node = self.container.append('g').selectAll('.node');
+		  this.hull = this.container.append('g').selectAll('.hull')  
+		  this.link = this.container.append('g').selectAll('.link');
+		  this.node = this.container.append('g').selectAll('.node');
 
 		  // Updates nodes and links according to current data
-		  self.update();
+		  this.update();
 
-		  self.force.on('tick', self.ticked);
+		  this.force.on('tick', (e) => {this.ticked(e, this)});
 		  // Avoid initial chaos and skip the wait for graph to drift back onscreen
-		  for (let i = 750; i > 0; --i) self.force.tick();
+		  for (let i = 750; i > 0; --i) this.force.tick();
 
 		});
   }
@@ -277,7 +276,7 @@ class Graph {
 	    .attr('class', 'hull')
 	    .attr('d', this.drawHull)
 	    .on('dblclick', function(d) {
-	      this.toggleGroupView(d.groupId);
+	      self.toggleGroupView(d.groupId);
 	      d3.event.stopPropagation();
 	    })
     this.hull.exit().remove();
@@ -287,7 +286,7 @@ class Graph {
 	}
 
 	// Occurs each tick of simulation
-	ticked(e) {
+	ticked(e, self) {
 	  this.force.resume();
 	  if (!this.hull.empty()) {
 	    this.calculateAllHulls()
@@ -325,8 +324,8 @@ class Graph {
       const extent = this.brush.extent();
       this.svg.selectAll('.node')
         .classed('selected', function (d) {
-          const xPos = brushX.invert(d.x * this.zoomScale + this.zoomTranslate[0]);
-          const yPos = brushY.invert(d.y * this.zoomScale + this.zoomTranslate[1]);
+          const xPos = brushX.invert(d.x * self.zoomScale + self.zoomTranslate[0]);
+          const yPos = brushY.invert(d.y * self.zoomScale + self.zoomTranslate[1]);
           const selected = (extent[0][0] <= xPos && xPos <= extent[1][0]
                     && extent[0][1] <= yPos && yPos <= extent[1][1])
                     || (this.classList.contains('selected') && d3.event.sourceEvent.ctrlKey);
@@ -334,7 +333,7 @@ class Graph {
           return selected;
         });
 
-      highlightLinksFromAllNodes();
+      this.highlightLinksFromAllNodes();
     }
   }
   brushend() {
@@ -358,7 +357,7 @@ class Graph {
     const selected = !(node.attr('dragselect') == 'true');
     node.classed('fixed', d.fixed = fixed)
         .classed('selected', this.nodeSelection[d.index] = selected);
-    highlightLinksFromNode(node[0]);
+    this.highlightLinksFromNode(node[0]);
     this.force.resume();
   }
 
@@ -463,12 +462,12 @@ class Graph {
 	zoomend(d, self) {
 	  this.svg.attr('cursor', 'move');
 	  if (this.isRightClick()) {
-	    this.zoom.translate(zoomTranslate);
-	    this.zoom.scale(zoomScale);
+	    this.zoom.translate(this.zoomTranslate);
+	    this.zoom.scale(this.zoomScale);
 	  }
 
-	  zoomTranslate = zoom.translate();
-	  zoomScale = zoom.scale();
+	  this.zoomTranslate = this.zoom.translate();
+	  this.zoomScale = this.zoom.scale();
 	} 
 
 	// Link mouse handlers
@@ -511,52 +510,53 @@ class Graph {
 
   // Graph manipulation keycodes
   setupKeycodes() {
+    var self = this;
     d3.select('body')
       .on('keydown', function() {
         // u: Unpin selected nodes
         if (d3.event.keyCode == 85) {
-          this.svg.selectAll('.node.selected')
+          self.svg.selectAll('.node.selected')
             .each(function(d) { d.fixed = false; })
             .classed('fixed', false);
         }
 
         // e: Remove links
         else if (d3.event.keyCode == 69) {
-          deleteSelectedLinks();
+          self.deleteSelectedLinks();
         }
 
         // g: Group selected nodes
         else if (d3.event.keyCode == 71) {
-          groupSelectedNodes();
+          self.groupSelectedNodes();
         }
 
         // h: Ungroup selected nodes
         else if (d3.event.keyCode == 72) {
-          ungroupSelectedGroups();
+          self.ungroupSelectedGroups();
         }
 
         // r: Remove selected nodes
         else if (d3.event.keyCode == 82 || d3.event.keyCode == 46) {
-          deleteSelectedNodes();
+          self.deleteSelectedNodes();
         }
 
         // a: Add node linked to selected
         else if (d3.event.keyCode == 65) {
-          addNodeToSelected();
+          self.addNodeToSelected();
         }
 
         // d: Hide document nodes
         else if (d3.event.keyCode == 68) {
-          toggleDocumentView();
+          self.toggleDocumentView();
         }
 
         // p: Toggle btwn full/abbrev text
         else if (d3.event.keyCode == 80) {
-          this.printFull = (this.printFull + 1) % 3;
-          selectAllNodeNames().text(function(d) { return processNodeName(d.name, this.printFull); });
+          self.printFull = (self.printFull + 1) % 3;
+          self.selectAllNodeNames().text(function(d) { return processNodeName(d.name, self.printFull); });
         }
 
-        this.force.resume()
+        self.force.resume()
       });
     }
 
@@ -570,13 +570,14 @@ class Graph {
 	}
 
 	highlightLinksFromNode(node) {
+    var self = this;
 	  node = node[0].__data__.index;
 	  this.svg.selectAll('.link')
 	    .filter(function(d, i) {
 	      return d.source.index == node || d.target.index == node;
 	    })
 	    .classed('selected', function(d, i) {
-	      return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index];
+	      return self.nodeSelection[d.source.index] && self.nodeSelection[d.target.index];
 	    });
 	}
 
@@ -584,19 +585,21 @@ class Graph {
 	deleteSelectedNodes() {
 	  /* remove selected nodes from DOM
 	      if the node is a group, delete the group */
-	  var groupIds = Object.keys(this.groups);
+	  var self = this;
+
+    var groupIds = Object.keys(this.groups);
 	  var select = this.svg.selectAll('.node.selected');
 	  let group;
 
-	  var removedNodes = removeNodesFromDOM(select);
-	  var removedLinks = removeNodeLinksFromDOM(removedNodes);
+	  var removedNodes = this.removeNodesFromDOM(select);
+	  var removedLinks = this.removeNodeLinksFromDOM(removedNodes);
 
 	  removedLinks.map((link)=> { //remove links from their corresponding group
 	    if (link.target.group) {
-	      group = this.groups[link.target.group];
+	      group = self.groups[link.target.group];
 	      group.links.splice(group.links.indexOf(link), 1);
 	    } if (link.source.group) {
-	      group = this.groups[link.source.group];
+	      group = self.groups[link.source.group];
 	      group.links.splice(group.links.indexOf(link), 1);
 	    }
 	  });
@@ -612,7 +615,7 @@ class Graph {
 	  });
 
 	  this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
-	  update();
+	  this.update();
 	}
 
   // Delete selected links
@@ -623,7 +626,7 @@ class Graph {
     var select = this.svg.selectAll('.node.selected');
     let group;
 
-    var removedLinks = removeNodeLinksSelectiveFromDOM(select);
+    var removedLinks = this.removeNodeLinksSelectiveFromDOM(select);
 
     removedLinks.map((link)=> { //remove links from their corresponding group
       if (link.target.group) {
@@ -666,20 +669,20 @@ class Graph {
 
   toggleDocumentView() {
     if (this.hidden.links.length === 0 && this.hidden.nodes.length ===0) { //nothing is hidden, hide them
-      hideDocumentNodes();
+      this.hideDocumentNodes();
     } else {
-      showHiddenNodes();
+      this.showHiddenNodes();
     }
     this.update();
   }
 
   hideDocumentNodes() {
-    var select = svg.selectAll('.node')
+    var select = this.svg.selectAll('.node')
       .filter((d) => {
         if (d.type === "Document") { return d; }
       })
 
-    hideNodes(select);
+    this.hideNodes(select);
   }
 
   hideNodes(select) {
@@ -687,8 +690,8 @@ class Graph {
         remove links attached to the nodes
         push all the removed nodes & links to the global list of hidden nodes and links */
 
-    const removedNodes = removeNodesFromDOM(select);
-    const removedLinks = removeNodeLinksFromDOM(removedNodes);
+    const removedNodes = this.removeNodesFromDOM(select);
+    const removedLinks = this.removeNodeLinksFromDOM(removedNodes);
     removedNodes.map((node)=> {
       this.hidden.nodes.push(node)
     });
@@ -700,8 +703,8 @@ class Graph {
   showHiddenNodes() {
     /* add all hidden nodes and links back to the DOM display */
 
-    this.hidden.nodes.slice().map((node) => { nodes.push(node); });
-    this.hidden.links.slice().map((link)=> { links.push(link); });
+    this.hidden.nodes.slice().map((node) => { this.nodes.push(node); });
+    this.hidden.links.slice().map((link)=> { this.links.push(link); });
 
     this.hidden.links =[];
     this.hidden.nodes = [];
@@ -710,14 +713,14 @@ class Graph {
   groupSelectedNodes() {
   /* turn selected nodes into a new group, then delete the selected nodes and 
     move links that attached to selected nodes to link to the node of the new group instead */
-    var select = svg.selectAll('.node.selected');
+    var select = this.svg.selectAll('.node.selected');
 
     if (select[0].length <= 1) { return; } //do nothing if nothing is selected & if there's one node
 
-    const group = createGroupFromSelect(select);
-    const removedNodes = removeNodesFromDOM(select);
-    nodes.push({id: group.id, name: `Group ${-1*group.id}`, type: "group"}); //add the new node for the group
-    moveLinksFromOldNodesToGroup(removedNodes, group);
+    const group = this.createGroupFromSelect(select);
+    const removedNodes = this.removeNodesFromDOM(select);
+    this.nodes.push({id: group.id, name: `Group ${-1*group.id}`, type: "group"}); //add the new node for the group
+    this.moveLinksFromOldNodesToGroup(removedNodes, group);
 
     select.each((d)=> { delete this.groups[d.id]; });
       // delete any groups that were selected AFTER all nodes & links are deleted
@@ -725,35 +728,37 @@ class Graph {
 
     this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
     this.update();
-    fillGroupNodes();
-    displayGroupInfo(groups);
+    this.fillGroupNodes();
+    displayGroupInfo(this.groups);
   }
 
   ungroupSelectedGroups() {
     /* expand nodes and links in the selected groups, then delete the group from the global groups dict */
-    var select = svg.selectAll('.node.selected')
+    var self = this;
+    var select = this.svg.selectAll('.node.selected')
       .filter((d)=>{
-        if (this.groups[d.id]){ return d; }
+        if (self.groups[d.id]){ return d; }
       });
 
-    const newNodes = expandGroups(select, centered=false);
+    const newNodes = this.expandGroups(select, false);
     newNodes.map((node) => { node.group=null }); //these nodes no longer have a group
     select.each((d) => { delete this.groups[d.id]; }); //delete this group from the global groups 
 
     this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
     this.node.classed("selected", false)
     this.update();
-    displayGroupInfo(groups);
+    displayGroupInfo(this.groups);
   }
 
   expandGroup(groupId) {
     /* expand the group of the groupId passed in*/
+    var self = this;
     var select = this.svg.selectAll('.node')
       .filter((d) => {
-        if (d.id === groupId && this.groups[d.id]) { return d; }
+        if (d.id === groupId && self.groups[d.id]) { return d; }
       });
 
-    expandGroups(select, centered=true);
+    this.expandGroups(select, true);
   }
 
   expandGroups(select, centered=false) {
@@ -786,8 +791,8 @@ class Graph {
         }
       });
 
-    const removedNodes = removeNodesFromDOM(select);
-    removeNodeLinksFromDOM(removedNodes);
+    const removedNodes = this.removeNodesFromDOM(select);
+    this.removeNodeLinksFromDOM(removedNodes);
     return newNodes;
   }
 
@@ -796,41 +801,42 @@ class Graph {
     const group = this.groups[groupId];
     const groupNodeIds = group.nodes.map((node) => { return node.id; });
 
-    var select = svg.selectAll('.node')
+    var select = this.svg.selectAll('.node')
       .filter((d) => {
         if (isInArray(d.id, groupNodeIds)) { return d; }
       });
 
-    const removedNodes = removeNodesFromDOM(select);
+    const removedNodes = this.removeNodesFromDOM(select);
     this.nodes.push({id: group.id, name: `Group ${-1*group.id}`, type: 'group'}); //add the new node for the group
-    moveLinksFromOldNodesToGroup(removedNodes, group);
+    this.moveLinksFromOldNodesToGroup(removedNodes, group);
   }
 
   toggleGroupView(groupId) {
     /* switch between viewing the group in expanded and collapsed state.
       When expanded, the nodes in the group will have a hull polygon encircling it */
+    const self = this;
     const group = this.groups[groupId];
 
     if (!group) {
       console.log("error, the group doesn't exist even when it should: ", groupId);
     }
 
-    if (expandedGroups[groupId]) {
-      collapseGroupNodes(groupId);
+    if (this.expandedGroups[groupId]) {
+      this.collapseGroupNodes(groupId);
       this.hulls.map((hull, i) => {
         if (hull.groupId === groupId) {
-          hulls.splice(i, 1); // remove this hull from the global list of hulls
+          self.hulls.splice(i, 1); // remove this hull from the global list of hulls
         }
       })
-      expandedGroups[groupId] = false;
+      this.expandedGroups[groupId] = false;
     } else {
-      expandGroup(groupId);
-      this.hulls.push(createHull(group));
-      expandedGroups[groupId] = true;
+      this.expandGroup(groupId);
+      this.hulls.push(this.createHull(group));
+      this.expandedGroups[groupId] = true;
     }
 
     this.update();
-    fillGroupNodes();
+    this.fillGroupNodes();
   }
 
   //Hull functions
@@ -851,8 +857,9 @@ class Graph {
 
   calculateAllHulls() {
     /* calculates paths of all hulls in the global hulls list */
+    var self = this;
     this.hulls.map((hull, i) => {
-      this.hulls[i] = createHull(this.groups[hull.groupId]);
+      self.hulls[i] = self.createHull(self.groups[hull.groupId]);
     });
   }
 
@@ -938,6 +945,8 @@ class Graph {
       (because we're not adding that node to the group's list of nodes)
       if else, add that link to the group's list of links
       then reattach the link */
+
+    var self = this;
     const removedNodesDict = {};
     const nodeIdsToIndex = {};
     const existingLinks = {};
@@ -954,9 +963,9 @@ class Graph {
     })
 
     this.links.slice().map((link) => {
-      const removedLink = removeLink(removedNodesDict, link);
+      const removedLink = self.removeLink(removedNodesDict, link);
       if (removedLink) {
-        const groupids = Object.keys(groups).map((key) => { return parseInt(key); });
+        const groupids = Object.keys(self.groups).map((key) => { return parseInt(key); });
         if (isInArray(link.target.id, groupids) || isInArray(link.source.id, groupids)) {
           // do nothing if the removed link was attached to a group
         } else if (existingLinks[link.target.id + ',' + link.source.id]) {
@@ -964,26 +973,24 @@ class Graph {
         } else {
           group.links.push(removedLink);
         }
-        reattachLink(link, group.id, removedNodesDict, nodeIdsToIndex);
+        self.reattachLink(link, group.id, removedNodesDict, nodeIdsToIndex);
       }
     });
   }
 
-  isInArray(value, array) {
-    return array.indexOf(value) > -1;
-  }
 
   removeNodesFromDOM(select) {
     /* iterates through a select to remove each node, and returns an array of removed nodes */
 
+    var self = this;
     const removedNodes = []
     select
       .each((d) => {
-        if (this.nodes.indexOf(d) === -1) {
+        if (self.nodes.indexOf(d) === -1) {
           console.log("Error, wasn't in there and node is: ", d, " and nodes is: ", nodes);
         } else {
           removedNodes.push(d);
-          this.nodes.splice(nodes.indexOf(d),1);
+          self.nodes.splice(self.nodes.indexOf(d),1);
         }
       });
 
@@ -993,7 +1000,6 @@ class Graph {
   removeNodeLinksFromDOM(removedNodes) {
     /* takes in an array of nodes and removes links associated with any of them
         returns an arry of removed links */
-
     const removedLinks = [];
     let removedLink;
     const removedNodesDict = {};
@@ -1003,7 +1009,7 @@ class Graph {
     })
 
     this.links.slice().map((link) => {
-      removedLink = removeLink(removedNodesDict, link);
+      removedLink = this.removeLink(removedNodesDict, link);
       if (removedLink) {
         removedLinks.push(removedLink);
       }
@@ -1035,7 +1041,7 @@ class Graph {
     })
 
     this.links.slice().map((link) => {
-      removedLink = removeSelectiveLink(nodesDict, link);
+      removedLink = this.removeSelectiveLink(nodesDict, link);
       if (removedLink) {
         removedLinks.push(removedLink);
       }
@@ -1055,8 +1061,8 @@ class Graph {
     select
       .each((d) => {
         if (this.groups[d.id]) { //this node is already a group
-          var newNodes = groups[d.id].nodes;
-          var newLinks = groups[d.id].links;
+          var newNodes = this.groups[d.id].nodes;
+          var newLinks = this.groups[d.id].links;
           newNodes.map((node) => {
             group.nodes.push(node); //add each of the nodes in the old group to the list of nodes in the new group        
           });
@@ -1069,13 +1075,13 @@ class Graph {
         }
       }); 
 
-      this.globalnodeid -=1;
+    this.globalnodeid -=1;
     return group;
   }
 
 // Fill group nodes blue
   fillGroupNodes() {
-    svg.selectAll('.node')
+    this.svg.selectAll('.node')
       .classed('grouped', function(d) { return d.id < 0; });
   }
 
@@ -1086,10 +1092,6 @@ class Graph {
         .style('fill-opacity', 1);
     this.link.style('stroke-opacity', 1);
   }
-
-
-
-
 }
 
 // =================
@@ -1113,6 +1115,9 @@ function printObject(object) {
 // HELPER METHODS
 // ==============
 
+function isInArray(value, array) {
+    return array.indexOf(value) > -1;
+  }
 // Normalize node text to same casing conventions and length
 // printFull states - 0: abbrev, 1: none, 2: full
 function processNodeName(str, printFull) {
