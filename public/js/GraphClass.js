@@ -39,6 +39,7 @@ class Graph {
     this.zoomScale = 1;
     this.zoomPressed = null;
     this.printFull = 0; // Allow user to toggle node text length
+    this.stick = false; // If nodes are all stuck or not
 
     this.node = null;
     this.link = null;
@@ -647,11 +648,6 @@ class Graph {
             .classed('fixed', false);
         }
 
-        // c: Unstick the nodes
-        else if (d3.event.keyCode == 67) {
-          this.unstickNodes();
-        }
-
         // e: Remove links
         else if (d3.event.keyCode == 69) {
           this.deleteSelectedLinks();
@@ -659,7 +655,7 @@ class Graph {
 
         // f: Stick all the nodes
         else if (d3.event.keyCode == 70) {
-          this.stickNodes();
+          this.toggleStickNodes();
         }
 
         // e: Remove links
@@ -722,7 +718,7 @@ class Graph {
   }
 
   // Fix all the nodes in the same spot
-  stickNodes() {
+  toggleStickNodes() {
     d3.selectAll('g.node')  //here's how you get all the nodes
       .each(function (d) {
         const node = d3.select(this); // Transform to d3 Object
@@ -731,21 +727,12 @@ class Graph {
           .attr('dragselect', node.classed('selected'))
           .attr('dragdistance', 0);
 
-        node.classed('fixed', d.fixed = true);
-      });
-  }
-
-  // Allow all the nodes to move again
-  unstickNodes() {
-    d3.selectAll('g.node')  //here's how you get all the nodes
-      .each(function (d) {
-        const node = d3.select(this); // Transform to d3 Object
-        node
-          .attr('dragfix', node.classed('fixed'))
-          .attr('dragselect', node.classed('selected'))
-          .attr('dragdistance', 0);
-
-        node.classed('fixed', d.fixed = false);
+        if (this.stick) {
+          node.classed('fixed', d.fixed = false);
+        } else {
+          node.classed('fixed', d.fixed = true);
+        }
+        this.stick = !this.stick;
       });
   }
 
