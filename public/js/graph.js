@@ -117,7 +117,7 @@ const force = d3.layout.force()
       .linkDistance(90)
       .size([width, height]);
 
-d3.json('data/sdn.json', function(json) {
+d3.json('data/well_connected.json', function(json) {
   nodes = json.nodes
   links = json.links
   hulls = []
