@@ -283,9 +283,10 @@ function update(){
 
   nodeEnter.append('text')
     .attr('class', 'node-name')
-    .attr('dx', 25)
-    .attr('dy', '.45em')
+    .attr('text-anchor', 'middle')
+    .attr('dy', '40px')
     .text(function(d) { return processNodeName(d.name, printFull)})
+    .call(textWrap)
     .on('click', clickedText)
     .on('mouseover', mouseoverText)
     .on('mouseout', mouseoutText)
@@ -452,20 +453,28 @@ function mouseover(d) {
       })
       .style('stroke-opacity', .15)
       .style('fill-opacity', .15);
-    // .select('.node-name')
-    //   .text(function(d) { return processNodeName(d.name, 1); });
 
     link.style('stroke-opacity', function(o) {
       return (o.source == d || o.target == d) ? 1 : .05;
     });
 
-    if (printFull == 0) d3.select(this).select('.node-name').text(processNodeName(d.name, 2));
+    if (printFull == 0) { 
+      d3.select(this)
+        .select('.node-name')
+        .text(processNodeName(d.name, 2))
+        .call(textWrap);
+    }
   }
 }
 
 function mouseout(d) {
   resetGraphOpacity();
-  if (printFull != 1) d3.select(this).select('.node-name').text(function(d) { return processNodeName(d.name, printFull); });
+  if (printFull != 1) {
+    d3.select(this)
+      .select('.node-name')
+      .text(function(d) { return processNodeName(d.name, printFull); })
+      .call(textWrap);
+  }
 }
 
 // Zoom & pan
@@ -522,7 +531,9 @@ function dragendText(d) {
 
 function mouseoverText(d) {
   if (printFull == 0 && !isBrushing && !isDragging) {
-    d3.select(this).text(processNodeName(d.name, 2));
+    d3.select(this)
+      .text(processNodeName(d.name, 2))
+      .call(textWrap);
   }
 
   d3.event.stopPropagation();
@@ -530,7 +541,9 @@ function mouseoverText(d) {
 
 function mouseoutText(d) {
   if (printFull == 0 && !isBrushing && !isDragging) {
-    d3.select(this).text(processNodeName(d.name, 0));
+    d3.select(this)
+      .text(processNodeName(d.name, 0))
+      .call(textWrap);
   }
 
   d3.event.stopPropagation();
@@ -589,7 +602,7 @@ d3.select('body')
     // p: Toggle btwn full/abbrev text
     else if (d3.event.keyCode == 80) {
       printFull = (printFull + 1) % 3;
-      selectAllNodeNames().text(function(d) { return processNodeName(d.name, printFull); });
+      selectAllNodeNames().text(function(d) { return processNodeName(d.name, printFull); }).call(textWrap);
     }
 
     force.resume()
@@ -943,12 +956,6 @@ function processNodeName(str, printFull) {
     return '';
   }
 
-  // Length truncation
-  str = str.trim();
-  if (str.length > maxTextLength && printFull == 0) {
-    str = `${str.slice(0, maxTextLength).trim()}...`;
-  }
-
   // Capitalization
   const delims = [' ', '.', '('];
   for (let i = 0; i < delims.length; i++) {
@@ -969,6 +976,44 @@ function splitAndCapitalize(str, splitChar) {
 
 function capitalize(str, first) {
   return str.charAt(0).toUpperCase() + (first ? str.slice(1).toLowerCase() : str.slice(1));
+}
+
+// Wrap text
+function textWrap(textSelection, width=100) {
+  textSelection.each(function(d) {
+    const text = d3.select(this);
+    const tokens = text.text().split(' ');
+    text.text(null);
+
+    let line = [];
+    let remainder;
+    let lineNum = 1;
+    const dy = parseInt(text.attr('dy'));
+    let tspan = text.append('tspan')
+                    .attr('x', 0)
+                    .attr('y', 0)
+                    .attr('dy', dy);
+
+    for (let i = 0; i < tokens.length; i++) {
+      line.push(tokens[i]);
+      tspan = tspan.text(line.join(' '));
+      if (tspan.node().getComputedTextLength() > width) {
+        remainder = (line.length > 1) ? line.pop() : null;
+        tspan.text(line.join(' '));
+        tspan = text.append('tspan')
+                    .attr('x', 0)
+                    .attr('y', 0)
+                    .attr('dy', 15*(lineNum++) + dy);
+        line = remainder ? [remainder] : [];
+      }
+
+      if (printFull == 0 && lineNum >= 2) { break; }
+    }
+
+    let finalLine = line.join(' ');
+    finalLine = (printFull == 0 && lineNum >= 2) ? `${finalLine.trim()}...` : finalLine;
+    tspan.text(finalLine);
+  });
 }
 
 // Determine if neighboring nodes

@@ -1,9 +1,9 @@
 {
   "nodes":[
-    {"name":"node1","group":1,"id":1},
-    {"name":"node2","group":2,"id":2},
-    {"name":"node3","group":2,"id":3},
-    {"name":"node4","group":3,"id":4}
+    {"name":"node1 asdasd asdasdasdasdasd asdasdasd","id":1},
+    {"name":"node2 zxczxczxczxc zczxc zxczcx zxczxcz","id":2},
+    {"name":"node3 24 2342342 234234234 2342 4234 234","id":3},
+    {"name":"node4 werwer wer werwer werwr werw erwerwer","id":4}
   ],
   "links":[
     {"source":2,"target":1,"weight":1,"id":1},
