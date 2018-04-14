@@ -15,11 +15,14 @@ function populateGraphUsageBody(graphUsageBody) {
   $(graphUsageBody).append(createGraphUsageEntry('unpin selected nodes', 'U'));
   $(graphUsageBody).append(createGraphUsageEntry('link new node to selected nodes', 'A'));
   $(graphUsageBody).append(createGraphUsageEntry('remove selected nodes', 'R', 'or', 'del'));
+  $(graphUsageBody).append(createGraphUsageEntry('remove selected links', 'E'));  
   $(graphUsageBody).append(createGraphUsageEntry('group selected nodes', 'G'));
   $(graphUsageBody).append(createGraphUsageEntry('ungroup selected nodes', 'H'));
   $(graphUsageBody).append(createGraphUsageEntry('toggle grouped nodes view', 'dbl-click')); 
   $(graphUsageBody).append(createGraphUsageEntry('toggle document nodes', 'D')); 
   $(graphUsageBody).append(createGraphUsageEntry('toggle text length', 'P'));  
+  $(graphUsageBody).append(createGraphUsageEntry('fix all nodes', 'F'));  
+  $(graphUsageBody).append(createGraphUsageEntry('unfix all nodes', 'C'));  
 }
 
 function createGraphUsageEntry(key) {
