@@ -70,6 +70,8 @@ class Graph {
         this.dragend = this.dragend.bind(this);
         this.mouseover = this.mouseover.bind(this);
         this.mouseout = this.mouseout.bind(this);
+        this.mouseoverText = this.mouseoverText.bind(this);
+        this.mouseoutText = this.mouseoutText.bind(this);
         this.dragstart = this.dragstart.bind(this);
         this.dragging = this.dragging.bind(this);
         this.dragend = this.dragend.bind(this);
@@ -81,6 +83,7 @@ class Graph {
         this.drawHull = this.drawHull.bind(this);
         this.zoomButton = this.zoomButton.bind(this);
         this.initializeButton = this.initializeButton.bind(this);
+        this.textWrap = this.textWrap.bind(this);
 
         
         // this.dragend = this.dragend.bind(this);    
@@ -279,12 +282,13 @@ class Graph {
 
         this.nodeEnter.append('text')
             .attr('class', 'node-name')
-            .attr('dx', 25)
-            .attr('dy', '.45em')
+            .attr('text-anchor', 'middle')
+            .attr('dy', '40px')
             .text(function (d) { return processNodeName(d.name, this.printFull) })
+            .call(this.textWrap)            
             .on('click', this.clickedText)
-            .on('mouseover', this.mouseoverText)
-            .on('mouseout', this.mouseoutText)
+            .on('mouseover', function(d) { self.mouseoverText(d, this) })
+            .on('mouseout', function(d) { self.mouseoutText(d, this) })
             .call(d3.behavior.drag()
                 .on('dragstart', this.dragstartText)
                 .on('dragstart', this.draggingText)
@@ -449,19 +453,27 @@ class Graph {
                 })
                 .style('stroke-opacity', .15)
                 .style('fill-opacity', .15);
-            // .select('.node-name')
-            //   .text(function(d) { return processNodeName(d.name, 1); });
 
             this.link.style('stroke-opacity', function (o) {
                 return (o.source == d || o.target == d) ? 1 : .05;
-            });
-            if (this.printFull == 0) d3.select(self).select('.node-name').text(processNodeName(d.name, 2));
+            });     
+        if (this.printFull == 0) { 
+          d3.select(self)
+            .select('.node-name')
+            .text(processNodeName(d.name, 2))
+            .call(this.textWrap);
         }
+      }
     }
 
     mouseout(d, self) {
-        this.resetGraphOpacity();
-        if (this.printFull != 1) d3.select(self).select('.node-name').text(function (d) { return processNodeName(d.name, this.printFull); });
+      this.resetGraphOpacity();
+      if (this.printFull != 1) {
+        d3.select(self)
+          .select('.node-name')
+          .text((d) => { return processNodeName(d.name, this.printFull); })
+          .call(this.textWrap);
+      }    
     }
 
     // Zoom & pan
@@ -604,17 +616,21 @@ class Graph {
         d3.event.sourceEvent.stopPropagation();
     }
 
-    mouseoverText(d) {
+    mouseoverText(d, self) {
         if (this.printFull == 0 && !this.isBrushing && !this.isDragging) {
-            d3.select(this).text(processNodeName(d.name, 2));
+            d3.select(self)
+              .text(processNodeName(d.name, 2))
+              .call(this.textWrap);
         }
 
         d3.event.stopPropagation();
     }
 
-    mouseoutText(d) {
+    mouseoutText(d, self) {
         if (this.printFull == 0 && !this.isBrushing && !this.isDragging) {
-            d3.select(this).text(processNodeName(d.name, 0));
+            d3.select(self)
+              .text(processNodeName(d.name, 0))
+              .call(this.textWrap);
         }
 
         d3.event.stopPropagation();
@@ -629,6 +645,21 @@ class Graph {
               this.svg.selectAll('.node.selected')
                   .each(function (d) { d.fixed = false; })
                   .classed('fixed', false);
+          }
+
+          // c: Unstick the nodes
+          else if (d3.event.keyCode == 67) {
+            this.unstickNodes();
+          }
+
+          // e: Remove links
+          else if (d3.event.keyCode == 69) {
+            this.deleteSelectedLinks();
+          }
+
+          // f: Stick all the nodes
+          else if (d3.event.keyCode == 70) {
+            this.stickNodes();
           }
 
           // e: Remove links
@@ -664,7 +695,7 @@ class Graph {
           // p: Toggle btwn full/abbrev text
           else if (d3.event.keyCode == 80) {
               this.printFull = (this.printFull + 1) % 3;
-              this.selectAllNodeNames().text((d) => { return processNodeName(d.name, this.printFull); });
+              this.selectAllNodeNames().text((d) => { return processNodeName(d.name, this.printFull); }).call(this.textWrap);
           }
 
           this.force.resume()
@@ -688,6 +719,34 @@ class Graph {
             .classed('selected', (d, i) => {
                 return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index];
             });
+    }
+
+        // Fix all the nodes in the same spot
+    stickNodes() {
+      d3.selectAll('g.node')  //here's how you get all the nodes
+        .each(function(d) {
+          const node = d3.select(this); // Transform to d3 Object
+          node
+            .attr('dragfix', node.classed('fixed'))
+            .attr('dragselect', node.classed('selected'))
+            .attr('dragdistance', 0);
+
+          node.classed('fixed', d.fixed = true); 
+        });
+    }
+
+    // Allow all the nodes to move again
+    unstickNodes() {
+      d3.selectAll('g.node')  //here's how you get all the nodes
+        .each(function(d) {
+          const node = d3.select(this); // Transform to d3 Object
+          node
+            .attr('dragfix', node.classed('fixed'))
+            .attr('dragselect', node.classed('selected'))
+            .attr('dragdistance', 0);
+
+          node.classed('fixed', d.fixed = false); 
+        });
     }
 
     // Multi-node manipulation methods
@@ -749,6 +808,31 @@ class Graph {
         this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
         this.node.classed("selected", false)
         this.update();
+    }
+
+    // Delete selected links
+    deleteSelectedLinks() {
+      /* remove selected nodes from DOM
+          if the node is a group, delete the group */
+      var groupIds = Object.keys(this.groups);
+      var select = this.svg.selectAll('.node.selected');
+      let group;
+
+      var removedLinks = this.removeNodeLinksSelectiveFromDOM(select);
+
+      removedLinks.map((link)=> { //remove links from their corresponding group
+        if (link.target.group) {
+          group = this.groups[link.target.group];
+          group.links.splice(group.links.indexOf(link), 1);
+        } if (link.source.group) {
+          group = this.groups[link.source.group];
+          group.links.splice(group.links.indexOf(link), 1);
+        }
+      });
+
+      this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
+      this.node.classed("selected", false)
+      this.update();
     }
 
     addNodeToSelected() {
@@ -981,7 +1065,44 @@ class Graph {
             .filter(function (d) { return d3.select(this).classed('node-name'); });
     }
 
+    // Wrap text
+    textWrap(textSelection, width=100) {
+      var self = this;
+      textSelection.each(function(d) {
+        const text = d3.select(this);
+        const tokens = text.text().split(' ');
+        text.text(null);
 
+        let line = [];
+        let remainder;
+        let lineNum = 1;
+        const dy = parseInt(text.attr('dy'));
+        let tspan = text.append('tspan')
+                        .attr('x', 0)
+                        .attr('y', 0)
+                        .attr('dy', dy);
+
+        for (let i = 0; i < tokens.length; i++) {
+          line.push(tokens[i]);
+          tspan = tspan.text(line.join(' '));
+          if (tspan.node().getComputedTextLength() > width) {
+            remainder = (line.length > 1) ? line.pop() : null;
+            tspan.text(line.join(' '));
+            tspan = text.append('tspan')
+                        .attr('x', 0)
+                        .attr('y', 0)
+                        .attr('dy', 15*(lineNum++) + dy);
+            line = remainder ? [remainder] : [];
+          }
+
+          if (self.printFull == 0 && lineNum >= 2) { break; }
+        }
+
+        let finalLine = line.join(' ');
+        finalLine = (self.printFull == 0 && lineNum >= 2) ? `${finalLine.trim()}...` : finalLine;
+        tspan.text(finalLine);
+      });
+    }
 
     // Determine if neighboring nodes
     neighbors(a, b) {
@@ -1225,12 +1346,6 @@ function isInArray(value, array) {
 function processNodeName(str, printFull) {
     if (!str || printFull == 1) {
         return '';
-    }
-
-    // Length truncation
-    str = str.trim();
-    if (str.length > maxTextLength && printFull == 0) {
-        str = `${str.slice(0, maxTextLength).trim()}...`;
     }
 
     // Capitalization
