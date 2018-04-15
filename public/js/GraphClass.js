@@ -185,7 +185,7 @@ class Graph {
       .linkDistance(90)
       .size([this.width, this.height]);
   }
-  generateNetworkCanvas(centerid, nodes, links, width, height) {
+  generateCanvas(width, height) {
     this.width = width;
     this.height = height;
     this.center = [this.width / 2, this.height / 2];
@@ -205,7 +205,12 @@ class Graph {
     this.initializeZoomButtons();
 
     this.setupKeycodes();
+  }
 
+  // Completely rerenders the graph, assuming all new nodes and links
+  // Centerid currently doesn't do anything
+  // TO-DO: implement feature of centering the graph around a particular ID
+  setData(centerid, nodes, links) {
     this.nodes = nodes;
     this.links = links;
     this.hulls = [];
@@ -240,7 +245,7 @@ class Graph {
 
     this.force.on('tick', (e) => { this.ticked(e, this) });
     // Avoid initial chaos and skip the wait for graph to drift back onscreen
-    for (let i = 750; i > 0; --i) this.force.tick();
+    for (let i = 750; i > 0; --i) this.force.tick();      
   }
 
   update() {
@@ -468,17 +473,156 @@ class Graph {
     }
   }
 
-  mouseout(d, self) {
-    this.resetGraphOpacity();
-    if (this.printFull != 1) {
-      d3.select(self)
-        .select('.node-name')
-        .text((d) => { return processNodeName(d.name, this.printFull); })
-        .call(this.textWrap);
+    initializeForce() {
+        return d3.layout.force()
+            .linkDistance(90)
+            .size([this.width, this.height]);
     }
-  }
+    
+    generateNetworkCanvas(centerid, nodes, links, width, height) {
+        this.width = width;
+        this.height = height;
+        this.center = [this.width / 2, this.height /2];
+        this.brushX = d3.scale.linear().range([0, width]),
+        this.brushY = d3.scale.linear().range([0, height]);
 
+        this.numTicks = width / this.gridLength * (1 / this.minScale);
+
+        this.zoom = this.initializeZoom();
+        this.brush = this.initializeBrush();
+        this.svg = this.initializeSVG();
+        this.svgBrush = this.initializeSVGBrush();
+        this.container = this.initializeContainer();
+        this.curve = this.initializeCurve();
+        this.svgGrid = this.initializeSVGgrid();
+        this.force = this.initializeForce();
+        this.initializeButton();
+
+        this.setupKeycodes();
+
+        this.nodes = nodes;
+        this.links = links;
+        this.hulls = [];
+  
+       // Needed this code when loading 43.json to prevent it from disappearing forever by pinning the initial node
+      // var index
+      //   nodes.map((node, i)=> {
+      //     if (node.id===43) {
+      //       index = i
+      //     }
+      //   })
+  
+      //   nodes[index].fixed = true;
+      //   nodes[index].px = width/2
+      //   nodes[index].py = height/2; 
+  
+        this.force
+          .gravity(.25)
+          .charge(-1 * Math.max(Math.pow(this.nodes.length, 2), 750))
+          .friction(this.nodes.length < 15 ? .75 : .65)
+          .alpha(.8)
+          .nodes(this.nodes)
+          .links(this.links);
+  
+        // Create selectors
+        this.hull = this.container.append('g').selectAll('.hull')  
+        this.link = this.container.append('g').selectAll('.link');
+        this.node = this.container.append('g').selectAll('.node');
+  
+        // Updates nodes and links according to current data
+        this.update();
+  
+        this.force.on('tick', (e) => {this.ticked(e, this)});
+        // Avoid initial chaos and skip the wait for graph to drift back onscreen
+        for (let i = 750; i > 0; --i) this.force.tick();
+    }
+
+    mouseout(d, self) {
+      this.resetGraphOpacity();
+      if (this.printFull != 1) {
+        d3.select(self)
+          .select('.node-name')
+          .text((d) => { return processNodeName(d.name, this.printFull); })
+          .call(this.textWrap);
+      }
+    }
+
+<<<<<<< HEAD
   // SVG zoom & pan
+=======
+    update() {
+        var self = this;
+        this.link = this.link.data(this.links, function (d) { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
+        this.link
+            .enter().append('line')
+            .attr('class', 'link')
+            .style('stroke-dasharray', function (d) { return d.type === 'possibly_same_as' ? ('3,3') : false; })
+            .on('mouseover', this.mouseoverLink);
+
+        this.link.exit().remove();
+
+        this.node = this.node.data(this.nodes, function (d) { return d.id; });
+        this.nodeEnter = this.node.enter().append('g')
+            .attr('class', 'node')
+            .attr('dragfix', false)
+            .attr('dragselect', false)
+            .on('click', function (d) { self.clicked(d, this) })
+            .on('dblclick', function (d) { self.dblclicked(d, this) })
+            .on('mouseover', function (d) { self.mouseover(d, this) })
+            .on('mouseout', function (d) { self.mouseout(d, this) })
+            .classed('fixed', function (d) { return d.fixed; })
+            .call(this.force.drag()
+                .origin(function (d) { return d; })
+                .on('dragstart', function (d) { self.dragstart(d, this) })
+                .on('drag', function (d) { self.dragging(d, this) })
+                .on('dragend', function (d) { self.dragend(d, this) })
+            );
+
+        this.nodeEnter.append('circle')
+            .attr('r', '20');
+
+        this.nodeEnter.append('text')
+            .attr('class', 'icon')
+            .attr('text-anchor', 'middle')
+            .attr('dominant-baseline', 'central')
+            .attr('font-family', 'FontAwesome')
+            .attr('font-size', '20px')
+            .text(function (d) { return (d.type && icons[d.type]) ? icons[d.type] : ''; });
+
+        this.nodeEnter.append('text')
+            .attr('class', 'node-name')
+            .attr('text-anchor', 'middle')
+            .attr('dy', '40px')
+            .text(function (d) { return processNodeName(d.name, this.printFull) })
+            .call(this.textWrap)            
+            .on('click', this.clickedText)
+            .on('mouseover', function(d) { self.mouseoverText(d, this) })
+            .on('mouseout', function(d) { self.mouseoutText(d, this) })
+            .call(d3.behavior.drag()
+                .on('dragstart', this.dragstartText)
+                .on('dragstart', this.draggingText)
+                .on('dragstart', this.dragendText)
+            );
+
+        this.node.exit().remove();
+
+        this.hull = this.hull.data(this.hulls)
+
+        this.hull
+            .enter().append('path')
+            .attr('class', 'hull')
+            .attr('d', this.drawHull)
+            .on('dblclick', function (d) {
+                self.toggleGroupView(d.groupId);
+                d3.event.stopPropagation();
+            })
+        this.hull.exit().remove();
+
+        this.force.start();
+        this.reloadNeighbors(); // TODO: revisit this and figure out WHY d.source.index --> d.source if this is moved one line up  
+  }
+  // Zoom & pan
+>>>>>>> 18bf2ce35f9f8c4ee261ccb5985e67614a06d78d
   zoomstart(d, self) {
     const e = d3.event;
     if (this.isRightClick()) {
@@ -713,6 +857,7 @@ class Graph {
         return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index];
       });
   }
+
 
   toggleFixedNodes() {
     d3.selectAll('.node')
