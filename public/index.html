@@ -36,19 +36,6 @@
         graph.generateCanvas(width, height)
         graph.setData(34194, json.nodes, json.links)
       })
-
-      var gui = new dat.GUI()
-
-      var fl = gui.addFolder("Force Layout")
-      fl.open()
-
-      var config = { "tick": true, "friction": .9, "linkStrength": 1, "linkDistance": 9, "charge": .6, "gravity": .01, "theta": .8 }
-      debugger
-      var tickChanger = fl.add(config, "tick")
-      tickChanger.onChange(function(value) {
-        value ? graph.force.start() : graph.force.stop()
-      })
-
     </script>
     <script src="js/sidebar.js"></script>
   </body>
