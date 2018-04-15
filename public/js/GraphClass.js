@@ -206,6 +206,11 @@ class Graph {
     this.initializeZoomButtons();
 
     this.setupKeycodes();
+    
+    // Create selectors
+    this.hull = this.container.append('g').selectAll('.hull')
+    this.link = this.container.append('g').selectAll('.link');
+    this.node = this.container.append('g').selectAll('.node');
   }
 
   // Completely rerenders the graph, assuming all new nodes and links
@@ -235,11 +240,6 @@ class Graph {
       .alpha(.8)
       .nodes(this.nodes)
       .links(this.links);
-
-    // Create selectors
-    this.hull = this.container.append('g').selectAll('.hull')
-    this.link = this.container.append('g').selectAll('.link');
-    this.node = this.container.append('g').selectAll('.node');
 
     // Updates nodes and links according to current data
     this.update();
@@ -1055,11 +1055,10 @@ class Graph {
     var vertices = [];
     var offset = 20; //arbitrary, the size of the node radius
 
-    const hiddenids = this.hidden.nodes.map((node) => { return node.id });
+    const nodeids = this.nodes.map((node) => { return node.id }); // create array of all ids in nodes
     group.nodes.map((d) => {
-      if (isInArray(d.id, hiddenids)) {
-        // don't do anything
-      } else {
+      if (isInArray(d.id, nodeids)) {
+        // draw a hull around a node only if it's shown on the DOM
         vertices.push(
           [d.x + offset, d.y + offset], // creates a buffer around the nodes so the hull is larger
           [d.x - offset, d.y + offset],
