@@ -614,8 +614,8 @@ class Graph {
     var translate = this.zoom.translate();
     var self = this;
 
-    // Transition to the new view over 100ms
-    d3.transition().duration(100).tween("translate", function () {
+    // Transition to the new view over 500ms
+    d3.transition().duration(500).tween("translate", function () {
       var interpolate_trans = d3.interpolate(translate, [x, y]);
       return function (t) {
         self.zoom
@@ -1054,13 +1054,19 @@ class Graph {
   createHull(group) {
     var vertices = [];
     var offset = 20; //arbitrary, the size of the node radius
-    group.nodes.map(function (d) {
-      vertices.push(
-        [d.x + offset, d.y + offset], // creates a buffer around the nodes so the hull is larger
-        [d.x - offset, d.y + offset],
-        [d.x - offset, d.y - offset],
-        [d.x + offset, d.y - offset]
-      );
+
+    const hiddenids = this.hidden.nodes.map((node) => { return node.id });
+    group.nodes.map((d) => {
+      if (isInArray(d.id, hiddenids)) {
+        // don't do anything
+      } else {
+        vertices.push(
+          [d.x + offset, d.y + offset], // creates a buffer around the nodes so the hull is larger
+          [d.x - offset, d.y + offset],
+          [d.x - offset, d.y - offset],
+          [d.x + offset, d.y - offset]
+        );
+      }
     });
 
     return { groupId: group.id, path: d3.geom.hull(vertices) }; //returns a hull object
