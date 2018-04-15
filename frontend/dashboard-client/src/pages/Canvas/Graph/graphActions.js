@@ -22,7 +22,8 @@ export function updateGraph(data) {
   return (dispatch, getState) => {
     var graphData = parseNeo4jData(data);
     let g = getState().canvas.graph;
-    g.setData(graphData.cenerid, graphData.nodes, graphData.links);
+    debugger
+    g.setData(graphData.centerid, graphData.nodes, graphData.links);
     dispatch(updateGraphDispatch(graphData))
   }
 }
@@ -40,7 +41,7 @@ export function fetchGraphFromId(graph, id) {
   server.getGraph(id)
     .then(data => {
       var graphData = parseNeo4jData(data);
-      graph.setData(graphData.cenerid, graphData.nodes, graphData.links);
+      graph.setData(graphData.centerid, graphData.nodes, graphData.links);
       dispatch(updateGraphDispatch(graphData))
     })
     .catch(err => { console.log(err); });
