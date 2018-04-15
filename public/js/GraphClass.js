@@ -39,7 +39,7 @@ class Graph {
     this.zoomScale = 1;
     this.zoomPressed = null;
     this.printFull = 0; // Allow user to toggle node text length
-    this.stick = false; // If nodes are all stuck or not
+    this.isGraphFixed = false; // Track whether or not all nodes should be fixed
 
     this.node = null;
     this.link = null;
@@ -82,11 +82,10 @@ class Graph {
     this.initializeZoom = this.initializeZoom.bind(this);
     this.initializeBrush = this.initializeBrush.bind(this);
     this.drawHull = this.drawHull.bind(this);
-    this.zoomButton = this.zoomButton.bind(this);
-    this.initializeButton = this.initializeButton.bind(this);
+    this.doZoom = this.doZoom.bind(this);
+    this.initializeZoomButtons = this.initializeZoomButtons.bind(this);
     this.textWrap = this.textWrap.bind(this);
 
-    // this.dragend = this.dragend.bind(this);    
   }
 
   initializeZoom() {
@@ -96,6 +95,7 @@ class Graph {
       .on('zoomstart', function (d) { self.zoomstart(d, this) })
       .on('zoom', function (d) { self.zooming(d, this) })
       .on('zoomend', function (d) { self.zoomend(d, this) });
+
     return zoom;
   }
 
@@ -120,6 +120,7 @@ class Graph {
     svg.on('contextmenu', function (d, i) {
       d3.event.preventDefault();
     });
+
     return svg;
   }
 
@@ -134,6 +135,7 @@ class Graph {
     this.svg.on('mousedown', () => {
       svgBrush.style('opacity', this.isRightClick() ? 1 : 0);
     });
+
     return svgBrush;
   }
 
@@ -175,6 +177,7 @@ class Graph {
       .attr('y1', (d) => { return d; })
       .attr('x2', (d) => { return (1 / this.minScale) * this.width + this.gridLength; })
       .attr('y2', (d) => { return d; });
+
     return svgGrid;
   }
 
@@ -200,7 +203,7 @@ class Graph {
     this.curve = this.initializeCurve();
     this.svgGrid = this.initializeSVGgrid();
     this.force = this.initializeForce();
-    this.initializeButton();
+    this.initializeZoomButtons();
 
     this.setupKeycodes();
   }
@@ -494,8 +497,8 @@ class Graph {
           .call(this.textWrap);
       }
     }
-
-  // Zoom & pan
+    
+  // SVG zoom & pan
   zoomstart(d, self) {
     const e = d3.event;
     if (this.isRightClick()) {
@@ -525,17 +528,8 @@ class Graph {
     this.zoomScale = this.zoom.scale();
   }
 
-  zoomed() {
-    this.container.attr('transform', 'translate(' + this.zoom.translate() + ')scale(' + this.zoom.scale() + ')');
-    const transform = 'translate(' + (((this.zoom.translate()[0] / this.zoom.scale()) % this.gridLength) - this.zoom.translate()[0] / this.zoom.scale())
-      + ',' + (((this.zoom.translate()[1] / this.zoom.scale()) % this.gridLength) - this.zoom.translate()[1] / this.zoom.scale()) + ')scale(' + 1 + ')';
-    this.svgGrid.attr('transform', transform);
-  }
-
-  //d3.select(this.frameElement).style("height", height + "px");
-
-  // Simplest possible buttons
-  initializeButton() {
+  // Zoom buttons
+  initializeZoomButtons() {
     var self = this;
     this.svg.selectAll(".button")
       //.data(['zoom_in', 'zoom_out'])
@@ -560,24 +554,21 @@ class Graph {
     d3.selectAll('.button').on('mousedown', function () {
       self.zoomPressed = true;
       self.disableZoom();
-      self.zoomButton(this.id === 'zoom_in')
+      self.doZoom(this.id === 'zoom_in')
     }).on('mouseup', function () {
       self.zoomPressed = false;
     }).on('mouseout', function () {
       self.zoomPressed = false;
-    })
+    }).on('click', function() {
+      d3.event.stopPropagation();
+    }).on('dblclick', function() {
+      d3.event.stopPropagation();
+    });
+
     this.svg.on("mouseup", () => { this.svg.call(this.zoom) });
   }
 
-
-  disableZoom() {
-    this.svg.on("mousedown.zoom", null)
-      .on("touchstart.zoom", null)
-      .on("touchmove.zoom", null)
-      .on("touchend.zoom", null);
-  }
-
-  zoomButton(zoom_in) {
+  doZoom(zoom_in) {
     var self = this;
     var scale = this.zoom.scale(),
       extent = this.zoom.scaleExtent(),
@@ -602,14 +593,15 @@ class Graph {
     // Transition to the new view over 100ms
     d3.transition().duration(100).tween("zoom", function () {
       var interpolate_scale = d3.interpolate(scale, target_scale),
-        interpolate_trans = d3.interpolate(translate, [x, y]);
+          interpolate_trans = d3.interpolate(translate, [x, y]);
       return function (t) {
-        self.zoom.scale(interpolate_scale(t))
-          .translate(interpolate_trans(t));
-        self.zoomed();
+        self.zoom
+            .scale(interpolate_scale(t))
+            .translate(interpolate_trans(t));
+        self.zoomingButton();
       };
     }).each("end", () => {
-      if (this.zoomPressed) this.zoomButton(zoom_in);
+      if (this.zoomPressed) this.doZoom(zoom_in);
     });
   }
 
@@ -628,7 +620,7 @@ class Graph {
       return function (t) {
         self.zoom
           .translate(interpolate_trans(t));
-        self.zoomed();
+        self.zoomingButton();
       };
     })
     d3.selectAll(".node")
@@ -640,9 +632,23 @@ class Graph {
       .classed("selected", true)
   }
 
+  disableZoom() {
+    this.svg.on("mousedown.zoom", null)
+      .on("touchstart.zoom", null)
+      .on("touchmove.zoom", null)
+      .on("touchend.zoom", null);
+  }
+
+  zoomingButton() {
+    this.container.attr('transform', 'translate(' + this.zoom.translate() + ')scale(' + this.zoom.scale() + ')');
+    const transform = 'translate(' + (((this.zoom.translate()[0] / this.zoom.scale()) % this.gridLength) - this.zoom.translate()[0] / this.zoom.scale())
+      + ',' + (((this.zoom.translate()[1] / this.zoom.scale()) % this.gridLength) - this.zoom.translate()[1] / this.zoom.scale()) + ')scale(1)';
+    this.svgGrid.attr('transform', transform);
+  }
+
   // Link mouse handlers
   mouseoverLink(d) {
-    // displayLinkInfo(d);
+    displayLinkInfo(d);
   }
 
   // Node text mouse handlers
@@ -686,21 +692,14 @@ class Graph {
   setupKeycodes() {
     d3.select('body')
       .on('keydown', () => {
-        // u: Unpin selected nodes
-        if (d3.event.keyCode == 85) {
-          this.svg.selectAll('.node.selected')
-            .each(function (d) { d.fixed = false; })
-            .classed('fixed', false);
-        }
-
         // e: Remove links
-        else if (d3.event.keyCode == 69) {
+        if (d3.event.keyCode == 69) {
           this.deleteSelectedLinks();
         }
 
         // f: Stick all the nodes
         else if (d3.event.keyCode == 70) {
-          this.toggleStickNodes();
+          this.toggleFixedNodes();
         }
 
         // e: Remove links
@@ -762,22 +761,12 @@ class Graph {
       });
   }
 
-  // Fix all the nodes in the same spot
-  toggleStickNodes() {
-    d3.selectAll('g.node')  //here's how you get all the nodes
-      .each(function (d) {
-        const node = d3.select(this); // Transform to d3 Object
-        node
-          .attr('dragfix', node.classed('fixed'))
-          .attr('dragselect', node.classed('selected'))
-          .attr('dragdistance', 0);
 
-        if (this.stick) {
-          node.classed('fixed', d.fixed = false);
-        } else {
-          node.classed('fixed', d.fixed = true);
-        }
-        this.stick = !this.stick;
+  toggleFixedNodes() {
+    d3.selectAll('.node')
+      .each(function (d) {
+        const currNode = d3.select(this);
+        currNode.classed('fixed', d.fixed = this.isGraphFixed = !this.isGraphFixed)
       });
   }
 
@@ -897,6 +886,7 @@ class Graph {
     } else {
       this.showHiddenNodes();
     }
+
     this.update();
   }
 
@@ -1380,7 +1370,6 @@ function processNodeName(str, printFull) {
     return '';
   }
 
-  // Capitalization
   const delims = [' ', '.', '('];
   for (let i = 0; i < delims.length; i++) {
     str = splitAndCapitalize(str, delims[i]);
