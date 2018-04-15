@@ -39,6 +39,7 @@ class Graph {
     this.zoomScale = 1;
     this.zoomPressed = null;
     this.printFull = 0; // Allow user to toggle node text length
+    this.isGraphFixed = false; // Track whether or not all nodes should be fixed
 
     this.node = null;
     this.link = null;
@@ -84,9 +85,6 @@ class Graph {
     this.zoomButton = this.zoomButton.bind(this);
     this.initializeButton = this.initializeButton.bind(this);
     this.textWrap = this.textWrap.bind(this);
-
-
-    // this.dragend = this.dragend.bind(this);    
   }
 
   initializeZoom() {
@@ -120,6 +118,7 @@ class Graph {
     svg.on('contextmenu', function (d, i) {
       d3.event.preventDefault();
     });
+
     return svg;
   }
 
@@ -134,6 +133,7 @@ class Graph {
     this.svg.on('mousedown', () => {
       svgBrush.style('opacity', this.isRightClick() ? 1 : 0);
     });
+
     return svgBrush;
   }
 
@@ -640,26 +640,14 @@ class Graph {
   setupKeycodes() {
     d3.select('body')
       .on('keydown', () => {
-        // u: Unpin selected nodes
-        if (d3.event.keyCode == 85) {
-          this.svg.selectAll('.node.selected')
-            .each(function (d) { d.fixed = false; })
-            .classed('fixed', false);
-        }
-
-        // c: Unstick the nodes
-        else if (d3.event.keyCode == 67) {
-          this.unstickNodes();
-        }
-
         // e: Remove links
-        else if (d3.event.keyCode == 69) {
+        if (d3.event.keyCode == 69) {
           this.deleteSelectedLinks();
         }
 
         // f: Stick all the nodes
         else if (d3.event.keyCode == 70) {
-          this.stickNodes();
+          this.toggleFixedNodes();
         }
 
         // e: Remove links
@@ -721,31 +709,11 @@ class Graph {
       });
   }
 
-  // Fix all the nodes in the same spot
-  stickNodes() {
-    d3.selectAll('g.node')  //here's how you get all the nodes
+  toggleFixedNodes() {
+    d3.selectAll('.node')
       .each(function (d) {
-        const node = d3.select(this); // Transform to d3 Object
-        node
-          .attr('dragfix', node.classed('fixed'))
-          .attr('dragselect', node.classed('selected'))
-          .attr('dragdistance', 0);
-
-        node.classed('fixed', d.fixed = true);
-      });
-  }
-
-  // Allow all the nodes to move again
-  unstickNodes() {
-    d3.selectAll('g.node')  //here's how you get all the nodes
-      .each(function (d) {
-        const node = d3.select(this); // Transform to d3 Object
-        node
-          .attr('dragfix', node.classed('fixed'))
-          .attr('dragselect', node.classed('selected'))
-          .attr('dragdistance', 0);
-
-        node.classed('fixed', d.fixed = false);
+        const currNode = d3.select(this);
+        currNode.classed('fixed', d.fixed = this.isGraphFixed = !this.isGraphFixed)
       });
   }
 
@@ -865,6 +833,7 @@ class Graph {
     } else {
       this.showHiddenNodes();
     }
+
     this.update();
   }
 
@@ -1348,7 +1317,6 @@ function processNodeName(str, printFull) {
     return '';
   }
 
-  // Capitalization
   const delims = [' ', '.', '('];
   for (let i = 0; i < delims.length; i++) {
     str = splitAndCapitalize(str, delims[i]);
