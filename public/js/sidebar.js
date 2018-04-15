@@ -21,11 +21,7 @@ function populateGraphUsageBody(graphUsageBody) {
   $(graphUsageBody).append(createGraphUsageEntry('toggle grouped nodes view', 'dbl-click')); 
   $(graphUsageBody).append(createGraphUsageEntry('toggle document nodes', 'D')); 
   $(graphUsageBody).append(createGraphUsageEntry('toggle text length', 'P'));  
-<<<<<<< HEAD
   $(graphUsageBody).append(createGraphUsageEntry('toggle stickiness of all nodes', 'F'));
-=======
-  $(graphUsageBody).append(createGraphUsageEntry('toggle if nodes are fixed', 'F'));  
->>>>>>> 18bf2ce35f9f8c4ee261ccb5985e67614a06d78d
 }
 
 function createGraphUsageEntry(key) {

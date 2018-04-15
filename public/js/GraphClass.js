@@ -546,83 +546,8 @@ class Graph {
           .call(this.textWrap);
       }
     }
-
-<<<<<<< HEAD
+    
   // SVG zoom & pan
-=======
-    update() {
-        var self = this;
-        this.link = this.link.data(this.links, function (d) { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
-        this.link
-            .enter().append('line')
-            .attr('class', 'link')
-            .style('stroke-dasharray', function (d) { return d.type === 'possibly_same_as' ? ('3,3') : false; })
-            .on('mouseover', this.mouseoverLink);
-
-        this.link.exit().remove();
-
-        this.node = this.node.data(this.nodes, function (d) { return d.id; });
-        this.nodeEnter = this.node.enter().append('g')
-            .attr('class', 'node')
-            .attr('dragfix', false)
-            .attr('dragselect', false)
-            .on('click', function (d) { self.clicked(d, this) })
-            .on('dblclick', function (d) { self.dblclicked(d, this) })
-            .on('mouseover', function (d) { self.mouseover(d, this) })
-            .on('mouseout', function (d) { self.mouseout(d, this) })
-            .classed('fixed', function (d) { return d.fixed; })
-            .call(this.force.drag()
-                .origin(function (d) { return d; })
-                .on('dragstart', function (d) { self.dragstart(d, this) })
-                .on('drag', function (d) { self.dragging(d, this) })
-                .on('dragend', function (d) { self.dragend(d, this) })
-            );
-
-        this.nodeEnter.append('circle')
-            .attr('r', '20');
-
-        this.nodeEnter.append('text')
-            .attr('class', 'icon')
-            .attr('text-anchor', 'middle')
-            .attr('dominant-baseline', 'central')
-            .attr('font-family', 'FontAwesome')
-            .attr('font-size', '20px')
-            .text(function (d) { return (d.type && icons[d.type]) ? icons[d.type] : ''; });
-
-        this.nodeEnter.append('text')
-            .attr('class', 'node-name')
-            .attr('text-anchor', 'middle')
-            .attr('dy', '40px')
-            .text(function (d) { return processNodeName(d.name, this.printFull) })
-            .call(this.textWrap)            
-            .on('click', this.clickedText)
-            .on('mouseover', function(d) { self.mouseoverText(d, this) })
-            .on('mouseout', function(d) { self.mouseoutText(d, this) })
-            .call(d3.behavior.drag()
-                .on('dragstart', this.dragstartText)
-                .on('dragstart', this.draggingText)
-                .on('dragstart', this.dragendText)
-            );
-
-        this.node.exit().remove();
-
-        this.hull = this.hull.data(this.hulls)
-
-        this.hull
-            .enter().append('path')
-            .attr('class', 'hull')
-            .attr('d', this.drawHull)
-            .on('dblclick', function (d) {
-                self.toggleGroupView(d.groupId);
-                d3.event.stopPropagation();
-            })
-        this.hull.exit().remove();
-
-        this.force.start();
-        this.reloadNeighbors(); // TODO: revisit this and figure out WHY d.source.index --> d.source if this is moved one line up  
-  }
-  // Zoom & pan
->>>>>>> 18bf2ce35f9f8c4ee261ccb5985e67614a06d78d
   zoomstart(d, self) {
     const e = d3.event;
     if (this.isRightClick()) {
