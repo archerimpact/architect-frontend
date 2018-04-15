@@ -192,6 +192,46 @@ class Graph {
       .linkDistance(90)
       .size([this.width, this.height]);
   }
+
+  initializeZoomButtons() {
+    var self = this;
+    this.svg.selectAll(".button")
+      //.data(['zoom_in', 'zoom_out'])
+      .data([{ label: 'zoom_in' }, { label: 'zoom_out' }])
+      .enter()
+      //.append("text").text("hi")
+      .append("rect")
+      .attr("x", function (d, i) { return 10 + 50 * i })
+      .attr({ y: 10, width: 40, height: 20, class: "button" })
+      .attr("id", function (d) { return d.label })
+      .style("fill", function (d, i) { return i ? "red" : "green" })
+    // .attr("text", function(d,i){ return i ? "red" : "green"})
+    // .attr("label", function(d,i){ return i ? "red" : "green"})
+
+    // svg.selectAll(".button").append("text").text("hi")
+
+    // Control logic to zoom when buttons are pressed, keep zooming while they are
+    // pressed, stop zooming when released or moved off of, not snap-pan when
+    // moving off buttons, and restore pan on mouseup.
+
+    this.zoomPressed = false;
+    d3.selectAll('.button').on('mousedown', function () {
+      self.zoomPressed = true;
+      self.disableZoom();
+      self.doZoom(this.id === 'zoom_in')
+    }).on('mouseup', function () {
+      self.zoomPressed = false;
+    }).on('mouseout', function () {
+      self.zoomPressed = false;
+    }).on('click', function() {
+      d3.event.stopPropagation();
+    }).on('dblclick', function() {
+      d3.event.stopPropagation();
+    });
+
+    this.svg.on("mouseup", () => { this.svg.call(this.zoom) });
+  }
+
   generateCanvas(width, height) {
     this.width = width;
     this.height = height;
@@ -334,7 +374,7 @@ class Graph {
     this.hull.exit().remove();
 
     this.force.start();
-    this.reloadNeighbors(); // TODO: revisit this and figure out WHY d.source.index --> d.source if this is moved one line up  
+    this.reloadNeighbors();
   }
 
   // Occurs each tick of simulation
@@ -345,11 +385,13 @@ class Graph {
       this.hull.data(this.hulls)
         .attr('d', this.drawHull)
     }
+
     this.node
       .each(this.groupNodesForce(.3))
       .attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
 
-    this.link.attr('x1', function (d) { return d.source.x; })
+    this.link
+      .attr('x1', function (d) { return d.source.x; })
       .attr('y1', function (d) { return d.source.y; })
       .attr('x2', function (d) { return d.target.x; })
       .attr('y2', function (d) { return d.target.y; });
@@ -388,6 +430,7 @@ class Graph {
       this.highlightLinksFromAllNodes();
     }
   }
+
   brushend() {
     this.brush.clear();
     this.svg.selectAll('.brush').call(this.brush);
@@ -434,7 +477,7 @@ class Graph {
     if (this.isEmphasized) this.resetGraphOpacity();
 
     this.isDragging = true;
-    // displayNodeInfo(d);
+    displayNodeInfo(d);
     const node = d3.select(self);
     node
       .attr('dragfix', node.classed('fixed'))
@@ -451,8 +494,8 @@ class Graph {
   dragging(d, self) {
     const node = d3.select(self);
     node
-      .attr('cx', d.x = d3.event.x)
-      .attr('cy', d.y = d3.event.y)
+      .attr('cx', d.px = d.x = d3.event.x)
+      .attr('cy', d.py = d.y = d3.event.y)
       .attr('dragdistance', parseInt(node.attr('dragdistance')) + 1);
   }
 
@@ -481,6 +524,7 @@ class Graph {
       this.link.style('stroke-opacity', function (o) {
         return (o.source == d || o.target == d) ? 1 : .05;
       });
+
       if (this.printFull == 0) {
         d3.select(self)
           .select('.node-name')
@@ -488,23 +532,19 @@ class Graph {
           .call(this.textWrap);
       }
     }
+
+    displayNodeInfo(d);
   }
 
-    initializeForce() {
-        return d3.layout.force()
-            .linkDistance(90)
-            .size([this.width, this.height]);
+  mouseout(d, self) {
+    this.resetGraphOpacity();
+    if (this.printFull != 1) {
+      d3.select(self)
+        .select('.node-name')
+        .text((d) => { return processNodeName(d.name, this.printFull); })
+        .call(this.textWrap);
     }
-
-    mouseout(d, self) {
-      this.resetGraphOpacity();
-      if (this.printFull != 1) {
-        d3.select(self)
-          .select('.node-name')
-          .text((d) => { return processNodeName(d.name, this.printFull); })
-          .call(this.textWrap);
-      }
-    }
+  }
     
   // SVG zoom & pan
   zoomstart(d, self) {
@@ -536,46 +576,7 @@ class Graph {
     this.zoomScale = this.zoom.scale();
   }
 
-  // Zoom buttons
-  initializeZoomButtons() {
-    var self = this;
-    this.svg.selectAll(".button")
-      //.data(['zoom_in', 'zoom_out'])
-      .data([{ label: 'zoom_in' }, { label: 'zoom_out' }])
-      .enter()
-      //.append("text").text("hi")
-      .append("rect")
-      .attr("x", function (d, i) { return 10 + 50 * i })
-      .attr({ y: 10, width: 40, height: 20, class: "button" })
-      .attr("id", function (d) { return d.label })
-      .style("fill", function (d, i) { return i ? "red" : "green" })
-    // .attr("text", function(d,i){ return i ? "red" : "green"})
-    // .attr("label", function(d,i){ return i ? "red" : "green"})
-
-    // svg.selectAll(".button").append("text").text("hi")
-
-    // Control logic to zoom when buttons are pressed, keep zooming while they are
-    // pressed, stop zooming when released or moved off of, not snap-pan when
-    // moving off buttons, and restore pan on mouseup.
-
-    this.zoomPressed = false;
-    d3.selectAll('.button').on('mousedown', function () {
-      self.zoomPressed = true;
-      self.disableZoom();
-      self.doZoom(this.id === 'zoom_in')
-    }).on('mouseup', function () {
-      self.zoomPressed = false;
-    }).on('mouseout', function () {
-      self.zoomPressed = false;
-    }).on('click', function() {
-      d3.event.stopPropagation();
-    }).on('dblclick', function() {
-      d3.event.stopPropagation();
-    });
-
-    this.svg.on("mouseup", () => { this.svg.call(this.zoom) });
-  }
-
+  // Zoom button functionality
   doZoom(zoom_in) {
     var self = this;
     var scale = this.zoom.scale(),
@@ -656,7 +657,7 @@ class Graph {
 
   // Link mouse handlers
   mouseoverLink(d) {
-    //displayLinkInfo(d);
+    displayLinkInfo(d);
   }
 
   // Node text mouse handlers
@@ -951,7 +952,7 @@ class Graph {
     this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
     this.update();
     this.fillGroupNodes();
-    // displayGroupInfo(this.groups);
+    displayGroupInfo(this.groups);
   }
 
   ungroupSelectedGroups() {
@@ -968,7 +969,7 @@ class Graph {
     this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
     this.node.classed("selected", false)
     this.update();
-    //displayGroupInfo(this.groups);
+    displayGroupInfo(this.groups);
   }
 
   expandGroup(groupId) {
