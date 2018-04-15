@@ -1232,7 +1232,7 @@ class Graph {
     select
       .each((d) => {
         if (this.nodes.indexOf(d) === -1) {
-          console.log("Error, wasn't in there and node is: ", d, " and nodes is: ", self.nodes);
+          console.log("Error, wasn't in there and node is: ", d, " and nodes is: ", this.nodes);
         } else {
           removedNodes.push(d);
           this.nodes.splice(this.nodes.indexOf(d), 1);
