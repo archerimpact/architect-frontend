@@ -12,7 +12,6 @@ function populateGraphUsageBody(graphUsageBody) {
   $(graphUsageBody).append(createGraphUsageEntry('(un)pin node', 'l-click'));
   $(graphUsageBody).append(createGraphUsageEntry('pan canvas', 'l-click', '+', 'drag'));
   $(graphUsageBody).append(createGraphUsageEntry('zoom in/out', 'scroll'));
-  $(graphUsageBody).append(createGraphUsageEntry('unpin selected nodes', 'U'));
   $(graphUsageBody).append(createGraphUsageEntry('link new node to selected nodes', 'A'));
   $(graphUsageBody).append(createGraphUsageEntry('remove selected nodes', 'R', 'or', 'del'));
   $(graphUsageBody).append(createGraphUsageEntry('remove selected links', 'E'));  
@@ -21,7 +20,7 @@ function populateGraphUsageBody(graphUsageBody) {
   $(graphUsageBody).append(createGraphUsageEntry('toggle grouped nodes view', 'dbl-click')); 
   $(graphUsageBody).append(createGraphUsageEntry('toggle document nodes', 'D')); 
   $(graphUsageBody).append(createGraphUsageEntry('toggle text length', 'P'));  
-  $(graphUsageBody).append(createGraphUsageEntry('toggle stickiness of all nodes', 'F'));
+  $(graphUsageBody).append(createGraphUsageEntry('(un)fix all nodes', 'F'));
 }
 
 function createGraphUsageEntry(key) {

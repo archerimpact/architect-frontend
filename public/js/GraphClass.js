@@ -189,7 +189,7 @@ class Graph {
 
   initializeForce() {
     return d3.layout.force()
-      .linkDistance(90)
+      .linkDistance(100)
       .size([this.width, this.height]);
   }
 
@@ -283,7 +283,7 @@ class Graph {
 
     this.force
       .gravity(.25)
-      .charge(-1 * Math.max(Math.pow(this.nodes.length, 2), 750))
+      .charge(-1 * Math.max(Math.pow(this.nodes.length, 2.5), 1500))
       .friction(this.nodes.length < 15 ? .75 : .65)
       .alpha(.8)
       .nodes(this.nodes)
@@ -299,10 +299,11 @@ class Graph {
     var centerd;
     this.nodes.map((d)=> {
       if (d.id === centerid) {
-        centerd = d
+        centerd = d;
       }
-    })
-    this.translateGraphAroundNode(centerd)
+    });
+
+    this.translateGraphAroundNode(centerd);
   }
 
   update() {
@@ -388,6 +389,7 @@ class Graph {
 
     this.node
       .each(this.groupNodesForce(.3))
+      .each(function(d) {d.px = d.x; d.py = d.y;})
       .attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
 
     this.link
