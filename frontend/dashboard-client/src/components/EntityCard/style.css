@@ -29,6 +29,12 @@
   float:right;
 }
 
+/* .titleText {
+  cursor:pointer;
+  /* color:blue; */
+  /* text-decoration:underline; */
+
+
 .titleText, .status {
   margin:0px;
   padding:0px;

@@ -1,10 +1,31 @@
 import React, { Component } from 'react';
+import queryString from 'query-string';
 
 import './style.css'
 
-import { Link } from 'react-router-dom';
-
+import { Link, withRouter } from 'react-router-dom';
 class EntityCard extends Component {
+
+  constructor(props) {
+    super(props);
+    this.fetchSearchQuery = this.fetchSearchQuery.bind(this);
+    this.state = {
+      link: this.fetchSearchQuery()
+    }
+  }
+
+  fetchSearchQuery() {
+    let qs = queryString.parse(this.props.location.search).search;
+    let path = this.props.location.pathname
+    // let newEntity = this.props.nodeItem.metadata.id;
+    let newEntity = this.props.nodeItem._source.neo4j_id;
+    // this.props.history.push('/dresses?color=blue'+'?entity='+entity);
+    let newQs = queryString.stringify({search: qs, entity: newEntity})
+    return {
+      pathname: path,
+      search: newQs
+    };
+  }
 
   render(){
     var nodeItem = this.props.nodeItem
@@ -13,44 +34,50 @@ class EntityCard extends Component {
         <div></div>
       );
     }
-    else if (nodeItem.metadata.labels[0]==='person'){
+    // else if (nodeItem.metadata.labels[0]==='person'){
+      else if (nodeItem._type==='person'){
+
       return(    
         <div className="outerBox">
           <div className="heading">
             <div className="titleName underline">
-              <Link to={"/entity/" + nodeItem.metadata.id}><h2 className="titleText">{nodeItem.data.name}</h2></Link>
+              <h2 className="titleText"><Link to={this.state.link}>{nodeItem._source.name}</Link></h2>
             </div>      
           </div>
           <i>Person</i>
           <div className="identifyingInfo">
-            <div className="info">[United Kingdom Companies House Business Registry] </div>
+            <div className="info">[United Kingdom Companies House Business Registry]</div>
           </div>
         </div>
       );
-    } else if (nodeItem.metadata.labels[0]==='corporation'){
+     } else if (nodeItem._type==='corporation'){
+
+    // } else if (nodeItem.metadata.labels[0]==='corporation'){
       return (
         <div className="outerBox">
           <div className="heading">
             <div className="titleName underline">
-              <Link to={"/entity/" + nodeItem.metadata.id}><h2 className="titleText">{nodeItem.data.name}</h2></Link>
+              <h2 className="titleText" onClick={this.updateSearchQuery}><Link to={this.state.link}>{nodeItem._source.name}</Link></h2>
             </div>
             <div className="status">
-              {nodeItem.data.company_status}
+              {nodeItem._source.company_status}
             </div>
           </div>
           <i>Company</i>
           <div className="identifyingInfo">
-            <div>{nodeItem.data.nationality} </div>
-            <div className="info">{"Jurisdiction: " + nodeItem.data.jurisdiction}</div>
-            <div className="info">{"Date Created: " + nodeItem.data.date_of_creation}</div>
+            <div>{nodeItem._source.nationality} </div>
+            <div className="info">{"Jurisdiction: " + nodeItem._source.jurisdiction}</div>
+            <div className="info">{"Date Created: " + nodeItem._source.date_of_creation}</div>
           </div>
         </div>
       );
-    } else if (nodeItem.metadata.labels[0]==='Document'){
+    } else if (nodeItem._type==='Document'){
+
+    // } else if (nodeItem.metadata.labels[0]==='Document'){
       return (
         <div className="outerBox">
           <h2 className="titleText">Document</h2>
-          <p>{"GCS Self: " + nodeItem.data.self}</p>
+          <p>{"GCS Self: " + nodeItem._source.self}</p>
         </div>
       );
     } else {
@@ -60,5 +87,4 @@ class EntityCard extends Component {
     }
   }
 }
-
-export default EntityCard;
+export default withRouter(EntityCard);

@@ -14,7 +14,7 @@ class SearchDataList extends Component {
   }
 
   render() {
-    if (this.props.searchItems == null || this.props.nodeItems==null){
+    if (this.props.searchItems == null){
       return (
         <div></div>
       );
@@ -22,15 +22,8 @@ class SearchDataList extends Component {
       return(
         <div className="searchResults">
           {this.props.searchItems.map((item, key)=> {
-            var nodeItem = this.props.nodeItems.find((element) => {
-              return element[0].metadata.id===item._source.neo4j_id
-            })
-            let nodeItemData = null;
-            if (typeof(nodeItem) !== 'undefined') {
-              nodeItemData = nodeItem[0]
-            }
             return(
-              <EntityResult nodeItem={nodeItemData} key={key}/>
+              <EntityResult searchResultItem={item} key={key}/>
             );
           })}
         </div>
@@ -51,10 +44,10 @@ class EntityResult extends Component {
     return (
       <div className='entity-result' onClick={()=>this.setState({toggled:!this.state.toggled})}>
         <EntityCard 
-          nodeItem={this.props.nodeItem} 
+          nodeItem={this.props.searchResultItem} 
           key={this.props.key} 
         />
-        {this.state.toggled?<SummaryInfo nodeItem={this.props.nodeItem}/>: null }
+        {this.state.toggled?<SummaryInfo nodeItem={this.props.searchResultItem}/>: null }
       </div>
     );
   }

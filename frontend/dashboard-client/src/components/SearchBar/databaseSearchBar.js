@@ -42,7 +42,7 @@ class DatabaseSearchBar extends Component {
     if (this.state.fireRedirect) {
       this.setState({fireRedirect:false});
       return (
-        <Redirect to={'/search?search=' + this.props.search}  />
+        <Redirect to={'/canvas/search?search=' + this.props.search}  />
       );
     }
 

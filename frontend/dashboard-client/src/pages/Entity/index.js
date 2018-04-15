@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import './style.css'
 
 import EntityCard from '../../components/EntityCard/';
-import Neo4jGraphContainer from '../../components/NodeGraph/containers/Neo4jContainer/'
+// import Neo4jGraphContainer from '../../components/NodeGraph/containers/Neo4jContainer/'
 import DatabaseSearchBar from '../../components/SearchBar/databaseSearchBar'
 
 import SummaryInfo from './components/SummaryInfo/';
@@ -88,7 +88,6 @@ class Entity extends Component {
     } else {
       return(
         <div>
-          <Neo4jGraphContainer graphData={this.state.graphData} />
           <div className="search-side-container">
             <div className="search-side">
               <div className="search-bar">
