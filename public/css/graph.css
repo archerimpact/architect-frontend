@@ -116,6 +116,10 @@ button:focus {
   fill: #7cbdff;
 }
 
+.node.grouped_same circle {
+  fill: #7cbdff;
+}
+
 .node.grouped.fixed circle {
   fill: #0d77e2;
 }
