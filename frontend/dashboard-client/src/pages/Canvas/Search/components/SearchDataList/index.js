@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import EntityCard from '../../../../components/EntityCard/';
+import EntityCard from '../../../../../components/EntityCard/';
 import SummaryInfo from '../../../Entity/components/SummaryInfo/';
 import './style.css';
 

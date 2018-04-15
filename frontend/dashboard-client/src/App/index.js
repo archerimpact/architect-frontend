@@ -12,13 +12,8 @@ import NavBar from '../components/NavBar/';
 import Login from '../pages/Login/';
 import CreateAccount from '../pages/CreateAccount/';
 import Home from '../pages/Home/';
-// import Entity from '../pages/Entity/';
-// import Search from '../pages/Search';
-// import Graph from '../components/Graph';
 import Canvas from '../pages/Canvas';
 import './style.css';
-
-import ArcherGraph from '../components/Graph/components/GraphPackage';
 
 class App extends Component {
 
@@ -40,14 +35,10 @@ class App extends Component {
   			<NavBar isAuthenticated={this.props.isAuthenticated} logOut={this.logOut.bind(this)} logIn={this.logIn.bind(this)} />
           {/*<SideBar isAuthenticated={this.props.isAuthenticated}/>*/}
         <div className="main">
-      		{/* <Switch> */}
     				<PrivateRoute exact path="/" component={Home} />
     				<Route path="/login" component={Login} />
             <Route path="/create_account" component={CreateAccount} />
             <PrivateRoute path="/canvas" component={Canvas}/>
-            {/* <PrivateRoute path="/canvas" component={Canvas} /> */}
-            
-  				{/* </Switch> */}
         </div>
     	</div>
     );

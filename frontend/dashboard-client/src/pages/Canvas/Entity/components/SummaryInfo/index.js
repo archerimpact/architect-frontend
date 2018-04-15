@@ -8,10 +8,11 @@ class SummaryInfo extends Component {
 
   render(){
     var nodeItem = this.props.nodeItem;    
+    debugger
     return(    
       <div className="summaryInfo">
-        <p>Address: <b>{nodeItem._source.address}</b></p>
-        <p>Birth Date: <b>{nodeItem._source.date_of_birth}</b></p>
+        <p>Address: <b>{nodeItem._source.address.toString()}</b></p>
+        <p>Birth Date: <b>{nodeItem._source.date_of_birth.toString()}</b></p>
         <p>Nationality: <b>{nodeItem._source.nationality}</b> </p>
         <p>Occupation:  <b>{nodeItem._source.occupation}</b> </p>
         <p>Officer role: <b>{nodeItem._source.officer_role}</b></p>

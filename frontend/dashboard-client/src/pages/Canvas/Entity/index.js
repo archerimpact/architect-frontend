@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 
 import './style.css'
 
-import EntityCard from '../../components/EntityCard/';
+import EntityCard from '../../../components/EntityCard/';
 // import Neo4jGraphContainer from '../../components/NodeGraph/containers/Neo4jContainer/'
-import DatabaseSearchBar from '../../components/SearchBar/databaseSearchBar'
+import DatabaseSearchBar from '../../../components/SearchBar/databaseSearchBar'
 
 import SummaryInfo from './components/SummaryInfo/';
 import ConnectionsTab from './components/ConnectionsTab/';
@@ -14,8 +14,8 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../../redux/actions/';
-import * as server from '../../server/';
+import * as actions from '../../../redux/actions/';
+import * as server from '../../../server/';
 import {withRouter } from 'react-router-dom';
 
 const tab_style = {

@@ -88,6 +88,11 @@ button:focus {
   fill: #999999;
 }
 
+.node text.node-name {
+  width: 200px;
+  word-wrap: break-word;
+}
+
 .node circle {
   cursor: pointer;
   stroke-width: 3px;
@@ -120,4 +125,9 @@ button:focus {
   fill-opacity: 0.2;
   stroke: #7cbdff;
   stroke-width: 2px;
+}
+
+.button {
+  fill: #0d77e2;
+  opacity: 0.4;
 }

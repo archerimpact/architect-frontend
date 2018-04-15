@@ -3,18 +3,16 @@ import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 
 import './style.css'
 
-import DatabaseSearchBar from '../../components/SearchBar/databaseSearchBar'
+import DatabaseSearchBar from '../../../components/SearchBar/databaseSearchBar'
 import SearchDataList from './components/SearchDataList/'
 
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 // import * as actions from '../../redux/actions/';
-import * as server from '../../server/';
+import * as server from '../../../server/';
 import {withRouter } from 'react-router-dom';
-import * as actions from '../../components/Graph/graphActions';
+import * as actions from '../Graph/graphActions';
 
-import Graph from '../../components/Graph';
 const urlPropsQueryConfig = {
   /* type specifies the type of encoding necessary, queryParam sets which
     variable name to look for in this.props */ 

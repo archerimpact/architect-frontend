@@ -1,15 +1,9 @@
-import * as server from '../../server';
+import * as server from '../../../server';
 
 export const INITIALIZE_CANVAS = "INITIALIZE_CANVAS";
 export const UPDATE_GRAPH_DATA = "UPDATE_GRAPH_DATA";
 export const STORE_SEARCH_RESULTS = "STORE_SEARCH_RESULTS";
 
-
-// (dispatch, getState) => {
-//     const {items} = getState().otherReducer;
-
-//     dispatch(anotherAction(items));
-//   }
 export function initializeCanvas(graph, width, height) {
   return (dispatch, getState) => {
     graph.generateCanvas(width, height);
@@ -63,12 +57,10 @@ export function fetchGraphFromId(graph, id) {
 // }
 
 export function fetchSearchResults(graph, query) {
-  debugger;
   return (dispatch) => {
     server.searchBackendText(query)
       .then((data)=>{
         dispatch(storeSearchResults(data.hits.hits));
-        debugger;
         fetchGraphFromId(graph, data.hits.hits[0]._source.neo4j_id)
       })
       .catch((error) => { debugger; console.log(error); });

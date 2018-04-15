@@ -6,7 +6,7 @@ import {
 	INITIALIZE_CANVAS,
 	UPDATE_GRAPH_DATA,
 	STORE_SEARCH_RESULTS
-} from '../../components/Graph/graphActions';
+} from '../../pages/Canvas/Graph/graphActions';
 
 import initialState from './initialState';
 
