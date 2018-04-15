@@ -85,6 +85,7 @@ class Graph {
     this.doZoom = this.doZoom.bind(this);
     this.initializeZoomButtons = this.initializeZoomButtons.bind(this);
     this.textWrap = this.textWrap.bind(this);
+
   }
 
   initializeZoom() {
@@ -190,7 +191,7 @@ class Graph {
     this.height = height;
     this.center = [this.width / 2, this.height / 2];
     this.brushX = d3.scale.linear().range([0, width]),
-      this.brushY = d3.scale.linear().range([0, height]);
+    this.brushY = d3.scale.linear().range([0, height]);
 
     this.numTicks = width / this.gridLength * (1 / this.minScale);
 
@@ -205,14 +206,19 @@ class Graph {
     this.initializeZoomButtons();
 
     this.setupKeycodes();
+    
+    // Create selectors
+    this.hull = this.container.append('g').selectAll('.hull')
+    this.link = this.container.append('g').selectAll('.link');
+    this.node = this.container.append('g').selectAll('.node');
   }
 
   // Completely rerenders the graph, assuming all new nodes and links
   // Centerid currently doesn't do anything
   // TO-DO: implement feature of centering the graph around a particular ID
   setData(centerid, nodes, links) {
-    this.nodes = nodes.slice();
-    this.links = links.slice();
+    this.nodes = nodes;
+    this.links = links;
     this.hulls = [];
 
     // Needed this code when loading 43.json to prevent it from disappearing forever by pinning the initial node
@@ -235,17 +241,20 @@ class Graph {
       .nodes(this.nodes)
       .links(this.links);
 
-    // Create selectors
-    this.hull = this.container.append('g').selectAll('.hull')
-    this.link = this.container.append('g').selectAll('.link');
-    this.node = this.container.append('g').selectAll('.node');
-
     // Updates nodes and links according to current data
     this.update();
 
     this.force.on('tick', (e) => { this.ticked(e, this) });
     // Avoid initial chaos and skip the wait for graph to drift back onscreen
     for (let i = 750; i > 0; --i) this.force.tick();      
+
+    var centerd;
+    this.nodes.map((d)=> {
+      if (d.id === centerid) {
+        centerd = d
+      }
+    })
+    this.translateGraphAroundNode(centerd)
   }
 
   update() {
@@ -478,64 +487,6 @@ class Graph {
             .linkDistance(90)
             .size([this.width, this.height]);
     }
-    
-    generateNetworkCanvas(centerid, nodes, links, width, height) {
-        this.width = width;
-        this.height = height;
-        this.center = [this.width / 2, this.height /2];
-        this.brushX = d3.scale.linear().range([0, width]),
-        this.brushY = d3.scale.linear().range([0, height]);
-
-        this.numTicks = width / this.gridLength * (1 / this.minScale);
-
-        this.zoom = this.initializeZoom();
-        this.brush = this.initializeBrush();
-        this.svg = this.initializeSVG();
-        this.svgBrush = this.initializeSVGBrush();
-        this.container = this.initializeContainer();
-        this.curve = this.initializeCurve();
-        this.svgGrid = this.initializeSVGgrid();
-        this.force = this.initializeForce();
-        this.initializeButton();
-
-        this.setupKeycodes();
-
-        this.nodes = nodes;
-        this.links = links;
-        this.hulls = [];
-  
-       // Needed this code when loading 43.json to prevent it from disappearing forever by pinning the initial node
-      // var index
-      //   nodes.map((node, i)=> {
-      //     if (node.id===43) {
-      //       index = i
-      //     }
-      //   })
-  
-      //   nodes[index].fixed = true;
-      //   nodes[index].px = width/2
-      //   nodes[index].py = height/2; 
-  
-        this.force
-          .gravity(.25)
-          .charge(-1 * Math.max(Math.pow(this.nodes.length, 2), 750))
-          .friction(this.nodes.length < 15 ? .75 : .65)
-          .alpha(.8)
-          .nodes(this.nodes)
-          .links(this.links);
-  
-        // Create selectors
-        this.hull = this.container.append('g').selectAll('.hull')  
-        this.link = this.container.append('g').selectAll('.link');
-        this.node = this.container.append('g').selectAll('.node');
-  
-        // Updates nodes and links according to current data
-        this.update();
-  
-        this.force.on('tick', (e) => {this.ticked(e, this)});
-        // Avoid initial chaos and skip the wait for graph to drift back onscreen
-        for (let i = 750; i > 0; --i) this.force.tick();
-    }
 
     mouseout(d, self) {
       this.resetGraphOpacity();
@@ -652,6 +603,33 @@ class Graph {
     }).each("end", () => {
       if (this.zoomPressed) this.doZoom(zoom_in);
     });
+  }
+
+  translateGraphAroundNode(d) {
+    // Center each vector, stretch, then put back
+    //d.x + (?) = this.center[0]
+    var x = this.center[0] - d.x;
+    var y = this.center[1] - d.y;
+
+    var translate = this.zoom.translate();
+    var self = this;
+
+    // Transition to the new view over 500ms
+    d3.transition().duration(500).tween("translate", function () {
+      var interpolate_trans = d3.interpolate(translate, [x, y]);
+      return function (t) {
+        self.zoom
+          .translate(interpolate_trans(t));
+        self.zoomingButton();
+      };
+    })
+    d3.selectAll(".node")
+      .filter((node) => {
+        if (node.id === d.id) {
+          return node
+        }
+      })
+      .classed("selected", true)
   }
 
   disableZoom() {
@@ -1076,13 +1054,18 @@ class Graph {
   createHull(group) {
     var vertices = [];
     var offset = 20; //arbitrary, the size of the node radius
-    group.nodes.map(function (d) {
-      vertices.push(
-        [d.x + offset, d.y + offset], // creates a buffer around the nodes so the hull is larger
-        [d.x - offset, d.y + offset],
-        [d.x - offset, d.y - offset],
-        [d.x + offset, d.y - offset]
-      );
+
+    const nodeids = this.nodes.map((node) => { return node.id }); // create array of all ids in nodes
+    group.nodes.map((d) => {
+      if (isInArray(d.id, nodeids)) {
+        // draw a hull around a node only if it's shown on the DOM
+        vertices.push(
+          [d.x + offset, d.y + offset], // creates a buffer around the nodes so the hull is larger
+          [d.x - offset, d.y + offset],
+          [d.x - offset, d.y - offset],
+          [d.x + offset, d.y - offset]
+        );
+      }
     });
 
     return { groupId: group.id, path: d3.geom.hull(vertices) }; //returns a hull object
