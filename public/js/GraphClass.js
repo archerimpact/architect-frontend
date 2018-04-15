@@ -184,7 +184,7 @@ class Graph {
       .linkDistance(90)
       .size([this.width, this.height]);
   }
-  generateNetworkCanvas(centerid, nodes, links, width, height) {
+  generateCanvas(width, height) {
     this.width = width;
     this.height = height;
     this.center = [this.width / 2, this.height / 2];
@@ -204,7 +204,12 @@ class Graph {
     this.initializeButton();
 
     this.setupKeycodes();
+  }
 
+  // Completely rerenders the graph, assuming all new nodes and links
+  // Centerid currently doesn't do anything
+  // TO-DO: implement feature of centering the graph around a particular ID
+  setData(centerid, nodes, links) {
     this.nodes = nodes;
     this.links = links;
     this.hulls = [];
@@ -239,7 +244,7 @@ class Graph {
 
     this.force.on('tick', (e) => { this.ticked(e, this) });
     // Avoid initial chaos and skip the wait for graph to drift back onscreen
-    for (let i = 750; i > 0; --i) this.force.tick();
+    for (let i = 750; i > 0; --i) this.force.tick();      
   }
 
   update() {
@@ -539,13 +544,6 @@ class Graph {
           .text((d) => { return processNodeName(d.name, this.printFull); })
           .call(this.textWrap);
       }
-    }
-
-    refreshGraphData(centerid, nodes, links) {
-      this.nodes = nodes;
-      this.links = links;
-      this.hulls = [];
-      this.update();
     }
 
     update() {
