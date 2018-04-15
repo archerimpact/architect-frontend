@@ -27,7 +27,8 @@
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/d3.min.js"></script>
     <script src="js/GraphClass.js"></script>
-    <script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.min.js"></script> 
+    <script type="text/javascript">
       const graph = new Graph();
       const height = $(window).height(),
         width = Math.max($(window).width() - 300, height);
@@ -35,6 +36,19 @@
         graph.generateCanvas(width, height)
         graph.setData(34194, json.nodes, json.links)
       })
+
+      var gui = new dat.GUI()
+
+      var fl = gui.addFolder("Force Layout")
+      fl.open()
+
+      var config = { "tick": true, "friction": .9, "linkStrength": 1, "linkDistance": 9, "charge": .6, "gravity": .01, "theta": .8 }
+      debugger
+      var tickChanger = fl.add(config, "tick")
+      tickChanger.onChange(function(value) {
+        value ? graph.force.start() : graph.force.stop()
+      })
+
     </script>
     <script src="js/sidebar.js"></script>
   </body>
