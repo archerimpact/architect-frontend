@@ -27,19 +27,16 @@ class Graph {
     this.gridLength = 80;
     this.numTicks = null;
 
-    this.groups = {}; // Store groupNodeId --> {links: [], nodes: [], groupid: int}
-    this.expandedGroups = {}; // Store groupNodeId --> expansion state
-    this.hidden = { links: [], nodes: [] }; // Store all links and nodes that are hidden  
-    this.nodeSelection = {}; // Store node.index --> selection state
-    this.linkedByIndex = {}; // Store each pair of neighboring nodes
+    this.initializeDataDicts();
+
     this.isDragging = false; // Keep track of dragging to disallow node emphasis on drag
     this.isBrushing = false;
     this.isEmphasized = false; // Keep track of node emphasis to end node emphasis on drag
+    this.printFull = 0; // Allow user to toggle node text length
+    this.isGraphFixed = false; // Track whether or not all nodes should be fixed
     this.zoomTranslate = [0, 0]; // Keep track of original zoom state to restore after right-drag
     this.zoomScale = 1;
     this.zoomPressed = null;
-    this.printFull = 0; // Allow user to toggle node text length
-    this.isGraphFixed = false; // Track whether or not all nodes should be fixed
 
     this.node = null;
     this.link = null;
@@ -47,8 +44,6 @@ class Graph {
     this.nodes = null;
     this.links = null;
     this.nodeEnter = null;
-    this.globallinkid = -1;
-    this.globalnodeid = -1;
     this.zoom = null;
     this.brush = null;
     this.svg = null;
@@ -86,6 +81,17 @@ class Graph {
     this.initializeZoomButtons = this.initializeZoomButtons.bind(this);
     this.textWrap = this.textWrap.bind(this);
 
+  }
+
+  initializeDataDicts() {
+    this.groups = {}; // Store groupNodeId --> {links: [], nodes: [], groupid: int}
+    this.expandedGroups = {}; // Store groupNodeId --> expansion state
+    this.hidden = { links: [], nodes: [] }; // Store all links and nodes that are hidden  
+    this.nodeSelection = {}; // Store node.index --> selection state
+    this.linkedByIndex = {}; // Store each pair of neighboring nodes
+
+    this.globallinkid = -1;
+    this.globalnodeid = -1;
   }
 
   initializeZoom() {
@@ -206,7 +212,7 @@ class Graph {
     this.initializeZoomButtons();
 
     this.setupKeycodes();
-    
+
     // Create selectors
     this.hull = this.container.append('g').selectAll('.hull')
     this.link = this.container.append('g').selectAll('.link');
@@ -217,6 +223,8 @@ class Graph {
   // Centerid currently doesn't do anything
   // TO-DO: implement feature of centering the graph around a particular ID
   setData(centerid, nodes, links) {
+    this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
+
     this.nodes = nodes;
     this.links = links;
     this.hulls = [];
@@ -405,7 +413,7 @@ class Graph {
     this.force.resume();
   }
 
-  dblclicked(d, self) {
+  dblclicked(d) {
     if (this.groups[d.id]) {
       this.toggleGroupView(d.id);
     }
@@ -648,7 +656,7 @@ class Graph {
 
   // Link mouse handlers
   mouseoverLink(d) {
-    // displayLinkInfo(d);
+    //displayLinkInfo(d);
   }
 
   // Node text mouse handlers
