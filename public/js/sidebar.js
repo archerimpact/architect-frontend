@@ -20,7 +20,8 @@ function populateGraphUsageBody(graphUsageBody) {
   $(graphUsageBody).append(createGraphUsageEntry('toggle grouped nodes view', 'dbl-click')); 
   $(graphUsageBody).append(createGraphUsageEntry('toggle document nodes', 'D')); 
   $(graphUsageBody).append(createGraphUsageEntry('toggle text length', 'P'));  
-  $(graphUsageBody).append(createGraphUsageEntry('(un)fix all nodes', 'F'));
+  $(graphUsageBody).append(createGraphUsageEntry('toggle if nodes are fixed', 'F'));  
+  $(graphUsageBody).append(createGraphUsageEntry('groups all the possibly same as nodes', 'C'));  
 }
 
 function createGraphUsageEntry(key) {

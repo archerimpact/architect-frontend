@@ -27,8 +27,6 @@ class Graph {
     this.gridLength = 80;
     this.numTicks = null;
 
-    this.initializeDataDicts();
-
     this.isDragging = false; // Keep track of dragging to disallow node emphasis on drag
     this.isBrushing = false;
     this.isEmphasized = false; // Keep track of node emphasis to end node emphasis on drag
@@ -703,12 +701,24 @@ class Graph {
   setupKeycodes() {
     d3.select('body')
       .on('keydown', () => {
+        // u: Unpin selected nodes
+        if (d3.event.keyCode == 85) {
+          this.svg.selectAll('.node.selected')
+            .each(function (d) { d.fixed = false; })
+            .classed('fixed', false);
+        }
+
+        // c: Group all of the possibly same as's
+        else if (d3.event.keyCode == 67) {
+          this.groupSame();
+        }
+
         // e: Remove links
         if (d3.event.keyCode == 69) {
           this.deleteSelectedLinks();
         }
 
-        // f: Stick all the nodes
+        // f: Toggle stickiness of all the nodes
         else if (d3.event.keyCode == 70) {
           this.toggleFixedNodes();
         }
@@ -935,6 +945,56 @@ class Graph {
     this.hidden.nodes = [];
   }
 
+  groupSame() {
+    /* Groups all the nodes that are connected to each other with possibly_same_as */
+    var select = this.svg.selectAll('.node');
+    var grouped = {}; 
+
+    // update this.sameGroups dict
+    var createdGroup = {};
+
+    select
+      .each((d) => {
+        if (!grouped[d.id]) { //this node is already in a same-as group
+          grouped[d.id] = true;
+          var groupId = this.globalnodeid;
+          
+          createdGroup[d.id] = { links: [], nodes: [d], id: groupId, name: d.name };
+
+          this.createGroupFromNode(d, createdGroup[d.id], grouped); // Makes a group with d in it
+
+          if (createdGroup[d.id].nodes.length > 1) {
+            this.groups[groupId] = createdGroup[d.id];
+            this.globalnodeid -= 1;
+          }
+          else {
+            delete createdGroup[d.id];
+          }
+        }
+      });
+
+    for (var key in createdGroup) {
+      // check if the property/key is defined in the object itself, not in parent
+      if (createdGroup.hasOwnProperty(key)) {           
+        const group_same = createdGroup[key];
+        const nodes_same = createdGroup[key]['nodes'];
+        nodes_same.map(node => {
+          this.nodes.splice(this.nodes.indexOf(node), 1);
+          }
+        ); 
+        console.log(group_same.id);
+        this.nodes.push({ id: group_same.id, name: group_same.name, type: "same_as_group" }); //add the new node for the group
+
+        this.moveLinksFromOldNodesToGroup(nodes_same, group_same);
+
+        this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
+        this.update();
+        this.fillSameNodes();
+        // displayGroupInfo(this.groups);
+      }
+    }
+  }
+
   groupSelectedNodes() {
     /* turn selected nodes into a new group, then delete the selected nodes and 
       move links that attached to selected nodes to link to the node of the new group instead */
@@ -944,6 +1004,9 @@ class Graph {
 
     const group = this.createGroupFromSelect(select);
     const removedNodes = this.removeNodesFromDOM(select);
+    console.log("links");
+    console.log(group.links);
+    console.log(group.links.length);
     this.nodes.push({ id: group.id, name: `Group ${-1 * group.id}`, type: "group" }); //add the new node for the group
     this.moveLinksFromOldNodesToGroup(removedNodes, group);
 
@@ -1170,6 +1233,43 @@ class Graph {
     return removedLink;
   }
 
+  createGroupFromNode(node, group, grouped) { 
+    /* Creates a group connected by possibly_same_as around node, adding it to group,
+    and marking it as true in grouped so it isn't revisited later */
+    this.links.slice().map((link) => {
+      const removedLink = this.checkLinkAddGroup(link, group, grouped);
+    });
+  }
+
+  checkLinkAddGroup(link, group, grouped) {
+    /* takes in a list of nodes and the link to be removed
+        if the one of the nodes in the link target or source is attached to the link AND link is of type 'possibly_same_as',
+        remove the link and add whatever is connected to this link to the group if it isn't already */
+    let checkedLink;
+    //only remove a link if it's attached to a removed node
+    if (link.type === 'possibly_same_as' && (group.nodes.indexOf(link.source) > -1 || group.nodes.indexOf(link.target) > -1)) { //remove all links connected to a node in group and with correct type
+      // Make sure both sides of this link are in the group, and recursively add theirs to group as well
+      if (group.nodes.indexOf(link.source) <= -1) {
+        //group[link.source.id] = true;
+        group.nodes.push(link.source);
+        this.createGroupFromNode(link.source, group, grouped);
+      }
+      else if (group.nodes.indexOf(link.target) <= -1) {
+        group.nodes.push(link.target);
+        //group[link.target.id] = true;
+        this.createGroupFromNode(link.target, group, grouped);
+      }
+      // So that these nodes aren't checked again later to try and create a possibly same as
+      grouped[link.source.id] = true;
+      grouped[link.target.id] = true;
+    }
+    else if (group.nodes.indexOf(link.source) > -1 || group.nodes.indexOf(link.target) > -1) {
+      group.links.push(link);
+    }
+
+    return checkedLink;
+  }
+
   removeSelectiveLink(nodesSelected, link) {
     /* takes in a list of removed nodes and the link to be removed
         if both of the nodes in the link target or source are in the list, remove the link and return it
@@ -1200,7 +1300,7 @@ class Graph {
     }
   }
 
-  moveLinksFromOldNodesToGroup(removedNodes, group, ) {
+  moveLinksFromOldNodesToGroup(removedNodes, group) {
     /* takes in an array of removedNodes and a group
       removes links attached to these nodes
       if the removed link was already attached to a group, don't add that link to the group's list of links 
@@ -1346,6 +1446,12 @@ class Graph {
       .classed('grouped', function (d) { return d.id < 0; });
   }
 
+  // Fill same as nodes blue
+  fillSameNodes() {
+    this.svg.selectAll('.node')
+      .classed('grouped_same', function (d) { return d.type === 'same_as_group'; });
+  }
+
   // Reset all node/link opacities to 1
   resetGraphOpacity() {
     this.isEmphasized = false;
@@ -1395,7 +1501,7 @@ function processNodeName(str, printFull) {
 }
 
 function splitAndCapitalize(str, splitChar) {
-  let tokens = str.split(splitChar);
+  let tokens = str.toString().split(splitChar);
   tokens = tokens.map(function (token, idx) {
     return capitalize(token, splitChar == ' ');
   });
