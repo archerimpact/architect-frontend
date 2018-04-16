@@ -964,6 +964,7 @@ class Graph {
           this.createGroupFromNode(d, createdGroup[d.id], grouped); // Makes a group with d in it
 
           if (createdGroup[d.id].nodes.length > 1) {
+            d.group = groupId;
             this.groups[groupId] = createdGroup[d.id];
             this.globalnodeid -= 1;
           }
