@@ -10,7 +10,8 @@ const icons = {
   "person": "",
   "Document": "",
   "corporation": "",
-  "group": ""
+  "group": "",
+  "same_as_group": ""
 };
 
 const maxTextLength = 20;
@@ -346,9 +347,9 @@ class Graph {
     this.nodeEnter.append('text')
       .attr('class', 'node-name')
       .attr('text-anchor', 'middle')
-      .attr('dy', '40px')
+      .attr('dy', '35px')
       .text(function (d) { return processNodeName(d.name, this.printFull) })
-      .call(this.textWrap)
+      .call(this.textWrap, this.printFull)
       .on('click', this.clickedText)
       .on('mouseover', function (d) { self.mouseoverText(d, this) })
       .on('mouseout', function (d) { self.mouseoutText(d, this) })
@@ -526,10 +527,11 @@ class Graph {
       });
 
       if (this.printFull == 0) {
+        console.log('hi')
         d3.select(self)
           .select('.node-name')
           .text(processNodeName(d.name, 2))
-          .call(this.textWrap);
+          .call(this.textWrap, 2);
       }
     }
 
@@ -542,7 +544,7 @@ class Graph {
       d3.select(self)
         .select('.node-name')
         .text((d) => { return processNodeName(d.name, this.printFull); })
-        .call(this.textWrap);
+        .call(this.textWrap, this.printFull);
     }
   }
     
@@ -678,22 +680,10 @@ class Graph {
   }
 
   mouseoverText(d, self) {
-    if (this.printFull == 0 && !this.isBrushing && !this.isDragging) {
-      d3.select(self)
-        .text(processNodeName(d.name, 2))
-        .call(this.textWrap);
-    }
-
     d3.event.stopPropagation();
   }
 
   mouseoutText(d, self) {
-    if (this.printFull == 0 && !this.isBrushing && !this.isDragging) {
-      d3.select(self)
-        .text(processNodeName(d.name, 0))
-        .call(this.textWrap);
-    }
-
     d3.event.stopPropagation();
   }
 
@@ -756,7 +746,9 @@ class Graph {
         // p: Toggle btwn full/abbrev text
         else if (d3.event.keyCode == 80) {
           this.printFull = (this.printFull + 1) % 3;
-          this.selectAllNodeNames().text((d) => { return processNodeName(d.name, this.printFull); }).call(this.textWrap);
+          this.selectAllNodeNames()
+              .text((d) => { return processNodeName(d.name, this.printFull); })
+              .call(this.textWrap, this.printFull);
         }
 
         this.force.resume()
@@ -983,14 +975,13 @@ class Graph {
           this.nodes.splice(this.nodes.indexOf(node), 1);
           }
         ); 
-        console.log(group_same.id);
-        this.nodes.push({ id: group_same.id, name: group_same.name, type: "same_as_group" }); //add the new node for the group
 
+        this.nodes.push({ id: group_same.id, name: group_same.name, type: "same_as_group" }); //add the new node for the group
         this.moveLinksFromOldNodesToGroup(nodes_same, group_same);
 
         this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
         this.update();
-        this.fillSameNodes();
+        this.fillGroupNodes();
         // displayGroupInfo(this.groups);
       }
     }
@@ -1168,7 +1159,7 @@ class Graph {
   }
 
   // Wrap text
-  textWrap(textSelection, width = 100) {
+  textWrap(textSelection, printFull, width=100) {
     var self = this;
     textSelection.each(function (d) {
       const text = d3.select(this);
@@ -1197,11 +1188,11 @@ class Graph {
           line = remainder ? [remainder] : [];
         }
 
-        if (self.printFull == 0 && lineNum >= 2) { break; }
+        if (printFull == 0 && lineNum >= 2) { break; }
       }
 
       let finalLine = line.join(' ');
-      finalLine = (self.printFull == 0 && lineNum >= 2) ? `${finalLine.trim()}...` : finalLine;
+      finalLine = (printFull == 0 && lineNum >= 2) ? `${finalLine.trim()}...` : finalLine;
       tspan.text(finalLine);
     });
   }
@@ -1445,12 +1436,6 @@ class Graph {
   fillGroupNodes() {
     this.svg.selectAll('.node')
       .classed('grouped', function (d) { return d.id < 0; });
-  }
-
-  // Fill same as nodes blue
-  fillSameNodes() {
-    this.svg.selectAll('.node')
-      .classed('grouped_same', function (d) { return d.type === 'same_as_group'; });
   }
 
   // Reset all node/link opacities to 1
