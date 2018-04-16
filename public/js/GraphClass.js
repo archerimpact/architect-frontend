@@ -909,63 +909,21 @@ class Graph {
           grouped[d.id] = true;
           var groupId = this.globalnodeid;
           
-          //createdGroup[groupId] = { links: [], nodes: [d], id: groupId, name: d.id };
           createdGroup[d.id] = { links: [], nodes: [d], id: groupId, name: d.name };
 
-          //this.createGroupFromNode(d, createdGroup[groupId], grouped); // Makes a group with d in it
-          this.createGroupFromNode(d, createdGroup[d.id], grouped); 
+          this.createGroupFromNode(d, createdGroup[d.id], grouped); // Makes a group with d in it
 
-          // if (this.groups[d.id]) { //this node is already a group
-          //   var newNodes = this.groups[d.id].nodes;
-          //   var newLinks = this.groups[d.id].links;
-          //   newNodes.map((node) => {
-          //     group.nodes.push(node); //add each of the nodes in the old group to the list of nodes in the new group        
-          //   });
-          //   newLinks.map((link) => {
-          //     group.links.push(link); //add all the links inside the old group to the new group
-          //   });
-          // } else {
-          //   d.group = groupId;
-          //   group.nodes.push(d); //add this node to the list of nodes in the group
-          // }
-
-          //if (createdGroup[groupId].nodes.length > 1) {
           if (createdGroup[d.id].nodes.length > 1) {
-            console.log("after select");
-            //console.log(createdGroup[groupId]['nodes']);
-            //this.groups[groupId] = createdGroup[groupId];
-            //this.groups[groupId] = createdGroup[d.id];
             this.groups[groupId] = createdGroup[d.id];
             this.globalnodeid -= 1;
-            console.log(this.globalnodeid);
           }
           else {
-            //delete createdGroup[groupId];
             delete createdGroup[d.id];
           }
         }
       });
 
-        //   var newNodes = this.groups[d.id].nodes;
-        //   var newLinks = this.groups[d.id].links;
-        //   newNodes.map((node) => {
-        //     group.nodes.push(node); //add each of the nodes in the old group to the list of nodes in the new group        
-        //   });
-        //   newLinks.map((link) => {
-        //     group.links.push(link); //add all the links inside the old group to the new group
-        //   });
-        // } else {
-        //   d.group = groupId;
-        //   group.nodes.push(d); //add this node to the list of nodes in the group
-        // }
-      //});
-
-    console.log("HERE");
-    console.log(this.globalnodeid);
-
-    // if (select[0].length <= 1) { return; } //do nothing if nothing is selected & if there's one node
     for (var key in createdGroup) {
-      console.log(key);
       // check if the property/key is defined in the object itself, not in parent
       if (createdGroup.hasOwnProperty(key)) {           
         const group_same = createdGroup[key];
@@ -974,25 +932,10 @@ class Graph {
           this.nodes.splice(this.nodes.indexOf(node), 1);
           }
         ); 
-        console.log(nodes_same);
-
-        console.log("links");
-        // console.log(group_same.links);
-        // console.log(group_same.links.length);
         console.log(group_same.id);
         this.nodes.push({ id: group_same.id, name: group_same.name, type: "same_as_group" }); //add the new node for the group
 
-        //Reattach all links
-
-
-
         this.moveLinksFromOldNodesToGroup(nodes_same, group_same);
-
-
-
-        //select.each((d) => { delete this.groups[d.id]; });
-        // delete any groups that were selected AFTER all nodes & links are deleted
-        // and properly inserted into the global variable entry for the new group
 
         this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
         this.update();
@@ -1000,20 +943,6 @@ class Graph {
         // displayGroupInfo(this.groups);
       }
     }
-
-    // const group = this.createGroupFromSelect(select); //whole group
-    // const removedNodes = this.removeNodesFromDOM(select); //.nodes
-    // this.nodes.push({ id: group.id, name: `Group ${-1 * group.id}`, type: "group" }); //add the new node for the group
-    // this.moveLinksFromOldNodesToGroup(removedNodes, group);
-
-    // select.each((d) => { delete this.groups[d.id]; });
-    // // delete any groups that were selected AFTER all nodes & links are deleted
-    // // and properly inserted into the global variable entry for the new group
-
-    // this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
-    // this.update();
-    // this.fillGroupNodes();
-    // // displayGroupInfo(this.groups);
   }
 
   groupSelectedNodes() {
@@ -1253,31 +1182,17 @@ class Graph {
     /* Creates a group connected by possibly_same_as around node, adding it to group,
     and marking it as true in grouped so it isn't revisited later */
     this.links.slice().map((link) => {
-      const removedLink = this.removeLinkAddGroup(link, group, grouped);
-      // if (removedLink) {
-      //   //const groupids = Object.keys(this.groups).map((key) => { return parseInt(key); });
-      //   if (isInArray(link.target.id, groupids) || isInArray(link.source.id, groupids)) {
-      //     // do nothing if the removed link was attached to a group
-      //   } else if (existingLinks[link.target.id + ',' + link.source.id]) {
-      //     //do nothing if the link already exists in the group, i.e. if you're expanding
-      //   } else {
-      //     group.links.push(removedLink);
-      //   }
-      //   //this.reattachLink(link, group.id, removedNodesDict, nodeIdsToIndex);
-      // }
+      const removedLink = this.checkLinkAddGroup(link, group, grouped);
     });
   }
 
-  removeLinkAddGroup(link, group, grouped) {
+  checkLinkAddGroup(link, group, grouped) {
     /* takes in a list of nodes and the link to be removed
         if the one of the nodes in the link target or source is attached to the link AND link is of type 'possibly_same_as',
         remove the link and add whatever is connected to this link to the group if it isn't already */
-    let removedLink;
+    let checkedLink;
     //only remove a link if it's attached to a removed node
     if (link.type === 'possibly_same_as' && (group.nodes.indexOf(link.source) > -1 || group.nodes.indexOf(link.target) > -1)) { //remove all links connected to a node in group and with correct type
-      // two lines below remove the link
-      //const index = this.links.indexOf(link);
-      //removedLink = this.links.splice(index, 1)[0];
       // Make sure both sides of this link are in the group, and recursively add theirs to group as well
       if (group.nodes.indexOf(link.source) <= -1) {
         //group[link.source.id] = true;
@@ -1295,18 +1210,9 @@ class Graph {
     }
     else if (group.nodes.indexOf(link.source) > -1 || group.nodes.indexOf(link.target) > -1) {
       group.links.push(link);
-      // let linkid = this.globallinkid;
-      // if (group.nodes.indexOf(link.source) <= -1) {
-      //   this.links.push({id: linkid, source: group.id, target: link.source.id});
-      // }
-      // else {
-      //   this.links.push({id: linkid, source: group.id, target: link.target.id});
-      // }
-      
-      // this.globallinkid -= 1;
     }
 
-    return removedLink;
+    return checkedLink;
   }
 
   removeSelectiveLink(nodesSelected, link) {
