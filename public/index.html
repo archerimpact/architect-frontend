@@ -32,9 +32,9 @@
       const graph = new Graph();
       const height = $(window).height(),
         width = Math.max($(window).width() - 300, height);
-      d3.json("/data/data.json", function(json) {
-        graph.generateCanvas(width, height)
-        graph.setData(18210, json.nodes, json.links)
+      d3.json("/data/well_connected.json", function(json) {
+        graph.generateCanvas(width, height);
+        graph.setData(18210, json.nodes, json.links);
       })
     </script>
     <script src="js/sidebar.js"></script>

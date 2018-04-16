@@ -7,16 +7,22 @@
 body {
   min-width: 900px;
   font: normal 16px arial, sans-serif;
+  height: 100vh;
+  width: 100%;
   overflow: hidden;
 }
 
 #graph-container {
-  top:0px;
+  height: 100%;
+}
+
+.svg-content {
+  height: 100%;
+  width: 100%;
 }
 
 svg {
   border: 3px solid #fff;
-  z-index: -1;
 }
 
 
@@ -24,11 +30,6 @@ svg rect.extent {
   stroke: #ccc;
   stroke-width: 2px;
   fill: #edf5fc;
-}
-
-svg rect.background {
-/*  cursor: -webkit-grab !important;
-  cursor: grab !important;*/
 }
 
 svg line {

@@ -117,8 +117,8 @@ class Graph {
   initializeSVG() {
     const svg = d3.select('#graph-container').append('svg')
       .attr('id', 'canvas')
-      .attr('width', this.width)
-      .attr('height', this.height)
+      .attr("pointer-events", "all")
+      .classed("svg-content", true)
       .call(this.zoom);
 
     // Disable context menu from popping up on right click
@@ -281,8 +281,8 @@ class Graph {
     //   nodes[index].py = height/2; 
 
     this.force
-      .gravity(.25)
-      .charge(-1 * Math.max(Math.pow(this.nodes.length, 2.5), 1500))
+      .gravity(.33)
+      .charge(-1 * Math.max(Math.pow(this.nodes.length, 2.5), 1250))
       .friction(this.nodes.length < 15 ? .75 : .65)
       .alpha(.8)
       .nodes(this.nodes)
@@ -527,7 +527,6 @@ class Graph {
       });
 
       if (this.printFull == 0) {
-        console.log('hi')
         d3.select(self)
           .select('.node-name')
           .text(processNodeName(d.name, 2))
@@ -996,9 +995,6 @@ class Graph {
 
     const group = this.createGroupFromSelect(select);
     const removedNodes = this.removeNodesFromDOM(select);
-    console.log("links");
-    console.log(group.links);
-    console.log(group.links.length);
     this.nodes.push({ id: group.id, name: `Group ${-1 * group.id}`, type: "group" }); //add the new node for the group
     this.moveLinksFromOldNodesToGroup(removedNodes, group);
 
