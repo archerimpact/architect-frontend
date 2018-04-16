@@ -910,7 +910,7 @@ class Graph {
           var groupId = this.globalnodeid;
           
           //createdGroup[groupId] = { links: [], nodes: [d], id: groupId, name: d.id };
-          createdGroup[d.id] = { links: [], nodes: [d], id: d.id, name: d.id };
+          createdGroup[d.id] = { links: [], nodes: [d], id: groupId, name: d.name };
 
           //this.createGroupFromNode(d, createdGroup[groupId], grouped); // Makes a group with d in it
           this.createGroupFromNode(d, createdGroup[d.id], grouped); 
@@ -935,8 +935,9 @@ class Graph {
             //console.log(createdGroup[groupId]['nodes']);
             //this.groups[groupId] = createdGroup[groupId];
             //this.groups[groupId] = createdGroup[d.id];
-            this.groups[d.id] = createdGroup[d.id];
+            this.groups[groupId] = createdGroup[d.id];
             this.globalnodeid -= 1;
+            console.log(this.globalnodeid);
           }
           else {
             //delete createdGroup[groupId];
@@ -978,7 +979,8 @@ class Graph {
         console.log("links");
         // console.log(group_same.links);
         // console.log(group_same.links.length);
-        this.nodes.push({ id: group_same.id, name: group_same.id, type: "same_as_group" }); //add the new node for the group
+        console.log(group_same.id);
+        this.nodes.push({ id: group_same.id, name: group_same.name, type: "same_as_group" }); //add the new node for the group
 
         //Reattach all links
 
@@ -1539,7 +1541,7 @@ function processNodeName(str, printFull) {
 }
 
 function splitAndCapitalize(str, splitChar) {
-  let tokens = str.split(splitChar);
+  let tokens = str.toString().split(splitChar);
   tokens = tokens.map(function (token, idx) {
     return capitalize(token, splitChar == ' ');
   });
