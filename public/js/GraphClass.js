@@ -907,10 +907,13 @@ class Graph {
       .each((d) => {
         if (!grouped[d.id]) { //this node is already in a same-as group
           grouped[d.id] = true;
+          var groupId = this.globalnodeid;
           
-          createdGroup[d.id] = { links: [], nodes: [d], id: d.id };
+          //createdGroup[groupId] = { links: [], nodes: [d], id: groupId, name: d.id };
+          createdGroup[d.id] = { links: [], nodes: [d], id: d.id, name: d.id };
 
-          this.createGroupFromNode(d, createdGroup[d.id], grouped); // Makes a group with d in it
+          //this.createGroupFromNode(d, createdGroup[groupId], grouped); // Makes a group with d in it
+          this.createGroupFromNode(d, createdGroup[d.id], grouped); 
 
           // if (this.groups[d.id]) { //this node is already a group
           //   var newNodes = this.groups[d.id].nodes;
@@ -926,12 +929,17 @@ class Graph {
           //   group.nodes.push(d); //add this node to the list of nodes in the group
           // }
 
+          //if (createdGroup[groupId].nodes.length > 1) {
           if (createdGroup[d.id].nodes.length > 1) {
             console.log("after select");
-            console.log(createdGroup[d.id]['nodes']);
+            //console.log(createdGroup[groupId]['nodes']);
+            //this.groups[groupId] = createdGroup[groupId];
+            //this.groups[groupId] = createdGroup[d.id];
             this.groups[d.id] = createdGroup[d.id];
+            this.globalnodeid -= 1;
           }
           else {
+            //delete createdGroup[groupId];
             delete createdGroup[d.id];
           }
         }
@@ -951,6 +959,8 @@ class Graph {
         // }
       //});
 
+    console.log("HERE");
+    console.log(this.globalnodeid);
 
     // if (select[0].length <= 1) { return; } //do nothing if nothing is selected & if there's one node
     for (var key in createdGroup) {
@@ -963,10 +973,11 @@ class Graph {
           this.nodes.splice(this.nodes.indexOf(node), 1);
           }
         ); 
+        console.log(nodes_same);
 
         console.log("links");
-        console.log(group_same.links);
-        console.log(group_same.links.length);
+        // console.log(group_same.links);
+        // console.log(group_same.links.length);
         this.nodes.push({ id: group_same.id, name: group_same.id, type: "same_as_group" }); //add the new node for the group
 
         //Reattach all links
