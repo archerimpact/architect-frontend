@@ -1036,6 +1036,7 @@ class Graph {
 
     this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
     this.node.classed("selected", false)
+    this.link.classed("selected", false)
     this.update();
     displayGroupInfo(this.groups);
   }
