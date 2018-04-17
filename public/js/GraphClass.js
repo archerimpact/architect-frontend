@@ -16,7 +16,6 @@ const icons = {
 
 const maxTextLength = 20;
 class Graph {
-
   constructor() {
     this.height = null;
     this.width = null;
@@ -36,6 +35,7 @@ class Graph {
     this.zoomTranslate = [0, 0]; // Keep track of original zoom state to restore after right-drag
     this.zoomScale = 1;
     this.zoomPressed = null;
+    this.debug = false; // Show all node/link attributes in tooltip
 
     this.node = null;
     this.link = null;
@@ -79,7 +79,12 @@ class Graph {
     this.doZoom = this.doZoom.bind(this);
     this.initializeZoomButtons = this.initializeZoomButtons.bind(this);
     this.textWrap = this.textWrap.bind(this);
-
+    this.createTextElement = this.createTextElement.bind(this);
+    this.createDivElement = this.createDivElement.bind(this);
+    this.createTitleElement = this.createTitleElement.bind(this);
+    this.displayTooltip = this.displayTooltip.bind(this);
+    this.populateNodeInfoBody = this.populateNodeInfoBody.bind(this);
+    this.createInfoTextEntry = this.createInfoTextEntry.bind(this);
   }
 
   initializeDataDicts() {
@@ -249,6 +254,7 @@ class Graph {
     this.svgGrid = this.initializeSVGgrid();
     this.force = this.initializeForce();
     this.initializeZoomButtons();
+    this.initializeTooltip();
 
     this.setupKeycodes();
 
@@ -259,8 +265,7 @@ class Graph {
   }
 
   // Completely rerenders the graph, assuming all new nodes and links
-  // Centerid currently doesn't do anything
-  // TO-DO: implement feature of centering the graph around a particular ID
+  // centerid currently doesn't do anything
   setData(centerid, nodes, links) {
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
 
@@ -321,10 +326,10 @@ class Graph {
       .attr('class', 'node')
       .attr('dragfix', false)
       .attr('dragselect', false)
-      .on('click', function (d) { self.clicked(d, this) })
-      .on('dblclick', function (d) { self.dblclicked(d, this) })
-      .on('mouseover', function (d) { self.mouseover(d, this) })
-      .on('mouseout', function (d) { self.mouseout(d, this) })
+      .on('click', function (d) { self.clicked(d, this); })
+      .on('dblclick', function (d) { self.dblclicked(d, this); })
+      .on('mouseover', function (d) { self.mouseover(d, this); })
+      .on('mouseout', function (d) { self.mouseout(d, this); })
       .classed('fixed', function (d) { return d.fixed; })
       .call(this.force.drag()
         .origin(function (d) { return d; })
@@ -348,11 +353,11 @@ class Graph {
       .attr('class', 'node-name')
       .attr('text-anchor', 'middle')
       .attr('dy', '35px')
-      .text(function (d) { return processNodeName(d.name, this.printFull) })
+      .text(function (d) { return processNodeName(d.name, this.printFull); })
       .call(this.textWrap, this.printFull)
       .on('click', this.clickedText)
-      .on('mouseover', function (d) { self.mouseoverText(d, this) })
-      .on('mouseout', function (d) { self.mouseoutText(d, this) })
+      .on('mouseover', function (d) { self.mouseoverText(d, this); })
+      .on('mouseout', function (d) { self.mouseoutText(d, this); })
       .call(d3.behavior.drag()
         .on('dragstart', this.dragstartText)
         .on('dragstart', this.draggingText)
@@ -361,7 +366,7 @@ class Graph {
 
     this.node.exit().remove();
 
-    this.hull = this.hull.data(this.hulls)
+    this.hull = this.hull.data(this.hulls);
 
     this.hull
       .enter().append('path')
@@ -381,9 +386,9 @@ class Graph {
   ticked(e, self) {
     this.force.resume();
     if (!this.hull.empty()) {
-      this.calculateAllHulls()
+      this.calculateAllHulls();
       this.hull.data(this.hulls)
-        .attr('d', this.drawHull)
+        .attr('d', this.drawHull);
     }
 
     this.node
@@ -510,10 +515,10 @@ class Graph {
     this.force.resume();
   }
 
-  // Node emphasis
   mouseover(d, self) {
     var classThis = this;
     if (!this.isDragging && !this.isBrushing) {
+      // Node emphasis
       this.isEmphasized = true;
       this.node
         .filter(function (o) {
@@ -526,6 +531,10 @@ class Graph {
         return (o.source == d || o.target == d) ? 1 : .05;
       });
 
+      // Tooltip
+      this.displayTooltip(d);
+
+      // Text elongation
       if (this.printFull == 0) {
         d3.select(self)
           .select('.node-name')
@@ -539,6 +548,7 @@ class Graph {
 
   mouseout(d, self) {
     this.resetGraphOpacity();
+    this.hideTooltip();
     if (this.printFull != 1) {
       d3.select(self)
         .select('.node-name')
@@ -1332,7 +1342,7 @@ class Graph {
   removeNodesFromDOM(select) {
     /* iterates through a select to remove each node, and returns an array of removed nodes */
 
-    const removedNodes = []
+    const removedNodes = [];
     select
       .each((d) => {
         if (this.nodes.indexOf(d) === -1) {
@@ -1343,7 +1353,7 @@ class Graph {
         }
       });
 
-    return removedNodes
+    return removedNodes;
   }
 
   removeNodeLinksFromDOM(removedNodes) {
@@ -1355,7 +1365,7 @@ class Graph {
 
     removedNodes.map((node) => {
       removedNodesDict[node.id] = true;
-    })
+    });
 
     this.links.slice().map((link) => {
       removedLink = this.removeLink(removedNodesDict, link);
@@ -1441,6 +1451,109 @@ class Graph {
       .style('fill-opacity', 1);
     this.link.style('stroke-opacity', 1);
   }
+
+  // Tooltips
+  initializeTooltip() {
+    $('body').append("<div id='node-tooltip'></div>");
+    this.hideTooltip();
+  }
+
+  displayTooltip(d) {
+    const attrs = ['id', 'name', 'type'];
+    this.displayData('node-tooltip', processNodeName(d.name), this.populateNodeInfoBody, d, attrs);
+    this.moveTooltip();
+    $('#node-tooltip').show();
+  }
+
+  moveTooltip() {
+    const offset = 20;
+    $('#node-tooltip').css('top', `${d3.event.y+offset}px`)
+                      .css('left', `${d3.event.x+offset}px`);
+  }
+
+  hideTooltip() {
+    $('#node-tooltip').hide();
+  }
+
+  populateNodeInfoBody(targetId, info, attrs) {
+    if (attrs) {
+      for (let attr of attrs) {
+        $(targetId).append(this.createInfoTextEntry(attr, info[attr]));
+        if (typeof info[attr] === 'undefined') {
+          console.error(`${attr} is not a valid attribute.`);
+        }
+      }
+    } else {
+      for (let key in info) {
+        $(targetId).append(this.createInfoTextEntry(key, info[key]));
+      }
+    }
+  }
+
+  displayData(targetId, titleText, populateBody) {
+    $(`#${targetId}`).html('');
+
+    const sectionTitle = this.createTitleElement(titleText);
+    sectionTitle.id = `${targetId}-title`;
+    const titleId = `#${sectionTitle.id}`;
+
+    const sectionBody = document.createElement('div');
+    sectionBody.id = `${targetId}-body`; 
+    const bodyId = `#${sectionBody.id}`;
+
+    sectionTitle.onclick = () => {
+      $(bodyId).css('max-height',  $(titleId).hasClass('open') ? 0 : maxHeight);
+      $(titleId).toggleClass('open');
+    }
+
+    if (arguments.length > 3) {
+      const args = Array.prototype.slice.call(arguments, 3);
+      args.unshift(sectionBody);
+      populateBody.apply(null, args);
+    } else {
+      populateBody(sectionBody);
+    }
+
+    $(`#${targetId}`).append(sectionTitle);
+    $(`#${targetId}`).append(sectionBody);
+  }
+
+  createInfoTextEntry(key, value) {
+    const leftText = this.createTextElement('tooltip-left', key);
+    const rightText = this.createTextElement('tooltip-right', value);
+    const contentEntry = this.createDivElement('content-entry');
+    $(contentEntry).append(leftText);
+    $(contentEntry).append(rightText);
+    return contentEntry;
+  }
+
+  createTitleElement(title, close=false) {
+    const titleElement = this.createDivElement('tooltip-title');
+    const titleText = document.createElement('p');
+    titleText.className = 'unselectable';
+    titleText.innerHTML = title;
+    $(titleElement).append(titleText);
+
+    if (close) {
+      const icon = document.createElement('i');
+      icon.className = 'fa fa-close';
+      $(titleElement).append(icon);
+    }
+
+    return titleElement;
+  }
+
+  createTextElement(className, text) {
+    const textElement = this.createDivElement(className);
+    textElement.innerHTML = text;
+    return textElement;
+  }
+
+  createDivElement(className) {
+    const divElement = document.createElement('div');
+    divElement.className = className;
+    return divElement;
+  }
 }
 
 // =================
@@ -1470,9 +1583,8 @@ function isInArray(value, array) {
 // Normalize node text to same casing conventions and length
 // printFull states - 0: abbrev, 1: none, 2: full
 function processNodeName(str, printFull) {
-  if (!str || printFull == 1) {
-    return '';
-  }
+  if (!str) { return 'Document'; } 
+  if (printFull == 1) { return ''; }
 
   const delims = [' ', '.', '('];
   for (let i = 0; i < delims.length; i++) {

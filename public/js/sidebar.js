@@ -232,7 +232,7 @@ $(document).ready(function() {
     }
 
     // alt+i: Open sidebar
-    if (altDown && e.which == 73) {
+    if (e.which == 73) {
       openSidebar();
     }
 

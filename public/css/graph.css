@@ -136,3 +136,49 @@ button:focus {
   fill: #0d77e2;
   opacity: 0.4;
 }
+
+#node-tooltip {
+  width: 240px;
+  background: rgba(255, 255, 255, .5);
+  border: 1px solid #000;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  font-size: 14px;
+  color: #000;
+  letter-spacing: 1px;
+}
+
+.tooltip-title {
+  font-size: 20px;
+  border-bottom: 1.5px solid #0D77E2;
+  background: rgba(13, 119, 226, .1);
+  padding: 5px;
+  color: #0D77E2;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+
+i.fa-close {
+  left: auto;
+  font-size: 16px; 
+  padding: 1px;
+}
+
+.tooltip-left {
+  margin: auto;
+  margin-left: 0px;
+  max-width: 150px;
+}
+
+.tooltip-right {
+  margin: auto;
+  margin-right: 0px;
+  display: flex;
+  text-align: right;
+  flex-direction: row;
+  font-size: 14px;
+  max-width: 165px;
+  color: #545454;
+}
