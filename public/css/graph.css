@@ -151,10 +151,10 @@ button:focus {
 
 .tooltip-title {
   font-size: 20px;
-  border-bottom: 1.5px solid #0D77E2;
+  border-bottom: 1.5px solid #0d77e2;
   background: rgba(13, 119, 226, .1);
   padding: 5px;
-  color: #0D77E2;
+  color: #0d77e2;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -164,6 +164,13 @@ i.fa-close {
   left: auto;
   font-size: 16px; 
   padding: 1px;
+}
+
+.content-entry {
+  border-bottom: 1px solid #cccccc;
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
 }
 
 .tooltip-left {

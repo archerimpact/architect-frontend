@@ -595,15 +595,15 @@ class Graph {
       translate = this.zoom.translate(),
       x = translate[0], y = translate[1],
       factor = zoom_in ? 1.3 : 1 / 1.3,
-      target_scale = scale * factor;
+      targetScale = scale * factor;
 
     // If we're already at an extent, done
-    if (target_scale === extent[0] || target_scale === extent[1]) { return false; }
+    if (targetScale === extent[0] || targetScale === extent[1]) { return false; }
     // If the factor is too much, scale it down to reach the extent exactly
-    var clamped_target_scale = Math.max(extent[0], Math.min(extent[1], target_scale));
-    if (clamped_target_scale != target_scale) {
-      target_scale = clamped_target_scale;
-      factor = target_scale / scale;
+    var clampedTargetScale = Math.max(extent[0], Math.min(extent[1], targetScale));
+    if (clampedTargetScale != targetScale) {
+      targetScale = clampedTargetScale;
+      factor = targetScale / scale;
     }
 
     // Center each vector, stretch, then put back
@@ -612,12 +612,14 @@ class Graph {
 
     // Transition to the new view over 100ms
     d3.transition().duration(100).tween("zoom", function () {
-      var interpolate_scale = d3.interpolate(scale, target_scale),
+      var interpolate_scale = d3.interpolate(scale, targetScale),
           interpolate_trans = d3.interpolate(translate, [x, y]);
       return function (t) {
         self.zoom
             .scale(interpolate_scale(t))
             .translate(interpolate_trans(t));
+        self.zoomTranslate = self.zoom.translate();
+        self.zoomScale = self.zoom.scale();
         self.zoomingButton();
       };
     }).each("end", () => {
@@ -636,20 +638,23 @@ class Graph {
 
     // Transition to the new view over 500ms
     d3.transition().duration(500).tween("translate", function () {
-      var interpolate_trans = d3.interpolate(translate, [x, y]);
+      var interpolateTranslate = d3.interpolate(translate, [x, y]);
       return function (t) {
         self.zoom
-          .translate(interpolate_trans(t));
+            .translate(interpolateTranslate(t));
+        self.zoomTranslate = self.zoom.translate();
+        self.zoomScale = self.zoom.scale();
         self.zoomingButton();
       };
     })
+
     d3.selectAll(".node")
       .filter((node) => {
         if (node.id === d.id) {
-          return node
+          return node;
         }
       })
-      .classed("selected", true)
+      .classed("selected", true);
   }
 
   disableZoom() {
@@ -1338,7 +1343,6 @@ class Graph {
     });
   }
 
-
   removeNodesFromDOM(select) {
     /* iterates through a select to remove each node, and returns an array of removed nodes */
 
@@ -1461,14 +1465,16 @@ class Graph {
   displayTooltip(d) {
     const attrs = ['id', 'name', 'type'];
     this.displayData('node-tooltip', processNodeName(d.name), this.populateNodeInfoBody, d, attrs);
-    this.moveTooltip();
+    this.moveTooltip(d);
     $('#node-tooltip').show();
   }
 
-  moveTooltip() {
-    const offset = 20;
-    $('#node-tooltip').css('top', `${d3.event.y+offset}px`)
-                      .css('left', `${d3.event.x+offset}px`);
+  moveTooltip(d) {
+    const offset = 30;
+    const xPos = d.x * this.zoomScale + this.zoomTranslate[0] + offset;
+    const yPos = d.y * this.zoomScale + this.zoomTranslate[1] + offset;
+    $('#node-tooltip').css('left', `${xPos}px`)
+                      .css('top', `${yPos}px`);
   }
 
   hideTooltip() {
@@ -1476,10 +1482,10 @@ class Graph {
   }
 
   populateNodeInfoBody(targetId, info, attrs) {
-    if (attrs) {
+    if (attrs && !this.debug) {
       for (let attr of attrs) {
         $(targetId).append(this.createInfoTextEntry(attr, info[attr]));
-        if (typeof info[attr] === 'undefined') {
+        if (typeof info[attr] === 'undefined' && info['type'] != 'Document') {
           console.error(`${attr} is not a valid attribute.`);
         }
       }
