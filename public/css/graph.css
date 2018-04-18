@@ -60,9 +60,9 @@ button:focus {
 .link {
   stroke: #999999;
   stroke-width: 3px;
-  transition-duration: 100ms;
+  transition-duration: 50ms;
   transition-property: stroke-opacity;
-  transition-delay: 100ms;
+  transition-delay: 75ms;
 }
 
 .link.selected {
@@ -72,9 +72,9 @@ button:focus {
 .node {
   fill: #ebebeb;
   stroke: #999999;
-  transition-duration: 100ms;
+  transition-duration: 50ms;
   transition-property: stroke-opacity, fill-opacity;
-  transition-delay: 100ms;
+  transition-delay: 75ms;
 }
 
 .node text {
@@ -147,6 +147,7 @@ button:focus {
   font-size: 14px;
   color: #000;
   letter-spacing: 1px;
+  transition-delay: 75ms;
 }
 
 .tooltip-title {
@@ -171,6 +172,10 @@ i.fa-close {
   display: flex;
   justify-content: space-between;
   padding: 5px;
+}
+
+.content-entry:last-child {
+  border-bottom: none;
 }
 
 .tooltip-left {

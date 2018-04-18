@@ -28,6 +28,7 @@ class Graph {
     this.numTicks = null;
 
     this.isDragging = false; // Keep track of dragging to disallow node emphasis on drag
+    this.draggedNode = null; // Store reference to currently dragged node, null otherwise
     this.isBrushing = false;
     this.isEmphasized = false; // Keep track of node emphasis to end node emphasis on drag
     this.printFull = 0; // Allow user to toggle node text length
@@ -35,7 +36,7 @@ class Graph {
     this.zoomTranslate = [0, 0]; // Keep track of original zoom state to restore after right-drag
     this.zoomScale = 1;
     this.zoomPressed = null;
-    this.debug = false; // Show all node/link attributes in tooltip
+    this.debug = true; // Show all node/link attributes in tooltip
 
     this.node = null;
     this.link = null;
@@ -403,10 +404,12 @@ class Graph {
       .attr('y2', function (d) { return d.target.y; });
   }
 
+  // Custom force that takes the parent group position as the centroid to moves all contained nodes toward
   groupNodesForce(alpha) {
-    /* custom force that takes the parent group position as the centroid and moves all the nodes near */
+    var self = this;
+    // Only apply force on grouped nodes that aren't being dragged and aren't fixed
     return function (d) {
-      if (d.group) {
+      if (d.group && (!self.isDragging || d.id != self.draggedNode.id) && !d.fixed) {
         d.y += (d.cy - d.y) * alpha;
         d.x += (d.cx - d.x) * alpha;
       }
@@ -483,6 +486,7 @@ class Graph {
     if (this.isEmphasized) this.resetGraphOpacity();
 
     this.isDragging = true;
+    this.draggedNode = d;
     displayNodeInfo(d);
     const node = d3.select(self);
     node
@@ -512,6 +516,7 @@ class Graph {
     }
 
     this.isDragging = false;
+    this.draggedNode = null;
     this.force.resume();
   }
 
@@ -1106,7 +1111,7 @@ class Graph {
     const group = this.groups[groupId];
 
     if (!group) {
-      console.log("error, the group doesn't exist even when it should: ", groupId);
+      console.error("Group doesn't exist even when it should: ", groupId);
     }
 
     if (this.expandedGroups[groupId]) {
