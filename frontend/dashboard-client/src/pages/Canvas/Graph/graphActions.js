@@ -3,6 +3,7 @@ import * as server from '../../../server';
 export const INITIALIZE_CANVAS = "INITIALIZE_CANVAS";
 export const UPDATE_GRAPH_DATA = "UPDATE_GRAPH_DATA";
 export const STORE_SEARCH_RESULTS = "STORE_SEARCH_RESULTS";
+export const STORE_CURRENT_NODE = "STORE_CURRENT_NODE";
 
 export function initializeCanvas(graph, width, height) {
   return (dispatch, getState) => {
@@ -17,12 +18,30 @@ function initializeCanvasDispatch(graph) {
     payload: graph
   };
 }
+var globald = null;
+
+function setCurrentNode(d) {
+  debugger
+  return (dispatch) => {
+    globald = d;
+    dispatch(storeCurrentNodeDispatch(d))
+  }
+}
+
+function storeCurrentNodeDispatch(d) {
+  debugger
+  return {
+    type: STORE_CURRENT_NODE,
+    payload: d
+  }
+}
+
 
 export function updateGraph(data) {
   return (dispatch, getState) => {
     var graphData = parseNeo4jData(data);
     let g = getState().canvas.graph;
-    debugger
+    g.bindDisplayFunctions({node: setCurrentNode})
     g.setData(graphData.centerid, graphData.nodes, graphData.links);
     dispatch(updateGraphDispatch(graphData))
   }
@@ -35,12 +54,16 @@ function updateGraphDispatch(data) {
   };
 }
 
+export function initializeDisplayFunctions(graph, displayFunctions) {
+  graph.bindDisplayFunctions(displayFunctions)
+}
 
 export function fetchGraphFromId(graph, id) {
   return (dispatch, getState) => {
   server.getGraph(id)
     .then(data => {
       var graphData = parseNeo4jData(data);
+      graph.bindDisplayFunctions({node: setCurrentNode})
       graph.setData(graphData.centerid, graphData.nodes, graphData.links);
       dispatch(updateGraphDispatch(graphData))
     })

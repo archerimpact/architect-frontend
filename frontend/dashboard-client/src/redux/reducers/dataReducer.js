@@ -5,7 +5,8 @@ import {
 import {
 	INITIALIZE_CANVAS,
 	UPDATE_GRAPH_DATA,
-	STORE_SEARCH_RESULTS
+	STORE_SEARCH_RESULTS,
+  STORE_CURRENT_NODE
 } from '../../pages/Canvas/Graph/graphActions';
 
 import initialState from './initialState';
@@ -35,7 +36,15 @@ export default function (state = initialState, action) {
 					...state.canvas,
 					searchData: action.payload
 				}
-			}
+			};
+    case STORE_CURRENT_NODE:
+      debugger
+      return {
+        ...state,
+        currentNode: {
+          node: action.payload
+        }
+      }
 	    case USER_LOGIN:
 	    	return {
 	    		...state,
