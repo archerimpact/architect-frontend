@@ -15,6 +15,10 @@ const icons = {
 };
 
 const maxTextLength = 20;
+const minScale = 0.1;
+const maxScale = 9.0;
+const gridLength = 80;
+    
 class Graph {
   constructor() {
     this.height = null;
@@ -22,9 +26,6 @@ class Graph {
     this.center = null;
     this.brushX = null;
     this.brushY = null;
-    this.minScale = 0.1;
-    this.maxScale = 9.0;
-    this.gridLength = 80;
     this.numTicks = null;
 
     this.isDragging = false; // Keep track of dragging to disallow node emphasis on drag
@@ -36,7 +37,7 @@ class Graph {
     this.zoomTranslate = [0, 0]; // Keep track of original zoom state to restore after right-drag
     this.zoomScale = 1;
     this.zoomPressed = null;
-    this.debug = true; // Show all node/link attributes in tooltip
+    this.debug = false; // Show all node/link attributes in tooltip
 
     this.node = null;
     this.link = null;
@@ -102,7 +103,7 @@ class Graph {
   initializeZoom() {
     var self = this;
     const zoom = d3.behavior.zoom()
-      .scaleExtent([this.minScale, this.maxScale])
+      .scaleExtent([minScale, maxScale])
       .on('zoomstart', function (d) { self.zoomstart(d, this) })
       .on('zoom', function (d) { self.zooming(d, this) })
       .on('zoomend', function (d) { self.zoomend(d, this) });
@@ -171,22 +172,22 @@ class Graph {
       .append('g')
       .attr('class', 'x-ticks')
       .selectAll('line')
-      .data(d3.range(0, (this.numTicks + 1) * this.gridLength, this.gridLength))
+      .data(d3.range(0, (this.numTicks + 1) * gridLength, gridLength))
       .enter().append('line')
       .attr('x1', (d) => { return d; })
-      .attr('y1', (d) => { return -1 * this.gridLength; })
+      .attr('y1', (d) => { return -1 * gridLength; })
       .attr('x2', (d) => { return d; })
-      .attr('y2', (d) => { return (1 / this.minScale) * this.height + this.gridLength; });
+      .attr('y2', (d) => { return (1 / minScale) * this.height + gridLength; });
 
     svgGrid
       .append('g')
       .attr('class', 'y-ticks')
       .selectAll('line')
-      .data(d3.range(0, (this.numTicks + 1) * this.gridLength, this.gridLength))
+      .data(d3.range(0, (this.numTicks + 1) * gridLength, gridLength))
       .enter().append('line')
-      .attr('x1', (d) => { return -1 * this.gridLength; })
+      .attr('x1', (d) => { return -1 * gridLength; })
       .attr('y1', (d) => { return d; })
-      .attr('x2', (d) => { return (1 / this.minScale) * this.width + this.gridLength; })
+      .attr('x2', (d) => { return (1 / minScale) * this.width + gridLength; })
       .attr('y2', (d) => { return d; });
 
     return svgGrid;
@@ -244,7 +245,7 @@ class Graph {
     this.brushX = d3.scale.linear().range([0, width]),
     this.brushY = d3.scale.linear().range([0, height]);
 
-    this.numTicks = width / this.gridLength * (1 / this.minScale);
+    this.numTicks = width / gridLength * (1 / minScale);
 
     this.zoom = this.initializeZoom();
     this.brush = this.initializeBrush();
@@ -574,8 +575,8 @@ class Graph {
   zooming(d, self) {
     if (!this.isRightClick()) {
       const e = d3.event;
-      const transform = 'translate(' + (((e.translate[0] / e.scale) % this.gridLength) - e.translate[0] / e.scale)
-        + ',' + (((e.translate[1] / e.scale) % this.gridLength) - e.translate[1] / e.scale) + ')scale(' + 1 + ')';
+      const transform = 'translate(' + (((e.translate[0] / e.scale) % gridLength) - e.translate[0] / e.scale)
+        + ',' + (((e.translate[1] / e.scale) % gridLength) - e.translate[1] / e.scale) + ')scale(' + 1 + ')';
       this.svgGrid.attr('transform', transform);
       this.container.attr('transform', 'translate(' + e.translate + ')scale(' + e.scale + ')');
     }
@@ -671,8 +672,8 @@ class Graph {
 
   zoomingButton() {
     this.container.attr('transform', 'translate(' + this.zoom.translate() + ')scale(' + this.zoom.scale() + ')');
-    const transform = 'translate(' + (((this.zoom.translate()[0] / this.zoom.scale()) % this.gridLength) - this.zoom.translate()[0] / this.zoom.scale())
-      + ',' + (((this.zoom.translate()[1] / this.zoom.scale()) % this.gridLength) - this.zoom.translate()[1] / this.zoom.scale()) + ')scale(1)';
+    const transform = 'translate(' + (((this.zoom.translate()[0] / this.zoom.scale()) % gridLength) - this.zoom.translate()[0] / this.zoom.scale())
+      + ',' + (((this.zoom.translate()[1] / this.zoom.scale()) % gridLength) - this.zoom.translate()[1] / this.zoom.scale()) + ')scale(1)';
     this.svgGrid.attr('transform', transform);
   }
 
@@ -1136,7 +1137,7 @@ class Graph {
   //Hull functions
   createHull(group) {
     var vertices = [];
-    var offset = 20; //arbitrary, the size of the node radius
+    var offset = 25; //arbitrary, the size of the node radius
 
     const nodeids = this.nodes.map((node) => { return node.id }); // create array of all ids in nodes
     group.nodes.map((d) => {
@@ -1185,12 +1186,13 @@ class Graph {
 
       let line = [];
       let remainder;
-      let lineNum = 1;
+      let lineNum = 0;
       const dy = parseInt(text.attr('dy'));
       let tspan = text.append('tspan')
         .attr('x', 0)
         .attr('y', 0)
-        .attr('dy', dy);
+        .attr('dy', dy)
+        .classed('text-shadow', true);
 
       for (let i = 0; i < tokens.length; i++) {
         line.push(tokens[i]);
@@ -1201,16 +1203,29 @@ class Graph {
           tspan = text.append('tspan')
             .attr('x', 0)
             .attr('y', 0)
-            .attr('dy', 15 * (lineNum++) + dy);
+            .attr('dy', 15 * (lineNum++) + dy)
+            .text(line.join(' '));
+            
+          tspan = text.append('tspan')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('dy', 15 * lineNum + dy)
+            .classed('text-shadow', true);
+
           line = remainder ? [remainder] : [];
         }
 
-        if (printFull == 0 && lineNum >= 2) { break; }
+        if (printFull == 0 && lineNum > 0) { break; }
       }
 
       let finalLine = line.join(' ');
-      finalLine = (printFull == 0 && lineNum >= 2) ? `${finalLine.trim()}...` : finalLine;
+      finalLine = (printFull == 0 && lineNum > 0) ? `${finalLine.trim()}...` : finalLine;
       tspan.text(finalLine);
+      tspan = text.append('tspan')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('dy', 15 * (lineNum++) + dy)
+            .text(finalLine);
     });
   }
 
