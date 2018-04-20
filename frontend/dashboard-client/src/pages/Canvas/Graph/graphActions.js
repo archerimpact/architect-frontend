@@ -18,31 +18,19 @@ function initializeCanvasDispatch(graph) {
     payload: graph
   };
 }
-var globald = null;
-
-function setCurrentNode(d) {
-  debugger
-  return (dispatch) => {
-    globald = d;
-    dispatch(storeCurrentNodeDispatch(d))
-  }
-}
 
 function storeCurrentNodeDispatch(d) {
-  debugger
   return {
     type: STORE_CURRENT_NODE,
     payload: d
   }
 }
 
-
 export function updateGraph(data) {
   return (dispatch, getState) => {
     var graphData = parseNeo4jData(data);
     let g = getState().canvas.graph;
-    g.bindDisplayFunctions({node: setCurrentNode})
-    g.setData(graphData.centerid, graphData.nodes, graphData.links);
+    g.setData(graphData.centerid, makeDeepCopy(graphData.nodes), makeDeepCopy(graphData.links));
     dispatch(updateGraphDispatch(graphData))
   }
 }
@@ -58,17 +46,30 @@ export function initializeDisplayFunctions(graph, displayFunctions) {
   graph.bindDisplayFunctions(displayFunctions)
 }
 
+function makeDeepCopy(array) {
+  var newArray = [];
+  array.map((object) => {
+    newArray.push(Object.assign({}, object));
+  });
+  return newArray;
+}
+
 export function fetchGraphFromId(graph, id) {
   return (dispatch, getState) => {
-  server.getGraph(id)
-    .then(data => {
-      var graphData = parseNeo4jData(data);
-      graph.bindDisplayFunctions({node: setCurrentNode})
-      graph.setData(graphData.centerid, graphData.nodes, graphData.links);
-      dispatch(updateGraphDispatch(graphData))
-    })
-    .catch(err => { console.log(err); });
-  }
+
+    function setCurrentNode(d) {
+      dispatch(storeCurrentNodeDispatch(Object.assign({}, d)));
+    }
+
+    server.getGraph(id)
+      .then(data => {
+        var graphData = parseNeo4jData(data);
+        graph.bindDisplayFunctions({node: setCurrentNode});
+        graph.setData(graphData.centerid, makeDeepCopy(graphData.nodes), makeDeepCopy(graphData.links));
+        dispatch(updateGraphDispatch(graphData));
+      })
+      .catch(err => { console.log(err); });
+    }
 }
 
 // export function fetchGraphFromQuery(query) {

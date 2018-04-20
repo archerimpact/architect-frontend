@@ -32,7 +32,6 @@ margin: 0 auto;
     width: 95%;
     border: none;
     display: inline-block;
-    font-family: "Open Sans", sans-serif;
 }
 
 .input:focus{

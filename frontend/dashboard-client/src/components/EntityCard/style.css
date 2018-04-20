@@ -1,11 +1,11 @@
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400);
-
+/*@import url(http://fonts.googleapis.com/css?family=Open+Sans:400);
+*/
 .outerBox{
   display: block;
   background-color: white;
-  padding: 12px;
-  font-family:normal 16px arial, sans-serif;
-}
+  padding: 16px;
+/*  font-family:normal 16px arial, sans-serif;
+*/}
 
 .heading, .identifyingInfo{
   white-space:nowrap;
@@ -15,15 +15,28 @@
   display:inline-block;
 }
 
-.info{
-  font-weight: 400;
+.titleName {
+  font-size: 20px;
+/*  border-bottom: 1.5px solid #0D77E2;
+*/  /*padding: 5px;*/
+/*  margin-top: 20px;
+*/  color: #0D77E2;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+
+.info, .status{
+  font-size: 14px;
+  color: #000;
+  letter-spacing: 1px;
 }
 
 .info{
   margin-right:15px;
   margin-top:10px;
-  margin-bottom:10px;
-}
+/*  margin-bottom:10px;
+*/}
 
 .actions{
   float:right;

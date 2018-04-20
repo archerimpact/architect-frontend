@@ -38,7 +38,6 @@ export default function (state = initialState, action) {
 				}
 			};
     case STORE_CURRENT_NODE:
-      debugger
       return {
         ...state,
         currentNode: {

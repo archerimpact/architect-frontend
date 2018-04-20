@@ -41,7 +41,7 @@ class EntityCard extends Component {
         <div className="outerBox">
           <div className="heading">
             <div className="titleName underline">
-              <h2 className="titleText"><Link to={this.state.link}>{nodeItem._source.name}</Link></h2>
+              <Link to={this.state.link}>{nodeItem._source.name}</Link>
             </div>      
           </div>
           <i>Person</i>
@@ -56,8 +56,8 @@ class EntityCard extends Component {
       return (
         <div className="outerBox">
           <div className="heading">
-            <div className="titleName underline">
-              <h2 className="titleText" onClick={this.updateSearchQuery}><Link to={this.state.link}>{nodeItem._source.name}</Link></h2>
+            <div className="titleName underline" onClick={this.updateSearchQuery}>
+              <Link to={this.state.link}>{nodeItem._source.name}</Link>
             </div>
             <div className="status">
               {nodeItem._source.company_status}
@@ -76,7 +76,9 @@ class EntityCard extends Component {
     // } else if (nodeItem.metadata.labels[0]==='Document'){
       return (
         <div className="outerBox">
-          <h2 className="titleText">Document</h2>
+          <div className="titleName">
+            Document
+          </div>
           <p>{"GCS Self: " + nodeItem._source.self}</p>
         </div>
       );
