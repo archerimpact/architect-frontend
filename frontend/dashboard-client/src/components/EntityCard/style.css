@@ -1,11 +1,9 @@
-/*@import url(http://fonts.googleapis.com/css?family=Open+Sans:400);
-*/
+
 .outerBox{
   display: block;
   background-color: white;
   padding: 16px;
-/*  font-family:normal 16px arial, sans-serif;
-*/}
+}
 
 .heading, .identifyingInfo{
   white-space:nowrap;
@@ -17,10 +15,7 @@
 
 .titleName {
   font-size: 20px;
-/*  border-bottom: 1.5px solid #0D77E2;
-*/  /*padding: 5px;*/
-/*  margin-top: 20px;
-*/  color: #0D77E2;
+  color: #0D77E2;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -35,18 +30,11 @@
 .info{
   margin-right:15px;
   margin-top:10px;
-/*  margin-bottom:10px;
-*/}
+}
 
 .actions{
   float:right;
 }
-
-/* .titleText {
-  cursor:pointer;
-  /* color:blue; */
-  /* text-decoration:underline; */
-
 
 .titleText, .status {
   margin:0px;
