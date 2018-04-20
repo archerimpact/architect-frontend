@@ -1,7 +1,7 @@
 .main {
     margin-left: 0px;
-    background-color: #F5F5F5;
-    min-height: calc(100% - 63px);
+/*    background-color: #F5F5F5;
+*/    min-height: calc(100% - 63px);
     width: calc(100%);
     position: absolute;
     margin-top: 64px;
