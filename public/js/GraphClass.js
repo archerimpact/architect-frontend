@@ -69,6 +69,7 @@ class Graph {
     this.mouseout = this.mouseout.bind(this);
     this.mouseoverText = this.mouseoverText.bind(this);
     this.mouseoutText = this.mouseoutText.bind(this);
+    this.mouseoverLink = this.mouseoverLink.bind(this);
     this.dragstart = this.dragstart.bind(this);
     this.dragging = this.dragging.bind(this);
     this.dragend = this.dragend.bind(this);
@@ -87,6 +88,8 @@ class Graph {
     this.displayTooltip = this.displayTooltip.bind(this);
     this.populateNodeInfoBody = this.populateNodeInfoBody.bind(this);
     this.createInfoTextEntry = this.createInfoTextEntry.bind(this);
+
+    this.bindDisplayFunctions({}); //no display functions yet
   }
 
   initializeDataDicts() {
@@ -312,6 +315,12 @@ class Graph {
     this.translateGraphAroundNode(centerd);
   }
 
+  bindDisplayFunctions(displayFunctions) {
+    this.displayNodeInfo = displayFunctions.node ? displayFunctions.node : function(d) {};
+    this.displayLinkInfo = displayFunctions.link ? displayFunctions.link : function(d) {};
+    this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
+  }
+
   update() {
     var self = this;
     this.link = this.link.data(this.links, function (d) { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
@@ -488,7 +497,7 @@ class Graph {
 
     this.isDragging = true;
     this.draggedNode = d;
-    displayNodeInfo(d);
+    this.displayNodeInfo(d);
     const node = d3.select(self);
     node
       .attr('dragfix', node.classed('fixed'))
@@ -549,7 +558,7 @@ class Graph {
       }
     }
 
-    displayNodeInfo(d);
+    this.displayNodeInfo(d);
   }
 
   mouseout(d, self) {
@@ -679,7 +688,7 @@ class Graph {
 
   // Link mouse handlers
   mouseoverLink(d) {
-    displayLinkInfo(d);
+    this.displayLinkInfo(d);
   }
 
   // Node text mouse handlers
@@ -1002,7 +1011,7 @@ class Graph {
         this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
         this.update();
         this.fillGroupNodes();
-        // displayGroupInfo(this.groups);
+        this.displayGroupInfo(this.groups);
       }
     }
   }
@@ -1026,7 +1035,7 @@ class Graph {
     this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
     this.update();
     this.fillGroupNodes();
-    displayGroupInfo(this.groups);
+    this.displayGroupInfo(this.groups);
   }
 
   ungroupSelectedGroups() {
@@ -1044,7 +1053,7 @@ class Graph {
     this.node.classed("selected", false)
     this.link.classed("selected", false)
     this.update();
-    displayGroupInfo(this.groups);
+    this.displayGroupInfo(this.groups);
   }
 
   expandGroup(groupId) {
