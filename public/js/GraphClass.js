@@ -292,7 +292,7 @@ class Graph {
 
     this.force
       .gravity(.33)
-      .charge(-1 * Math.max(Math.pow(this.nodes.length, 2.5), 1250))
+      .charge(-1 * Math.max(Math.pow(110*this.nodes.length/this.links.length, 2.5), 1250))
       .friction(this.nodes.length < 15 ? .75 : .65)
       .alpha(.8)
       .nodes(this.nodes)
