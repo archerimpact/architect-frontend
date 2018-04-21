@@ -293,7 +293,7 @@ class Graph {
 
     this.force
       .gravity(.33)
-      .charge(-1 * Math.max(Math.pow(this.nodes.length, 2.5), 1250))
+      .charge(-1 * Math.max(Math.pow(30*this.links.length/this.nodes.length, 2.5), 1500))
       .friction(this.nodes.length < 15 ? .75 : .65)
       .alpha(.8)
       .nodes(this.nodes)
@@ -491,7 +491,7 @@ class Graph {
               .call(this.textWrap, this.printFull);
         }
 
-        this.force.resume()
+        this.force.resume();
       });
   }
 
