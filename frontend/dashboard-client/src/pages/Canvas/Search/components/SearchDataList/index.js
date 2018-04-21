@@ -21,9 +21,9 @@ class SearchDataList extends Component {
     } else {
       return(
         <div className="searchResults">
-          {this.props.searchItems.map((item, key)=> {
+          {this.props.searchItems.map((item)=> {
             return(
-              <EntityResult searchResultItem={item} key={key}/>
+              <EntityResult searchResultItem={item} key={item._source.neo4j_id}/>
             );
           })}
         </div>

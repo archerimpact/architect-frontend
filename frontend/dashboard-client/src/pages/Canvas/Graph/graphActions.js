@@ -86,7 +86,7 @@ export function fetchSearchResults(graph, query) {
     server.searchBackendText(query)
       .then((data)=>{
         dispatch(storeSearchResults(data.hits.hits));
-        fetchGraphFromId(graph, data.hits.hits[0]._source.neo4j_id)
+        // fetchGraphFromId(graph, data.hits.hits[0]._source.neo4j_id)
       })
       .catch((error) => { debugger; console.log(error); });
   }
@@ -111,6 +111,7 @@ function parseNeo4jData(data) {
 
   nodes = nodesData.map((node, i) => {
     neo4jtoindex[parseInt(node.metadata.id)] = i; //store a dictionary mapping neo4j_id to the index
+    if (typeof(node.metadata) === "undefined") { console.log("error in that node.metadata is undefined"); }    
     return {
       id: parseInt(node.metadata.id),
       type: node.metadata.labels[0],

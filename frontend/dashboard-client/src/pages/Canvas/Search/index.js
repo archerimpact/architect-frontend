@@ -31,9 +31,6 @@ class BackendSearch extends Component {
     /* handles the case when the URL containts the search params and you're
       linking there directly. Only search if there's params */
     if (this.props.search != null ){
-      if (this.props.entity !== null && this.props.entity !== undefined) {
-        this.props.actions.fetchGraphFromId(this.props.graph, this.props.entity);
-      }
       this.props.actions.fetchSearchResults(this.props.graph, this.props.search);
     }    
   }

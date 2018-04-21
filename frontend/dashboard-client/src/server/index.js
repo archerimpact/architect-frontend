@@ -186,7 +186,7 @@ export function getGraph(neo4j_id){
   };
 
   var data = {
-  "query" : "MATCH (g)-[r*0..5]-(p) WHERE id(g)={neo4j_id} UNWIND r as rel RETURN COLLECT(distinct rel) AS collected, COLLECT(distinct p) AS nodes, g",
+  "query" : "MATCH path=(g)-[r*0..4]-(p) WHERE id(g)={neo4j_id} UNWIND r as rel UNWIND nodes(path) as n RETURN COLLECT(distinct rel) AS collected, COLLECT(distinct n) as nodes, g",
     'params': {
       'neo4j_id': parseInt(neo4j_id)
     } 
