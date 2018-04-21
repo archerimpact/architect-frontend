@@ -37,6 +37,7 @@ class Graph {
     this.draggedNode = null; // Store reference to currently dragged node, null otherwise
     this.isBrushing = false;
     this.isEmphasized = false; // Keep track of node emphasis to end node emphasis on drag
+    this.hoveredNode = null; // Store reference to currently hovered/emphasized node, null otherwise
     this.printFull = 0; // Allow user to toggle node text length
     this.isGraphFixed = false; // Track whether or not all nodes should be fixed
     this.zoomTranslate = [0, 0]; // Keep track of original zoom state to restore after right-drag
