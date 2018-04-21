@@ -5,31 +5,32 @@
 // Uncomment below for React implementation
 import * as d3 from 'd3';
 import 'font-awesome/css/font-awesome.min.css'
+import * as aesthetics from './helpers/aesthetics.js'
+import * as utils from './helpers/utils.js'
+import * as mouseClicks from './helpers/mouseClicks.js'
+import * as tooltips from './helpers/tooltips.js'
+import * as changeD3Data from './helpers/changeD3Data.js'
+import { maxTextLength, minScale, maxScale, gridLength } from './helpers/constants.js'
 
 const icons = {
   "person": "",
   "Document": "",
   "corporation": "",
-  "group": ""
+  "group": "",
+  "same_as_group": ""
 };
-
-const maxTextLength = 20;
+    
 class Graph {
-
   constructor() {
     this.height = null;
     this.width = null;
     this.center = null;
     this.brushX = null;
     this.brushY = null;
-    this.minScale = 0.1;
-    this.maxScale = 9.0;
-    this.gridLength = 80;
     this.numTicks = null;
 
-    this.initializeDataDicts();
-
     this.isDragging = false; // Keep track of dragging to disallow node emphasis on drag
+    this.draggedNode = null; // Store reference to currently dragged node, null otherwise
     this.isBrushing = false;
     this.isEmphasized = false; // Keep track of node emphasis to end node emphasis on drag
     this.printFull = 0; // Allow user to toggle node text length
@@ -37,6 +38,7 @@ class Graph {
     this.zoomTranslate = [0, 0]; // Keep track of original zoom state to restore after right-drag
     this.zoomScale = 1;
     this.zoomPressed = null;
+    this.debug = false; // Show all node/link attributes in tooltip
 
     this.node = null;
     this.link = null;
@@ -81,9 +83,10 @@ class Graph {
     this.doZoom = this.doZoom.bind(this);
     this.initializeZoomButtons = this.initializeZoomButtons.bind(this);
     this.textWrap = this.textWrap.bind(this);
+    this.displayTooltip = this.displayTooltip.bind(this);
+    this.populateNodeInfoBody = this.populateNodeInfoBody.bind(this);
 
     this.bindDisplayFunctions({}); //no display functions yet
-
   }
 
   initializeDataDicts() {
@@ -100,7 +103,7 @@ class Graph {
   initializeZoom() {
     var self = this;
     const zoom = d3.behavior.zoom()
-      .scaleExtent([this.minScale, this.maxScale])
+      .scaleExtent([minScale, maxScale])
       .on('zoomstart', function (d) { self.zoomstart(d, this) })
       .on('zoom', function (d) { self.zooming(d, this) })
       .on('zoomend', function (d) { self.zoomend(d, this) });
@@ -121,8 +124,8 @@ class Graph {
   initializeSVG() {
     const svg = d3.select('#graph-container').append('svg')
       .attr('id', 'canvas')
-      .attr('width', this.width)
-      .attr('height', this.height)
+      .attr("pointer-events", "all")
+      .classed("svg-content", true)
       .call(this.zoom);
 
     // Disable context menu from popping up on right click
@@ -169,22 +172,22 @@ class Graph {
       .append('g')
       .attr('class', 'x-ticks')
       .selectAll('line')
-      .data(d3.range(0, (this.numTicks + 1) * this.gridLength, this.gridLength))
+      .data(d3.range(0, (this.numTicks + 1) * gridLength, gridLength))
       .enter().append('line')
       .attr('x1', (d) => { return d; })
-      .attr('y1', (d) => { return -1 * this.gridLength; })
+      .attr('y1', (d) => { return -1 * gridLength; })
       .attr('x2', (d) => { return d; })
-      .attr('y2', (d) => { return (1 / this.minScale) * this.height + this.gridLength; });
+      .attr('y2', (d) => { return (1 / minScale) * this.height + gridLength; });
 
     svgGrid
       .append('g')
       .attr('class', 'y-ticks')
       .selectAll('line')
-      .data(d3.range(0, (this.numTicks + 1) * this.gridLength, this.gridLength))
+      .data(d3.range(0, (this.numTicks + 1) * gridLength, gridLength))
       .enter().append('line')
-      .attr('x1', (d) => { return -1 * this.gridLength; })
+      .attr('x1', (d) => { return -1 * gridLength; })
       .attr('y1', (d) => { return d; })
-      .attr('x2', (d) => { return (1 / this.minScale) * this.width + this.gridLength; })
+      .attr('x2', (d) => { return (1 / minScale) * this.width + gridLength; })
       .attr('y2', (d) => { return d; });
 
     return svgGrid;
@@ -242,7 +245,7 @@ class Graph {
     this.brushX = d3.scale.linear().range([0, width]),
     this.brushY = d3.scale.linear().range([0, height]);
 
-    this.numTicks = width / this.gridLength * (1 / this.minScale);
+    this.numTicks = width / gridLength * (1 / minScale);
 
     this.zoom = this.initializeZoom();
     this.brush = this.initializeBrush();
@@ -253,6 +256,7 @@ class Graph {
     this.svgGrid = this.initializeSVGgrid();
     this.force = this.initializeForce();
     this.initializeZoomButtons();
+    this.initializeTooltip();
 
     this.setupKeycodes();
 
@@ -263,8 +267,7 @@ class Graph {
   }
 
   // Completely rerenders the graph, assuming all new nodes and links
-  // Centerid currently doesn't do anything
-  // TO-DO: implement feature of centering the graph around a particular ID
+  // centerid currently doesn't do anything
   setData(centerid, nodes, links) {
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
 
@@ -285,8 +288,8 @@ class Graph {
     //   nodes[index].py = height/2; 
 
     this.force
-      .gravity(.25)
-      .charge(-1 * Math.max(Math.pow(this.nodes.length, 2.5), 1500))
+      .gravity(.33)
+      .charge(-1 * Math.max(Math.pow(30*this.links.length/this.nodes.length, 2.5), 1500))
       .friction(this.nodes.length < 15 ? .75 : .65)
       .alpha(.8)
       .nodes(this.nodes)
@@ -331,10 +334,10 @@ class Graph {
       .attr('class', 'node')
       .attr('dragfix', false)
       .attr('dragselect', false)
-      .on('click', function (d) { self.clicked(d, this) })
-      .on('dblclick', function (d) { self.dblclicked(d, this) })
-      .on('mouseover', function (d) { self.mouseover(d, this) })
-      .on('mouseout', function (d) { self.mouseout(d, this) })
+      .on('click', function (d) { self.clicked(d, this); })
+      .on('dblclick', function (d) { self.dblclicked(d, this); })
+      .on('mouseover', function (d) { self.mouseover(d, this); })
+      .on('mouseout', function (d) { self.mouseout(d, this); })
       .classed('fixed', function (d) { return d.fixed; })
       .call(this.force.drag()
         .origin(function (d) { return d; })
@@ -357,12 +360,12 @@ class Graph {
     this.nodeEnter.append('text')
       .attr('class', 'node-name')
       .attr('text-anchor', 'middle')
-      .attr('dy', '40px')
-      .text(function (d) { return processNodeName(d.name, this.printFull) })
-      .call(this.textWrap)
+      .attr('dy', '35px')
+      .text(function (d) { return utils.processNodeName(d.name, this.printFull); })
+      .call(this.textWrap, this.printFull)
       .on('click', this.clickedText)
-      .on('mouseover', function (d) { self.mouseoverText(d, this) })
-      .on('mouseout', function (d) { self.mouseoutText(d, this) })
+      .on('mouseover', function (d) { self.mouseoverText(d, this); })
+      .on('mouseout', function (d) { self.mouseoutText(d, this); })
       .call(d3.behavior.drag()
         .on('dragstart', this.dragstartText)
         .on('dragstart', this.draggingText)
@@ -371,7 +374,7 @@ class Graph {
 
     this.node.exit().remove();
 
-    this.hull = this.hull.data(this.hulls)
+    this.hull = this.hull.data(this.hulls);
 
     this.hull
       .enter().append('path')
@@ -391,9 +394,9 @@ class Graph {
   ticked(e, self) {
     this.force.resume();
     if (!this.hull.empty()) {
-      this.calculateAllHulls()
+      this.calculateAllHulls();
       this.hull.data(this.hulls)
-        .attr('d', this.drawHull)
+        .attr('d', this.drawHull);
     }
 
     this.node
@@ -408,316 +411,40 @@ class Graph {
       .attr('y2', function (d) { return d.target.y; });
   }
 
+  // Custom force that takes the parent group position as the centroid to moves all contained nodes toward
   groupNodesForce(alpha) {
-    /* custom force that takes the parent group position as the centroid and moves all the nodes near */
+    var self = this;
+    // Only apply force on grouped nodes that aren't being dragged and aren't fixed
     return function (d) {
-      if (d.group) {
+      if (d.group && (!self.isDragging || d.id != self.draggedNode.id) && !d.fixed) {
         d.y += (d.cy - d.y) * alpha;
         d.x += (d.cx - d.x) * alpha;
       }
     }
   }
 
-  // Click-drag node selection
-  brushstart() {
-    this.isBrushing = true;
-  }
-
-  brushing() {
-    var self = this;
-    if (this.isRightClick()) {
-      const extent = this.brush.extent();
-      this.svg.selectAll('.node')
-        .classed('selected', function (d) {
-          const xPos = self.brushX.invert(d.x * self.zoomScale + self.zoomTranslate[0]);
-          const yPos = self.brushY.invert(d.y * self.zoomScale + self.zoomTranslate[1]);
-          const selected = (extent[0][0] <= xPos && xPos <= extent[1][0]
-            && extent[0][1] <= yPos && yPos <= extent[1][1])
-            || (this.classList.contains('selected') && d3.event.sourceEvent.ctrlKey);
-          self.nodeSelection[d.index] = selected;
-          return selected;
-        });
-
-      this.highlightLinksFromAllNodes();
-    }
-  }
-
-  brushend() {
-    this.brush.clear();
-    this.svg.selectAll('.brush').call(this.brush);
-    this.isBrushing = false;
-  }
-
-  // Single-node interactions
-  clicked(d, self, i) {
-    if (d3.event.defaultPrevented) return;
-    const node = d3.select(self);
-    const fixed = !(node.attr('dragfix') == 'true');
-    node.classed('fixed', d.fixed = fixed);
-    this.force.resume();
-    d3.event.stopPropagation();
-  }
-
-  rightclicked(node, d) {
-    const fixed = node.attr('dragfix') == 'true';
-    const selected = !(node.attr('dragselect') == 'true');
-    node.classed('fixed', d.fixed = fixed)
-      .classed('selected', this.nodeSelection[d.index] = selected);
-    this.highlightLinksFromNode(node[0]);
-    this.force.resume();
-  }
-
-  dblclicked(d) {
-    if (this.groups[d.id]) {
-      this.toggleGroupView(d.id);
-    }
-
-    d3.event.stopPropagation();
-  }
-
-  // Click helper
-  isRightClick() {
-    return (d3.event && (d3.event.which == 3 || d3.event.button == 2))
-      || (d3.event.sourceEvent && (d3.event.sourceEvent.which == 3 || d3.event.sourceEvent.button == 2));
-  }
-
-  // Click-drag node interactions
-  dragstart(d, self) {
-    d3.event.sourceEvent.preventDefault();
-    d3.event.sourceEvent.stopPropagation();
-    if (this.isEmphasized) this.resetGraphOpacity();
-
-    this.isDragging = true;
-    this.displayNodeInfo(d);
-    const node = d3.select(self);
-    node
-      .attr('dragfix', node.classed('fixed'))
-      .attr('dragselect', node.classed('selected'))
-      .attr('dragdistance', 0);
-
-    node.classed('fixed', d.fixed = true);
-    if (this.isRightClick()) {
-      node.classed('selected', this.nodeSelection[d.index] = true);
-      this.highlightLinksFromNode(node[0]);
-    }
-  }
-
-  dragging(d, self) {
-    const node = d3.select(self);
-    node
-      .attr('cx', d.px = d.x = d3.event.x)
-      .attr('cy', d.py = d.y = d3.event.y)
-      .attr('dragdistance', parseInt(node.attr('dragdistance')) + 1);
-  }
-
-  dragend(d, self) {
-    const node = d3.select(self);
-    if (!parseInt(node.attr('dragdistance')) && this.isRightClick()) {
-      this.rightclicked(node, d);
-    }
-
-    this.isDragging = false;
-    this.force.resume();
-  }
-
-  // Node emphasis
-  mouseover(d, self) {
-    var classThis = this;
-    if (!this.isDragging && !this.isBrushing) {
-      this.isEmphasized = true;
-      this.node
-        .filter(function (o) {
-          return !classThis.neighbors(d, o);
-        })
-        .style('stroke-opacity', .15)
-        .style('fill-opacity', .15);
-
-      this.link.style('stroke-opacity', function (o) {
-        return (o.source == d || o.target == d) ? 1 : .05;
-      });
-
-      if (this.printFull == 0) {
-        d3.select(self)
-          .select('.node-name')
-          .text(processNodeName(d.name, 2))
-          .call(this.textWrap);
-      }
-    }
-
-    this.displayNodeInfo(d);
-  }
-
-  mouseout(d, self) {
-    this.resetGraphOpacity();
-    if (this.printFull != 1) {
-      d3.select(self)
-        .select('.node-name')
-        .text((d) => { return processNodeName(d.name, this.printFull); })
-        .call(this.textWrap);
-    }
-  }
-    
-  // SVG zoom & pan
-  zoomstart(d, self) {
-    const e = d3.event;
-    if (this.isRightClick()) {
-      this.zoomTranslate = this.zoom.translate();
-      this.zoomScale = this.zoom.scale();
-    }
-  }
-
-  zooming(d, self) {
-    if (!this.isRightClick()) {
-      const e = d3.event;
-      const transform = 'translate(' + (((e.translate[0] / e.scale) % this.gridLength) - e.translate[0] / e.scale)
-        + ',' + (((e.translate[1] / e.scale) % this.gridLength) - e.translate[1] / e.scale) + ')scale(' + 1 + ')';
-      this.svgGrid.attr('transform', transform);
-      this.container.attr('transform', 'translate(' + e.translate + ')scale(' + e.scale + ')');
-    }
-  }
-
-  zoomend(d, self) {
-    this.svg.attr('cursor', 'move');
-    if (this.isRightClick()) {
-      this.zoom.translate(this.zoomTranslate);
-      this.zoom.scale(this.zoomScale);
-    }
-
-    this.zoomTranslate = this.zoom.translate();
-    this.zoomScale = this.zoom.scale();
-  }
-
-  // Zoom button functionality
-  doZoom(zoom_in) {
-    var self = this;
-    var scale = this.zoom.scale(),
-      extent = this.zoom.scaleExtent(),
-      translate = this.zoom.translate(),
-      x = translate[0], y = translate[1],
-      factor = zoom_in ? 1.3 : 1 / 1.3,
-      target_scale = scale * factor;
-
-    // If we're already at an extent, done
-    if (target_scale === extent[0] || target_scale === extent[1]) { return false; }
-    // If the factor is too much, scale it down to reach the extent exactly
-    var clamped_target_scale = Math.max(extent[0], Math.min(extent[1], target_scale));
-    if (clamped_target_scale != target_scale) {
-      target_scale = clamped_target_scale;
-      factor = target_scale / scale;
-    }
-
-    // Center each vector, stretch, then put back
-    x = (x - this.center[0]) * factor + this.center[0];
-    y = (y - this.center[1]) * factor + this.center[1];
-
-    // Transition to the new view over 100ms
-    d3.transition().duration(100).tween("zoom", function () {
-      var interpolate_scale = d3.interpolate(scale, target_scale),
-          interpolate_trans = d3.interpolate(translate, [x, y]);
-      return function (t) {
-        self.zoom
-            .scale(interpolate_scale(t))
-            .translate(interpolate_trans(t));
-        self.zoomingButton();
-      };
-    }).each("end", () => {
-      if (this.zoomPressed) this.doZoom(zoom_in);
-    });
-  }
-
-  translateGraphAroundNode(d) {
-    // Center each vector, stretch, then put back
-    //d.x + (?) = this.center[0]
-    var x = this.center[0] - d.x;
-    var y = this.center[1] - d.y;
-
-    var translate = this.zoom.translate();
-    var self = this;
-
-    // Transition to the new view over 500ms
-    d3.transition().duration(500).tween("translate", function () {
-      var interpolate_trans = d3.interpolate(translate, [x, y]);
-      return function (t) {
-        self.zoom
-          .translate(interpolate_trans(t));
-        self.zoomingButton();
-      };
-    })
-    d3.selectAll(".node")
-      .filter((node) => {
-        if (node.id === d.id) {
-          return node
-        }
-      })
-      .classed("selected", true)
-  }
-
-  disableZoom() {
-    this.svg.on("mousedown.zoom", null)
-      .on("touchstart.zoom", null)
-      .on("touchmove.zoom", null)
-      .on("touchend.zoom", null);
-  }
-
-  zoomingButton() {
-    this.container.attr('transform', 'translate(' + this.zoom.translate() + ')scale(' + this.zoom.scale() + ')');
-    const transform = 'translate(' + (((this.zoom.translate()[0] / this.zoom.scale()) % this.gridLength) - this.zoom.translate()[0] / this.zoom.scale())
-      + ',' + (((this.zoom.translate()[1] / this.zoom.scale()) % this.gridLength) - this.zoom.translate()[1] / this.zoom.scale()) + ')scale(1)';
-    this.svgGrid.attr('transform', transform);
-  }
-
-  // Link mouse handlers
-  mouseoverLink(d) {
-    this.displayLinkInfo(d);
-  }
-
-  // Node text mouse handlers
-  clickedText(d, i) {
-    d3.event.stopPropagation();
-  }
-
-  dragstartText(d) {
-    d3.event.sourceEvent.stopPropagation();
-  }
-
-  draggingText(d) {
-    d3.event.sourceEvent.stopPropagation();
-  }
-
-  dragendText(d) {
-    d3.event.sourceEvent.stopPropagation();
-  }
-
-  mouseoverText(d, self) {
-    if (this.printFull == 0 && !this.isBrushing && !this.isDragging) {
-      d3.select(self)
-        .text(processNodeName(d.name, 2))
-        .call(this.textWrap);
-    }
-
-    d3.event.stopPropagation();
-  }
-
-  mouseoutText(d, self) {
-    if (this.printFull == 0 && !this.isBrushing && !this.isDragging) {
-      d3.select(self)
-        .text(processNodeName(d.name, 0))
-        .call(this.textWrap);
-    }
-
-    d3.event.stopPropagation();
-  }
-
   // Graph manipulation keycodes
   setupKeycodes() {
     d3.select('body')
       .on('keydown', () => {
+        // u: Unpin selected nodes
+        if (d3.event.keyCode == 85) {
+          this.svg.selectAll('.node.selected')
+            .each(function (d) { d.fixed = false; })
+            .classed('fixed', false);
+        }
+
+        // c: Group all of the possibly same as's
+        else if (d3.event.keyCode == 67) {
+          this.groupSame();
+        }
+
         // e: Remove links
         if (d3.event.keyCode == 69) {
           this.deleteSelectedLinks();
         }
 
-        // f: Stick all the nodes
+        // f: Toggle stickiness of all the nodes
         else if (d3.event.keyCode == 70) {
           this.toggleFixedNodes();
         }
@@ -755,32 +482,14 @@ class Graph {
         // p: Toggle btwn full/abbrev text
         else if (d3.event.keyCode == 80) {
           this.printFull = (this.printFull + 1) % 3;
-          this.selectAllNodeNames().text((d) => { return processNodeName(d.name, this.printFull); }).call(this.textWrap);
+          this.selectAllNodeNames()
+              .text((d) => { return utils.processNodeName(d.name, this.printFull); })
+              .call(this.textWrap, this.printFull);
         }
 
-        this.force.resume()
+        this.force.resume();
       });
   }
-
-  // Link highlighting
-  highlightLinksFromAllNodes() {
-    this.svg.selectAll('.link')
-      .classed('selected', (d, i) => {
-        return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index];
-      });
-  }
-
-  highlightLinksFromNode(node) {
-    node = node[0].__data__.index;
-    this.svg.selectAll('.link')
-      .filter((d, i) => {
-        return d.source.index == node || d.target.index == node;
-      })
-      .classed('selected', (d, i) => {
-        return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index];
-      });
-  }
-
 
   toggleFixedNodes() {
     d3.selectAll('.node')
@@ -788,318 +497,6 @@ class Graph {
         const currNode = d3.select(this);
         currNode.classed('fixed', d.fixed = this.isGraphFixed = !this.isGraphFixed)
       });
-  }
-
-  // Multi-node manipulation methods
-  deleteSelectedNodes() {
-    /* remove selected nodes from DOM
-        if the node is a group, delete the group */
-
-    var groupIds = Object.keys(this.groups);
-    var select = this.svg.selectAll('.node.selected');
-    let group;
-
-    var removedNodes = this.removeNodesFromDOM(select);
-    var removedLinks = this.removeNodeLinksFromDOM(removedNodes);
-
-    removedLinks.map((link) => { //remove links from their corresponding group
-      if (link.target.group) {
-        group = this.groups[link.target.group];
-        group.links.splice(group.links.indexOf(link), 1);
-      } if (link.source.group) {
-        group = this.groups[link.source.group];
-        group.links.splice(group.links.indexOf(link), 1);
-      }
-    });
-
-    removedNodes.map((node) => {// remove nodes from their corresponding group & if the node is a group delete the group
-      if (isInArray(node.id, groupIds)) {
-        delete this.groups[node.id];
-      }
-      if (node.group) {
-        group = this.groups[node.group];
-        group.nodes.splice(group.nodes.indexOf(node), 1);
-      }
-    });
-
-    this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
-    this.update();
-  }
-
-  // Delete selected links
-  deleteSelectedLinks() {
-    /* remove selected nodes from DOM
-        if the node is a group, delete the group */
-    var groupIds = Object.keys(this.groups);
-    var select = this.svg.selectAll('.node.selected');
-    let group;
-
-    var removedLinks = this.removeNodeLinksSelectiveFromDOM(select);
-
-    removedLinks.map((link) => { //remove links from their corresponding group
-      if (link.target.group) {
-        group = this.groups[link.target.group];
-        group.links.splice(group.links.indexOf(link), 1);
-      } if (link.source.group) {
-        group = this.groups[link.source.group];
-        group.links.splice(group.links.indexOf(link), 1);
-      }
-    });
-
-    this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
-    this.node.classed("selected", false)
-    this.update();
-  }
-
-  // Delete selected links
-  deleteSelectedLinks() {
-    /* remove selected nodes from DOM
-        if the node is a group, delete the group */
-    var groupIds = Object.keys(this.groups);
-    var select = this.svg.selectAll('.node.selected');
-    let group;
-
-    var removedLinks = this.removeNodeLinksSelectiveFromDOM(select);
-
-    removedLinks.map((link) => { //remove links from their corresponding group
-      if (link.target.group) {
-        group = this.groups[link.target.group];
-        group.links.splice(group.links.indexOf(link), 1);
-      } if (link.source.group) {
-        group = this.groups[link.source.group];
-        group.links.splice(group.links.indexOf(link), 1);
-      }
-    });
-
-    this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
-    this.node.classed("selected", false)
-    this.update();
-  }
-
-  addNodeToSelected() {
-    /* create a new node using the globalnodeid counter
-      for each node selected, create a link attaching the new node to the selected node
-      remove highlighting of all nodes and links */
-    const nodeid = this.globalnodeid;
-    const newnode = { id: nodeid, name: `Node ${-1 * nodeid}`, type: "Custom" };
-    var select = this.svg.selectAll('.node.selected');
-    if (select[0].length === 0) { return; } //if nothing is selected, don't add a node for now because it flies away
-
-    this.globalnodeid -= 1;
-    this.nodes.push(newnode);
-
-    select
-      .each((d) => {
-        this.links.push({ id: this.globallinkid, source: this.nodes.length - 1, target: this.nodes.indexOf(d), type: "Custom" });
-        this.globallinkid -= 1;
-      })
-
-    this.node.classed("selected", false);
-    this.link.classed("selected", false);
-    this.nodeSelection = {};
-    this.update();
-  }
-
-  toggleDocumentView() {
-    if (this.hidden.links.length === 0 && this.hidden.nodes.length === 0) { //nothing is hidden, hide them
-      this.hideDocumentNodes();
-    } else {
-      this.showHiddenNodes();
-    }
-
-    this.update();
-  }
-
-  hideDocumentNodes() {
-    var select = this.svg.selectAll('.node')
-      .filter((d) => {
-        if (d.type === "Document") { return d; }
-      })
-
-    this.hideNodes(select);
-  }
-
-  hideNodes(select) {
-    /* remove nodes
-        remove links attached to the nodes
-        push all the removed nodes & links to the global list of hidden nodes and links */
-
-    const removedNodes = this.removeNodesFromDOM(select);
-    const removedLinks = this.removeNodeLinksFromDOM(removedNodes);
-    removedNodes.map((node) => {
-      this.hidden.nodes.push(node)
-    });
-    removedLinks.map((link) => {
-      this.hidden.links.push(link)
-    });
-  }
-
-  showHiddenNodes() {
-    /* add all hidden nodes and links back to the DOM display */
-
-    this.hidden.nodes.slice().map((node) => { this.nodes.push(node); });
-    this.hidden.links.slice().map((link) => { this.links.push(link); });
-
-    this.hidden.links = [];
-    this.hidden.nodes = [];
-  }
-
-  groupSelectedNodes() {
-    /* turn selected nodes into a new group, then delete the selected nodes and 
-      move links that attached to selected nodes to link to the node of the new group instead */
-    var select = this.svg.selectAll('.node.selected');
-
-    if (select[0].length <= 1) { return; } //do nothing if nothing is selected & if there's one node
-
-    const group = this.createGroupFromSelect(select);
-    const removedNodes = this.removeNodesFromDOM(select);
-    this.nodes.push({ id: group.id, name: `Group ${-1 * group.id}`, type: "group" }); //add the new node for the group
-    this.moveLinksFromOldNodesToGroup(removedNodes, group);
-
-    select.each((d) => { delete this.groups[d.id]; });
-    // delete any groups that were selected AFTER all nodes & links are deleted
-    // and properly inserted into the global variable entry for the new group
-
-    this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
-    this.update();
-    this.fillGroupNodes();
-    this.displayGroupInfo(this.groups);
-  }
-
-  ungroupSelectedGroups() {
-    /* expand nodes and links in the selected groups, then delete the group from the global groups dict */
-    var select = this.svg.selectAll('.node.selected')
-      .filter((d) => {
-        if (this.groups[d.id]) { return d; }
-      });
-
-    const newNodes = this.expandGroups(select, false);
-    newNodes.map((node) => { node.group = null }); //these nodes no longer have a group
-    select.each((d) => { delete this.groups[d.id]; }); //delete this group from the global groups 
-
-    this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
-    this.node.classed("selected", false)
-    this.update();
-    this.displayGroupInfo(this.groups);
-  }
-
-  expandGroup(groupId) {
-    /* expand the group of the groupId passed in*/
-    var select = this.svg.selectAll('.node')
-      .filter((d) => {
-        if (d.id === groupId && this.groups[d.id]) { return d; }
-      });
-
-    this.expandGroups(select, true);
-  }
-
-  expandGroups(select, centered = false) {
-    /* bring nodes and links from a group back to the DOM, with optional centering around the node of the group's last position */
-    var newNodes = [];
-    select
-      .each((d) => {
-        const group = this.groups[d.id];
-        if (group) {
-          group.nodes.map((node) => {
-            if (centered) {
-              group.fixedX = d.x; //store the coordinates of the group node
-              group.fixedY = d.y;
-              const offset = .5 * 45 * Math.sqrt(group.nodes.length); // math to make the total area of the hull equal to 15*15 per node
-              const xboundlower = group.fixedX - offset;
-              const yboundlower = group.fixedY - offset;
-
-              node.x = node.px = Math.floor(Math.random() * offset * 2) + xboundlower;
-              node.y = node.py = Math.floor(Math.random() * offset * 2) + yboundlower;
-              node.cx = group.fixedX;
-              node.cy = group.fixedY;
-              //node.fixed = true;  
-            }
-            newNodes.push(node);
-            this.nodes.push(node); //add all nodes in the group to global nodes
-          });
-          group.links.map((link) => {
-            this.links.push(link); //add all links in the group to global links
-          });
-        }
-      });
-
-    const removedNodes = this.removeNodesFromDOM(select);
-    this.removeNodeLinksFromDOM(removedNodes);
-    return newNodes;
-  }
-
-  collapseGroupNodes(groupId) {
-    /* collapse nodes in a group into a single node representing the group */
-    const group = this.groups[groupId];
-    const groupNodeIds = group.nodes.map((node) => { return node.id; });
-
-    var select = this.svg.selectAll('.node')
-      .filter((d) => {
-        if (isInArray(d.id, groupNodeIds)) { return d; }
-      });
-
-    const removedNodes = this.removeNodesFromDOM(select);
-    this.nodes.push({ id: group.id, name: `Group ${-1 * group.id}`, type: 'group' }); //add the new node for the group
-    this.moveLinksFromOldNodesToGroup(removedNodes, group);
-  }
-
-  toggleGroupView(groupId) {
-    /* switch between viewing the group in expanded and collapsed state.
-      When expanded, the nodes in the group will have a hull polygon encircling it */
-    const group = this.groups[groupId];
-
-    if (!group) {
-      console.log("error, the group doesn't exist even when it should: ", groupId);
-    }
-
-    if (this.expandedGroups[groupId]) {
-      this.collapseGroupNodes(groupId);
-      this.hulls.map((hull, i) => {
-        if (hull.groupId === groupId) {
-          this.hulls.splice(i, 1); // remove this hull from the global list of hulls
-        }
-      })
-      this.expandedGroups[groupId] = false;
-    } else {
-      this.expandGroup(groupId);
-      this.hulls.push(this.createHull(group));
-      this.expandedGroups[groupId] = true;
-    }
-
-    this.update();
-    this.fillGroupNodes();
-  }
-
-  //Hull functions
-  createHull(group) {
-    var vertices = [];
-    var offset = 20; //arbitrary, the size of the node radius
-
-    const nodeids = this.nodes.map((node) => { return node.id }); // create array of all ids in nodes
-    group.nodes.map((d) => {
-      if (isInArray(d.id, nodeids)) {
-        // draw a hull around a node only if it's shown on the DOM
-        vertices.push(
-          [d.x + offset, d.y + offset], // creates a buffer around the nodes so the hull is larger
-          [d.x - offset, d.y + offset],
-          [d.x - offset, d.y - offset],
-          [d.x + offset, d.y - offset]
-        );
-      }
-    });
-
-    return { groupId: group.id, path: d3.geom.hull(vertices) }; //returns a hull object
-  }
-
-  calculateAllHulls() {
-    /* calculates paths of all hulls in the global hulls list */
-    this.hulls.map((hull, i) => {
-      this.hulls[i] = this.createHull(this.groups[hull.groupId]);
-    });
-  }
-
-  drawHull(d) {
-    return this.curve(d.path);
   }
 
   // =================
@@ -1110,45 +507,6 @@ class Graph {
   selectAllNodeNames() {
     return d3.selectAll('text')
       .filter(function (d) { return d3.select(this).classed('node-name'); });
-  }
-
-  // Wrap text
-  textWrap(textSelection, width = 100) {
-    var self = this;
-    textSelection.each(function (d) {
-      const text = d3.select(this);
-      const tokens = text.text().split(' ');
-      text.text(null);
-
-      let line = [];
-      let remainder;
-      let lineNum = 1;
-      const dy = parseInt(text.attr('dy'));
-      let tspan = text.append('tspan')
-        .attr('x', 0)
-        .attr('y', 0)
-        .attr('dy', dy);
-
-      for (let i = 0; i < tokens.length; i++) {
-        line.push(tokens[i]);
-        tspan = tspan.text(line.join(' '));
-        if (tspan.node().getComputedTextLength() > width) {
-          remainder = (line.length > 1) ? line.pop() : null;
-          tspan.text(line.join(' '));
-          tspan = text.append('tspan')
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('dy', 15 * (lineNum++) + dy);
-          line = remainder ? [remainder] : [];
-        }
-
-        if (self.printFull == 0 && lineNum >= 2) { break; }
-      }
-
-      let finalLine = line.join(' ');
-      finalLine = (self.printFull == 0 && lineNum >= 2) ? `${finalLine.trim()}...` : finalLine;
-      tspan.text(finalLine);
-    });
   }
 
   // Determine if neighboring nodes
@@ -1164,256 +522,86 @@ class Graph {
       this.linkedByIndex[d.source.index + "," + d.target.index] = true;
     });
   }
-
-  removeLink(removedNodes, link) {
-    /* takes in a list of removed nodes and the link to be removed
-        if the one of the nodes in the link target or source has actually been removed, remove the link and return it
-        if not, then don't remove */
-    let removedLink;
-    //only remove a link if it's attached to a removed node
-    if (removedNodes[link.source.id] === true || removedNodes[link.target.id] === true) { //remove all links connected to a node to remove
-      const index = this.links.indexOf(link);
-      removedLink = this.links.splice(index, 1)[0];
-    }
-
-    return removedLink;
-  }
-
-  removeSelectiveLink(nodesSelected, link) {
-    /* takes in a list of removed nodes and the link to be removed
-        if both of the nodes in the link target or source are in the list, remove the link and return it
-        if not, then don't remove */
-    let removedLink;
-    if (nodesSelected[link.source.id] === true && nodesSelected[link.target.id] === true) { //remove all links connected to both nodes to remove
-      const index = this.links.indexOf(link);
-      removedLink = this.links.splice(index, 1)[0];
-    }
-
-    return removedLink;
-  }
-
-  reattachLink(link, newNodeId, removedNodes, nodeIdsToIndex) {
-    /* takes in a link, id of the new nodes, and a dict mapping ids of removed nodes to state
-        depending on whether the link source or target will be newNodeId,
-        create a new link with appropriate source/target mapping to index of the node
-        if neither the source nor target were in removedNodes, do nothing */
-    let linkid = this.globallinkid;
-    if (removedNodes[link.source.id] === true && removedNodes[link.target.id] !== true) {
-      //add new links with appropriate connection to the new group node
-      //source and target refer to the index of the node
-      this.links.push({ id: linkid, source: nodeIdsToIndex[newNodeId], target: nodeIdsToIndex[link.target.id], type: 'multiple' });
-      this.globallinkid -= 1;
-    } else if (removedNodes[link.source.id] !== true && removedNodes[link.target.id] === true) {
-      this.links.push({ id: linkid, source: nodeIdsToIndex[link.source.id], target: nodeIdsToIndex[newNodeId], type: 'multiple' });
-      this.globallinkid -= 1;
-    }
-  }
-
-  moveLinksFromOldNodesToGroup(removedNodes, group, ) {
-    /* takes in an array of removedNodes and a group
-      removes links attached to these nodes
-      if the removed link was already attached to a group, don't add that link to the group's list of links 
-      (because we're not adding that node to the group's list of nodes)
-      if else, add that link to the group's list of links
-      then reattach the link */
-
-    var self = this;
-    const removedNodesDict = {};
-    const nodeIdsToIndex = {};
-    const existingLinks = {};
-
-    removedNodes.map((node) => {
-      removedNodesDict[node.id] = true;
-    });
-
-    this.nodes.map((node, i) => {
-      nodeIdsToIndex[node.id] = i; //map all nodeIds to their new index
-    });
-    group.links.map((link) => {
-      existingLinks[link.target.id + ',' + link.source.id] = true;
-    })
-
-    this.links.slice().map((link) => {
-      const removedLink = self.removeLink(removedNodesDict, link);
-      if (removedLink) {
-        const groupids = Object.keys(this.groups).map((key) => { return parseInt(key); });
-        if (isInArray(link.target.id, groupids) || isInArray(link.source.id, groupids)) {
-          // do nothing if the removed link was attached to a group
-        } else if (existingLinks[link.target.id + ',' + link.source.id]) {
-          //do nothing if the link already exists in the group, i.e. if you're expanding
-        } else {
-          group.links.push(removedLink);
-        }
-        this.reattachLink(link, group.id, removedNodesDict, nodeIdsToIndex);
-      }
-    });
-  }
-
-
-  removeNodesFromDOM(select) {
-    /* iterates through a select to remove each node, and returns an array of removed nodes */
-
-    const removedNodes = []
-    select
-      .each((d) => {
-        if (this.nodes.indexOf(d) === -1) {
-          console.log("Error, wasn't in there and node is: ", d, " and nodes is: ", this.nodes);
-        } else {
-          removedNodes.push(d);
-          this.nodes.splice(this.nodes.indexOf(d), 1);
-        }
-      });
-
-    return removedNodes
-  }
-
-  removeNodeLinksFromDOM(removedNodes) {
-    /* takes in an array of nodes and removes links associated with any of them
-        returns an arry of removed links */
-    const removedLinks = [];
-    let removedLink;
-    const removedNodesDict = {};
-
-    removedNodes.map((node) => {
-      removedNodesDict[node.id] = true;
-    })
-
-    this.links.slice().map((link) => {
-      removedLink = this.removeLink(removedNodesDict, link);
-      if (removedLink) {
-        removedLinks.push(removedLink);
-      }
-    });
-
-    return removedLinks;
-  }
-
-  removeNodeLinksSelectiveFromDOM(select) {
-    /* iterates through select to gather list of nodes selected, and removes
-        link if both of its endpoint nodes are selected */
-
-    const nodesSelected = []
-    select
-      .each((d) => {
-        if (this.nodes.indexOf(d) === -1) {
-          console.log("Error, wasn't in there and node is: ", d, " and nodes is: ", this.nodes);
-        } else {
-          nodesSelected.push(d);
-        }
-      });
-
-    const removedLinks = [];
-    let removedLink;
-    const nodesDict = {};
-
-    nodesSelected.map((node) => {
-      nodesDict[node.id] = true;
-    })
-
-    this.links.slice().map((link) => {
-      removedLink = this.removeSelectiveLink(nodesDict, link);
-      if (removedLink) {
-        removedLinks.push(removedLink);
-      }
-    });
-
-    return removedLinks;
-  }
-
-  createGroupFromSelect(select) {
-    /* iterates through the items in select to create a new group with proper links and nodes stored.
-        if a node in the select is already a group, takes the nodes and links from that group and puts it in
-        the new group */
-
-    const groupId = this.globalnodeid;
-    const group = this.groups[groupId] = { links: [], nodes: [], id: groupId }; //initialize empty array to hold the nodes
-
-    select
-      .each((d) => {
-        if (this.groups[d.id]) { //this node is already a group
-          var newNodes = this.groups[d.id].nodes;
-          var newLinks = this.groups[d.id].links;
-          newNodes.map((node) => {
-            group.nodes.push(node); //add each of the nodes in the old group to the list of nodes in the new group        
-          });
-          newLinks.map((link) => {
-            group.links.push(link); //add all the links inside the old group to the new group
-          });
-        } else {
-          d.group = groupId;
-          group.nodes.push(d); //add this node to the list of nodes in the group
-        }
-      });
-
-    this.globalnodeid -= 1;
-    return group;
-  }
-
-  // Fill group nodes blue
-  fillGroupNodes() {
-    this.svg.selectAll('.node')
-      .classed('grouped', function (d) { return d.id < 0; });
-  }
-
-  // Reset all node/link opacities to 1
-  resetGraphOpacity() {
-    this.isEmphasized = false;
-    this.node.style('stroke-opacity', 1)
-      .style('fill-opacity', 1);
-    this.link.style('stroke-opacity', 1);
-  }
 }
 
-// =================
-// DEBUGGING METHODS
-// =================
+//From aesthetics.js
+Graph.prototype.highlightLinksFromAllNodes = aesthetics.highlightLinksFromAllNodes;
+Graph.prototype.highlightLinksFromNode = aesthetics.highlightLinksFromNode;
+Graph.prototype.fillGroupNodes = aesthetics.fillGroupNodes;
+Graph.prototype.resetGraphOpacity = aesthetics.resetGraphOpacity;
+Graph.prototype.textWrap = aesthetics.textWrap;
 
-// Sleep for duration ms
-function sleep(duration) {
-  return new Promise((resolve) => setTimeout(resolve, duration));
-}
+//From mouseClicks.js
+Graph.prototype.brushstart = mouseClicks.brushstart;
+Graph.prototype.brushing = mouseClicks.brushing;
+Graph.prototype.brushend = mouseClicks.brushend;
+Graph.prototype.clicked = mouseClicks.clicked;
+Graph.prototype.rightclicked = mouseClicks.rightclicked;
+Graph.prototype.dblclicked = mouseClicks.dblclicked;
+Graph.prototype.isRightClick = mouseClicks.isRightClick;
+Graph.prototype.dragstart = mouseClicks.dragstart;
+Graph.prototype.dragging = mouseClicks.dragging;
+Graph.prototype.dragend = mouseClicks.dragend;
+Graph.prototype.mouseover = mouseClicks.mouseover;
+Graph.prototype.mouseout = mouseClicks.mouseout;
+Graph.prototype.mouseoverLink = mouseClicks.mouseoverLink;
+Graph.prototype.clickedText = mouseClicks.clickedText;
+Graph.prototype.dragstartText = mouseClicks.dragstartText;
+Graph.prototype.draggingText = mouseClicks.draggingText;
+Graph.prototype.dragendText = mouseClicks.dragendText;
+Graph.prototype.mouseoverText = mouseClicks.mouseoverText;
+Graph.prototype.mouseoutText = mouseClicks.mouseoutText;
 
-function isObject(input) {
-  return input !== null && typeof input === 'object';
-}
+//From zoomPan.js
+Graph.prototype.zoomstart = mouseClicks.zoomstart;
+Graph.prototype.zooming = mouseClicks.zooming;
+Graph.prototype.zoomend = mouseClicks.zoomend;
+Graph.prototype.doZoom = mouseClicks.doZoom;
+Graph.prototype.translateGraphAroundNode = mouseClicks.translateGraphAroundNode;
+Graph.prototype.disableZoom = mouseClicks.disableZoom;
+Graph.prototype.zoomingButton = mouseClicks.zoomingButton;
 
-function printObject(object) {
-  console.log(JSON.stringify(object, null, 4));
-}
+//From changeD3Data.js
+Graph.prototype.deleteSelectedNodes = changeD3Data.deleteSelectedNodes;
+Graph.prototype.deleteSelectedLinks = changeD3Data.deleteSelectedLinks;
+Graph.prototype.addNodeToSelected = changeD3Data.addNodeToSelected;
+Graph.prototype.toggleDocumentView = changeD3Data.toggleDocumentView;
+Graph.prototype.hideDocumentNodes = changeD3Data.hideDocumentNodes;
+Graph.prototype.hideNodes = changeD3Data.hideNodes;
+Graph.prototype.showHiddenNodes = changeD3Data.showHiddenNodes;
+Graph.prototype.groupSame = changeD3Data.groupSame;
+Graph.prototype.groupSelectedNodes = changeD3Data.groupSelectedNodes;
+Graph.prototype.ungroupSelectedGroups = changeD3Data.ungroupSelectedGroups;
+Graph.prototype.expandGroup = changeD3Data.expandGroup;
+Graph.prototype.expandGroups = changeD3Data.expandGroups;
+Graph.prototype.collapseGroupNodes = changeD3Data.collapseGroupNodes;
+Graph.prototype.toggleGroupView = changeD3Data.toggleGroupView;
+Graph.prototype.createHull = changeD3Data.createHull;
+Graph.prototype.calculateAllHulls = changeD3Data.calculateAllHulls;
+Graph.prototype.drawHull = changeD3Data.drawHull;
 
-// ==============
-// HELPER METHODS
-// ==============
+Graph.prototype.removeLink = changeD3Data.removeLink;
+Graph.prototype.createGroupFromNode = changeD3Data.createGroupFromNode;
+Graph.prototype.checkLinkAddGroup = changeD3Data.checkLinkAddGroup;
+Graph.prototype.removeSelectiveLink = changeD3Data.removeSelectiveLink;
+Graph.prototype.reattachLink = changeD3Data.reattachLink;
+Graph.prototype.moveLinksFromOldNodesToGroup = changeD3Data.moveLinksFromOldNodesToGroup;
+Graph.prototype.removeNodesFromDOM = changeD3Data.removeNodesFromDOM;
+Graph.prototype.removeNodeLinksFromDOM = changeD3Data.removeNodeLinksFromDOM;
+Graph.prototype.removeNodeLinksSelectiveFromDOM = changeD3Data.removeNodeLinksSelectiveFromDOM;
+Graph.prototype.createGroupFromSelect = changeD3Data.createGroupFromSelect;
 
-function isInArray(value, array) {
-  return array.indexOf(value) > -1;
-}
-// Normalize node text to same casing conventions and length
-// printFull states - 0: abbrev, 1: none, 2: full
-function processNodeName(str, printFull) {
-  if (!str || printFull == 1) {
-    return '';
-  }
+//From tooltips
+Graph.prototype.initializeTooltip = dudFunction;
+Graph.prototype.displayTooltip = dudFunction;
+Graph.prototype.hideTooltip = dudFunction;
+Graph.prototype.moveTooltip = dudFunction;
+Graph.prototype.populateNodeInfoBody = dudFunction;
+Graph.prototype.displayData = dudFunction;
+Graph.prototype.createTitleElement = dudFunction;
 
-  const delims = [' ', '.', '('];
-  for (let i = 0; i < delims.length; i++) {
-    str = splitAndCapitalize(str, delims[i]);
-  }
+function dudFunction(d) {
 
-  return str;
-}
-
-function splitAndCapitalize(str, splitChar) {
-  let tokens = str.split(splitChar);
-  tokens = tokens.map(function (token, idx) {
-    return capitalize(token, splitChar == ' ');
-  });
-
-  return tokens.join(splitChar);
-}
-
-function capitalize(str, first) {
-  return str.charAt(0).toUpperCase() + (first ? str.slice(1).toLowerCase() : str.slice(1));
 }
 
 // Uncomment below for React implementation

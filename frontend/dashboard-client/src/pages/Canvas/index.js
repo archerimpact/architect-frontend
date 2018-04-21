@@ -16,7 +16,7 @@ class Canvas extends Component {
 
   render() {
     return( 
-        <div>
+        <div className="full" style={{"height": "100%"}}>
             <Graph graph={this.graph}/>
             <Switch>
                 <PrivateRoute path="/canvas/search" component={() => {return (<Search graph={this.graph}/>)}}/>

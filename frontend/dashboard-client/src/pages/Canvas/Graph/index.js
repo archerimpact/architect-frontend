@@ -18,7 +18,7 @@ class Graph extends Component {
 
   render() {
     return( 
-      <div id="graph-container"></div>
+      <div id="graph-container" style={{"height": height + "px", "width": width + "px"}}></div>
     );
   }
 }

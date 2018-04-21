@@ -7,16 +7,22 @@
 body {
   min-width: 900px;
   font: normal 16px arial, sans-serif;
+  height: 100vh;
+  width: 100%;
   overflow: hidden;
 }
 
 #graph-container {
-  top:0px;
+  height: 100%;
+}
+
+.svg-content {
+  height: 100%;
+  width: 100%;
 }
 
 svg {
   border: 3px solid #fff;
-  z-index: -1;
 }
 
 
@@ -24,11 +30,6 @@ svg rect.extent {
   stroke: #ccc;
   stroke-width: 2px;
   fill: #edf5fc;
-}
-
-svg rect.background {
-/*  cursor: -webkit-grab !important;
-  cursor: grab !important;*/
 }
 
 svg line {
@@ -57,11 +58,11 @@ button:focus {
 }
 
 .link {
-  stroke: #999999;
+  stroke: #545454;
   stroke-width: 3px;
-  transition-duration: 100ms;
+  transition-duration: 50ms;
   transition-property: stroke-opacity;
-  transition-delay: 100ms;
+  transition-delay: 75ms;
 }
 
 .link.selected {
@@ -70,10 +71,10 @@ button:focus {
 
 .node {
   fill: #ebebeb;
-  stroke: #999999;
-  transition-duration: 100ms;
+  stroke: #545454;
+  transition-duration: 50ms;
   transition-property: stroke-opacity, fill-opacity;
-  transition-delay: 100ms;
+  transition-delay: 75ms;
 }
 
 .node text {
@@ -85,17 +86,17 @@ button:focus {
 
 .node text.icon {
   stroke: none;
-  fill: #999999;
-}
-
-.node text.node-name {
-  width: 200px;
-  word-wrap: break-word;
+  fill: #545454;
 }
 
 .node circle {
   cursor: pointer;
   stroke-width: 3px;
+}
+
+.node tspan.text-shadow {
+  stroke-width: 4px;
+  stroke: #fff;
 }
 
 .node.fixed circle {
@@ -116,6 +117,10 @@ button:focus {
   fill: #7cbdff;
 }
 
+.node.grouped_same circle {
+  fill: #7cbdff;
+}
+
 .node.grouped.fixed circle {
   fill: #0d77e2;
 }
@@ -130,4 +135,63 @@ button:focus {
 .button {
   fill: #0d77e2;
   opacity: 0.4;
+}
+
+#node-tooltip {
+  width: 240px;
+  background: rgba(255, 255, 255, .5);
+  border: 1px solid #000;
+  border-radius: 1px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  font-size: 14px;
+  color: #000;
+  letter-spacing: 1px;
+  transition-delay: 75ms;
+}
+
+.tooltip-title {
+  font-size: 20px;
+  border-bottom: 1.5px solid #0d77e2;
+  background: rgba(13, 119, 226, .1);
+  padding: 5px;
+  color: #0d77e2;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+
+i.fa-close {
+  left: auto;
+  font-size: 16px; 
+  padding: 1px;
+}
+
+.content-entry {
+  border-bottom: 1px solid #cccccc;
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+}
+
+.content-entry:last-child {
+  border-bottom: none;
+}
+
+.tooltip-left {
+  margin: auto;
+  margin-left: 0px;
+  max-width: 150px;
+}
+
+.tooltip-right {
+  margin: auto;
+  margin-right: 0px;
+  display: flex;
+  text-align: right;
+  flex-direction: row;
+  font-size: 14px;
+  max-width: 165px;
+  color: #545454;
 }
