@@ -107,6 +107,7 @@ function mouseover(d, self) {
   if (!this.isDragging && !this.isBrushing) {
     // Node emphasis
     this.isEmphasized = true;
+    this.hoveredNode = d;
     this.node
       .filter(function (o) {
         return !classThis.neighbors(d, o);
@@ -134,6 +135,7 @@ function mouseover(d, self) {
 }
 
 function mouseout(d, self) {
+  this.hoveredNode = null;
   this.resetGraphOpacity();
   this.hideTooltip();
   if (this.printFull != 1) {
