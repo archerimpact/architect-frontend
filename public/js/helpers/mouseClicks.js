@@ -76,10 +76,11 @@ function dragstart(d, self) {
     .attr('dragselect', node.classed('selected'))
     .attr('dragdistance', 0);
 
-  node.classed('fixed', d.fixed = true);
   if (this.isRightClick()) {
     node.classed('selected', this.nodeSelection[d.index] = true);
     this.highlightLinksFromNode(node[0]);
+  } else {
+    node.classed('fixed', d.fixed = true);
   }
 }
 
