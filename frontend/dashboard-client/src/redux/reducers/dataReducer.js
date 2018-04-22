@@ -41,7 +41,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         currentNode: {
-          node: action.payload
+          id: action.payload
         }
       }
 	    case USER_LOGIN:

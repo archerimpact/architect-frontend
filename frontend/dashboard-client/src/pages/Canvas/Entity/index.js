@@ -10,6 +10,7 @@ import SummaryInfo from './components/SummaryInfo/';
 import ConnectionsTab from './components/ConnectionsTab/';
 
 import {Tabs, Tab} from 'material-ui/Tabs';
+import queryString from 'query-string';
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -36,17 +37,19 @@ class Entity extends Component {
   }
 
   componentDidMount = () => {
-    this.loadData(this.props.match.params.neo4j_id)
+    let qs = queryString.parse(this.props.location.search);
+    this.loadData(qs.entityid);
   }
 
   componentWillReceiveProps = (nextprops) => {
-    if (this.props.match.params.neo4j_id !== nextprops.match.params.neo4j_id) {
+    let lastqs = queryString.parse(this.props.location.search);
+    let qs = queryString.parse(nextprops.location.search);
+    if (lastqs.entityid !== qs.entityid) {
       this.setState({
         nodeData: null,
         relationshipData: null,
-        graphData: null
       })
-      this.loadData(nextprops.match.params.neo4j_id) //load data when you change the url props
+      this.loadData(qs.entityid) //load data when you change the url props
     }
   }
 
@@ -68,20 +71,12 @@ class Entity extends Component {
       .catch(err => {
         console.log(err)
       })
-    server.getGraph(neo4j_id)
-      .then(data => {
-        /* neo4j returns items in this format: [connection, startNode, endNode] */
-        this.setState({graphData: data})
-      })
-      .catch(err => {
-        console.log(err)
-      })
   }
 
 
 
   render(){
-    if (this.state.nodeData== null || this.state.relationshipData == null || this.state.graphData==null) {
+    if (this.state.nodeData== null || this.state.relationshipData == null) {
       return (
         <div>Loading</div>
       );
@@ -124,6 +119,7 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, props) {
   return{
+    currentNode: state.currentNode
   };
 }
 

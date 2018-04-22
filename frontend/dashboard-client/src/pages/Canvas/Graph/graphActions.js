@@ -1,4 +1,5 @@
 import * as server from '../../../server';
+import * as actions from '../../../redux/actions/';
 
 export const INITIALIZE_CANVAS = "INITIALIZE_CANVAS";
 export const UPDATE_GRAPH_DATA = "UPDATE_GRAPH_DATA";
@@ -19,13 +20,6 @@ function initializeCanvasDispatch(graph) {
   };
 }
 
-function storeCurrentNodeDispatch(d) {
-  return {
-    type: STORE_CURRENT_NODE,
-    payload: d
-  }
-}
-
 export function updateGraph(data) {
   return (dispatch, getState) => {
     var graphData = parseNeo4jData(data);
@@ -40,6 +34,13 @@ function updateGraphDispatch(data) {
     type: UPDATE_GRAPH_DATA,
     payload: data
   };
+}
+
+export function storeCurrentNodeDispatch(d) {
+  return {
+    type: STORE_CURRENT_NODE,
+    payload: d
+  }
 }
 
 export function initializeDisplayFunctions(graph, displayFunctions) {
@@ -58,7 +59,8 @@ export function fetchGraphFromId(graph, id) {
   return (dispatch, getState) => {
 
     function setCurrentNode(d) {
-      dispatch(storeCurrentNodeDispatch(Object.assign({}, d)));
+      dispatch(storeCurrentNodeDispatch(d.id));
+      graph.translateGraphAroundNode(d)
     }
 
     server.getGraph(id)

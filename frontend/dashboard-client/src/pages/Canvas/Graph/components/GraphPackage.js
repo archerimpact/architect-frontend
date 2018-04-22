@@ -558,6 +558,7 @@ Graph.prototype.zooming = mouseClicks.zooming;
 Graph.prototype.zoomend = mouseClicks.zoomend;
 Graph.prototype.doZoom = mouseClicks.doZoom;
 Graph.prototype.translateGraphAroundNode = mouseClicks.translateGraphAroundNode;
+Graph.prototype.translateGraphAroundId = mouseClicks.translateGraphAroundId;
 Graph.prototype.disableZoom = mouseClicks.disableZoom;
 Graph.prototype.zoomingButton = mouseClicks.zoomingButton;
 

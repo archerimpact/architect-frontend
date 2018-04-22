@@ -23,7 +23,7 @@ class SearchDataList extends Component {
         <div className="searchResults">
           {this.props.searchItems.map((item)=> {
             return(
-              <EntityResult searchResultItem={item} key={item._source.neo4j_id}/>
+              <EntityResult searchResultItem={item} key={item._source.neo4j_id} newgraphid={this.props.newgraphid}/>
             );
           })}
         </div>
@@ -46,6 +46,7 @@ class EntityResult extends Component {
         <EntityCard 
           nodeItem={this.props.searchResultItem} 
           key={this.props.key} 
+          newgraphid={this.props.newgraphid}
         />
         {this.state.toggled?<SummaryInfo nodeItem={this.props.searchResultItem}/>: null }
       </div>

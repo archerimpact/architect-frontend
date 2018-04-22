@@ -10,7 +10,8 @@ import * as server from '../../server/';
 import { Redirect } from 'react-router'
 
 const urlPropsQueryConfig = {
-  search: { type: UrlQueryParamTypes.string },
+  search: { type: UrlQueryParamTypes.string, queryParam: 'search' },
+  graphid: { type: UrlQueryParamTypes.string, queryParam: 'graphid'}
 };
 
 class DatabaseSearchBar extends Component {
@@ -42,7 +43,7 @@ class DatabaseSearchBar extends Component {
     if (this.state.fireRedirect) {
       this.setState({fireRedirect:false});
       return (
-        <Redirect to={'/canvas/search?search=' + this.props.search}  />
+        <Redirect to={'/canvas/search?search=' + this.props.search + "&graphid=" + this.props.graphid}  />
       );
     }
 

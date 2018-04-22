@@ -18,7 +18,7 @@ const urlPropsQueryConfig = {
     variable name to look for in this.props */ 
 
   search: { type: UrlQueryParamTypes.string, queryParam: 'search' },
-  entity: { type: UrlQueryParamTypes.string, queryParam: 'entity'}
+  entityid: { type: UrlQueryParamTypes.string, queryParam: 'entityid'}
 } 
 
 class BackendSearch extends Component {
@@ -60,7 +60,7 @@ class BackendSearch extends Component {
             <div className="search-bar">
               <DatabaseSearchBar/>
             </div>
-            <SearchDataList searchItems={this.props.searchData}/>
+            <SearchDataList searchItems={this.props.searchData} newgraphid={true}/>
           </div>
         </div> 
       </div>
