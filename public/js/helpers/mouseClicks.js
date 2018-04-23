@@ -274,6 +274,43 @@ function translateGraphAroundNode(d) {
     .classed("selected", true);
 }
 
+function translateGraphAroundId(id) {
+  // Center each vector, stretch, then put back
+  //d.x + (?) = this.center[0]
+  // console.log("this is center[0]: ", this.center[0], " and this is d.px: ", d.px)
+  // console.log("this is center[1]: ", this.center[1], " and this is d.py: ", d.py, " and this is height: ", this.height)
+  var d;
+  this.nodes.map((node)=> { if (node.id === id) { d = node; } });
+  if (d == null) { return; }
+  var x = this.zoomScale*(this.center[0] > d.px ? (this.center[0] - d.px) : -1*(d.px-this.center[0]));
+  var y = this.zoomScale*(this.center[1] > d.py? (this.center[1] - d.py) : -1*(d.py-this.center[1]));
+
+  //console.log("this is where x is after: ", x, " and where y is after: ", y)
+  var translate = this.zoom.translate();
+  var self = this;
+
+  // Transition to the new view over 500ms
+  d3.transition().duration(500).tween("translate", function () {
+    var interpolateTranslate = d3.interpolate(translate, [x, y]);
+    return function (t) {
+      self.zoom
+          .translate(interpolateTranslate(t));
+      self.zoomTranslate = self.zoom.translate();
+      self.zoomScale = self.zoom.scale();
+      self.zoomingButton();
+    };
+  })
+
+  d3.selectAll(".node")
+    .classed("selected", false)
+    .filter((node) => {
+      if (node.id === d.id) {
+        return node;
+      }
+    })
+    .classed("selected", true);
+}
+
 function disableZoom() {
   this.svg.on("mousedown.zoom", null)
     .on("touchstart.zoom", null)

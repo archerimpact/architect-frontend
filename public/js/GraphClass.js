@@ -304,7 +304,7 @@ class Graph {
 
     this.force.on('tick', (e) => { this.ticked(e, this) });
     // Avoid initial chaos and skip the wait for graph to drift back onscreen
-    for (let i = 750; i > 0; --i) this.force.tick();      
+    for (let i = 150; i > 0; --i) this.force.tick();      
 
     var centerd;
     this.nodes.map((d)=> {
@@ -562,6 +562,7 @@ Graph.prototype.zooming = zooming;
 Graph.prototype.zoomend = zoomend;
 Graph.prototype.doZoom = doZoom;
 Graph.prototype.translateGraphAroundNode = translateGraphAroundNode;
+Graph.prototype.translateGraphAroundId = translateGraphAroundId;
 Graph.prototype.disableZoom = disableZoom;
 Graph.prototype.zoomingButton = zoomingButton;
 
