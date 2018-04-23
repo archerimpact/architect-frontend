@@ -139,7 +139,7 @@ button:focus {
 
 #node-tooltip {
   width: 240px;
-  background: rgba(255, 255, 255, .5);
+  background: rgba(255, 255, 255, .75);
   border: 1px solid #000;
   border-radius: 1px;
   position: absolute;
@@ -154,7 +154,7 @@ button:focus {
 .tooltip-title {
   font-size: 20px;
   border-bottom: 1.5px solid #0d77e2;
-  background: rgba(13, 119, 226, .1);
+  background: rgba(13, 119, 226, .2);
   padding: 5px;
   color: #0d77e2;
   cursor: pointer;
