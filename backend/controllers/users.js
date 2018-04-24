@@ -6,15 +6,19 @@ exports.isAuthenticated = function(req, res, next) {
     console.log(req.isAuthenticated()); // TODO: this is some passport builtin?? vs req.user?
     if (req.user) {
         return next();
-    } else {
-        return res.redirect('http://localhost:3000/login');
-        // TODO: Refactor so that this is handled by frontend, rather than doing server-side redirect
-        // return res.status(200).json({success: false, error: 'User not authenticated'});
+    }
+    else {
+        return res.status(200).json({success: false, error: 'User not authenticated'});
     }
 };
 
 exports.checkAuth = function(req, res) {
-    return res.status(200).json({success: true, message: 'User authenticated'});
+    if (req.user) {
+        return res.status(200).json({success: true, message: 'User is authenticated'});
+    }
+    else {
+        return res.status(200).json({success: false, message: 'User is not authenticated'});
+    }
 };
 
 exports.login = function(req, res, next) {
