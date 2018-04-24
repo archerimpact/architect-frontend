@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 
 import './style.css'
 
@@ -13,13 +12,13 @@ import * as server from '../../../server/';
 import {withRouter } from 'react-router-dom';
 import * as actions from '../Graph/graphActions';
 
-const urlPropsQueryConfig = {
-  /* type specifies the type of encoding necessary, queryParam sets which
-    variable name to look for in this.props */ 
+// const urlPropsQueryConfig = {
+//    type specifies the type of encoding necessary, queryParam sets which
+//     variable name to look for in this.props  
 
-  search: { type: UrlQueryParamTypes.string, queryParam: 'search' },
-  entityid: { type: UrlQueryParamTypes.string, queryParam: 'entityid'}
-} 
+//   search: { type: UrlQueryParamTypes.string, queryParam: 'search' },
+//   entityid: { type: UrlQueryParamTypes.string, queryParam: 'entityid'}
+// } 
 
 class BackendSearch extends Component {
 
@@ -87,4 +86,4 @@ function mapStateToProps(state, props) {
   };
 }
 
-export default withRouter(addUrlProps({ urlPropsQueryConfig })(connect(mapStateToProps, mapDispatchToProps)(BackendSearch)));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(BackendSearch));

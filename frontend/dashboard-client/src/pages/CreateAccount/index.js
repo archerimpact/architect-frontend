@@ -1,7 +1,4 @@
-import React from 'react';
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
-import { register } from "../../server/index";
+import React, { Component } from 'react';
 import { registerAccount } from "../../server/auth_routes";
 import { Redirect, withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -9,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
 
 
-class CreateAccount extends React.Component {
+class CreateAccount extends Component {
   constructor(props) {
       super(props);
       this.state = {
@@ -70,7 +67,7 @@ class CreateAccount extends React.Component {
             background: "#fafafa",
             border: "1px solid #ebebeb",
             boxShadow: "rgba(0,0,0,0.14902) 0px 1px 1px 0px,rgba(0,0,0,0.09804) 0px 1px 2px 0px"}} >
-        <TextField
+        <input
             hintText="alice@investigator.com"
             floatingLabelText="Enter your email address"
             fullWidth={false}
@@ -81,7 +78,7 @@ class CreateAccount extends React.Component {
             name={"username"}
         />
         <br />
-        <TextField
+        <input
             hintText="**********"
             floatingLabelText="Enter a password"
             fullWidth={false}
@@ -92,7 +89,7 @@ class CreateAccount extends React.Component {
             name={"password"}
         />
         <br />
-        <TextField
+        <input
             hintText="**********"
             floatingLabelText="Confirm password"
             fullWidth={false}
@@ -103,21 +100,18 @@ class CreateAccount extends React.Component {
             name={"password2"}
         />
         <br />
-        <RaisedButton
+        <button
             style={{margin: 15} }
             primary
             onClick={this.handleSubmit}
             label="Create account"
             type="submit"
         />
-        <br />
         </div>
-        <br />
       </div>
     );
   }
 }
-
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -126,11 +120,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-function mapStateToProps(state) {
-  return {
-      savedEntities: state.data.savedEntities,
-      savedSources: state.data.savedSources
-  };
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CreateAccount));
+export default withRouter(connect({}, mapDispatchToProps)(CreateAccount));

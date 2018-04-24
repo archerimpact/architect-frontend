@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 
 import './style.css'
 
-import Search from 'material-ui/svg-icons/action/search';
-
 class SearchBar extends Component {
 
   constructor() {
@@ -35,7 +33,7 @@ class SearchBar extends Component {
             placeholder="Search all entities"
             onChange={(e) => this.updateSearch()}
           />
-          <Search className="input_img" onClick={(e) => this.submitSearch()}/>
+          <button className="input_img" onClick={(e) => this.submitSearch()}/>
         </form>
         </div>
       </div>

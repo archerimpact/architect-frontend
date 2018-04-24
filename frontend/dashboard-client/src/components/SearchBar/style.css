@@ -1,19 +1,18 @@
-
-.title {
+/*.title {
   font-weight: 300;
   display: block;
   color: gray;
-}
-.app_input {
+}*/
+/*.app_input {
   max-width: 700px;
   width: 70%;
   height: 40px;
   border: none;
 }
-
+*/
 .searchBody{
-white-space: nowrap;
-margin: 0 auto;
+  white-space: nowrap;
+  margin: 0 auto;
 }
 
 .input_container {
@@ -44,11 +43,4 @@ margin: 0 auto;
     width:24px;
     height:24px;
     display: inline-block;
-}
-
-/* Inexplicably this section here changes the formatting of the sidebar! */
-li{
-  list-style: none;
-  text-align: left; 
-  line-height: 30px;
 }

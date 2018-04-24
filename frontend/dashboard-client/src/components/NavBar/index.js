@@ -4,12 +4,6 @@ import './style.css'
 
 import {Link, withRouter } from 'react-router-dom';
 
-import IconButton from 'material-ui/IconButton';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import FlatButton from 'material-ui/FlatButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-
 class NavBar extends Component {
 
   constructor(props) {
@@ -19,30 +13,30 @@ class NavBar extends Component {
 	render () {
 		var self = this
 		const Logged = withRouter(({ history }) => (
-		  <IconMenu style={{color: 'inherit'}}
+		  <button style={{color: 'inherit'}}
 		    iconButtonElement={
-		      <IconButton><MoreVertIcon /></IconButton>
+		      <button><div /></button>
 		    }
 		    targetOrigin={{horizontal: 'right', vertical: 'top'}}
 		    anchorOrigin={{horizontal: 'right', vertical: 'top'}}
 		  >
-		    <MenuItem primaryText="Refresh" />
-		    <MenuItem primaryText="Help" />
-		    <MenuItem primaryText="Sign out" 
+		    <div primaryText="Refresh" />
+		    <div primaryText="Help" />
+		    <div primaryText="Sign out" 
 		    	onClick={() => {				
 		    	self.props.logOut()
 				}}
 		    />
-		  </IconMenu>
+		  </button>
 		  )
 		);
 		const Login = withRouter(({ history }) => (
-		  <FlatButton> 
+		  <button> 
 		  	<Link style={{textDecoration: 'none', color: 'inherit'}} to={{
 			    pathname: '/login',
 			    state: { from: this.props.location }
 			  }}> Login </Link>
-		   </FlatButton>
+		   </button>
 		  )
 		);
 
@@ -64,11 +58,10 @@ class NavBar extends Component {
 
 
 class Login extends Component {
-  static muiName = 'FlatButton';
 
   render() {
     return (
-      <FlatButton style={{color: 'inherit'}} label="Login"  onClick={() => this.props.logIn()}/>
+      <button style={{color: 'inherit'}} label="Login"  onClick={() => this.props.logIn()}/>
     );
   }
 }

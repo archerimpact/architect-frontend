@@ -7,7 +7,6 @@ import { Route, Redirect, Switch, withRouter} from 'react-router-dom';
 import PrivateRoute from './PrivateRoute/';
 
 import NavBar from '../components/NavBar/';
-// import SideBar from '../components/SideBar';
 
 import Login from '../pages/Login/';
 import CreateAccount from '../pages/CreateAccount/';
@@ -33,7 +32,6 @@ class App extends Component {
     return ( 
     	<div>
   			<NavBar isAuthenticated={this.props.isAuthenticated} logOut={this.logOut.bind(this)} logIn={this.logIn.bind(this)} />
-          {/*<SideBar isAuthenticated={this.props.isAuthenticated}/>*/}
         <div className="main">
     				<PrivateRoute exact path="/" component={Home} />
     				<Route path="/login" component={Login} />

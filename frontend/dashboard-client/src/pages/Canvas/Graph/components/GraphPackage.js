@@ -4,7 +4,6 @@
 
 // Uncomment below for React implementation
 import * as d3 from 'd3';
-import 'font-awesome/css/font-awesome.min.css'
 import * as aesthetics from './helpers/aesthetics.js'
 import * as utils from './helpers/utils.js'
 import * as mouseClicks from './helpers/mouseClicks.js'

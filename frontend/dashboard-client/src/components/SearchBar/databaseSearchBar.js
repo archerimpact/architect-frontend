@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
-import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
+// import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 
 import './style.css'
 
-import Search from 'material-ui/svg-icons/action/search';
 import SearchBar from './../SearchBar';
 
 import * as server from '../../server/';
 import { Redirect } from 'react-router'
 
-const urlPropsQueryConfig = {
-  search: { type: UrlQueryParamTypes.string, queryParam: 'search' },
-  graphid: { type: UrlQueryParamTypes.string, queryParam: 'graphid'}
-};
+// const urlPropsQueryConfig = {
+//   search: { type: UrlQueryParamTypes.string, queryParam: 'search' },
+//   graphid: { type: UrlQueryParamTypes.string, queryParam: 'graphid'}
+// };
 
 class DatabaseSearchBar extends Component {
 
@@ -36,7 +35,7 @@ class DatabaseSearchBar extends Component {
 
   goToSearchPage(query){
     this.setState({fireRedirect: true});
-    this.props.onChangeSearch(query);
+    //this.props.onChangeSearch(query);
   }
 
   render() {
@@ -54,4 +53,5 @@ class DatabaseSearchBar extends Component {
     );
   }
 }
-export default addUrlProps({ urlPropsQueryConfig }) (DatabaseSearchBar);
+export default DatabaseSearchBar;
+// export default addUrlProps({ urlPropsQueryConfig }) (DatabaseSearchBar);

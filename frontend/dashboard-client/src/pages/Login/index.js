@@ -1,6 +1,4 @@
 import React from 'react';
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
 import { Redirect, withRouter, Link } from 'react-router-dom';
 import {authenticateAccount} from "../../server/auth_routes";
 import { connect } from 'react-redux';
@@ -33,14 +31,13 @@ class LoginPage extends React.Component {
 
     handleSubmit(event) {
         // TODO: Implement form validation
-        var self = this;
         authenticateAccount({username: this.state.email, password: this.state.password})
         .then(data => {
             if (data.success) {
-                self.props.dispatch(actions.userLogIn());
-                self.setState({email: '', password: '', redirectToReferrer: true})
+                this.props.dispatch(actions.userLogIn());
+                this.setState({email: '', password: '', redirectToReferrer: true})
             } else {
-                self.setState({email: '', password: '', passwordConf: '', error: true})
+                this.setState({email: '', password: '', passwordConf: '', error: true})
             }
         })
         .catch(err => console.log('Could not authenticate'))
@@ -69,7 +66,7 @@ class LoginPage extends React.Component {
                         background: "#fafafa",
                         border: "1px solid #ebebeb",
                         boxShadow: "rgba(0,0,0,0.14902) 0px 1px 1px 0px,rgba(0,0,0,0.09804) 0px 1px 2px 0px"}} >
-                    <TextField
+                    <input
                         hintText="alice@investigator.com"
                         floatingLabelText="Enter your email address"
                         fullWidth={false}
@@ -79,8 +76,7 @@ class LoginPage extends React.Component {
                         type="text"
                         name={"username"}
                     />
-                    <br />
-                    <TextField
+                    <input
                         hintText="**********"
                         floatingLabelText="Enter your password"
                         fullWidth={false}
@@ -90,19 +86,15 @@ class LoginPage extends React.Component {
                         type={"password"}
                         name={"password"}
                     />
-                    <br />
-                    <RaisedButton
+                    <button
                         style={{margin: 15} }
                         primary
                         onClick={this.handleSubmit}
                         label="Login"
                         type="submit"
                     />
-                    <br />
-                        <br />
-                        <br />
-                        <Link to={'/create_account'} style={{color: 'inherit'}}> New around here? Create an Account!</Link>
-                    </div>
+                    <Link to={'/create_account'} style={{color: 'inherit'}}> New around here? Create an Account!</Link>
+                </div>
             </div>
         );
     }
