@@ -25,15 +25,17 @@ class SearchBar extends Component {
   render (){
     return(
       <div className="searchBody">
-        <div className="input_container">
-        <form  onSubmit={() => this.submitSearch()}>
+        <div className="search-input-container">
+        <form onSubmit={() => this.submitSearch()}>
           <input className="input" 
             ref="query" 
             type="text" 
             placeholder="Search all entities"
             onChange={(e) => this.updateSearch()}
           />
-          <button className="input_img" onClick={(e) => this.submitSearch()}/>
+          <button className="search-button">
+            <i className="fa fa-search search-icon" onClick={(e) => this.submitSearch()}></i>
+          </button>
         </form>
         </div>
       </div>

@@ -15,7 +15,7 @@
   margin: 0 auto;
 }
 
-.input_container {
+.search-input-container {
     display: block;
     position:relative;
     margin:0 auto;
@@ -23,24 +23,25 @@
     max-width: 500px;
     width: 100%;
     border: 1px solid #ccc;
-    border-radius: 5px;
 }
 .input {
-    height:30px;
-    margin:5px;
-    width: 95%;
+    height: 30px;
+    width: calc(100% - 40px);
     border: none;
     display: inline-block;
+    padding: 8px;
 }
 
 .input:focus{
   outline: none ;
 }
-.input_img {
-    position:absolute;
-    margin: 10px auto;
-    right:10px;
-    width:24px;
-    height:24px;
-    display: inline-block;
+
+.search-button {
+  all: unset;
+  background-color: #555555;
+  width: 40px;
+  height: 40px;
+}
+.search-icon {
+  color: #FAFAFA;
 }

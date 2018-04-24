@@ -86,7 +86,7 @@ class Login extends Component {
                         type={"password"}
                         name={"password"}
                     />
-                    <button
+                    <button 
                         style={{margin: 15} }
                         primary
                         onClick={this.handleSubmit}
