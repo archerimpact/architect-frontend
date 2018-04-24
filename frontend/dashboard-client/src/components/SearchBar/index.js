@@ -27,7 +27,7 @@ class SearchBar extends Component {
       <div className="searchBody">
         <div className="search-input-container">
         <form onSubmit={() => this.submitSearch()}>
-          <input className="input" 
+          <input className="search-input" 
             ref="query" 
             type="text" 
             placeholder="Search all entities"

@@ -7,8 +7,8 @@ class Home extends Component {
   render() {
     return (
         <div className='home-container' style={{height:'100%'}}>
-          <h1>ARCHITECT</h1>
-          <p>A World of Data at your Fingertips, machine learning</p>
+          <h1 className="home-header">ARCHITECT</h1>
+          <p className="home-subheader">A World of Data at your Fingertips</p>
           <div className="search-main">
             <DatabaseSearchBar/>
           </div>
