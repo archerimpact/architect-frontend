@@ -27,8 +27,9 @@ const storage = multer.diskStorage({
 });
 
 app.use(multer({
-     storage:storage
-     }).single('file'));
+  storage:storage
+}).single('file'));
+
 
 const upload = multer({ storage: storage });
 
@@ -121,6 +122,53 @@ function saveEntity(name, type, sources, neo4jid) {
         })
     return newVert
 }
+
+async function checkUserAuth(req, res) {
+  const authedUser = req.user;
+  if (!authedUser) {
+    res.status(401).json({ success: false, error: 'Must be signed in to access a project' });
+    return false;
+  }
+  return true;
+}
+
+
+async function checkUserProjAuth(req, res) {
+  const userAuth = await checkUserAuth(req, res);
+  if (!userAuth) {
+    return false;
+  }
+
+  const projId  = mongoose.Types.ObjectId(req.query.projectid);
+  const project = await db.collection('projects').findOne({_id: projId});
+
+  if (!project) {
+    res.status(400).json({ success: false, error: 'Project not found' });
+    return false;
+  }
+
+  // TODO gross way of checking for array membership -- convert to a filter maybe
+  let auth = false;
+  for (let i in project.users) {
+    if (project.users[i].equals(req.user._id)) {
+      auth = true;
+      break;
+    }
+  }
+
+  if (!auth) {
+    res.status(400).json({ success: false, error: 'You are not authorized to access this project' });
+    return false;
+  }
+
+  return true;
+}
+
+async function getProject(projId) {
+  const project = await db.collection('projects').findOne({_id: projId});
+  return project;
+}
+
 
 app.post('/investigation/pdf', upload.single('file'), async (req, res) => {
     try {
@@ -217,13 +265,11 @@ app.get('/investigation/source', function(req,res) {
     .catch((err)=>{console.log(err)})
 })
 
-app.post('/investigation/project', function(req, res) {
+app.post('/investigation/project', async function(req, res) {
   /* Creates a project */
 
-  const authedUser = req.user;
-  if (!authedUser) {
-    return res.status(401).json({success: false, error: 'Must be signed in to create a project'});
-  }
+  const userAuth = await checkUserAuth(req, res);
+  if (!userAuth) { return }
 
   const userId      = mongoose.Types.ObjectId(req.user._id);
   const projectId = mongoose.Types.ObjectId();
@@ -261,27 +307,10 @@ app.post('/investigation/project', function(req, res) {
 
 app.get('/investigation/project', async function(req, res) {
   /* Gets a project */
+  const projAuth = await checkUserProjAuth(req, res);
+  if (!projAuth) { return }
 
-  const authedUser = req.user;
-  if (!authedUser) {
-    return res.status(401).json({success: false, error: 'Must be signed in to access a project'});
-  }
-
-  const projId  = mongoose.Types.ObjectId(req.query.projectid);
-  const project = await db.collection('projects').findOne({_id: projId});
-
-  // gross way of checking for array membership
-  let auth = false;
-  for (let i in project.users) {
-    if (project.users[i].equals(req.user._id)) {
-      auth = true;
-      break;
-    }
-  }
-
-  if (!auth) {
-    return res.status(400).json({success: false, error: 'Project not found'});
-  }
+  const project = await getProject(mongoose.Types.ObjectId(req.query.projectid));
 
   // TODO remove this array wrapper -- the frontend needs to be updated about this change.
   return res.status(200).send([project]);
@@ -535,13 +564,21 @@ app.get('/investigation/project/sources', function(req, res) {
   });
 });
 
- app.get('/investigation/projectList', function(req, res) {
-    /* Gets all the projects */
-      db.collection('projects').find({}).toArray(function(err, result) {
-        if (err) throw err;
-       res.send(result);
-     });
-  });
+app.get('/investigation/projectList', async function(req, res) {
+  /* Return an array of all project ids owned by the current user */
+
+  const userAuth = await checkUserAuth(req, res);
+  if (!userAuth) { return }
+
+  /* Gets all the projects */
+  let projects = await db.collection('projects').find({ users: mongoose.Types.ObjectId(req.user._id) });
+  if (!projects) {
+    return res.status(400).json({ success: false, error: 'An error occurred while retrieving projects' });
+  }
+
+  projects = await projects.toArray()
+  res.status(200).json(projects);
+});
 
 app.get('/investigation/vertexList', function(req, res) {
     // gets all vertexes associated with a project
