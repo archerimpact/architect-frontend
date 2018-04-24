@@ -225,8 +225,10 @@ app.post('/investigation/project', function(req, res) {
     return res.status(401).json({success: false, error: 'Must be signed in to create a project'});
   }
 
+  const userId      = mongoose.Types.ObjectId(req.user._id);
+  const projectId = mongoose.Types.ObjectId();
   const project = {
-    _id: mongoose.Types.ObjectId(),
+    _id: projectId,
     name: req.body.name,
     users: [req.user._id],
     entities: [],
@@ -242,6 +244,19 @@ app.post('/investigation/project', function(req, res) {
       .catch(err => {
           res.status(400).json({success: false, error: "Unable to save to database because: " + err});
       });
+
+  // Add the project to the user's list of projects
+  User.update(
+    { _id: userId },
+    { '$push': { 'projects': projectId } },
+    (err, raw) => {
+      if (err || raw.ok !== 1) {
+        return res.status(400).json({ success: false, error: 'An error occured while assigning this project to the user'});
+      }
+      // TODO check that `raw.nModified === 1`, maybe?
+    }
+  );
+
 });
 
 app.get('/investigation/project', async function(req, res) {
