@@ -36,7 +36,7 @@ class DatabaseSearchBar extends Component {
 
   goToSearchPage(query){
     this.setState({fireRedirect: true});
-    //this.props.onChangeSearch(query);
+    this.props.onChangeSearch(query);
   }
 
   render() {
