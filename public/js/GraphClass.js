@@ -325,7 +325,10 @@ class Graph {
       .enter().append('line')
       .attr('class', 'link')
       .style('stroke-dasharray', function (d) { return d.type === 'possibly_same_as' ? ('3,3') : false; })
-      .on('mouseover', this.mouseoverLink);
+      .on('mouseover', this.mouseoverLink)
+      .style('stroke-opacity', (o) => {
+        if (this.hoveredNode) { return (o.source == this.hoveredNode || o.target == this.hoveredNode) ? 1 : .05 };
+      });
 
     this.link.exit().remove();
 
@@ -345,6 +348,11 @@ class Graph {
         .on('drag', function (d) { self.dragging(d, this) })
         .on('dragend', function (d) { self.dragend(d, this) })
       );
+
+    this.nodeEnter
+      .filter((o) => { if (this.hoveredNode && !this.neighbors(this.hoveredNode, o)) { return o; } })
+      .style('stroke-opacity', .15)
+      .style('fill-opacity', .15);
 
     this.nodeEnter.append('circle')
       .attr('r', '20');
