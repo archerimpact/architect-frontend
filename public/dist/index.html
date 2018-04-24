@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Architect Graph</title>
+    <link rel="icon" href="img/favicon.png"/>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+    <!-- <link rel="stylesheet" href="css/font-awesome.min.css"> -->
+    <link rel="stylesheet" href="css/graph.css"/>
+    <link rel="stylesheet" href="css/sidebar.css"/>
+  </head>
+  <body>
+    <div id="graph-container"></div>
+    <div id="sidebar">
+      <!-- <i class="fa fa-close" id="close-button" onclick="closeSidebar()"></i> -->
+      <div id="sidebar-content-area">  
+        <div id="graph-usage"></div>
+        <div id="node-info"></div>
+        <div id="link-info"></div>
+        <div id="group-info"></div>
+      </div>
+    </div>
+    <div class="animated fadeIn" id="transparent-navbar">
+      <div class="navbar-item unselectable">
+        <i class="fa fa-info-circle" id="search-info" onclick="openSidebar()"></i>
+      </div>
+    </div>
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="dist/bundle.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.min.js"></script> 
+    <script type="text/javascript">
+      const graph = new Graph();
+      const height = $(window).height(),
+        width = Math.max($(window).width(), height);
+      d3.json("/data/well_connected.json", function(json) {
+        graph.generateCanvas(width, height);
+        graph.bindDisplayFunctions({node: displayNodeInfo, group: displayGroupInfo, link: displayLinkInfo})
+        graph.setData(18210, json.nodes, json.links);
+      });
+    </script>
+    <script src="js/sidebar.js"></script>
+  </body>
+</html>

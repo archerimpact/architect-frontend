@@ -1,8 +1,6 @@
 var $ = require("jquery");
 import * as utils from './helpers/utils.js'
-
-// Constants
-const maxHeight = 100000;
+import { maxHeight from './helpers/constants.js'}
 
 // Populate graph usage section
 function displayGraphUsage() {
