@@ -239,17 +239,8 @@ export function expandGroups(select, centered = false) {
       if (group) {
         group.nodes.map((node) => {
           if (centered) {
-            group.fixedX = d.x; //store the coordinates of the group node
-            group.fixedY = d.y;
-            const offset = .5 * 45 * Math.sqrt(group.nodes.length); // math to make the total area of the hull equal to 15*15 per node
-            const xboundlower = group.fixedX - offset;
-            const yboundlower = group.fixedY - offset;
-
-            node.x = node.px = Math.floor(Math.random() * offset * 2) + xboundlower;
-            node.y = node.py = Math.floor(Math.random() * offset * 2) + yboundlower;
-            node.cx = group.fixedX;
-            node.cy = group.fixedY;
-            //node.fixed = true;  
+            node.centroidx = group.fixedX = d.x; //store the coordinates of the group node
+            node.centroidy = group.fixedY = d.y;
           }
           newNodes.push(node);
           this.nodes.push(node); //add all nodes in the group to global nodes
@@ -310,7 +301,7 @@ export function toggleGroupView(groupId) {
 //Hull functions
 export function createHull(group) {
   var vertices = [];
-  var offset = 25; //arbitrary, the size of the node radius
+  var offset = 30; //arbitrary, the size of the node radius
 
   const nodeids = this.nodes.map((node) => { return node.id }); // create array of all ids in nodes
   group.nodes.map((d) => {

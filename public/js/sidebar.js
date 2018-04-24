@@ -1,6 +1,6 @@
+import * as utils from './helpers/utils.js';
+import { maxHeight } from './helpers/constants.js';
 var $ = require("jquery");
-import * as utils from './helpers/utils.js'
-import { maxHeight from './helpers/constants.js'}
 
 // Populate graph usage section
 function displayGraphUsage() {

@@ -393,16 +393,17 @@ class Graph {
   // Occurs each tick of simulation
   ticked(e, self) {
     this.force.resume();
-    if (!this.hull.empty()) {
-      this.calculateAllHulls();
-      this.hull.data(this.hulls)
-        .attr('d', this.drawHull);
-    }
 
     this.node
       .each(this.groupNodesForce(.3))
       .each(function(d) {d.px = d.x; d.py = d.y;})
       .attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
+
+    if (!this.hull.empty()) {
+      this.calculateAllHulls();
+      this.hull.data(this.hulls)
+        .attr('d', this.drawHull);
+    }
 
     this.link
       .attr('x1', function (d) { return d.source.x; })
@@ -417,8 +418,8 @@ class Graph {
     // Only apply force on grouped nodes that aren't being dragged and aren't fixed
     return function (d) {
       if (d.group && (!self.isDragging || d.id != self.draggedNode.id) && !d.fixed) {
-        d.y += (d.cy - d.y) * alpha;
-        d.x += (d.cx - d.x) * alpha;
+        d.y += (d.centroidy - d.y) * alpha;
+        d.x += (d.centroidx - d.x) * alpha;
       }
     }
   }
