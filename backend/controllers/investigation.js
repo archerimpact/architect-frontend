@@ -316,7 +316,7 @@ app.get('/investigation/project', async function(req, res) {
   return res.status(200).send([project]);
 });
 
-app.post('/investigation/entity', function(req, res){
+app.post('/investigation/entity', async function(req, res){
     var newEntity = saveEntity(req.body.name, req.body.type, req.body.sources, req.body.neo4jid)
     var entityid = newEntity._id
     
@@ -332,8 +332,11 @@ app.post('/investigation/entity', function(req, res){
     .catch((err) => {console.log(err)});
 })
 
-app.delete('/investigation/entity', function(req, res) {
+app.delete('/investigation/entity', async function(req, res) {
   /* Deletes an entity from a project */
+
+  const projAuth = await checkUserProjAuth(req, res);
+  if (!projAuth) { return }
 
   var entityid = mongoose.Types.ObjectId(req.query.entityid);
   db.collection('vertexes').find({_id: entityid}).toArray()
@@ -362,7 +365,7 @@ app.delete('/investigation/entity', function(req, res) {
     .catch((err) => {console.log(err)});
 })
 
-app.delete('/investigation/suggestedEntity', function(req, res) {
+app.delete('/investigation/suggestedEntity', async function(req, res) {
   /* Deletes the suggested entity that's attached to a source. */
 
   var sourceid = mongoose.Types.ObjectId(req.query.sourceid);
@@ -383,7 +386,7 @@ app.delete('/investigation/suggestedEntity', function(req, res) {
     })
 })
 
-app.post('/investigation/connection', function(req, res){
+app.post('/investigation/connection', async function(req, res){
   var connection = {
     _id: new mongoose.Types.ObjectId,
     description: req.body.description,
@@ -419,10 +422,13 @@ app.post('/investigation/connection', function(req, res){
     })
 })
 
-app.post('/investigation/project/graph', function(req, res){
+app.post('/investigation/project/graph', async function(req, res){
   /* creates a new graph object, also updates the project to include a reference to the graph
    graphs contain entities, sources, and connections */
 
+  const projAuth = await checkUserProjAuth(req, res);
+  if (!projAuth) { return }
+  
   var graph = {
     _id: new mongoose.Types.ObjectId,
     entities: req.body.entities,
@@ -480,7 +486,7 @@ function vertexesToResponse(vertexes, type, callback) {
   };
 }
 
-app.post('/investigation/project/entityExtractor', function(req, res) {
+app.post('/investigation/project/entityExtractor', async function(req, res) {
   /* Submits a string that is saved as a source and calls the entity 
       extractor on it */
 
@@ -495,8 +501,10 @@ app.post('/investigation/project/entityExtractor', function(req, res) {
   })
 })
 
-app.get('/investigation/project/entities', function(req, res) {
+app.get('/investigation/project/entities', async function(req, res) {
   /* Gets all the entities from a project */
+  const projAuth = await checkUserProjAuth(req, res);
+  if (!projAuth) { return }
 
   var projectid = mongoose.Types.ObjectId(req.query.projectid)
   db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
@@ -518,7 +526,7 @@ app.get('/investigation/project/entities', function(req, res) {
 })
 
 /* Downloads document from cloud and sends to frontend */
-app.get('/investigation/project/document', function(req, res) {
+app.get('/investigation/project/document', async function(req, res) {
   var sourceid = req.query.sourceid;
   var cloud_loc = '/' + sourceid;
   var dest_file = './files2/' + sourceid + '.pdf';
@@ -541,8 +549,11 @@ app.get('/investigation/project/document', function(req, res) {
 })
 
 
-app.get('/investigation/project/sources', function(req, res) {
+app.get('/investigation/project/sources', async function(req, res) {
   /* Gets all the sources from a project */
+
+  const projAuth = await checkUserProjAuth(req, res);
+  if (!projAuth) { return }
 
   var projectid = req.query.projectid
   db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
@@ -580,8 +591,10 @@ app.get('/investigation/projectList', async function(req, res) {
   res.status(200).json(projects);
 });
 
-app.get('/investigation/vertexList', function(req, res) {
+app.get('/investigation/vertexList', async function(req, res) {
     // gets all vertexes associated with a project
+    const projAuth = await checkUserProjAuth(req, res);
+    if (!projAuth) { return }
 
     var projectid = mongoose.Types.ObjectId(req.query.projectid)
     db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
@@ -600,8 +613,11 @@ app.get('/investigation/vertexList', function(req, res) {
     .catch((err)=>{console.log(err)})    
 });
 
-app.get('/investigation/connectionList', function(req, res) {
+app.get('/investigation/connectionList', async function(req, res) {
     // Gets all connections associated with a project
+
+    const projAuth = await checkUserProjAuth(req, res);
+    if (!projAuth) { return }
 
     var projectid = mongoose.Types.ObjectId(req.query.projectid)
     db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
@@ -619,7 +635,7 @@ app.get('/investigation/connectionList', function(req, res) {
     .catch((err)=>{console.log(err)}) 
 });
 
-app.get('/investigation/searchSources', function(req, res) {
+app.get('/investigation/searchSources', async function(req, res) {
     var phrase = req.query.phrase;
     vertex.Vertex.find({
         type: 'Source',
