@@ -1,5 +1,5 @@
-var passport = require('passport'),
-    User = require('../models/user');
+const passport = require('passport');
+const User = require('../models/user');
 
 exports.isAuthenticated = function(req, res, next) {
     console.log("in users/isAuthenticated: " + req.user);

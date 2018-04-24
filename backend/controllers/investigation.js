@@ -3,6 +3,7 @@ var multer = require('multer'),
     util = require('util'),
     fs = require('fs'),
     vertex = require('../models/vertex'),
+    User = require('../models/user')
     Project = require('../models/project'),
     Connection = require('../models/connection'),
     Graph = require('../models/graph'),
@@ -217,33 +218,59 @@ app.get('/investigation/source', function(req,res) {
 })
 
 app.post('/investigation/project', function(req, res) {
-    /* Creates a project */
+  /* Creates a project */
 
-    var project = {
-        _id: new mongoose.Types.ObjectId,
-        name: req.body.name,
-        entities: []
-        //users: // Put in a fake one
-    };
-    var newProject = new Project(project);
-    var location = './files/' + project._id + '/';
-    newProject.save()
-        .then(item => {
-          res.send("New project saved");
-        })
-        .catch(err => {
-            res.status(400).send("Unable to save to database because: " + err);
-        })
+  const authedUser = req.user;
+  if (!authedUser) {
+    return res.status(401).json({success: false, error: 'Must be signed in to create a project'});
+  }
+
+  const project = {
+    _id: mongoose.Types.ObjectId(),
+    name: req.body.name,
+    users: [req.user._id],
+    entities: [],
+    sources: [],
+  };
+
+  const newProject = new Project(project);
+  newProject
+      .save()
+      .then(item => {
+          res.status(200).json({success: true, message: "Project saved"});
+      })
+      .catch(err => {
+          res.status(400).json({success: false, error: "Unable to save to database because: " + err});
+      });
 });
 
-app.get('/investigation/project', function(req, res) {
+app.get('/investigation/project', async function(req, res) {
   /* Gets a project */
 
-  var projectid = req.query.projectid
-  db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray(function(err, result) {
-    res.send(result)
-  })
-})
+  const authedUser = req.user;
+  if (!authedUser) {
+    return res.status(401).json({success: false, error: 'Must be signed in to access a project'});
+  }
+
+  const projId  = mongoose.Types.ObjectId(req.query.projectid);
+  const project = await db.collection('projects').findOne({_id: projId});
+
+  // gross way of checking for array membership
+  let auth = false;
+  for (let i in project.users) {
+    if (project.users[i].equals(req.user._id)) {
+      auth = true;
+      break;
+    }
+  }
+
+  if (!auth) {
+    return res.status(400).json({success: false, error: 'Project not found'});
+  }
+
+  // TODO remove this array wrapper -- the frontend needs to be updated about this change.
+  return res.status(200).send([project]);
+});
 
 app.post('/investigation/entity', function(req, res){
     var newEntity = saveEntity(req.body.name, req.body.type, req.body.sources, req.body.neo4jid)
