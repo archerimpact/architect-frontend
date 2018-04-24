@@ -6,9 +6,6 @@ import { Link, withRouter } from 'react-router-dom';
 
 class NavBar extends Component {
 
-	constructor(props) {
-		super(props);
-	}
 
 	render() {
 		var self = this

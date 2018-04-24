@@ -66,34 +66,30 @@ class Login extends Component {
                         background: "#fafafa",
                         border: "1px solid #ebebeb",
                         boxShadow: "rgba(0,0,0,0.14902) 0px 1px 1px 0px,rgba(0,0,0,0.09804) 0px 1px 2px 0px"}} >
+                    <label>Enter your email address</label>
                     <input
                         placeholder="alice@investigator.com"
-                        label="Enter your email address"
-                        fullWidth={false}
                         value={this.state.email}
-                        style = {{width: 380, marginRight: 20}}
+                        style = {{width: 300}}
                         onChange={this.handleEmailInputChange}
                         type="text"
-                        name={"username"}
                     />
+                    <label>Enter your password</label>
                     <input
                         placeholder="**********"
-                        label="Enter your password"
-                        fullWidth={false}
                         value={this.state.password}
-                        style = {{width: 380, marginRight: 20}}
+                        style = {{width: 300}}
                         onChange={this.handlePasswordInputChange}
-                        type={"password"}
-                        name={"password"}
+                        type="password"
                     />
                     <button 
-                        style={{margin: 15} }
-                        primary
+                        style={{margin: 15}}
                         onClick={this.handleSubmit}
-                        label="Login"
                         type="submit"
-                    />
-                    <Link to={'/create_account'} style={{color: 'inherit'}}> New around here? Create an Account!</Link>
+                    >Login </button>
+                    <div>
+                        <Link to={'/create_account'} style={{color: 'inherit'}}> New around here? Create an Account!</Link>
+                    </div>
                 </div>
             </div>
         );

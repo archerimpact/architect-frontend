@@ -1,5 +1,4 @@
 import * as server from '../../../server';
-import * as actions from '../../../redux/actions/';
 
 export const INITIALIZE_CANVAS = "INITIALIZE_CANVAS";
 export const UPDATE_GRAPH_DATA = "UPDATE_GRAPH_DATA";

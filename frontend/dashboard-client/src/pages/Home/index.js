@@ -2,16 +2,6 @@ import React, { Component } from 'react';
 import DatabaseSearchBar from '../../components/SearchBar/databaseSearchBar'
 
 import './style.css';
-
-class Login extends Component {
-
-  render() {
-    return (
-      <div style={{color: 'inherit'}} label="Login"  onClick={() => this.props.logIn()}/>
-    );
-  }
-}
-
 class Home extends Component {
 
   render() {

@@ -3,8 +3,6 @@ import {
   USER_LOGOUT, 
   } from './actionTypes';
 
-import * as server_utils from '../../server/utils';
-import * as server from '../../server/index.js';
 import { logoutAccount } from "../../server/auth_routes";
 
 export function userLogIn() {

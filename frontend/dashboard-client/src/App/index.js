@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../redux/actions/';
 
-import { Route, Redirect, Switch, withRouter} from 'react-router-dom';
+import { Route, Redirect, withRouter} from 'react-router-dom';
 import PrivateRoute from './PrivateRoute/';
 
 import NavBar from '../components/NavBar/';
@@ -15,10 +15,6 @@ import Canvas from '../pages/Canvas';
 import './style.css';
 
 class App extends Component {
-
-	constructor(props) {
-    super(props);
-	}
 
 	logOut() {
 		return this.props.actions.userLogOut();
