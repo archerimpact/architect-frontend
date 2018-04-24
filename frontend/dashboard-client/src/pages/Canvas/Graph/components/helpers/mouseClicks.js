@@ -1,10 +1,6 @@
 import * as d3 from 'd3';
-import * as utils from './utils.js'
-
-const maxTextLength = 20;
-const minScale = 0.1;
-const maxScale = 9.0;
-const gridLength = 80;
+import * as utils from './utils.js';
+import { maxTextLength, minScale, maxScale, gridLength } from './constants.js'
 
 // Click-drag node selection
 export function brushstart() {
@@ -115,6 +111,7 @@ export function mouseover(d, self) {
   if (!this.isDragging && !this.isBrushing) {
     // Node emphasis
     this.isEmphasized = true;
+    this.hoveredNode = d;
     this.node
       .filter(function (o) {
         return !classThis.neighbors(d, o);
@@ -142,6 +139,7 @@ export function mouseover(d, self) {
 }
 
 export function mouseout(d, self) {
+  this.hoveredNode = null;
   this.resetGraphOpacity();
   this.hideTooltip();
   if (this.printFull != 1) {
@@ -255,12 +253,9 @@ export function doZoom(zoom_in) {
 export function translateGraphAroundNode(d) {
   // Center each vector, stretch, then put back
   //d.x + (?) = this.center[0]
-  // console.log("this is center[0]: ", this.center[0], " and this is d.px: ", d.px)
-  // console.log("this is center[1]: ", this.center[1], " and this is d.py: ", d.py, " and this is height: ", this.height)
-  var x = this.zoomScale*(this.center[0] > d.px ? (this.center[0] - d.px) : -1*(d.px-this.center[0]));
-  var y = this.zoomScale*(this.center[1] > d.py? (this.center[1] - d.py) : -1*(d.py-this.center[1]));
+  var x = this.center[0] > d.x ? (this.center[0] - d.x) : -1*(d.x-this.center[0]);
+  var y = this.center[1] > d.y? (this.center[1] - d.y) : -1*(d.y-this.center[1]);
 
-  //console.log("this is where x is after: ", x, " and where y is after: ", y)
   var translate = this.zoom.translate();
   var self = this;
 
@@ -277,7 +272,6 @@ export function translateGraphAroundNode(d) {
   })
 
   d3.selectAll(".node")
-    .classed("selected", false)
     .filter((node) => {
       if (node.id === d.id) {
         return node;
