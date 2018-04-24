@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-// import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
+import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -8,21 +8,26 @@ import * as actions from './graphActions';
 
 import './graph.css'
 
-// const urlPropsQueryConfig = {
-//   /* type specifies the type of encoding necessary, queryParam sets which
-//     variable name to look for in this.props */ 
+const urlPropsQueryConfig = {
+  /* type specifies the type of encoding necessary, queryParam sets which
+    variable name to look for in this.props */ 
 
-//   search: { type: UrlQueryParamTypes.string, queryParam: 'search' },
-//   entityid: { type: UrlQueryParamTypes.integer, queryParam: 'entityid'},
-//   graphid: { type: UrlQueryParamTypes.integer, queryParam: 'graphid'},
-//   centerid: { type: UrlQueryParamTypes.integer, queryParam: 'centerid'}
-// } 
+  search: { type: UrlQueryParamTypes.string, queryParam: 'search' },
+  entityid: { type: UrlQueryParamTypes.integer, queryParam: 'entityid'},
+  graphid: { type: UrlQueryParamTypes.integer, queryParam: 'graphid'},
+  centerid: { type: UrlQueryParamTypes.integer, queryParam: 'centerid'}
+} 
 
 const height = window.innerHeight,
   width = Math.max(window.innerWidth - 500);
 
 
 class Graph extends Component {
+
+  constructor(props) {
+    super(props);
+
+  }
 
   componentWillMount() {
     if (this.props.search != null ){

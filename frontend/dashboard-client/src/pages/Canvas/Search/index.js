@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 
 import './style.css'
 
@@ -12,13 +13,13 @@ import * as server from '../../../server/';
 import {withRouter } from 'react-router-dom';
 import * as actions from '../Graph/graphActions';
 
-// const urlPropsQueryConfig = {
-//    type specifies the type of encoding necessary, queryParam sets which
-//     variable name to look for in this.props  
+const urlPropsQueryConfig = {
+  //  type specifies the type of encoding necessary, queryParam sets which
+  //   variable name to look for in this.props  
 
-//   search: { type: UrlQueryParamTypes.string, queryParam: 'search' },
-//   entityid: { type: UrlQueryParamTypes.string, queryParam: 'entityid'}
-// } 
+  search: { type: UrlQueryParamTypes.string, queryParam: 'search' },
+  entityid: { type: UrlQueryParamTypes.string, queryParam: 'entityid'}
+} 
 
 class BackendSearch extends Component {
 
@@ -34,17 +35,17 @@ class BackendSearch extends Component {
     }    
   }
 
-  // componentWillReceiveProps(nextprops){
-  //   /* handles the case when you are already on backend search and are
-  //     searching again in the nav bar; react only recognizes that there's nextprops */
-  //   if (this.props.search != null && this.props.search != nextprops.search){
-  //     if (this.props.entity !== null && this.props.entity !== undefined) {
-  //       this.props.actions.fetchGraphFromId(this.props.entity);
-  //       debugger
-  //     }
-  //     this.props.actions.fetchSearchResults(this.props.search);
-  //   }
-  // }
+  componentWillReceiveProps(nextprops){
+    /* handles the case when you are already on backend search and are
+      searching again in the nav bar; react only recognizes that there's nextprops */
+    if (this.props.search != null && this.props.search != nextprops.search){
+      if (this.props.entity !== null && this.props.entity !== undefined) {
+        this.props.actions.fetchGraphFromId(this.props.entity);
+        debugger
+      }
+      this.props.actions.fetchSearchResults(this.props.search);
+    }
+  }
 
   render() {
     if (this.props.searchData == null) {
@@ -86,4 +87,4 @@ function mapStateToProps(state, props) {
   };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(BackendSearch));
+export default addUrlProps({ urlPropsQueryConfig })(withRouter(connect(mapStateToProps, mapDispatchToProps)(BackendSearch)));

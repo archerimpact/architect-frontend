@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-// import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
-
+import queryString from 'query-string';
+import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
+import {withRouter} from 'react-router-dom';
 import './style.css'
 
 import SearchBar from './../SearchBar';
@@ -8,10 +9,10 @@ import SearchBar from './../SearchBar';
 import * as server from '../../server/';
 import { Redirect } from 'react-router'
 
-// const urlPropsQueryConfig = {
-//   search: { type: UrlQueryParamTypes.string, queryParam: 'search' },
-//   graphid: { type: UrlQueryParamTypes.string, queryParam: 'graphid'}
-// };
+const urlPropsQueryConfig = {
+  search: { type: UrlQueryParamTypes.string, queryParam: 'search' },
+  graphid: { type: UrlQueryParamTypes.string, queryParam: 'graphid'}
+};
 
 class DatabaseSearchBar extends Component {
 
@@ -42,7 +43,7 @@ class DatabaseSearchBar extends Component {
     if (this.state.fireRedirect) {
       this.setState({fireRedirect:false});
       return (
-        <Redirect to={'/canvas/search?search=' + this.props.search + "&graphid=" + this.props.graphid}  />
+        <Redirect to={'/canvas/search?search=' + this.props.search + "&graphid=" + this.props.graphid} />
       );
     }
 
@@ -53,5 +54,4 @@ class DatabaseSearchBar extends Component {
     );
   }
 }
-export default DatabaseSearchBar;
-// export default addUrlProps({ urlPropsQueryConfig }) (DatabaseSearchBar);
+export default addUrlProps({ urlPropsQueryConfig }) (withRouter(DatabaseSearchBar));
