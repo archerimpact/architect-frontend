@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import { Redirect, withRouter, Link } from 'react-router-dom';
 import {authenticateAccount} from "../../server/auth_routes";
 import { connect } from 'react-redux';
@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
 import CreateAccount from "../CreateAccount/";
 
-class LoginPage extends React.Component {
+class Login extends Component {
 
     constructor(props) {
         super(props);
@@ -67,8 +67,8 @@ class LoginPage extends React.Component {
                         border: "1px solid #ebebeb",
                         boxShadow: "rgba(0,0,0,0.14902) 0px 1px 1px 0px,rgba(0,0,0,0.09804) 0px 1px 2px 0px"}} >
                     <input
-                        hintText="alice@investigator.com"
-                        floatingLabelText="Enter your email address"
+                        placeholder="alice@investigator.com"
+                        label="Enter your email address"
                         fullWidth={false}
                         value={this.state.email}
                         style = {{width: 380, marginRight: 20}}
@@ -77,8 +77,8 @@ class LoginPage extends React.Component {
                         name={"username"}
                     />
                     <input
-                        hintText="**********"
-                        floatingLabelText="Enter your password"
+                        placeholder="**********"
+                        label="Enter your password"
                         fullWidth={false}
                         value={this.state.password}
                         style = {{width: 380, marginRight: 20}}
@@ -114,4 +114,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LoginPage));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));
