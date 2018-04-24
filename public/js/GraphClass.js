@@ -94,7 +94,7 @@ class Graph {
     this.expandedGroups = {}; // Store groupNodeId --> expansion state
     this.hidden = { links: [], nodes: [] }; // Store all links and nodes that are hidden  
     this.nodeSelection = {}; // Store node.index --> selection state
-    this.linkedByIndex = {}; // Store each pair of neighboring nodes
+    this.linkedById = {}; // Store each pair of neighboring nodes
 
     this.globallinkid = -1;
     this.globalnodeid = -1;
@@ -520,15 +520,15 @@ class Graph {
 
   // Determine if neighboring nodes
   neighbors(a, b) {
-    return this.linkedByIndex[a.index + ',' + b.index]
-      || this.linkedByIndex[b.index + ',' + a.index]
-      || a.index == b.index;
+    return this.linkedById[a.id + ',' + b.id]
+      || this.linkedById[b.id + ',' + a.id]
+      || a.id == b.id;
   }
 
   reloadNeighbors() {
-    this.linkedByIndex = {};
+    this.linkedById = {};
     this.links.forEach((d) => {
-      this.linkedByIndex[d.source.index + "," + d.target.index] = true;
+      this.linkedById[d.source.id + "," + d.target.id] = true;
     });
   }
 }

@@ -253,6 +253,7 @@ export function expandGroups(select, centered = false) {
 
   const removedNodes = this.removeNodesFromDOM(select);
   this.removeNodeLinksFromDOM(removedNodes);
+  this.hoveredNode = null;
   return newNodes;
 }
 
