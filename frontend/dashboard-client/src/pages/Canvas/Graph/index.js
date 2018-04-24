@@ -68,5 +68,4 @@ function mapStateToProps(state, props) {
       canvas: state.canvas
   };
 }
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Graph));
+export default addUrlProps({ urlPropsQueryConfig })(withRouter(connect(mapStateToProps, mapDispatchToProps)(Graph)));
