@@ -24,7 +24,7 @@ class EntityCard extends Component {
 
     let newQs = queryString.stringify({search: qs.search, graphid: graphid, entityid: newEntityid})
     return {
-      pathname: '/canvas/entity',
+      pathname: '/explore/entity',
       search: newQs
     };
   }

@@ -19,8 +19,8 @@ class Canvas extends Component {
         <div className="full" style={{"height": "100%"}}>
             <Graph graph={this.graph}/>
             <Switch>
-                <PrivateRoute path="/canvas/search" component={() => {return (<Search graph={this.graph}/>)}}/>
-                <PrivateRoute path="/canvas/entity" component={Entity} />
+                <PrivateRoute path="/explore/search" component={() => {return (<Search graph={this.graph}/>)}}/>
+                <PrivateRoute path="/explore/entity" component={Entity} />
             </Switch>
         </div>
     )}

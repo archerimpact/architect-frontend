@@ -32,7 +32,7 @@ class App extends Component {
     				<PrivateRoute exact path="/" component={Home} />
     				<Route path="/login" component={Login} />
             <Route path="/create_account" component={CreateAccount} />
-            <PrivateRoute path="/canvas" component={Canvas}/>
+            <PrivateRoute path="/explore" component={Canvas}/>
         </div>
     	</div>
     );
