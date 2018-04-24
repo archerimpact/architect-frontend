@@ -1,13 +1,13 @@
 
 // Link highlighting
-function highlightLinksFromAllNodes() {
+export function highlightLinksFromAllNodes() {
   this.svg.selectAll('.link')
     .classed('selected', (d, i) => {
       return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index];
     });
 }
 
-function highlightLinksFromNode(node) {
+export function highlightLinksFromNode(node) {
   node = node[0].__data__.index;
   this.svg.selectAll('.link')
     .filter((d, i) => {
@@ -19,13 +19,13 @@ function highlightLinksFromNode(node) {
 }
 
 // Fill group nodes blue
-function fillGroupNodes() {
+export function fillGroupNodes() {
   this.svg.selectAll('.node')
     .classed('grouped', function (d) { return d.id < 0; });
 }
 
 // Reset all node/link opacities to 1
-function resetGraphOpacity() {
+export function resetGraphOpacity() {
   this.isEmphasized = false;
   this.node.style('stroke-opacity', 1)
     .style('fill-opacity', 1);
@@ -33,7 +33,7 @@ function resetGraphOpacity() {
 }
 
 // Wrap text
-function textWrap(textSelection, printFull, width=100) {
+export function textWrap(textSelection, printFull, width=100) {
   var self = this;
   textSelection.each(function (d) {
     const text = d3.select(this);

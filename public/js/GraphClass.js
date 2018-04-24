@@ -3,13 +3,13 @@
 // Use this to find codes for FA icons: https://fontawesome.com/cheatsheet
 
 // Uncomment below for React implementation
-// import * as d3 from 'd3';
-// import 'font-awesome/css/font-awesome.min.css'
-// import './helpers/aesthetics.js'
-// import './helpers/utils.js'
-// import './helpers/mouseClicks.js'
-// import './helpers/tooltips.js'
-// import './changeD3Data.js'
+import * as d3 from './d3.min.js';
+import * as aesthetics from './helpers/aesthetics.js';
+import * as utils from './helpers/utils.js';
+import * as mouseClicks from './helpers/mouseClicks.js';
+import * as tt from './helpers/tooltips.js';
+import * as d3Data from './helpers/changeD3Data.js';
+import { maxTextLength, minScale, maxScale, gridLength } from './helpers/constants.js';
 
 const icons = {
   "person": "",
@@ -18,11 +18,6 @@ const icons = {
   "group": "",
   "same_as_group": ""
 };
-
-const maxTextLength = 20;
-const minScale = 0.1;
-const maxScale = 9.0;
-const gridLength = 80;
     
 class Graph {
   constructor() {
@@ -366,7 +361,7 @@ class Graph {
       .attr('class', 'node-name')
       .attr('text-anchor', 'middle')
       .attr('dy', '35px')
-      .text(function (d) { return processNodeName(d.name, this.printFull); })
+      .text(function (d) { return utils.processNodeName(d.name, this.printFull); })
       .call(this.textWrap, this.printFull)
       .on('click', this.clickedText)
       .on('mouseover', function (d) { self.mouseoverText(d, this); })
@@ -488,7 +483,7 @@ class Graph {
         else if (d3.event.keyCode == 80) {
           this.printFull = (this.printFull + 1) % 3;
           this.selectAllNodeNames()
-              .text((d) => { return processNodeName(d.name, this.printFull); })
+              .text((d) => { return utils.processNodeName(d.name, this.printFull); })
               .call(this.textWrap, this.printFull);
         }
 
@@ -530,81 +525,80 @@ class Graph {
 }
 
 //From aesthetics.js
-Graph.prototype.highlightLinksFromAllNodes = highlightLinksFromAllNodes;
-Graph.prototype.highlightLinksFromNode = highlightLinksFromNode;
-Graph.prototype.fillGroupNodes = fillGroupNodes;
-Graph.prototype.resetGraphOpacity = resetGraphOpacity;
-Graph.prototype.textWrap = textWrap;
+Graph.prototype.highlightLinksFromAllNodes = aesthetics.highlightLinksFromAllNodes;
+Graph.prototype.highlightLinksFromNode = aesthetics.highlightLinksFromNode;
+Graph.prototype.fillGroupNodes = aesthetics.fillGroupNodes;
+Graph.prototype.resetGraphOpacity = aesthetics.resetGraphOpacity;
+Graph.prototype.textWrap = aesthetics.textWrap;
 
 //From mouseClicks.js
-Graph.prototype.brushstart = brushstart;
-Graph.prototype.brushing = brushing;
-Graph.prototype.brushend = brushend;
-Graph.prototype.clicked = clicked;
-Graph.prototype.rightclicked = rightclicked;
-Graph.prototype.dblclicked = dblclicked;
-Graph.prototype.isRightClick = isRightClick;
-Graph.prototype.dragstart = dragstart;
-Graph.prototype.dragging = dragging;
-Graph.prototype.dragend = dragend;
-Graph.prototype.mouseover = mouseover;
-Graph.prototype.mouseout = mouseout;
-Graph.prototype.mouseoverLink = mouseoverLink;
-Graph.prototype.clickedText = clickedText;
-Graph.prototype.dragstartText = dragstartText;
-Graph.prototype.draggingText = draggingText;
-Graph.prototype.dragendText = dragendText;
-Graph.prototype.mouseoverText = mouseoverText;
-Graph.prototype.mouseoutText = mouseoutText;
+Graph.prototype.brushstart = mouseClicks.brushstart;
+Graph.prototype.brushing = mouseClicks.brushing;
+Graph.prototype.brushend = mouseClicks.brushend;
+Graph.prototype.clicked = mouseClicks.clicked;
+Graph.prototype.rightclicked = mouseClicks.rightclicked;
+Graph.prototype.dblclicked = mouseClicks.dblclicked;
+Graph.prototype.isRightClick = mouseClicks.isRightClick;
+Graph.prototype.dragstart = mouseClicks.dragstart;
+Graph.prototype.dragging = mouseClicks.dragging;
+Graph.prototype.dragend = mouseClicks.dragend;
+Graph.prototype.mouseover = mouseClicks.mouseover;
+Graph.prototype.mouseout = mouseClicks.mouseout;
+Graph.prototype.mouseoverLink = mouseClicks.mouseoverLink;
+Graph.prototype.clickedText = mouseClicks.clickedText;
+Graph.prototype.dragstartText = mouseClicks.dragstartText;
+Graph.prototype.draggingText = mouseClicks.draggingText;
+Graph.prototype.dragendText = mouseClicks.dragendText;
+Graph.prototype.mouseoverText = mouseClicks.mouseoverText;
+Graph.prototype.mouseoutText = mouseClicks.mouseoutText;
 
-//From zoomPan.js
-Graph.prototype.zoomstart = zoomstart;
-Graph.prototype.zooming = zooming;
-Graph.prototype.zoomend = zoomend;
-Graph.prototype.doZoom = doZoom;
-Graph.prototype.translateGraphAroundNode = translateGraphAroundNode;
-Graph.prototype.translateGraphAroundId = translateGraphAroundId;
-Graph.prototype.disableZoom = disableZoom;
-Graph.prototype.zoomingButton = zoomingButton;
+Graph.prototype.zoomstart = mouseClicks.zoomstart;
+Graph.prototype.zooming = mouseClicks.zooming;
+Graph.prototype.zoomend = mouseClicks.zoomend;
+Graph.prototype.doZoom = mouseClicks.doZoom;
+Graph.prototype.translateGraphAroundNode = mouseClicks.translateGraphAroundNode;
+Graph.prototype.translateGraphAroundId = mouseClicks.translateGraphAroundId;
+Graph.prototype.disableZoom = mouseClicks.disableZoom;
+Graph.prototype.zoomingButton = mouseClicks.zoomingButton;
 
 //From changeD3Data.js
-Graph.prototype.deleteSelectedNodes = deleteSelectedNodes;
-Graph.prototype.deleteSelectedLinks = deleteSelectedLinks;
-Graph.prototype.addNodeToSelected = addNodeToSelected;
-Graph.prototype.toggleDocumentView = toggleDocumentView;
-Graph.prototype.hideDocumentNodes = hideDocumentNodes;
-Graph.prototype.hideNodes = hideNodes;
-Graph.prototype.showHiddenNodes = showHiddenNodes;
-Graph.prototype.groupSame = groupSame;
-Graph.prototype.groupSelectedNodes = groupSelectedNodes;
-Graph.prototype.ungroupSelectedGroups = ungroupSelectedGroups;
-Graph.prototype.expandGroup = expandGroup;
-Graph.prototype.expandGroups = expandGroups;
-Graph.prototype.collapseGroupNodes = collapseGroupNodes;
-Graph.prototype.toggleGroupView = toggleGroupView;
-Graph.prototype.createHull = createHull;
-Graph.prototype.calculateAllHulls = calculateAllHulls;
-Graph.prototype.drawHull = drawHull;
+Graph.prototype.deleteSelectedNodes = d3Data.deleteSelectedNodes;
+Graph.prototype.deleteSelectedLinks = d3Data.deleteSelectedLinks;
+Graph.prototype.addNodeToSelected = d3Data.addNodeToSelected;
+Graph.prototype.toggleDocumentView = d3Data.toggleDocumentView;
+Graph.prototype.hideDocumentNodes = d3Data.hideDocumentNodes;
+Graph.prototype.hideNodes = d3Data.hideNodes;
+Graph.prototype.showHiddenNodes = d3Data.showHiddenNodes;
+Graph.prototype.groupSame = d3Data.groupSame;
+Graph.prototype.groupSelectedNodes = d3Data.groupSelectedNodes;
+Graph.prototype.ungroupSelectedGroups = d3Data.ungroupSelectedGroups;
+Graph.prototype.expandGroup = d3Data.expandGroup;
+Graph.prototype.expandGroups = d3Data.expandGroups;
+Graph.prototype.collapseGroupNodes = d3Data.collapseGroupNodes;
+Graph.prototype.toggleGroupView = d3Data.toggleGroupView;
+Graph.prototype.createHull = d3Data.createHull;
+Graph.prototype.calculateAllHulls = d3Data.calculateAllHulls;
+Graph.prototype.drawHull = d3Data.drawHull;
 
-Graph.prototype.removeLink = removeLink;
-Graph.prototype.createGroupFromNode = createGroupFromNode;
-Graph.prototype.checkLinkAddGroup = checkLinkAddGroup;
-Graph.prototype.removeSelectiveLink = removeSelectiveLink;
-Graph.prototype.reattachLink = reattachLink;
-Graph.prototype.moveLinksFromOldNodesToGroup = moveLinksFromOldNodesToGroup;
-Graph.prototype.removeNodesFromDOM = removeNodesFromDOM;
-Graph.prototype.removeNodeLinksFromDOM = removeNodeLinksFromDOM;
-Graph.prototype.removeNodeLinksSelectiveFromDOM = removeNodeLinksSelectiveFromDOM;
-Graph.prototype.createGroupFromSelect = createGroupFromSelect;
+Graph.prototype.removeLink = d3Data.removeLink;
+Graph.prototype.createGroupFromNode = d3Data.createGroupFromNode;
+Graph.prototype.checkLinkAddGroup = d3Data.checkLinkAddGroup;
+Graph.prototype.removeSelectiveLink = d3Data.removeSelectiveLink;
+Graph.prototype.reattachLink = d3Data.reattachLink;
+Graph.prototype.moveLinksFromOldNodesToGroup = d3Data.moveLinksFromOldNodesToGroup;
+Graph.prototype.removeNodesFromDOM = d3Data.removeNodesFromDOM;
+Graph.prototype.removeNodeLinksFromDOM = d3Data.removeNodeLinksFromDOM;
+Graph.prototype.removeNodeLinksSelectiveFromDOM = d3Data.removeNodeLinksSelectiveFromDOM;
+Graph.prototype.createGroupFromSelect = d3Data.createGroupFromSelect;
 
 //From tooltips
-Graph.prototype.initializeTooltip = initializeTooltip;
-Graph.prototype.displayTooltip = displayTooltip;
-Graph.prototype.hideTooltip = hideTooltip;
-Graph.prototype.moveTooltip = moveTooltip;
-Graph.prototype.populateNodeInfoBody = populateNodeInfoBody;
-Graph.prototype.displayData = displayData;
-Graph.prototype.createTitleElement = createTitleElement;
+Graph.prototype.initializeTooltip = tt.initializeTooltip;
+Graph.prototype.displayTooltip = tt.displayTooltip;
+Graph.prototype.hideTooltip = tt.hideTooltip;
+Graph.prototype.moveTooltip = tt.moveTooltip;
+Graph.prototype.populateNodeInfoBody = tt.populateNodeInfoBody;
+Graph.prototype.displayData = tt.displayData;
+Graph.prototype.createTitleElement = tt.createTitleElement;
 
 // Uncomment below for React implementation
-// export default Graph;
+export default Graph;

@@ -1,9 +1,12 @@
+import * as utils from './utils.js';
+import { maxTextLength, minScale, maxScale, gridLength } from './constants.js'
+
 // Click-drag node selection
-function brushstart() {
+export function brushstart() {
   this.isBrushing = true;
 }
 
-function brushing() {
+export function brushing() {
   var self = this;
   if (this.isRightClick()) {
     const extent = this.brush.extent();
@@ -22,14 +25,14 @@ function brushing() {
   }
 }
 
-function brushend() {
+export function brushend() {
   this.brush.clear();
   this.svg.selectAll('.brush').call(this.brush);
   this.isBrushing = false;
 }
 
 // Single-node interactions
-function clicked(d, self, i) {
+export function clicked(d, self, i) {
   if (d3.event.defaultPrevented) return;
   const node = d3.select(self);
   const fixed = !(node.attr('dragfix') == 'true');
@@ -38,7 +41,7 @@ function clicked(d, self, i) {
   d3.event.stopPropagation();
 }
 
-function rightclicked(node, d) {
+export function rightclicked(node, d) {
   const fixed = node.attr('dragfix') == 'true';
   const selected = !(node.attr('dragselect') == 'true');
   node.classed('fixed', d.fixed = fixed)
@@ -47,7 +50,7 @@ function rightclicked(node, d) {
   this.force.resume();
 }
 
-function dblclicked(d) {
+export function dblclicked(d) {
   if (this.groups[d.id]) {
     this.toggleGroupView(d.id);
   }
@@ -56,13 +59,13 @@ function dblclicked(d) {
 }
 
 // Click helper
-function isRightClick() {
+export function isRightClick() {
   return (d3.event && (d3.event.which == 3 || d3.event.button == 2))
     || (d3.event.sourceEvent && (d3.event.sourceEvent.which == 3 || d3.event.sourceEvent.button == 2));
 }
 
 // Click-drag node interactions
-function dragstart(d, self) {
+export function dragstart(d, self) {
   d3.event.sourceEvent.preventDefault();
   d3.event.sourceEvent.stopPropagation();
   if (this.isEmphasized) this.resetGraphOpacity();
@@ -83,7 +86,7 @@ function dragstart(d, self) {
   }
 }
 
-function dragging(d, self) {
+export function dragging(d, self) {
   const node = d3.select(self);
   node
     .attr('cx', d.px = d.x = d3.event.x)
@@ -91,7 +94,7 @@ function dragging(d, self) {
     .attr('dragdistance', parseInt(node.attr('dragdistance')) + 1);
 }
 
-function dragend(d, self) {
+export function dragend(d, self) {
   const node = d3.select(self);
   if (!parseInt(node.attr('dragdistance')) && this.isRightClick()) {
     this.rightclicked(node, d);
@@ -102,7 +105,7 @@ function dragend(d, self) {
   this.force.resume();
 }
 
-function mouseover(d, self) {
+export function mouseover(d, self) {
   var classThis = this;
   if (!this.isDragging && !this.isBrushing) {
     // Node emphasis
@@ -126,7 +129,7 @@ function mouseover(d, self) {
     if (this.printFull == 0) {
       d3.select(self)
         .select('.node-name')
-        .text(processNodeName(d.name, 2))
+        .text(utils.processNodeName(d.name, 2))
         .call(this.textWrap, 2);
     }
   }
@@ -134,50 +137,50 @@ function mouseover(d, self) {
   this.displayNodeInfo(d);
 }
 
-function mouseout(d, self) {
+export function mouseout(d, self) {
   this.hoveredNode = null;
   this.resetGraphOpacity();
   this.hideTooltip();
   if (this.printFull != 1) {
     d3.select(self)
       .select('.node-name')
-      .text((d) => { return processNodeName(d.name, this.printFull); })
+      .text((d) => { return utils.processNodeName(d.name, this.printFull); })
       .call(this.textWrap, this.printFull);
   }
 }
 
 // Link mouse handlers
-function mouseoverLink(d) {
+export function mouseoverLink(d) {
   this.displayLinkInfo(d);
 }
 
 // Node text mouse handlers
-function clickedText(d, i) {
+export function clickedText(d, i) {
   d3.event.stopPropagation();
 }
 
-function dragstartText(d) {
+export function dragstartText(d) {
   d3.event.sourceEvent.stopPropagation();
 }
 
-function draggingText(d) {
+export function draggingText(d) {
   d3.event.sourceEvent.stopPropagation();
 }
 
-function dragendText(d) {
+export function dragendText(d) {
   d3.event.sourceEvent.stopPropagation();
 }
 
-function mouseoverText(d, self) {
+export function mouseoverText(d, self) {
   d3.event.stopPropagation();
 }
 
-function mouseoutText(d, self) {
+export function mouseoutText(d, self) {
   d3.event.stopPropagation();
 }
 
 // SVG zoom & pan
-function zoomstart(d, self) {
+export function zoomstart(d, self) {
   const e = d3.event;
   if (this.isRightClick()) {
     this.zoomTranslate = this.zoom.translate();
@@ -185,7 +188,7 @@ function zoomstart(d, self) {
   }
 }
 
-function zooming(d, self) {
+export function zooming(d, self) {
   if (!this.isRightClick()) {
     const e = d3.event;
     const transform = 'translate(' + (((e.translate[0] / e.scale) % gridLength) - e.translate[0] / e.scale)
@@ -195,7 +198,7 @@ function zooming(d, self) {
   }
 }
 
-function zoomend(d, self) {
+export function zoomend(d, self) {
   this.svg.attr('cursor', 'move');
   if (this.isRightClick()) {
     this.zoom.translate(this.zoomTranslate);
@@ -207,7 +210,7 @@ function zoomend(d, self) {
 }
 
 // Zoom button functionality
-function doZoom(zoom_in) {
+export function doZoom(zoom_in) {
   var self = this;
   var scale = this.zoom.scale(),
     extent = this.zoom.scaleExtent(),
@@ -246,7 +249,7 @@ function doZoom(zoom_in) {
   });
 }
 
-function translateGraphAroundNode(d) {
+export function translateGraphAroundNode(d) {
   // Center each vector, stretch, then put back
   //d.x + (?) = this.center[0]
   var x = this.center[0] > d.x ? (this.center[0] - d.x) : -1*(d.x-this.center[0]);
@@ -276,7 +279,7 @@ function translateGraphAroundNode(d) {
     .classed("selected", true);
 }
 
-function translateGraphAroundId(id) {
+export function translateGraphAroundId(id) {
   // Center each vector, stretch, then put back
   //d.x + (?) = this.center[0]
   // console.log("this is center[0]: ", this.center[0], " and this is d.px: ", d.px)
@@ -313,14 +316,14 @@ function translateGraphAroundId(id) {
     .classed("selected", true);
 }
 
-function disableZoom() {
+export function disableZoom() {
   this.svg.on("mousedown.zoom", null)
     .on("touchstart.zoom", null)
     .on("touchmove.zoom", null)
     .on("touchend.zoom", null);
 }
 
-function zoomingButton() {
+export function zoomingButton() {
   this.container.attr('transform', 'translate(' + this.zoom.translate() + ')scale(' + this.zoom.scale() + ')');
   const transform = 'translate(' + (((this.zoom.translate()[0] / this.zoom.scale()) % gridLength) - this.zoom.translate()[0] / this.zoom.scale())
     + ',' + (((this.zoom.translate()[1] / this.zoom.scale()) % gridLength) - this.zoom.translate()[1] / this.zoom.scale()) + ')scale(1)';
