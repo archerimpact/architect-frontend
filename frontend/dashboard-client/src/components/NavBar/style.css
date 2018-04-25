@@ -100,6 +100,10 @@
   text-align: left;
 }
 
+.nav-dropdown-content a:hover, .nav-dropdown-content button:hover {
+  background-color: #ddd;
+}
+
 .nav-dropdown-content-button, .nav-dropdown-content-button:hover{
   all: unset;
   cursor: pointer;

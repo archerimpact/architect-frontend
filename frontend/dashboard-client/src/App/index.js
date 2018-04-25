@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../redux/actions/';
 
-import { Route, Redirect, withRouter} from 'react-router-dom';
+import { Route, Redirect, withRouter } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute/';
 
 import NavBar from '../components/NavBar/';
@@ -16,25 +16,25 @@ import './style.css';
 
 class App extends Component {
 
-	logOut() {
-		return this.props.actions.userLogOut();
-	}
+  logOut() {
+    return this.props.actions.userLogOut();
+  }
 
-	logIn() {
-		return (<Redirect to={'/login'}/>);
-	}
+  logIn() {
+    return (<Redirect to={'/login'} />);
+  }
 
   render() {
-    return ( 
-    	<div>
-  			<NavBar isAuthenticated={this.props.isAuthenticated} logOut={this.logOut.bind(this)} logIn={this.logIn.bind(this)} />
+    return (
+      <div>
+        <NavBar isAuthenticated={this.props.isAuthenticated} logOut={this.logOut.bind(this)} logIn={this.logIn.bind(this)} />
         <div className="main">
-    				<PrivateRoute exact path="/" component={Home} />
-    				<Route path="/login" component={Login} />
-            <Route path="/create_account" component={CreateAccount} />
-            <PrivateRoute path="/explore" component={Canvas}/>
+          <PrivateRoute exact path="/" component={Home} />
+          <Route path="/login" component={Login} />
+          <Route path="/create_account" component={CreateAccount} />
+          <PrivateRoute path="/explore" component={Canvas} />
         </div>
-    	</div>
+      </div>
     );
   }
 }
