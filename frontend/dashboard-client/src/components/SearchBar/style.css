@@ -16,15 +16,16 @@
 }
 
 .search-input-container {
-    display: block;
-    position:relative;
-    margin:0 auto;
-    background:#ffffff;
-    max-width: 650px;
-    width: 100%;
-    border: 1px solid #ccc;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
-
+  display: block;
+  position:relative;
+  margin:0 auto;
+  background:#ffffff;
+  max-width: 650px;
+  width: 100%;
+  border: 1px solid #ccc;
+  -webkit-box-shadow: 0px 3px 8px 0px rgba(0,0,0,0.16);
+  -moz-box-shadow: 0px 3px 8px 0px rgba(0,0,0,0.16);
+  box-shadow: 0px 3px 8px 0px rgba(0,0,0,0.16);
 }
 .search-input {
     max-height: 60px;

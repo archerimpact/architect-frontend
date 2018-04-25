@@ -44,12 +44,17 @@
   font-size: 16px;
   color: white;
   text-align: center;
-  padding: 14px 16px;
+  padding: 14px 10px;
+  margin: 0px 4px;
   text-decoration: none;
 }
 
-.right-link:hover {
-  border-bottom: 2px solid #FE6060
+.right-link:hover, .right-link:active {
+  border-bottom: 3px solid #FE6060
+}
+
+.active-right-link {
+  border-bottom: 3px solid #FE6060;
 }
 .nav-dropdown:hover .nav-dropbtn, .nav-dropbtn:focus {
 }
@@ -72,7 +77,7 @@
   padding: 14px 16px;
   background-color: #FE6060;
   font-family: inherit;
-  margin: 0;
+  margin: 0 2px;
 }
 
 
@@ -81,6 +86,7 @@
   position: absolute;
   background-color: #f9f9f9;
   min-width: 60px;
+  margin: 0 2px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
   z-index: 1;
 }
