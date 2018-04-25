@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import './style.css'
 
 import EntityCard from '../../../components/EntityCard/';
-import DatabaseSearchBar from '../../../components/SearchBar/databaseSearchBar'
 
 import SummaryInfo from './components/SummaryInfo/';
 import ConnectionsTab from './components/ConnectionsTab/';
