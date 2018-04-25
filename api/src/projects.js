@@ -66,9 +66,8 @@ exports.list = async function(req, res) {
                 '$in': [req.user._id],
             }
         })
+        .select('_id name description')
         .exec()
-
-    // TODO filter projects array to only return _id and name
 
     return success(projects, res)
 }
