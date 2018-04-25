@@ -16,12 +16,14 @@ class Canvas extends Component {
 
   render() {
     return( 
-        <div className="full" style={{"height": "100%"}}>
+        <div className="canvas">
             <Graph graph={this.graph}/>
-            <Switch>
+            <Search graph={this.graph}/>
+            <Entity />
+            {/* <Switch>
                 <PrivateRoute path="/explore/search" component={() => {return (<Search graph={this.graph}/>)}}/>
                 <PrivateRoute path="/explore/entity" component={Entity} />
-            </Switch>
+            </Switch> */}
         </div>
     )}
 }

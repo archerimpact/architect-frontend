@@ -47,6 +47,7 @@
   padding: 14px 10px;
   margin: 0px 4px;
   text-decoration: none;
+  letter-spacing: 1px;
 }
 
 .right-link:hover, .right-link:active {
@@ -70,7 +71,8 @@
 .nav-dropdown .nav-dropbtn{
   all: unset;
   cursor: pointer;
-  font-size: 16px;    
+  font-size: 16px;  
+  letter-spacing: 1px;  
   border: none;
   outline: none;
   color: white;

@@ -30,11 +30,11 @@ class SearchBar extends Component {
           <input className="search-input" 
             ref="query" 
             type="text" 
-            placeholder="Search all entities"
+            placeholder="Search our connected data"
             onChange={(e) => this.updateSearch()}
           />
           <button className="search-button">
-            <i className="fa fa-search search-icon" onClick={(e) => this.submitSearch()}></i>
+            <i className="fa fa-search fa-lg search-icon" onClick={(e) => this.submitSearch()}></i>
           </button>
         </form>
         </div>

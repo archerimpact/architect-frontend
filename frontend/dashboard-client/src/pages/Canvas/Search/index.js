@@ -25,6 +25,10 @@ class BackendSearch extends Component {
 
   constructor(props) {
     super(props);
+    this.toggleSearchResults = this.toggleSearchResults.bind(this);
+    this.state = {
+      showResults: true,
+    };
   }
 
   componentWillMount(){
@@ -47,6 +51,9 @@ class BackendSearch extends Component {
     }
   }
 
+  toggleSearchResults() {
+    return this.setState({showResults: !this.state.showResults})
+  }
   render() {
     if (this.props.searchData == null) {
       return (
@@ -60,7 +67,10 @@ class BackendSearch extends Component {
             <div className="search-bar">
               <DatabaseSearchBar/>
             </div>
-            <SearchDataList searchItems={this.props.searchData} newgraphid={true}/>
+            <div onClick={this.toggleSearchResults}> 
+              {this.state.showResults ? "collapse search results" : "show search results"} 
+            </div>
+            {this.state.showResults ? <SearchDataList searchItems={this.props.searchData} newgraphid={true}/> : null}
           </div>
         </div> 
       </div>

@@ -1,9 +1,12 @@
 .search-side {
 	display: block;
-	background-color: white;
+  background-color: white;
+  margin: 10px 20px;
 }
 .search-side-container {
-	height: calc(100% - 12px) ;
+  /* height: calc(100% - 12px) ; */
+  max-height: calc(100% - 200px) ;
+  /* max-height: 480px ; */
 	position: absolute;
   right: 0px;
   margin: 8px 8px 0px 0px;
@@ -15,7 +18,7 @@
   transition-property: -webkit-transform,transform,visibility,opacity;
   transition-duration: 200ms;
   transition-timing-function: cubic-bezier(0.0,0.0,0.2,1);
-  overflow-y: auto;
+  overflow-y: scroll;
  	overflow-x: hidden;
   width: 500px;
   border: 1px;
