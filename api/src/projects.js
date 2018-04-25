@@ -10,18 +10,17 @@ const success   = archutil.success
 const error     = archutil.error
 const authError = archutil.authError
 
-async function checkUserAuth(req, res) {
+function checkUserAuth(req, res) {
 	if (!req.user) {
 		authError('Must be signed in to access a project', res)
-		return false;
+		return false
 	}
-	return true;
+	return true
 }
 
 
 exports.create = async function(req, res) {
-	const userAuth = await checkUserAuth(req, res)
-	if (!userAuth) { return }
+	if (!checkUserAuth(req, res)) { return }
 
 	const projId   = mongoose.Types.ObjectId()
 	const projName = req.body.name || 'Untitled'
@@ -39,8 +38,7 @@ exports.create = async function(req, res) {
 
 
 exports.get = async function(req, res) {
-	const userAuth = await checkUserAuth(req, res)
-	if (!userAuth) { return }
+	if (!checkUserAuth(req, res)) { return }
 	if (!req.query.projectid) { return error('Empty project ID', res) }
 
 	const result = await db.collection('projects').find({
@@ -58,8 +56,7 @@ exports.get = async function(req, res) {
 
 
 exports.list = async function(req, res) {
-	const userAuth = await checkUserAuth(req, res)
-	if (!userAuth) { return }
+	if (!checkUserAuth(req, res)) { return }
 
 	const result = await db.collection('projects').find({
 		users: {
@@ -68,6 +65,8 @@ exports.list = async function(req, res) {
 	})
 
 	const projects = await result.toArray()
+	// TODO filter projects array to only return _id and name
+
 	return success(projects, res)
 }
 

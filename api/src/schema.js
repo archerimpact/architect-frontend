@@ -29,4 +29,4 @@ const projectSchema = mongoose.Schema({
 
 
 exports.User    = mongoose.model('User', userSchema)
-exports.Project = mongoose.model('Project', projectSchema);
+exports.Project = mongoose.model('Project', projectSchema)

@@ -3,8 +3,8 @@
 const schema = require('./schema')
 const User = schema.User
 const archutil = require('./architect-util')
-const success = archutil.success;
-const error = archutil.error;
+const success = archutil.success
+const error = archutil.error
 
 exports.login = async function login(req, res, next) {
     // this check should probably never evaluate, since passport.authenticate will have already failed.
@@ -23,8 +23,8 @@ exports.verify = async function verify(req, res) {
 }
 
 exports.register = async function register(req, res) {
-    const username = req.body.username;
-    const password = req.body.password;
+    const username = req.body.username
+    const password = req.body.password
 
     if (!username) { return error('Invalid username', res) }
     if (!password) { return error('Invalid password', res) }
