@@ -2,9 +2,10 @@
 
 const mongoose = require('mongoose')
 const app = require('./app')
-const db = app.db
+
 const schema = require('./schema')
 const Project = schema.Project
+
 const archutil  = require('./architect-util')
 const success   = archutil.success
 const error     = archutil.error
@@ -41,14 +42,15 @@ exports.get = async function(req, res) {
     if (!checkUserAuth(req, res)) { return }
     if (!req.query.projectid) { return error('Empty project ID', res) }
 
-    const result = await db.collection('projects').find({
-        _id: mongoose.Types.ObjectId(req.query.projectid),
-        users: {
-            '$in': [req.user._id],
-        }
-    })
+    const projects = await Project
+        .find({
+            _id: mongoose.Types.ObjectId(req.query.projectid),
+            users: {
+                '$in': [req.user._id],
+            }
+        })
+        .exec()
 
-    const projects = await result.toArray()
     if (projects.length === 0) { return error('Project not found', res) }
 
     return success(projects[0], res)
@@ -58,13 +60,14 @@ exports.get = async function(req, res) {
 exports.list = async function(req, res) {
     if (!checkUserAuth(req, res)) { return }
 
-    const result = await db.collection('projects').find({
-        users: {
-            '$in': [req.user._id],
-        }
-    })
+    const projects = await Project
+        .find({
+            users: {
+                '$in': [req.user._id],
+            }
+        })
+        .exec()
 
-    const projects = await result.toArray()
     // TODO filter projects array to only return _id and name
 
     return success(projects, res)

@@ -11,6 +11,11 @@ const credentials = require('./credentials')
 const auth = require('./passport-connector')
 const schema = require('./schema')
 const User = schema.User
+const projects = require('./projects')
+
+
+const mongoURL = 'mongodb://localhost/architect'
+mongoose.connect(mongoURL)
 
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
@@ -20,7 +25,7 @@ const sessionOptions = {
     saveUninitialized: false, // don't create session until something stored
     secret: credentials.sessionSecret,
     proxy: false,
-    name: "sessionId",
+    name: 'sessionId',
     cookie: {
         httpOnly: true,
         secure: false,
@@ -29,11 +34,6 @@ const sessionOptions = {
     },
 }
 app.use(session(sessionOptions))
-
-
-const mongoURL = 'mongodb://localhost/architect'
-mongoose.connect(mongoURL)
-exports.db = mongoose.connection
 
 
 app.listen(8001, '127.0.0.1', () => {
@@ -56,7 +56,6 @@ app.get('/auth/verify',    auth.verify)
 
 /* Project Management */
 // TODO expose db in a better way so this import can be moved to the top
-const projects = require('./projects')
 app.post('/projects/create', projects.create)
 app.get('/projects/get',     projects.get)
 app.get('/projects/all',     projects.list)

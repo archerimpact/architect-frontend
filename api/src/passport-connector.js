@@ -2,9 +2,10 @@
 
 const schema = require('./schema')
 const User = schema.User
+
 const archutil = require('./architect-util')
 const success = archutil.success
-const error = archutil.error
+const error   = archutil.error
 
 exports.login = async function login(req, res, next) {
     // this check should probably never evaluate, since passport.authenticate will have already failed.

@@ -13,8 +13,7 @@ const userSchema = mongoose.Schema({
         lowercase: true
     },
     password: String,
-    date: Date,
-    projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
+    // email: String,
 })
 userSchema.plugin(passportLocalMongoose)
 
