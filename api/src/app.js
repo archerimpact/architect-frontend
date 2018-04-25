@@ -16,7 +16,7 @@ const auth = require('./passport-connector')
 
 const credentials = require('./credentials')
 
-const mongoURL = 'mongodb://localhost/architect'
+const mongoURL = 'mongodb://alice:archer@ds125578.mlab.com:25578/redtwine1'
 mongoose.connect(mongoURL)
 
 app.use(bodyParser.urlencoded({extended: true}))
@@ -38,7 +38,7 @@ const sessionOptions = {
 app.use(session(sessionOptions))
 
 
-app.listen(8001, '127.0.0.1', () => {
+app.listen(8000, '127.0.0.1', () => {
     console.log('Server has started')
 })
 
