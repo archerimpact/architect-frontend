@@ -55,10 +55,10 @@ app.get('/auth/verify',    auth.verify)
 
 
 /* Project Management */
-// TODO expose db in a better way so this import can be moved to the top
-app.post('/projects/create', projects.create)
-app.get('/projects/get',     projects.get)
-app.get('/projects/all',     projects.list)
+app.post('/projects/create',    projects.create)
+app.get('/projects/get',        projects.get)
+app.get('/projects/all',        projects.list)
+app.delete('/projects/delete',  projects.delete)
 
 
 /* General Routes */

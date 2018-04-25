@@ -72,3 +72,21 @@ exports.list = async function(req, res) {
 
     return success(projects, res)
 }
+
+
+exports.delete = async function(req, res) {
+    if (!checkUserAuth(req, res)) { return }
+
+    const projects = await Project
+        .remove({
+            _id: mongoose.Types.ObjectId(req.query.projectid),
+            users: {
+                '$in': [req.user._id],
+            }
+        })
+        .exec()
+
+    if (!projects || projects.n < 1) { return error('Failed to delete', res) }
+    
+    return success('Project deleted', res)
+}
