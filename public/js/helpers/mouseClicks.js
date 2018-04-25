@@ -120,9 +120,6 @@ function mouseover(d, self) {
       return (o.source == d || o.target == d) ? 1 : .05;
     });
 
-    // Tooltip
-    this.displayTooltip(d);
-
     // Text elongation
     if (this.printFull == 0) {
       d3.select(self)
@@ -138,7 +135,6 @@ function mouseover(d, self) {
 function mouseout(d, self) {
   this.hoveredNode = null;
   this.resetGraphOpacity();
-  this.hideTooltip();
   if (this.printFull != 1) {
     d3.select(self)
       .select('.node-name')
@@ -147,52 +143,43 @@ function mouseout(d, self) {
   }
 }
 
+// Canvas mouse handlers
+function clickedCanvas(self) {
+  if (d3.event.defaultPrevented) return;
+  if (this.editMode) {
+    const selection = this.svg.selectAll('.node.selected');
+    this.addNodeToSelected(selection, d3.event);
+  }
+}
+
+function dragstartCanvas() {
+  d3.event.sourceEvent.preventDefault();
+  d3.event.sourceEvent.stopPropagation();
+}
+
 // Link mouse handlers
 function mouseoverLink(d) {
   this.displayLinkInfo(d);
 }
 
-// Node text mouse handlers
-function clickedText(d, i) {
-  d3.event.stopPropagation();
-}
-
-function dragstartText(d) {
-  d3.event.sourceEvent.stopPropagation();
-}
-
-function draggingText(d) {
-  d3.event.sourceEvent.stopPropagation();
-}
-
-function dragendText(d) {
-  d3.event.sourceEvent.stopPropagation();
-}
-
-function mouseoverText(d, self) {
-  d3.event.stopPropagation();
-}
-
-function mouseoutText(d, self) {
-  d3.event.stopPropagation();
+// Node text handlers
+function stopPropagation() {
+  getD3Event().stopPropagation();
 }
 
 // SVG zoom & pan
 function zoomstart(d, self) {
-  const e = d3.event;
-  if (this.isRightClick()) {
-    this.zoomTranslate = this.zoom.translate();
-    this.zoomScale = this.zoom.scale();
-  }
+  this.zoomTranslate = this.zoom.translate();
+  this.zoomScale = this.zoom.scale();
 }
 
 function zooming(d, self) {
   if (!this.isRightClick()) {
     const e = d3.event;
     const transform = 'translate(' + (((e.translate[0] / e.scale) % gridLength) - e.translate[0] / e.scale)
-      + ',' + (((e.translate[1] / e.scale) % gridLength) - e.translate[1] / e.scale) + ')scale(' + 1 + ')';
+      + ',' + (((e.translate[1] / e.scale) % gridLength) - e.translate[1] / e.scale) + ')scale(1)';
     this.svgGrid.attr('transform', transform);
-    this.container.attr('transform', 'translate(' + e.translate + ')scale(' + e.scale + ')');
+    this.container.attr('transform', `translate(${e.translate})scale(${e.scale})`);
   }
 }
 
@@ -219,6 +206,7 @@ function doZoom(zoom_in) {
 
   // If we're already at an extent, done
   if (targetScale === extent[0] || targetScale === extent[1]) { return false; }
+  
   // If the factor is too much, scale it down to reach the extent exactly
   var clampedTargetScale = Math.max(extent[0], Math.min(extent[1], targetScale));
   if (clampedTargetScale != targetScale) {
@@ -247,12 +235,24 @@ function doZoom(zoom_in) {
   });
 }
 
+function disableZoom() {
+  this.svg.on("mousedown.zoom", null)
+    .on("touchstart.zoom", null)
+    .on("touchmove.zoom", null)
+    .on("touchend.zoom", null);
+}
+
+function zoomingButton() {
+  this.container.attr('transform', 'translate(' + this.zoom.translate() + ')scale(' + this.zoom.scale() + ')');
+  const transform = 'translate(' + (((this.zoom.translate()[0] / this.zoom.scale()) % gridLength) - this.zoom.translate()[0] / this.zoom.scale())
+    + ',' + (((this.zoom.translate()[1] / this.zoom.scale()) % gridLength) - this.zoom.translate()[1] / this.zoom.scale()) + ')scale(1)';
+  this.svgGrid.attr('transform', transform);
+}
+
 function translateGraphAroundNode(d) {
   // Center each vector, stretch, then put back
-  //d.x + (?) = this.center[0]
   var x = this.center[0] > d.x ? (this.center[0] - d.x) : -1*(d.x-this.center[0]);
-  var y = this.center[1] > d.y? (this.center[1] - d.y) : -1*(d.y-this.center[1]);
-
+  var y = this.center[1] > d.y ? (this.center[1] - d.y) : -1*(d.y-this.center[1]);
   var translate = this.zoom.translate();
   var self = this;
 
@@ -267,26 +267,4 @@ function translateGraphAroundNode(d) {
       self.zoomingButton();
     };
   })
-
-  d3.selectAll(".node")
-    .filter((node) => {
-      if (node.id === d.id) {
-        return node;
-      }
-    })
-    .classed("selected", true);
-}
-
-function disableZoom() {
-  this.svg.on("mousedown.zoom", null)
-    .on("touchstart.zoom", null)
-    .on("touchmove.zoom", null)
-    .on("touchend.zoom", null);
-}
-
-function zoomingButton() {
-  this.container.attr('transform', 'translate(' + this.zoom.translate() + ')scale(' + this.zoom.scale() + ')');
-  const transform = 'translate(' + (((this.zoom.translate()[0] / this.zoom.scale()) % gridLength) - this.zoom.translate()[0] / this.zoom.scale())
-    + ',' + (((this.zoom.translate()[1] / this.zoom.scale()) % gridLength) - this.zoom.translate()[1] / this.zoom.scale()) + ')scale(1)';
-  this.svgGrid.attr('transform', transform);
 }

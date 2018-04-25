@@ -33,6 +33,7 @@ class Graph {
     this.brushY = null;
     this.numTicks = null;
 
+    this.editMode = false; // Keep track of edit mode (add/remove/modify nodes + links)
     this.isDragging = false; // Keep track of dragging to disallow node emphasis on drag
     this.draggedNode = null; // Store reference to currently dragged node, null otherwise
     this.isBrushing = false;
@@ -43,7 +44,7 @@ class Graph {
     this.zoomTranslate = [0, 0]; // Keep track of original zoom state to restore after right-drag
     this.zoomScale = 1;
     this.zoomPressed = null;
-    this.debug = false; // Show all node/link attributes in tooltip
+    this.debug = true; // Show all node/link attributes in tooltip
 
     this.node = null;
     this.link = null;
@@ -73,8 +74,8 @@ class Graph {
     this.dragend = this.dragend.bind(this);
     this.mouseover = this.mouseover.bind(this);
     this.mouseout = this.mouseout.bind(this);
-    this.mouseoverText = this.mouseoverText.bind(this);
-    this.mouseoutText = this.mouseoutText.bind(this);
+    this.clickedCanvas = this.clickedCanvas.bind(this);
+    this.dragstartCanvas = this.dragstartCanvas.bind(this);
     this.mouseoverLink = this.mouseoverLink.bind(this);
     this.dragstart = this.dragstart.bind(this);
     this.dragging = this.dragging.bind(this);
@@ -82,6 +83,7 @@ class Graph {
     this.zoomstart = this.zoomstart.bind(this);
     this.zooming = this.zooming.bind(this);
     this.zoomend = this.zoomend.bind(this);
+    this.stopPropagation = this.stopPropagation.bind(this);
     this.initializeZoom = this.initializeZoom.bind(this);
     this.initializeBrush = this.initializeBrush.bind(this);
     this.drawHull = this.drawHull.bind(this);
@@ -131,6 +133,10 @@ class Graph {
       .attr('id', 'canvas')
       .attr("pointer-events", "all")
       .classed("svg-content", true)
+      .on('click', this.clickedCanvas)
+      .call(d3.behavior.drag()
+        .on('dragstart', this.dragstartCanvas)
+      )
       .call(this.zoom);
 
     // Disable context menu from popping up on right click
@@ -215,7 +221,7 @@ class Graph {
       .attr("x", function (d, i) { return 10 + 50 * i })
       .attr({ y: 10, width: 40, height: 20, class: "button" })
       .attr("id", function (d) { return d.label })
-      .style("fill", function (d, i) { return i ? "red" : "green" })
+      .style("fill", function (d, i) { return i ? "red" : "green" });
     // .attr("text", function(d,i){ return i ? "red" : "green"})
     // .attr("label", function(d,i){ return i ? "red" : "green"})
 
@@ -230,15 +236,15 @@ class Graph {
       self.zoomPressed = true;
       self.disableZoom();
       self.doZoom(this.id === 'zoom_in')
-    }).on('mouseup', function () {
+    })
+    .on('mouseup', function () {
       self.zoomPressed = false;
-    }).on('mouseout', function () {
+    })
+    .on('mouseout', function () {
       self.zoomPressed = false;
-    }).on('click', function() {
-      d3.event.stopPropagation();
-    }).on('dblclick', function() {
-      d3.event.stopPropagation();
-    });
+    })
+    .on('click', this.stopPropagation)
+    .on('dblclick', this.stopPropagation);
 
     this.svg.on("mouseup", () => { this.svg.call(this.zoom) });
   }
@@ -307,14 +313,14 @@ class Graph {
     // Avoid initial chaos and skip the wait for graph to drift back onscreen
     for (let i = 750; i > 0; --i) this.force.tick();      
 
-    var centerd;
-    this.nodes.map((d)=> {
-      if (d.id === centerid) {
-        centerd = d;
-      }
-    });
+    // var centerd;
+    // this.nodes.map((d)=> {
+    //   if (d.id === centerid) {
+    //     centerd = d;
+    //   }
+    // });
 
-    this.translateGraphAroundNode(centerd);
+    // this.translateGraphAroundNode(centerd);
   }
 
   bindDisplayFunctions(displayFunctions) {
@@ -368,13 +374,13 @@ class Graph {
       .attr('dy', '35px')
       .text(function (d) { return processNodeName(d.name, this.printFull); })
       .call(this.textWrap, this.printFull)
-      .on('click', this.clickedText)
-      .on('mouseover', function (d) { self.mouseoverText(d, this); })
-      .on('mouseout', function (d) { self.mouseoutText(d, this); })
+      .on('click', this.stopPropagation)
+      .on('mouseover', this.stopPropagation)
+      .on('mouseout', this.stopPropagation)
       .call(d3.behavior.drag()
-        .on('dragstart', this.dragstartText)
-        .on('dragstart', this.draggingText)
-        .on('dragstart', this.dragendText)
+        .on('dragstart', this.stopPropagation)
+        .on('drag', this.stopPropagation)
+        .on('dragend', this.stopPropagation)
       );
 
     this.node.exit().remove();
@@ -444,19 +450,15 @@ class Graph {
           this.groupSame();
         }
 
-        // e: Remove links
-        if (d3.event.keyCode == 69) {
-          this.deleteSelectedLinks();
-        }
-
         // f: Toggle stickiness of all the nodes
         else if (d3.event.keyCode == 70) {
           this.toggleFixedNodes();
         }
 
-        // e: Remove links
+        // e: Toggle edit mode
         else if (d3.event.keyCode == 69) {
-          this.deleteSelectedLinks();
+          this.editMode = !this.editMode;
+          console.log(this.editMode)
         }
 
         // g: Group selected nodes
@@ -469,14 +471,15 @@ class Graph {
           this.ungroupSelectedGroups();
         }
 
-        // r: Remove selected nodes
-        else if (d3.event.keyCode == 82 || d3.event.keyCode == 46) {
+        // r/del: Remove selected nodes/links
+        else if ((d3.event.keyCode == 82 || d3.event.keyCode == 46) && this.editMode) {
           this.deleteSelectedNodes();
         }
 
         // a: Add node linked to selected
-        else if (d3.event.keyCode == 65) {
-          this.addNodeToSelected();
+        else if (d3.event.keyCode == 65 && this.editMode) {
+          const selection = this.svg.selectAll('.node.selected');
+          this.addNodeToSelected(selection);
         }
 
         // d: Hide document nodes
@@ -549,13 +552,10 @@ Graph.prototype.dragging = dragging;
 Graph.prototype.dragend = dragend;
 Graph.prototype.mouseover = mouseover;
 Graph.prototype.mouseout = mouseout;
+Graph.prototype.clickedCanvas = clickedCanvas;
+Graph.prototype.dragstartCanvas = dragstartCanvas;
 Graph.prototype.mouseoverLink = mouseoverLink;
-Graph.prototype.clickedText = clickedText;
-Graph.prototype.dragstartText = dragstartText;
-Graph.prototype.draggingText = draggingText;
-Graph.prototype.dragendText = dragendText;
-Graph.prototype.mouseoverText = mouseoverText;
-Graph.prototype.mouseoutText = mouseoutText;
+Graph.prototype.stopPropagation = stopPropagation;
 
 //From zoomPan.js
 Graph.prototype.zoomstart = zoomstart;

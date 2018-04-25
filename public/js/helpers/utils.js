@@ -48,3 +48,12 @@ function splitAndCapitalize(str, splitChar) {
 function capitalize(str, first) {
   return str.charAt(0).toUpperCase() + (first ? str.slice(1).toLowerCase() : str.slice(1));
 }
+
+function getD3Event() {
+  if (d3.event) {
+    return d3.event.sourceEvent ? d3.event.sourceEvent : d3.event;
+  }
+
+  console.error('Attempted to access nonexistant d3 event.')
+  return null;
+}

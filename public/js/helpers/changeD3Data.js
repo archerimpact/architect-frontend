@@ -60,19 +60,24 @@ function deleteSelectedLinks() {
   this.update();
 }
 
-function addNodeToSelected() {
+function addNodeToSelected(selection, event=null) {
   /* create a new node using the globalnodeid counter
     for each node selected, create a link attaching the new node to the selected node
     remove highlighting of all nodes and links */
-  const nodeid = this.globalnodeid;
-  const newnode = { id: nodeid, name: `Node ${-1 * nodeid}`, type: "Custom" };
-  var select = this.svg.selectAll('.node.selected');
-  if (select[0].length === 0) { return; } //if nothing is selected, don't add a node for now because it flies away
+  const nodeId = this.globalnodeid;
+  let newNode;
+  if (event) {
+    const xPos = (event.x - this.zoomTranslate[0]) / this.zoomScale;
+    const yPos = (event.y - this.zoomTranslate[1]) / this.zoomScale;
+    newNode = { id: nodeId, name: `Node ${-1 * nodeId}`, type: "Custom", x: xPos, y: yPos, fixed: true};
+  } else {
+    newNode = { id: nodeId, name: `Node ${-1 * nodeId}`, type: "Custom"};
+  }
 
   this.globalnodeid -= 1;
-  this.nodes.push(newnode);
+  this.nodes.push(newNode);
 
-  select
+  selection
     .each((d) => {
       this.links.push({ id: this.globallinkid, source: this.nodes.length - 1, target: this.nodes.indexOf(d), type: "Custom" });
       this.globallinkid -= 1;
