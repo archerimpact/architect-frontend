@@ -2,15 +2,17 @@
 
 const mongoose = require('mongoose')
 const express = require('express')
+const app = express()
 const session = require('express-session')
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const bodyParser = require('body-parser')
+const credentials = require('./credentials')
 const auth = require('./passport-connector')
-const schema = require('./mongo-connector')
+const schema = require('./schema')
 const User = schema.User
 
-const app = express()
+
 
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
@@ -18,7 +20,7 @@ app.use(bodyParser.json())
 const sessionOptions = {
     resave: false, // don't save session if unmodified
     saveUninitialized: false, // don't create session until something stored
-    secret: 'sNGDGX1Kd5j4sQRYWE33',
+    secret: credentials.sessionSecret,
     proxy: false,
     name: "sessionId",
     cookie: {
@@ -38,16 +40,17 @@ passport.deserializeUser(User.deserializeUser())
 
 
 const mongoURL = 'mongodb://localhost/architect'
-const db = mongoose.connect(mongoURL)
-
+mongoose.connect(mongoURL)
+const db = mongoose.connection
+exports.db = db
 
 app.listen(8001, '127.0.0.1', () => {
     console.log('Server has started')
-});
+})
 
 app.get('/', (req, res) => {
-	console.log(User);
-});
+	
+})
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -58,6 +61,14 @@ app.post('/auth/register', auth.register)
 app.get('/auth/verify', auth.verify)
 
 
+// TODO expose db in a better way so this import can be moved to the top
+const projects = require('./projects')
+app.post('/projects/create', projects.create)
+app.get('/projects/get', projects.get)
+app.get('/projects/all', projects.list)
+
 app.get('*', function(req, res) {
-    res.status(404).send('Not found');
-});
+    res.status(404).send('Not found')
+})
+
+
