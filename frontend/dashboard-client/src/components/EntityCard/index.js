@@ -65,10 +65,10 @@ class EntityCard extends Component {
             <div className="titleName underline">
               <Link to={this.state.link}>{name}</Link>
             </div>   
-            <i>Person</i>
-            <div className="identifyingInfo">
-              <div className="info">[United Kingdom Companies House Business Registry]</div>
-            </div>
+            <i style={{marginRight: '8px'}}>Person</i>
+            <span className="identifyingInfo">
+              <span className="info">[United Kingdom Companies House Business Registry]</span>
+            </span>
           </div>
         </div>
       );

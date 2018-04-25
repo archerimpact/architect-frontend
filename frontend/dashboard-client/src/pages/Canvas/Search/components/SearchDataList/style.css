@@ -1,6 +1,9 @@
 .searchResults{
   max-width: 1000px;
   margin: 0px auto;
+  height: 350px;
+  overflow-y: scroll;
+ 	overflow-x: hidden;
 }
 
 .entity-result {
