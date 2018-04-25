@@ -31,7 +31,7 @@ class SearchBar extends Component {
             ref="query" 
             type="text" 
             placeholder="Search our connected data"
-            onChange={(e) => this.updateSearch()}
+            onChange={this.updateSearch}
           />
           <button className="search-button">
             <i className="fa fa-search fa-lg search-icon" onClick={(e) => this.submitSearch()}></i>

@@ -1,6 +1,6 @@
 .outerContainer{
   width: 100%;
-  height: 64px;
+  height: 48px;
   background-color: #555555;
   position:fixed;
   z-index: 990;
@@ -44,18 +44,18 @@
   font-size: 16px;
   color: white;
   text-align: center;
-  padding: 14px 10px;
+  padding: 8px 6px;
   margin: 0px 4px;
   text-decoration: none;
   letter-spacing: 1px;
 }
 
 .right-link:hover, .right-link:active {
-  border-bottom: 3px solid #FE6060
+  border-bottom: 2px solid #FE6060
 }
 
 .active-right-link {
-  border-bottom: 3px solid #FE6060;
+  border-bottom: 2px solid #FE6060;
 }
 .nav-dropdown:hover .nav-dropbtn, .nav-dropbtn:focus {
 }
@@ -76,7 +76,7 @@
   border: none;
   outline: none;
   color: white;
-  padding: 14px 16px;
+  padding: 8px 6px;
   background-color: #FE6060;
   font-family: inherit;
   margin: 0 2px;

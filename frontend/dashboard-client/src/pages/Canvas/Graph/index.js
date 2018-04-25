@@ -18,11 +18,16 @@ const urlPropsQueryConfig = {
   centerid: { type: UrlQueryParamTypes.integer, queryParam: 'centerid'}
 } 
 
-const height = window.innerHeight,
-  width = Math.max(window.innerWidth - 500);
-
-
 class Graph extends Component {
+
+  constructor(props) {
+    super(props);
+    let sidebarSize = props.sidebarVisible ? 500 : 0;
+    this.state = {
+      height: window.innerHeight,
+      width: Math.max(window.innerWidth - sidebarSize)
+    }
+  }
 
   componentWillMount() {
     if (this.props.search != null ){
@@ -60,7 +65,8 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, props) {
   return{
-      canvas: state.canvas
+      canvas: state.canvas,
+      sidebarVisible: state.sidebarVisible
   };
 }
 export default addUrlProps({ urlPropsQueryConfig })(withRouter(connect(mapStateToProps, mapDispatchToProps)(Graph)));

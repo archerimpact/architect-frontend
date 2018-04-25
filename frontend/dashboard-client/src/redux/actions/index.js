@@ -1,6 +1,7 @@
 import { 
   USER_LOGIN,
-  USER_LOGOUT, 
+	USER_LOGOUT, 
+	TOGGLE_SIDEBAR
   } from './actionTypes';
 
 import { logoutAccount } from "../../server/auth_routes";
@@ -27,6 +28,12 @@ export function userLogOut() {
 				console.log(err);
 			});
 	};
+}
+
+export function toggleSidebar() {
+	return {
+		type: TOGGLE_SIDEBAR
+	}
 }
 
 

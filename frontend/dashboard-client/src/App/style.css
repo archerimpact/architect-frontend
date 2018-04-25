@@ -1,7 +1,7 @@
 .main {
   margin-left: 0px;
-  min-height: calc(100% - 64px);
+  min-height: calc(100% - 48px);
   width: calc(100%);
   position: absolute;
-  margin-top: 64px;
+  margin-top: 48px;
 }

@@ -1,6 +1,7 @@
 import { 
   USER_LOGIN, 
-  USER_LOGOUT,
+	USER_LOGOUT,
+	TOGGLE_SIDEBAR
   } from '../actions/actionTypes';
 import {
 	INITIALIZE_CANVAS,
@@ -21,6 +22,11 @@ export default function (state = initialState, action) {
 					graphData: null
 				}
 			};
+		case TOGGLE_SIDEBAR:
+			return {
+				...state,
+				sidebarVisible: !state.data.sidebarVisible
+			}
 		case UPDATE_GRAPH_DATA:
 			return {
 				...state,

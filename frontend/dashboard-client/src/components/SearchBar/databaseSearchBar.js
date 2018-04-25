@@ -47,9 +47,7 @@ class DatabaseSearchBar extends Component {
     }
 
     return(
-      <div className="searchBody">
-        <SearchBar onChange={this.searchBackendText} onSubmit={this.goToSearchPage}/>
-      </div>
+      <SearchBar onChange={this.searchBackendText} onSubmit={this.goToSearchPage}/>
     );
   }
 }

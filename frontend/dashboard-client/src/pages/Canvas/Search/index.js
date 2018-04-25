@@ -1,23 +1,12 @@
 import React, { Component } from 'react';
-import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 
 import './style.css'
-
-import DatabaseSearchBar from '../../../components/SearchBar/databaseSearchBar'
 import SearchDataList from './components/SearchDataList/'
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {withRouter } from 'react-router-dom';
 import * as actions from '../Graph/graphActions';
-
-const urlPropsQueryConfig = {
-  //  type specifies the type of encoding necessary, queryParam sets which
-  //   variable name to look for in this.props  
-
-  search: { type: UrlQueryParamTypes.string, queryParam: 'search' },
-  entityid: { type: UrlQueryParamTypes.string, queryParam: 'entityid'}
-} 
 
 class BackendSearch extends Component {
 
@@ -60,18 +49,11 @@ class BackendSearch extends Component {
     } else {
       return(
         <div>
-        <div className="search-side-container">
-          <div className="search-side">
-            <div className="search-bar">
-              <DatabaseSearchBar/>
-            </div>
-            <div onClick={this.toggleSearchResults}> 
-              {this.state.showResults ? "collapse search results" : "show search results"} 
-            </div>
-            {this.state.showResults ? <SearchDataList searchItems={this.props.searchData} newgraphid={true}/> : null}
+          <div onClick={this.toggleSearchResults}> 
+            {this.state.showResults ? "collapse search results" : "show search results"} 
           </div>
-        </div> 
-      </div>
+          {this.state.showResults ? <SearchDataList searchItems={this.props.searchData} newgraphid={true}/> : null}
+        </div>
       );
     }
   }
@@ -95,4 +77,4 @@ function mapStateToProps(state, props) {
   };
 }
 
-export default addUrlProps({ urlPropsQueryConfig })(withRouter(connect(mapStateToProps, mapDispatchToProps)(BackendSearch)));
+export default (withRouter(connect(mapStateToProps, mapDispatchToProps)(BackendSearch)));

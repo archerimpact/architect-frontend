@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 
-// import {Switch } from 'react-router-dom';
-// import PrivateRoute from '../../App/PrivateRoute';
-import Entity from './Entity';
-import Search from './Search';
 import Graph from './Graph';
 import ArcherGraph from './Graph/components/GraphPackage';
+import GraphSidebar from './GraphSidebar';
 
 class Canvas extends Component {
 
@@ -15,17 +12,13 @@ class Canvas extends Component {
   }
 
   render() {
-    return( 
-        <div className="canvas">
-            <Graph graph={this.graph}/>
-            <Search graph={this.graph}/>
-            <Entity />
-            {/* <Switch>
-                <PrivateRoute path="/explore/search" component={() => {return (<Search graph={this.graph}/>)}}/>
-                <PrivateRoute path="/explore/entity" component={Entity} />
-            </Switch> */}
-        </div>
-    )}
+    return (
+      <div className="canvas">
+        <Graph graph={this.graph} />
+        <GraphSidebar graph={this.graph} />
+      </div>
+    )
+  }
 }
 
 export default Canvas;
