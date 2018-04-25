@@ -49,7 +49,7 @@ export function initializeDisplayFunctions(graph, displayFunctions) {
 function makeDeepCopy(array) {
   var newArray = [];
   array.map((object) => {
-    newArray.push(Object.assign({}, object));
+    return newArray.push(Object.assign({}, object));
   });
   return newArray;
 }
@@ -103,7 +103,7 @@ function parseNeo4jData(data) {
   data = data[0]; //because the neo4j data resides in data[0]
 
   function getidfromurl(neo4j_url) {
-    return parseInt(neo4j_url.split('/').pop()); //neo4j relationship stores the url to the nodes, id is in the last part of the url
+    return parseInt(neo4j_url.split('/').pop(), 10); //neo4j relationship stores the url to the nodes, id is in the last part of the url
   };
 
   var nodesData = data[1];
@@ -111,10 +111,10 @@ function parseNeo4jData(data) {
   var nodes, links;
 
   nodes = nodesData.map((node, i) => {
-    neo4jtoindex[parseInt(node.metadata.id)] = i; //store a dictionary mapping neo4j_id to the index
+    neo4jtoindex[parseInt(node.metadata.id, 10)] = i; //store a dictionary mapping neo4j_id to the index
     if (typeof(node.metadata) === "undefined") { console.log("error in that node.metadata is undefined"); }    
     return {
-      id: parseInt(node.metadata.id),
+      id: parseInt(node.metadata.id, 10),
       type: node.metadata.labels[0],
       name: node.data.name,
       resigned_on: node.data.resigned_on,

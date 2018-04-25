@@ -16,7 +16,6 @@ class EntityCard extends Component {
 
   fetchSearchQuery() {
     let qs = queryString.parse(this.props.location.search);
-    let path = this.props.location.pathname
     // let newEntity = this.props.nodeItem.metadata.id;
     let newEntityid = this.props.nodeItem._source ? this.props.nodeItem._source.neo4j_id : this.props.nodeItem.metadata.id
     // this.props.history.push('/dresses?color=blue'+'?entity='+entity);

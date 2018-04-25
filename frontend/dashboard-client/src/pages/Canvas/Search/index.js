@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 
 import './style.css'
@@ -8,8 +8,6 @@ import SearchDataList from './components/SearchDataList/'
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-// import * as actions from '../../redux/actions/';
-import * as server from '../../../server/';
 import {withRouter } from 'react-router-dom';
 import * as actions from '../Graph/graphActions';
 
@@ -34,7 +32,7 @@ class BackendSearch extends Component {
   componentWillMount(){
     /* handles the case when the URL containts the search params and you're
       linking there directly. Only search if there's params */
-    if (this.props.search != null ){
+    if (this.props.search !== null ){
       this.props.actions.fetchSearchResults(this.props.graph, this.props.search);
     }    
   }
@@ -42,12 +40,12 @@ class BackendSearch extends Component {
   componentWillReceiveProps(nextprops){
     /* handles the case when you are already on backend search and are
       searching again in the nav bar; react only recognizes that there's nextprops */
-    if (this.props.search != null && this.props.search != nextprops.search){
+    if (this.props.search !== null && this.props.search !== nextprops.search){
       if (this.props.entity !== null && this.props.entity !== undefined) {
         this.props.actions.fetchGraphFromId(this.props.entity);
-        debugger
       }
       this.props.actions.fetchSearchResults(this.props.search);
+      this.setState({showResults: true})
     }
   }
 
@@ -55,7 +53,7 @@ class BackendSearch extends Component {
     return this.setState({showResults: !this.state.showResults})
   }
   render() {
-    if (this.props.searchData == null) {
+    if (this.props.searchData === null) {
       return (
         <div>Loading</div>
       );

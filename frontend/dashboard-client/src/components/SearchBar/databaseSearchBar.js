@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import queryString from 'query-string';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import {withRouter} from 'react-router-dom';
 import './style.css'

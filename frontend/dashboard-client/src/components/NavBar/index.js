@@ -26,9 +26,9 @@ class NavBar extends Component {
 	handleClickOutside(event) {
 		let targetClass = event.target.className;
 		if (targetClass === 'nav-dropbtn') {
-			return this.toggleDropdown();;
+			return this.toggleDropdown();
 		} else {
-			if (this.state.dropdownShow === 'block' && targetClass != 'nav-dropdown-content-button' && targetClass != 'nav-link drop-nav-link') {
+			if (this.state.dropdownShow === 'block' && targetClass !== 'nav-dropdown-content-button' && targetClass !== 'nav-link drop-nav-link') {
 				this.setState({ dropdownShow: 'none' });
 			}
 			return true;

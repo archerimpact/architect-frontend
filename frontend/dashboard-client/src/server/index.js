@@ -2,8 +2,6 @@ import 'whatwg-fetch';
 import { configData } from '../config.js';
 import axios from 'axios';
 
-var qs = require('qs');
-
 export function searchBackendText(searchQuery) {
   /* Takes in a searchQuery parameter and sends a query directly to the hosted elastic
     search instance. Query format below is the standard for elastic. Matches only if the
@@ -68,7 +66,7 @@ export function getBackendNode(neo4j_id){
   var data = {
     "query" : "MATCH (node) WHERE ID(node)={neo4j_id} RETURN node",
     params: {
-      neo4j_id: parseInt(neo4j_id)
+      neo4j_id: parseInt(neo4j_id, 10)
     }   
   };
   return new Promise(function(fulfill, reject) {
@@ -141,7 +139,7 @@ export function getBackendRelationships(neo4j_id){
   var data = {
   'query' : 'MATCH (node) WHERE id(node)={neo4j_id} MATCH (node)-[r]-(end) RETURN r, node, end',
     'params': {
-      'neo4j_id': parseInt(neo4j_id)
+      'neo4j_id': parseInt(neo4j_id, 10)
     } 
   };
 
@@ -188,7 +186,7 @@ export function getGraph(neo4j_id){
   var data = {
   "query" : "MATCH path=(g)-[r*0..5]-(p) WHERE id(g)={neo4j_id} UNWIND r as rel UNWIND nodes(path) as n RETURN COLLECT(distinct rel) AS collected, COLLECT(distinct n) as nodes, g",
     'params': {
-      'neo4j_id': parseInt(neo4j_id)
+      'neo4j_id': parseInt(neo4j_id, 10)
     } 
   };
 

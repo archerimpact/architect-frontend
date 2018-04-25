@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 
 import { connect } from 'react-redux';
@@ -24,11 +24,6 @@ const height = window.innerHeight,
 
 class Graph extends Component {
 
-  constructor(props) {
-    super(props);
-
-  }
-
   componentWillMount() {
     if (this.props.search != null ){
       if (this.props.graphid !== null && this.props.graphid !== undefined) {
@@ -45,7 +40,7 @@ class Graph extends Component {
     if (this.props.graphid !== nextprops.graphid) {
       this.props.actions.fetchGraphFromId(this.props.graph, nextprops.graphid);
     } else if (this.props.entityid != null && this.props.entityid !== nextprops.entityid) {
-      this.props.graph.translateGraphAroundId(parseInt(nextprops.entityid))
+      this.props.graph.translateGraphAroundId(parseInt(nextprops.entityid, 10))
     }
   }
 

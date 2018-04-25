@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import {Switch } from 'react-router-dom';
-import PrivateRoute from '../../App/PrivateRoute';
+// import {Switch } from 'react-router-dom';
+// import PrivateRoute from '../../App/PrivateRoute';
 import Entity from './Entity';
 import Search from './Search';
 import Graph from './Graph';
