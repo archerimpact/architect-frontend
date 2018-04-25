@@ -6,10 +6,27 @@
   font-style: normal;
 }
 
-.entityInfo{
-  padding: 0;
-  margin: 34px auto;
-  max-width: 1000px;
-  background-color:white;
+
+.entity-side-container {
+  /* height: calc(100% - 12px) ; */
+  max-height: 100px ;
+  /* max-height: 480px ; */
+	position: absolute;
+  right: 0px;
+  margin: 8px 8px 0px 0px;
+  bottom: 100px;
+  z-index: 10;
+  transition: left 0.5s;
+  -webkit-transform: translateX(0px);
+  transform: translateX(0px);
+  transition-property: -webkit-transform,transform,visibility,opacity;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.0,0.0,0.2,1);
+  overflow-y: scroll;
+ 	overflow-x: hidden;
+  width: 500px;
+  border: 1px;
+  background-color: #FFFFFF;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 

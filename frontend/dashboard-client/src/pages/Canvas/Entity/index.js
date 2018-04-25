@@ -17,14 +17,14 @@ import { withRouter } from 'react-router-dom';
 
 const tab_style = {
   backgroundColor: '#FFFFFF',
-  color:'#747474'
+  color: '#747474'
 };
 
 class Entity extends Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state ={
+    this.state = {
       nodeData: null,
       relationshipData: null,
       graphData: null
@@ -53,7 +53,7 @@ class Entity extends Component {
     server.getBackendNode(neo4j_id)
       .then(data => {
         //returns items in the format: [neo4j_data]
-        this.setState({nodeData: data[0]})
+        this.setState({ nodeData: data[0] })
       })
       .catch(err => {
         console.log(err)
@@ -62,7 +62,7 @@ class Entity extends Component {
       .then(data => {
         /* neo4j returns items in this format: [connection, startNode, endNode] */
 
-        this.setState({relationshipData: data})
+        this.setState({ relationshipData: data })
       })
       .catch(err => {
         console.log(err)
@@ -71,34 +71,27 @@ class Entity extends Component {
 
 
 
-  render(){
-    if (this.state.nodeData== null || this.state.relationshipData == null) {
+  render() {
+    if (this.state.nodeData == null || this.state.relationshipData == null) {
       return (
-        <div>Loading</div>
+        null
       );
     } else {
-      return(
+      return (
         <div>
-          <div className="search-side-container">
-            <div className="search-side">
-              <div className="search-bar">
-                <DatabaseSearchBar/>
-              </div>
-              <div className="entityInfo">
-                <EntityCard nodeItem={this.state.nodeData[0]} />
-                <hr></hr>
-                <SummaryInfo nodeItem={this.state.nodeData[0]} nodeRelationships={this.state.relationshipData}/>
-                <div className="tabs" style={{width:'100%'}}>
-                  <div className="tab">
-                    <div label={"Connections (" + this.state.relationshipData.length + ")"} type="default" style={tab_style}>
-                      <div className="connections-tab">
-                        <ConnectionsTab nodeRelationships={this.state.relationshipData}/>
-                      </div>
-                    </div>
+          <div className="entity-side-container">
+            <EntityCard nodeItem={this.state.nodeData[0]} />
+            <hr></hr>
+            <SummaryInfo nodeItem={this.state.nodeData[0]} nodeRelationships={this.state.relationshipData} />
+            <div className="tabs" style={{ width: '100%' }}>
+              <div className="tab">
+                <div label={"Connections (" + this.state.relationshipData.length + ")"} type="default" style={tab_style}>
+                  <div className="connections-tab">
+                    <ConnectionsTab nodeRelationships={this.state.relationshipData} />
                   </div>
-                </div>          
+                </div>
               </div>
-            </div> 
+            </div>
           </div>
         </div>
       );
@@ -114,7 +107,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, props) {
-  return{
+  return {
     currentNode: state.currentNode
   };
 }
