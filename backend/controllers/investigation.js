@@ -136,6 +136,12 @@ async function checkUserAuth(req, res) {
 async function checkUserProjAuth(req, res) {
   const userAuth = await checkUserAuth(req, res);
   if (!userAuth) {
+    res.status(401).json({ success: false, error: 'You must be logged in to perform this action.' });
+    return false;
+  }
+
+  if (!req.query.projectid) {
+    res.status(400).json({ success: false, error: 'You must specify a project.' });
     return false;
   }
 
@@ -162,11 +168,6 @@ async function checkUserProjAuth(req, res) {
   }
 
   return true;
-}
-
-async function getProject(projId) {
-  const project = await db.collection('projects').findOne({_id: projId});
-  return project;
 }
 
 
@@ -310,26 +311,29 @@ app.get('/investigation/project', async function(req, res) {
   const projAuth = await checkUserProjAuth(req, res);
   if (!projAuth) { return }
 
-  const project = await getProject(mongoose.Types.ObjectId(req.query.projectid));
+  const project = await db.collection('projects').findOne({_id: projId});
 
   // TODO remove this array wrapper -- the frontend needs to be updated about this change.
-  return res.status(200).send([project]);
+  return res.status(200).send(project);
 });
 
 app.post('/investigation/entity', async function(req, res){
-    var newEntity = saveEntity(req.body.name, req.body.type, req.body.sources, req.body.neo4jid)
-    var entityid = newEntity._id
-    
-    /* Updates the project document to include this entity in its list of entities. */
-    db.collection('projects').update(
-      {_id : mongoose.Types.ObjectId(req.body.project)},
-      {$push: {entities: entityid}}
-    )
-    .then(data => {
-      console.log("Updated project 1/1.")
-      res.send("Sucessful adding of entity")
-    })
-    .catch((err) => {console.log(err)});
+  const projAuth = await checkUserProjAuth(req, res);
+  if (!projAuth) { return }
+
+  var newEntity = saveEntity(req.body.name, req.body.type, req.body.sources, req.body.neo4jid)
+  var entityid = newEntity._id
+  
+  /* Updates the project document to include this entity in its list of entities. */
+  db.collection('projects').update(
+    {_id : mongoose.Types.ObjectId(req.body.projectid)},
+    {$push: {entities: entityid}}
+  )
+  .then(data => {
+    console.log("Updated project 1/1.")
+    res.send("Sucessful adding of entity")
+  })
+  .catch((err) => {console.log(err)});
 })
 
 app.delete('/investigation/entity', async function(req, res) {
@@ -489,11 +493,13 @@ function vertexesToResponse(vertexes, type, callback) {
 app.post('/investigation/project/entityExtractor', async function(req, res) {
   /* Submits a string that is saved as a source and calls the entity 
       extractor on it */
+  const projAuth = await checkUserProjAuth(req, res);
+  if (!projAuth) { return }
 
   callEntityExtractor(req.body.text, function(response) {
-    var vertid = saveDoc(req.body.text, req.body.title, response.entities, "")
+    const vertId = saveDoc(req.body.text, req.body.title, response.entities, "")
     db.collection('projects').update(
-      {_id : mongoose.Types.ObjectId(req.body.project)},
+      {_id : mongoose.Types.ObjectId(req.body.projectid)},
       {$push: {sources: vertid}}
     )
     .then((data) => {res.send(200)})
@@ -506,8 +512,11 @@ app.get('/investigation/project/entities', async function(req, res) {
   const projAuth = await checkUserProjAuth(req, res);
   if (!projAuth) { return }
 
-  var projectid = mongoose.Types.ObjectId(req.query.projectid)
-  db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
+  var projectid = mongoose.Types.ObjectId(req.query.projectid);
+
+  db.collection('projects')
+    .find({_id: mongoose.Types.ObjectId(projectid)})
+    .toArray()
     .then((projects) => {
       db.collection('vertexes').find({_id: {$in: projects[0].entities}, type: "Entity"}).toArray()
         .then((vertexes) => {
@@ -556,24 +565,33 @@ app.get('/investigation/project/sources', async function(req, res) {
   if (!projAuth) { return }
 
   var projectid = req.query.projectid
-  db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
-  .then((projects) => {
-    db.collection('vertexes').find({_id: {$in: projects[0].sources}, type: "Source"}).toArray()
-    .then((vertexes) => {
 
-      /* if the project's array of sources doesn't exist, return an empty array */
-      if (vertexes.length === 0) {
-        console.log("empty sources");
-        res.send([]);
-      }
-      vertexesToResponse(vertexes, "Source", function(response) {
-        if (response.length === vertexes.length) {
-          res.send(response);
-        };
-      });
-    });
+  let projects = await db.collection('projects').find({ users: mongoose.Types.ObjectId(req.user._id) });
+  if (!projects) {
+    return res.status(400).json({ success: false, error: 'An error occurred while retrieving projects' });
+  }
+  projects = await projects.toArray();
+
+  let vertexes = await db.collection('vertexes').find({_id: {$in: projects[0].sources}, type: "Source"});
+  if (!vertexes) {
+
+  }
+  vertexes = await vertexes.toArray();
+
+  /* if the project's array of sources doesn't exist, return an empty array */
+  if (vertexes.length === 0) {
+    res.status(200).json([]);
+  }
+
+  // TODO remove this callback
+  vertexesToResponse(vertexes, "Source", function(response) {
+    if (response.length === vertexes.length) {
+      res.status(200).json(response);
+    }
   });
+
 });
+
 
 app.get('/investigation/projectList', async function(req, res) {
   /* Return an array of all project ids owned by the current user */
@@ -591,49 +609,50 @@ app.get('/investigation/projectList', async function(req, res) {
   res.status(200).json(projects);
 });
 
-app.get('/investigation/vertexList', async function(req, res) {
-    // gets all vertexes associated with a project
-    const projAuth = await checkUserProjAuth(req, res);
-    if (!projAuth) { return }
 
-    var projectid = mongoose.Types.ObjectId(req.query.projectid)
-    db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
-    .then((projects) => {
-      var vertexes = projects[0].entities.concat(projects[0].sources)
-      db.collection('vertexes').find({_id: {$in: vertexes}}).toArray()
-        .then((vertexes) => {
-          if (vertexes.length === 0) {
-            res.send([])
-          } else {
-            res.send(vertexes)
-          }
-        })
-        .catch((err)=>{console.log(err)})    
-    })
-    .catch((err)=>{console.log(err)})    
+app.get('/investigation/vertexList', async function(req, res) {
+  // gets all vertexes associated with a project
+  const projAuth = await checkUserProjAuth(req, res);
+  if (!projAuth) { return }
+
+  const projectid = mongoose.Types.ObjectId(req.query.projectid);
+  let projects = await db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)});
+  projects = await projects.toArray();
+
+  const vertexes = projects[0].entities.concat(projects[0].sources);
+  let v = await db.collection('vertexes').find({_id: {$in: vertexes}});
+
+  if (!v) {
+    res.status(400).json({ success: 'false', message: 'No vertexes found' });
+  }
+
+  v = await v.toArray()
+  res.status(200).json(v);
+
 });
+
 
 app.get('/investigation/connectionList', async function(req, res) {
-    // Gets all connections associated with a project
+    /* Gets all connections associated with a project */
 
-    const projAuth = await checkUserProjAuth(req, res);
-    if (!projAuth) { return }
+  const projAuth = await checkUserProjAuth(req, res);
+  if (!projAuth) { return }
 
-    var projectid = mongoose.Types.ObjectId(req.query.projectid)
-    db.collection('projects').find({_id: mongoose.Types.ObjectId(projectid)}).toArray()
-    .then((projects) => {
-      db.collection('connections').find({_id: {$in: projects[0].connections}}).toArray()
-        .then((connections) => {
-          if (connections.length === 0) {
-            res.send([])
-          } else{
-            res.send(connections)
-          }
-        })
-        .catch((err)=>{console.log(err)})    
-    })
-    .catch((err)=>{console.log(err)}) 
+  const projectid = mongoose.Types.ObjectId(req.query.projectid);
+  let projects = await db.collection('projects').find({_id: projectid});
+  projects     = await projects.toArray();
+    
+  let connections = await db.collection('connections').find({_id: {$in: projects[0].connections}});
+
+  if (!connections) {
+    res.status(400).json({ success: false, error: 'No connections found' });
+  }
+
+  connections = await connections.toArray();
+  res.status(200).json(connections);
+
 });
+
 
 app.get('/investigation/searchSources', async function(req, res) {
     var phrase = req.query.phrase;
