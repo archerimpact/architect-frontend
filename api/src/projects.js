@@ -85,7 +85,9 @@ exports.delete = async function(req, res) {
         })
         .exec()
 
-    if (!projects || projects.n < 1) { return error('Failed to delete', res) }
-    
+    if (!projects || projects.ok !== 1 || projects.n < 1) {
+        return error('Failed to delete', res)
+    }
+
     return success('Project deleted', res)
 }

@@ -1,18 +1,20 @@
 'use strict'
 
 const mongoose = require('mongoose')
-const express = require('express')
-const app = express()
-const session = require('express-session')
-const passport = require('passport')
-const LocalStrategy = require('passport-local')
-const bodyParser = require('body-parser')
-const credentials = require('./credentials')
-const auth = require('./passport-connector')
 const schema = require('./schema')
 const User = schema.User
 const projects = require('./projects')
 
+const express = require('express')
+const session = require('express-session')
+const bodyParser = require('body-parser')
+const app = express()
+
+const passport = require('passport')
+const LocalStrategy = require('passport-local')
+const auth = require('./passport-connector')
+
+const credentials = require('./credentials')
 
 const mongoURL = 'mongodb://localhost/architect'
 mongoose.connect(mongoURL)
@@ -21,15 +23,15 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 
 const sessionOptions = {
-    resave: false, // don't save session if unmodified
-    saveUninitialized: false, // don't create session until something stored
+    resave: false,              // don't save session if unmodified
+    saveUninitialized: false,   // don't create session until something stored
     secret: credentials.sessionSecret,
     proxy: false,
     name: 'sessionId',
     cookie: {
         httpOnly: true,
         secure: false,
-        maxAge: 10080000, // 1000*60*60*24*7 // Note persistent vs session cookies
+        maxAge: 10080000,       // 1000*60*60*24*7 // Note persistent vs session cookies
         expires: new Date(new Date().getTime() + (1000*60*60*24*7)) // 7 days
     },
 }
