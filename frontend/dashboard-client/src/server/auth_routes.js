@@ -2,7 +2,7 @@ import axios from "axios";
 import { configData } from '../config.js';
 
 let api_inst = axios.create({
-    baseURL: configData.backend_url+'/api',
+    baseURL: configData.backend_url,
     timeout: 2000,
     headers: {},
     withCredentials: true
@@ -13,7 +13,7 @@ export const registerAccount = async (dataObj) => {
         "username": dataObj.username,
         "password": dataObj.password
     };
-    let responseData = await api_inst.post("/register", payload);
+    let responseData = await api_inst.post("/auth/register", payload);
     return responseData.data;
 };
 
@@ -22,12 +22,12 @@ export const authenticateAccount = async (dataObj) => {
         "username": dataObj.username,
         "password": dataObj.password
     };
-    let responseData = await api_inst.post("/login", payload);
+    let responseData = await api_inst.post("/auth/login", payload);
     return responseData.data;
 };
 
 export const isAuthenticated = async () => {
-    let responseData = await api_inst.get('/checkauth')
+    let responseData = await api_inst.get('/auth/verify')
     return responseData.data.success;
 };
 
@@ -40,7 +40,7 @@ export function isAuthedBool() {
 }
 
 export const logoutAccount = async () => {
-    let responseData = await api_inst.get('/logout');
+    let responseData = await api_inst.get('/auth/logout');
     return responseData;
 };
 
