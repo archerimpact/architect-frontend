@@ -11,6 +11,7 @@ const success   = archutil.success
 const error     = archutil.error
 const authError = archutil.authError
 
+
 function checkUserAuth(req, res) {
     if (!req.user) {
         authError('Must be signed in to access a project', res)
@@ -20,14 +21,22 @@ function checkUserAuth(req, res) {
 }
 
 
+function validate(str) {
+    // TODO write real validation
+    return str
+}
+
+
 exports.create = async function(req, res) {
     if (!checkUserAuth(req, res)) { return }
 
     const projId   = mongoose.Types.ObjectId()
-    const projName = req.body.name || 'Untitled'
+    const projName = validate(req.body.name) || 'Untitled'
+    const projDesc = validate(req.body.description) || ''
     const project  = {
         _id: projId,
         name: projName,
+        description: projDesc,
         users: [req.user._id],
       }
 
