@@ -213,7 +213,7 @@ class Graph {
   initializeMarkers() {
     this.svg.append('defs')
       .append('marker')
-        .attr('id', 'end-arrow')
+        .attr('id', 'end-arrow-gray')
         .attr('viewBox', '5 -5 10 10')
         .attr('refX', 10)
         .attr('markerWidth', 5)
@@ -223,6 +223,20 @@ class Graph {
         .attr('d', 'M 0,-5 L 10,0 L 0,5')
         .style('stroke', '#545454')
         .style('fill', '#545454')
+        .style('fill-opacity', 1);
+
+    this.svg.append('defs')
+      .append('marker')
+        .attr('id', 'end-arrow-blue')
+        .attr('viewBox', '5 -5 10 10')
+        .attr('refX', 10)
+        .attr('markerWidth', 5)
+        .attr('markerHeight', 5)
+        .attr('orient', 'auto')
+      .append('path')
+        .attr('d', 'M 0,-5 L 10,0 L 0,5')
+        .style('stroke', '#0d77e2')
+        .style('fill', '#0d77e2')
         .style('fill-opacity', 1);
   }
 
@@ -349,7 +363,7 @@ class Graph {
     this.link
       .enter().append('line')
       .attr('class', 'link')
-      .attr('marker-end', 'url(#end-arrow)')
+      .attr('marker-end', 'url(#end-arrow-gray)')
       .style('stroke-dasharray', function (d) { return d.type === 'possibly_same_as' ? ('3,3') : false; })
       .on('mouseover', this.mouseoverLink);
 

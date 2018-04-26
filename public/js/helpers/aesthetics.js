@@ -1,21 +1,23 @@
 
 // Link highlighting
 function highlightLinksFromAllNodes() {
-  this.svg.selectAll('.link')
+  this.link
     .classed('selected', (d, i) => {
       return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index];
-    });
+    })
+    .attr('marker-end', function(d) { return d3.select(this).classed('selected') ? 'url(#end-arrow-blue)' : 'url(#end-arrow-gray)'});
 }
 
 function highlightLinksFromNode(node) {
   node = node[0].__data__.index;
-  this.svg.selectAll('.link')
+  this.link
     .filter((d, i) => {
       return d.source.index == node || d.target.index == node;
     })
     .classed('selected', (d, i) => {
       return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index];
-    });
+    })
+    .attr('marker-end', function(d) { return d3.select(this).classed('selected') ? 'url(#end-arrow-blue)' : 'url(#end-arrow-gray)'});
 }
 
 // Fill group nodes blue
