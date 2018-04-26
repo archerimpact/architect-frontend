@@ -4,7 +4,11 @@ import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import Entity from '../Entity';
 import Search from '../Search';
 import DatabaseSearchBar from '../../../components/SearchBar/databaseSearchBar';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
+import './style.css';
+import * as actions from '../../../redux/actions';
 
 const urlPropsQueryConfig = {
   search: { type: UrlQueryParamTypes.string, queryParam: 'search' },
@@ -32,16 +36,33 @@ class GraphSidebar extends Component {
 
   render() {
     return (
-      <div className="search-side-container">
-        <div className="search-side">
-          <div className="search-bar">
-            <DatabaseSearchBar/>
-          </div>
-          {this.state.renderSearch ? <Search graph={this.props.graph} search={this.props.search} entity/> : null}
-          {this.state.renderEntity ? <Entity /> : null}
+      <div>
+        <div className="sidebar-collapse" onClick={() => this.props.dispatch(actions.toggleSidebar())}>
+          <p>&#9656;</p>
         </div>
-      </div>         
+        <div className="search-side-container">
+          <div className="search-side">
+            <div className="search-bar">
+              <DatabaseSearchBar/>
+            </div>
+            {this.state.renderSearch ? <Search graph={this.props.graph} search={this.props.search} entity/> : null}
+            {this.state.renderEntity ? <Entity /> : null}
+          </div>
+        </div>     
+      </div>    
     );
   }
 }
-export default addUrlProps({ urlPropsQueryConfig })(withRouter(GraphSidebar));
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actions, dispatch),
+    dispatch: dispatch,
+  };
+}
+
+function mapStateToProps(state, props) {
+  return {};
+}
+
+export default addUrlProps({ urlPropsQueryConfig })(withRouter(connect(mapStateToProps, mapDispatchToProps)(GraphSidebar)));
