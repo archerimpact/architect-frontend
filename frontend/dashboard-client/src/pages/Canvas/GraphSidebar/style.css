@@ -1,0 +1,12 @@
+.sidebar-collapse {
+  position: absolute;
+  top: calc(10px + 8px);
+  width: 20px;
+  right: calc(500px + 10px - 1px);
+  border: 1px solid black;
+  height: 50px;
+  cursor: pointer;
+  border-right: 1px solid #D4D4D4;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.3);
+  background-color: #fff;
+}

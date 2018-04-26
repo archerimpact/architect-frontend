@@ -23,7 +23,6 @@ class Graph extends Component {
   constructor(props) {
     super(props);
     let sidebarSize = props.sidebarVisible ? 500 : 0;
-    debugger
     this.state = {
       height: window.innerHeight,
       width: Math.max(window.innerWidth - sidebarSize)
@@ -65,7 +64,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, props) {
-  debugger;
   return{
       sidebarVisible: state.data.sidebarVisible
   };

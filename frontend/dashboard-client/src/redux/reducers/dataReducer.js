@@ -1,5 +1,5 @@
-import { 
-  USER_LOGIN, 
+import {
+  USER_LOGIN,
 	USER_LOGOUT,
 	TOGGLE_SIDEBAR
   } from '../actions/actionTypes';
@@ -23,9 +23,10 @@ export default function (state = initialState, action) {
 				}
 			};
 		case TOGGLE_SIDEBAR:
+            // debugger;
 			return {
 				...state,
-				sidebarVisible: !state.data.sidebarVisible
+				sidebarVisible: !state.sidebarVisible
 			}
 		case UPDATE_GRAPH_DATA:
 			return {
