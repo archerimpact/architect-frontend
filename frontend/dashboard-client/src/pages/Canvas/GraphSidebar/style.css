@@ -2,7 +2,6 @@
   position: absolute;
   top: calc(10px + 8px);
   width: 20px;
-  right: calc(500px + 10px - 1px);
   border: 1px solid black;
   height: 50px;
   cursor: pointer;
@@ -11,6 +10,10 @@
   background-color: #fff;
 }
 
-.attached-to-right-edge {
+.edge-attached {
   right: 0;
+}
+
+.sidebar-attached {
+  right: calc(500px + 10px - 1px);
 }
