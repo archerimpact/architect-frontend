@@ -40,15 +40,18 @@ class GraphSidebar extends Component {
         <div className="sidebar-collapse" onClick={() => this.props.dispatch(actions.toggleSidebar())}>
           <p>&#9656;</p>
         </div>
-        <div className="search-side-container">
-          <div className="search-side">
-            <div className="search-bar">
-              <DatabaseSearchBar/>
+        { !this.props.sidebarVisible ?
+          null :
+          <div className="search-side-container">
+            <div className="search-side">
+              <div className="search-bar">
+                <DatabaseSearchBar/>
+              </div>
+              {this.state.renderSearch ? <Search graph={this.props.graph} search={this.props.search} entity/> : null}
+              {this.state.renderEntity ? <Entity /> : null}
             </div>
-            {this.state.renderSearch ? <Search graph={this.props.graph} search={this.props.search} entity/> : null}
-            {this.state.renderEntity ? <Entity /> : null}
           </div>
-        </div>     
+        }     
       </div>    
     );
   }
@@ -62,7 +65,9 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, props) {
-  return {};
+  return {
+    sidebarVisible: state.data.sidebarVisible
+  };
 }
 
 export default addUrlProps({ urlPropsQueryConfig })(withRouter(connect(mapStateToProps, mapDispatchToProps)(GraphSidebar)));
