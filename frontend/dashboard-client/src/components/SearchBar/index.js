@@ -26,17 +26,17 @@ class SearchBar extends Component {
     return(
       <div className="searchBody">
         <div className="search-input-container">
-        <form onSubmit={() => this.submitSearch()}>
+        <form className="search-form" onSubmit={() => this.submitSearch()}>
           <input className="search-input" 
             ref="query" 
             type="text" 
             placeholder="Search our connected data"
             onChange={this.updateSearch}
           />
-          <button className="search-button">
-            <i className="fa fa-search fa-lg search-icon" onClick={(e) => this.submitSearch()}></i>
-          </button>
         </form>
+        <div className="search-button">
+            <span className="fa fa-search fa-lg search-icon" onClick={(e) => this.submitSearch()}></span>
+          </div>
         </div>
       </div>
     );
