@@ -116,7 +116,7 @@ function mouseover(d, self) {
       .style('stroke-opacity', .15)
       .style('fill-opacity', .15);
 
-    this.link.style('stroke-opacity', function (o) {
+    this.link.style('opacity', function (o) {
       return (o.source == d || o.target == d) ? 1 : .05;
     });
 
@@ -206,7 +206,7 @@ function doZoom(zoom_in) {
 
   // If we're already at an extent, done
   if (targetScale === extent[0] || targetScale === extent[1]) { return false; }
-  
+
   // If the factor is too much, scale it down to reach the extent exactly
   var clampedTargetScale = Math.max(extent[0], Math.min(extent[1], targetScale));
   if (clampedTargetScale != targetScale) {

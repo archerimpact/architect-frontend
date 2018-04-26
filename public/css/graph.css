@@ -61,7 +61,7 @@ button:focus {
   stroke: #545454;
   stroke-width: 3px;
   transition-duration: 50ms;
-  transition-property: stroke-opacity;
+  transition-property: opacity;
   transition-delay: 75ms;
 }
 

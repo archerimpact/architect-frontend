@@ -29,7 +29,7 @@ function resetGraphOpacity() {
   this.isEmphasized = false;
   this.node.style('stroke-opacity', 1)
     .style('fill-opacity', 1);
-  this.link.style('stroke-opacity', 1);
+  this.link.style('opacity', 1);
 }
 
 // Wrap text

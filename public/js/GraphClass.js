@@ -12,11 +12,11 @@
 // import './changeD3Data.js'
 
 const icons = {
-  "person": "",
-  "Document": "",
-  "corporation": "",
-  "group": "",
-  "same_as_group": ""
+  'person': '',
+  'Document': '',
+  'corporation': '',
+  'group': '',
+  'same_as_group': ''
 };
 
 const maxTextLength = 20;
@@ -131,8 +131,8 @@ class Graph {
   initializeSVG() {
     const svg = d3.select('#graph-container').append('svg')
       .attr('id', 'canvas')
-      .attr("pointer-events", "all")
-      .classed("svg-content", true)
+      .attr('pointer-events', 'all')
+      .classed('svg-content', true)
       .on('click', this.clickedCanvas)
       .call(d3.behavior.drag()
         .on('dragstart', this.dragstartCanvas)
@@ -210,43 +210,56 @@ class Graph {
       .size([this.width, this.height]);
   }
 
+  initializeMarkers() {
+    this.svg.append('defs')
+      .append('marker')
+        .attr('id', 'end-arrow')
+        .attr('viewBox', '5 -5 10 10')
+        .attr('refX', 10)
+        .attr('markerWidth', 5)
+        .attr('markerHeight', 5)
+        .attr('orient', 'auto')
+      .append('path')
+        .attr('d', 'M 0,-5 L 10,0 L 0,5')
+        .style('stroke', '#545454')
+        .style('fill', '#545454')
+        .style('fill-opacity', 1);
+  }
+
   initializeZoomButtons() {
     var self = this;
-    this.svg.selectAll(".button")
+    this.svg.selectAll('.button')
       //.data(['zoom_in', 'zoom_out'])
       .data([{ label: 'zoom_in' }, { label: 'zoom_out' }])
       .enter()
-      //.append("text").text("hi")
-      .append("rect")
-      .attr("x", function (d, i) { return 10 + 50 * i })
-      .attr({ y: 10, width: 40, height: 20, class: "button" })
-      .attr("id", function (d) { return d.label })
-      .style("fill", function (d, i) { return i ? "red" : "green" });
-    // .attr("text", function(d,i){ return i ? "red" : "green"})
-    // .attr("label", function(d,i){ return i ? "red" : "green"})
+      //.append('text').text('hi')
+      .append('rect')
+      .attr('x', function (d, i) { return 10 + 50 * i })
+      .attr({ y: 10, width: 40, height: 20, class: 'button' })
+      .attr('id', function (d) { return d.label })
+      .style('fill', function (d, i) { return i ? 'red' : 'green' });
+    // .attr('text', function(d,i){ return i ? 'red' : 'green'})
+    // .attr('label', function(d,i){ return i ? 'red' : 'green'})
 
-    // svg.selectAll(".button").append("text").text("hi")
+    // svg.selectAll('.button').append('text').text('hi')
 
     // Control logic to zoom when buttons are pressed, keep zooming while they are
     // pressed, stop zooming when released or moved off of, not snap-pan when
     // moving off buttons, and restore pan on mouseup.
 
     this.zoomPressed = false;
-    d3.selectAll('.button').on('mousedown', function () {
-      self.zoomPressed = true;
-      self.disableZoom();
-      self.doZoom(this.id === 'zoom_in')
-    })
-    .on('mouseup', function () {
-      self.zoomPressed = false;
-    })
-    .on('mouseout', function () {
-      self.zoomPressed = false;
-    })
-    .on('click', this.stopPropagation)
-    .on('dblclick', this.stopPropagation);
+    d3.selectAll('.button')
+      .on('mousedown', function () {
+        self.zoomPressed = true;
+        self.disableZoom();
+        self.doZoom(this.id === 'zoom_in')
+      })
+      .on('mouseup', function () { self.zoomPressed = false; })
+      .on('mouseout', function () { self.zoomPressed = false; })
+      .on('click', this.stopPropagation)
+      .on('dblclick', this.stopPropagation);
 
-    this.svg.on("mouseup", () => { this.svg.call(this.zoom) });
+    this.svg.on('mouseup', () => { this.svg.call(this.zoom) });
   }
 
   generateCanvas(width, height) {
@@ -266,6 +279,7 @@ class Graph {
     this.curve = this.initializeCurve();
     this.svgGrid = this.initializeSVGgrid();
     this.force = this.initializeForce();
+    this.initializeMarkers();
     this.initializeZoomButtons();
     this.initializeTooltip();
 
@@ -300,7 +314,7 @@ class Graph {
 
     this.force
       .gravity(.33)
-      .charge(-1 * Math.max(Math.pow(110*this.nodes.length/this.links.length, 2.5), 1250))
+      .charge(-1 * Math.max(Math.pow(100*this.nodes.length/this.links.length, 2.5), 750))
       .friction(this.nodes.length < 15 ? .75 : .65)
       .alpha(.8)
       .nodes(this.nodes)
@@ -335,6 +349,7 @@ class Graph {
     this.link
       .enter().append('line')
       .attr('class', 'link')
+      .attr('marker-end', 'url(#end-arrow)')
       .style('stroke-dasharray', function (d) { return d.type === 'possibly_same_as' ? ('3,3') : false; })
       .on('mouseover', this.mouseoverLink);
 
@@ -416,10 +431,21 @@ class Graph {
       .attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
 
     this.link
-      .attr('x1', function (d) { return d.source.x; })
-      .attr('y1', function (d) { return d.source.y; })
-      .attr('x2', function (d) { return d.target.x; })
-      .attr('y2', function (d) { return d.target.y; });
+      .each(function(d) {
+        const x1 = d.source.x,
+              y1 = d.source.y,
+              x2 = d.target.x,
+              y2 = d.target.y;
+        const dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+        d.sourceX = x1 + (x2-x1) * (dist-20) / dist;
+        d.sourceY = y1 + (y2-y1) * (dist-20) / dist;
+        d.targetX = x2 - (x2-x1) * (dist-27) / dist;
+        d.targetY = y2 - (y2-y1) * (dist-27) / dist;
+      })
+      .attr('x1', function (d) { return d.sourceX; })
+      .attr('y1', function (d) { return d.sourceY; })
+      .attr('x2', function (d) { return d.targetX; })
+      .attr('y2', function (d) { return d.targetY; });
   }
 
   // Custom force that takes the parent group position as the centroid to moves all contained nodes toward
@@ -527,7 +553,7 @@ class Graph {
   reloadNeighbors() {
     this.linkedByIndex = {};
     this.links.forEach((d) => {
-      this.linkedByIndex[d.source.index + "," + d.target.index] = true;
+      this.linkedByIndex[d.source.index + ',' + d.target.index] = true;
     });
   }
 }
