@@ -23,6 +23,7 @@ class Graph extends Component {
   constructor(props) {
     super(props);
     let sidebarSize = props.sidebarVisible ? 500 : 0;
+    debugger
     this.state = {
       height: window.innerHeight,
       width: Math.max(window.innerWidth - sidebarSize)
@@ -38,7 +39,7 @@ class Graph extends Component {
   }
 
   componentDidMount() {
-    this.props.actions.initializeCanvas(this.props.graph, width, height);
+    this.props.actions.initializeCanvas(this.props.graph, this.state.width, this.state.height);
   }
 
   componentWillReceiveProps(nextprops){
@@ -51,7 +52,7 @@ class Graph extends Component {
 
   render() {
     return( 
-      <div id="graph-container" style={{"height": height + "px", "width": width + "px"}}></div>
+      <div id="graph-container" style={{"height": this.state.height + "px", "width": this.state.width + "px"}}></div>
     );
   }
 }
@@ -64,9 +65,9 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, props) {
+  debugger;
   return{
-      canvas: state.canvas,
-      sidebarVisible: state.sidebarVisible
+      sidebarVisible: state.data.sidebarVisible
   };
 }
 export default addUrlProps({ urlPropsQueryConfig })(withRouter(connect(mapStateToProps, mapDispatchToProps)(Graph)));
