@@ -1,9 +1,12 @@
+import * as utils from './utils.js';
+import { maxTextLength, minScale, maxScale, gridLength } from './constants.js'
+
 // Click-drag node selection
-function brushstart() {
+export function brushstart() {
   this.isBrushing = true;
 }
 
-function brushing() {
+export function brushing() {
   var self = this;
   if (this.isRightClick()) {
     const extent = this.brush.extent();
@@ -22,14 +25,14 @@ function brushing() {
   }
 }
 
-function brushend() {
+export function brushend() {
   this.brush.clear();
   this.svg.selectAll('.brush').call(this.brush);
   this.isBrushing = false;
 }
 
 // Single-node interactions
-function clicked(d, self, i) {
+export function clicked(d, self, i) {
   if (d3.event.defaultPrevented) return;
   const node = d3.select(self);
   const fixed = !(node.attr('dragfix') == 'true');
@@ -38,7 +41,7 @@ function clicked(d, self, i) {
   d3.event.stopPropagation();
 }
 
-function rightclicked(node, d) {
+export function rightclicked(node, d) {
   const fixed = node.attr('dragfix') == 'true';
   const selected = !(node.attr('dragselect') == 'true');
   node.classed('fixed', d.fixed = fixed)
@@ -47,7 +50,7 @@ function rightclicked(node, d) {
   this.force.resume();
 }
 
-function dblclicked(d) {
+export function dblclicked(d) {
   if (this.groups[d.id]) {
     this.toggleGroupView(d.id);
   }
@@ -56,13 +59,13 @@ function dblclicked(d) {
 }
 
 // Click helper
-function isRightClick() {
+export function isRightClick() {
   return (d3.event && (d3.event.which == 3 || d3.event.button == 2))
     || (d3.event.sourceEvent && (d3.event.sourceEvent.which == 3 || d3.event.sourceEvent.button == 2));
 }
 
 // Click-drag node interactions
-function dragstart(d, self) {
+export function dragstart(d, self) {
   d3.event.sourceEvent.preventDefault();
   d3.event.sourceEvent.stopPropagation();
   if (this.isEmphasized) this.resetGraphOpacity();
@@ -84,7 +87,7 @@ function dragstart(d, self) {
   }
 }
 
-function dragging(d, self) {
+export function dragging(d, self) {
   const node = d3.select(self);
   node
     .attr('cx', d.px = d.x = d3.event.x)
@@ -92,7 +95,7 @@ function dragging(d, self) {
     .attr('dragdistance', parseInt(node.attr('dragdistance')) + 1);
 }
 
-function dragend(d, self) {
+export function dragend(d, self) {
   const node = d3.select(self);
   if (!parseInt(node.attr('dragdistance')) && this.isRightClick()) {
     this.rightclicked(node, d);
@@ -103,7 +106,7 @@ function dragend(d, self) {
   this.force.resume();
 }
 
-function mouseover(d, self) {
+export function mouseover(d, self) {
   var classThis = this;
   if (!this.isDragging && !this.isBrushing) {
     // Node emphasis
@@ -124,7 +127,7 @@ function mouseover(d, self) {
     if (this.printFull == 0) {
       d3.select(self)
         .select('.node-name')
-        .text(processNodeName(d.name, 2))
+        .text(utils.processNodeName(d.name, 2))
         .call(this.textWrap, 2);
     }
   }
@@ -132,19 +135,19 @@ function mouseover(d, self) {
   this.displayNodeInfo(d);
 }
 
-function mouseout(d, self) {
+export function mouseout(d, self) {
   this.hoveredNode = null;
   this.resetGraphOpacity();
   if (this.printFull != 1) {
     d3.select(self)
       .select('.node-name')
-      .text((d) => { return processNodeName(d.name, this.printFull); })
+      .text((d) => { return utils.processNodeName(d.name, this.printFull); })
       .call(this.textWrap, this.printFull);
   }
 }
 
 // Canvas mouse handlers
-function clickedCanvas(self) {
+export function clickedCanvas(self) {
   if (d3.event.defaultPrevented) return;
   if (this.editMode) {
     const selection = this.svg.selectAll('.node.selected');
@@ -152,28 +155,28 @@ function clickedCanvas(self) {
   }
 }
 
-function dragstartCanvas() {
+export function dragstartCanvas() {
   d3.event.sourceEvent.preventDefault();
   d3.event.sourceEvent.stopPropagation();
 }
 
 // Link mouse handlers
-function mouseoverLink(d) {
+export function mouseoverLink(d) {
   this.displayLinkInfo(d);
 }
 
 // Node text handlers
-function stopPropagation() {
+export function stopPropagation() {
   getD3Event().stopPropagation();
 }
 
 // SVG zoom & pan
-function zoomstart(d, self) {
+export function zoomstart(d, self) {
   this.zoomTranslate = this.zoom.translate();
   this.zoomScale = this.zoom.scale();
 }
 
-function zooming(d, self) {
+export function zooming(d, self) {
   if (!this.isRightClick()) {
     const e = d3.event;
     const transform = 'translate(' + (((e.translate[0] / e.scale) % gridLength) - e.translate[0] / e.scale)
@@ -183,7 +186,7 @@ function zooming(d, self) {
   }
 }
 
-function zoomend(d, self) {
+export function zoomend(d, self) {
   this.svg.attr('cursor', 'move');
   if (this.isRightClick()) {
     this.zoom.translate(this.zoomTranslate);
@@ -195,7 +198,7 @@ function zoomend(d, self) {
 }
 
 // Zoom button functionality
-function doZoom(zoom_in) {
+export function doZoom(zoom_in) {
   var self = this;
   var scale = this.zoom.scale(),
     extent = this.zoom.scaleExtent(),
@@ -235,21 +238,7 @@ function doZoom(zoom_in) {
   });
 }
 
-function disableZoom() {
-  this.svg.on("mousedown.zoom", null)
-    .on("touchstart.zoom", null)
-    .on("touchmove.zoom", null)
-    .on("touchend.zoom", null);
-}
-
-function zoomingButton() {
-  this.container.attr('transform', 'translate(' + this.zoom.translate() + ')scale(' + this.zoom.scale() + ')');
-  const transform = 'translate(' + (((this.zoom.translate()[0] / this.zoom.scale()) % gridLength) - this.zoom.translate()[0] / this.zoom.scale())
-    + ',' + (((this.zoom.translate()[1] / this.zoom.scale()) % gridLength) - this.zoom.translate()[1] / this.zoom.scale()) + ')scale(1)';
-  this.svgGrid.attr('transform', transform);
-}
-
-function translateGraphAroundNode(d) {
+export function translateGraphAroundNode(d) {
   // Center each vector, stretch, then put back
   var x = this.center[0] > d.x ? (this.center[0] - d.x) : -1*(d.x-this.center[0]);
   var y = this.center[1] > d.y ? (this.center[1] - d.y) : -1*(d.y-this.center[1]);
@@ -267,4 +256,46 @@ function translateGraphAroundNode(d) {
       self.zoomingButton();
     };
   })
+}
+
+export function translateGraphAroundId(id) {
+  // Center each vector, stretch, then put back
+  //d.x + (?) = this.center[0]
+  // console.log("this is center[0]: ", this.center[0], " and this is d.px: ", d.px)
+  // console.log("this is center[1]: ", this.center[1], " and this is d.py: ", d.py, " and this is height: ", this.height)
+  var d;
+  this.nodes.map((node)=> { if (node.id === id) { d = node; } });
+  if (d == null) { return; }
+  var x = this.zoomScale*(this.center[0] > d.px ? (this.center[0] - d.px) : -1*(d.px-this.center[0]));
+  var y = this.zoomScale*(this.center[1] > d.py? (this.center[1] - d.py) : -1*(d.py-this.center[1]));
+
+  //console.log("this is where x is after: ", x, " and where y is after: ", y)
+  var translate = this.zoom.translate();
+  var self = this;
+
+  // Transition to the new view over 500ms
+  d3.transition().duration(500).tween("translate", function () {
+    var interpolateTranslate = d3.interpolate(translate, [x, y]);
+    return function (t) {
+      self.zoom
+          .translate(interpolateTranslate(t));
+      self.zoomTranslate = self.zoom.translate();
+      self.zoomScale = self.zoom.scale();
+      self.zoomingButton();
+    };
+  })
+}
+
+export function disableZoom() {
+  this.svg.on("mousedown.zoom", null)
+    .on("touchstart.zoom", null)
+    .on("touchmove.zoom", null)
+    .on("touchend.zoom", null);
+}
+
+export function zoomingButton() {
+  this.container.attr('transform', 'translate(' + this.zoom.translate() + ')scale(' + this.zoom.scale() + ')');
+  const transform = 'translate(' + (((this.zoom.translate()[0] / this.zoom.scale()) % gridLength) - this.zoom.translate()[0] / this.zoom.scale())
+    + ',' + (((this.zoom.translate()[1] / this.zoom.scale()) % gridLength) - this.zoom.translate()[1] / this.zoom.scale()) + ')scale(1)';
+  this.svgGrid.attr('transform', transform);
 }

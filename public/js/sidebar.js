@@ -1,5 +1,6 @@
-// Constants
-const maxHeight = 100000;
+import * as utils from './helpers/utils.js';
+import { maxHeight } from './helpers/constants.js';
+var $ = require("jquery");
 
 // Populate graph usage section
 function displayGraphUsage() {
@@ -43,7 +44,7 @@ function createGraphUsageEntry(key) {
 }
 
 // Populate node info section
-function displayNodeInfo(info) {
+export function displayNodeInfo(info) {
   displaySidebarSection('Node info', 'sidebar-title', populateNodeInfoBody, info);
 }
 
@@ -54,7 +55,7 @@ function populateNodeInfoBody(nodeInfoBody, info) {
 }
 
 // Populate link info section 
-function displayLinkInfo(info) {
+export function displayLinkInfo(info) {
   displaySidebarSection('Link info', 'sidebar-title', populateLinkInfoBody, info);
 }
 
@@ -62,7 +63,7 @@ function populateLinkInfoBody(linkInfoBody, info) {
   let attr, appendTarget;
   for (let key in info) {
     attr = info[key];
-    if (isObject(attr)) {
+    if (utils.isObject(attr)) {
       appendTarget = createInfoObjectEntry(key, attr, ['name', 'type'])
       for (let i = 0; i < appendTarget.length; i++) {
         $(linkInfoBody).append(appendTarget[i]);
@@ -74,7 +75,7 @@ function populateLinkInfoBody(linkInfoBody, info) {
 }
 
 // Populate group info section
-function displayGroupInfo(groups) {
+export function displayGroupInfo(groups) {
   displaySidebarSection('Group info', 'sidebar-title', populateGroupInfoBody, groups);
   for (let groupId in groups) {
     displayGroupEntry(groupId, groups[groupId]);
@@ -204,7 +205,7 @@ function deriveTargetIdFromTitleText(titleText) {
 }
 
 // Toggle sidebar
-function openSidebar() {
+export function openSidebar() {
   $("#sidebar-content-area").css("margin-right", '20px');
   $("#sidebar").width(300);
 }

@@ -7,6 +7,7 @@ Making Architect look snazzy~
 1. Clone repo, navigate to root folder
 2. Install relevant node modules ('npm install')
 3. Run 'node server.js' and navigate to localhost:4567 in browser
+4. After making changes to code, run 'npm run build' to regenerate correct bundle.js with webpack
 
 ## Architecture details (hehehe)
 ### Node dragging and selection
