@@ -20,16 +20,6 @@ const urlPropsQueryConfig = {
 
 class Graph extends Component {
 
-  constructor(props) {
-    super(props);
-    let sidebarSize = props.sidebarVisible ? 500 : 0;
-    debugger
-    this.state = {
-      height: window.innerHeight,
-      width: Math.max(window.innerWidth - sidebarSize)
-    }
-  }
-
   componentWillMount() {
     if (this.props.search != null ){
       if (this.props.graphid !== null && this.props.graphid !== undefined) {
@@ -39,7 +29,7 @@ class Graph extends Component {
   }
 
   componentDidMount() {
-    this.props.actions.initializeCanvas(this.props.graph, this.state.width, this.state.height);
+    this.props.actions.initializeCanvas(this.props.graph, this.props.width, this.props.height);
   }
 
   componentWillReceiveProps(nextprops){
@@ -52,7 +42,7 @@ class Graph extends Component {
 
   render() {
     return( 
-      <div id="graph-container" style={{"height": this.state.height + "px", "width": this.state.width + "px"}}></div>
+      <div id="graph-container" style={{"height": this.props.height + "px", "width": this.props.width + "px"}}></div>
     );
   }
 }
@@ -65,9 +55,10 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, props) {
-  debugger;
+  let sidebarSize = state.data.sidebarVisible ? 500 : 0;
   return{
-      sidebarVisible: state.data.sidebarVisible
+      height: window.innerHeight,
+      width: Math.max(window.innerWidth - sidebarSize)
   };
 }
 export default addUrlProps({ urlPropsQueryConfig })(withRouter(connect(mapStateToProps, mapDispatchToProps)(Graph)));
