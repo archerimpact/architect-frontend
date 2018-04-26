@@ -220,7 +220,9 @@ export function ungroupSelectedGroups() {
 
   this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
   this.node.classed("selected", false)
-  this.link.classed("selected", false)
+  this.link
+      .classed("selected", false)
+      .attr('marker-end', 'url(#end-arrow-gray)');
   this.update();
   this.displayGroupInfo(this.groups);
 }

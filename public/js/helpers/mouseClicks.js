@@ -116,11 +116,11 @@ export function mouseover(d, self) {
       .filter(function (o) {
         return !classThis.neighbors(d, o);
       })
-      .style('stroke-opacity', .15)
-      .style('fill-opacity', .15);
+      .style('stroke-opacity', .075)
+      .style('fill-opacity', .075);
 
     this.link.style('opacity', function (o) {
-      return (o.source == d || o.target == d) ? 1 : .05;
+      return (o.source == d || o.target == d) ? 1 : .075;
     });
 
     // Text elongation
@@ -167,7 +167,7 @@ export function mouseoverLink(d) {
 
 // Node text handlers
 export function stopPropagation() {
-  getD3Event().stopPropagation();
+  utils.getD3Event().stopPropagation();
 }
 
 // SVG zoom & pan

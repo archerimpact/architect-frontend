@@ -406,9 +406,9 @@ class Graph {
       .attr('dy', '35px')
       .text(function (d) { return utils.processNodeName(d.name, this.printFull); })
       .call(this.textWrap, this.printFull)
-      .on('click', this.stopPropagation)
-      .on('mouseover', this.stopPropagation)
-      .on('mouseout', this.stopPropagation)
+      .on('click', function (d) { self.stopPropagation(d, this); })
+      .on('mouseover', function (d) { self.stopPropagation(d, this); })
+      .on('mouseout', function (d) { self.stopPropagation(d, this); })
       .call(d3.behavior.drag()
         .on('dragstart', this.stopPropagation)
         .on('drag', this.stopPropagation)
@@ -482,6 +482,8 @@ class Graph {
   setupKeycodes() {
     d3.select('body')
       .on('keydown', () => {
+        this.force.stop();
+        
         // u: Unpin selected nodes
         if (d3.event.keyCode == 85) {
           this.svg.selectAll('.node.selected')
@@ -489,20 +491,9 @@ class Graph {
             .classed('fixed', false);
         }
 
-        // c: Group all of the possibly same as's
-        else if (d3.event.keyCode == 67) {
-          this.groupSame();
-        }
-
         // f: Toggle stickiness of all the nodes
         else if (d3.event.keyCode == 70) {
           this.toggleFixedNodes();
-        }
-
-        // e: Toggle edit mode
-        else if (d3.event.keyCode == 69) {
-          this.editMode = !this.editMode;
-          console.log(this.editMode)
         }
 
         // g: Group selected nodes
@@ -513,6 +504,17 @@ class Graph {
         // h: Ungroup selected nodes
         else if (d3.event.keyCode == 72) {
           this.ungroupSelectedGroups();
+        }
+
+        // c: Group all of the possibly same as's
+        else if (d3.event.keyCode == 67) {
+          this.groupSame();
+        }
+
+        // e: Toggle edit mode
+        else if (d3.event.keyCode == 69) {
+          this.editMode = !this.editMode;
+          console.log(this.editMode)
         }
 
         // r/del: Remove selected nodes/links
