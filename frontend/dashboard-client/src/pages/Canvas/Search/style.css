@@ -4,11 +4,10 @@
   margin: 10px 20px;
 }
 .search-side-container {
-  /* max-height: calc(100% - 250px) ; */
-  max-height: 460px ;
+  height: 100%;
+  max-height: calc(100% - 48px);  /* exclude navbar */
 	position: absolute;
   right: 0px;
-  margin: 8px 8px 0px 0px;
   top: 0px;
   z-index: 10;
   transition: left 0.5s;

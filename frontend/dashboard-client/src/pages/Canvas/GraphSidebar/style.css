@@ -3,10 +3,16 @@
   top: calc(10px + 8px);
   width: 20px;
   border: 1px solid #D4D4D4;
+  border-right: 0;
   height: 42px;
   cursor: pointer;
-  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.3);
-  background-color: #fff;
+  /*box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.3);*/
+  background-color: #f0f0f0;
+  z-index: 100;
+}
+
+.sidebar-collapse:hover {
+  background-color: #fafafa;
 }
 
 .edge-attached {
@@ -14,7 +20,7 @@
 }
 
 .sidebar-attached {
-  right: calc(500px + 10px - 1px);
+  right: calc(500px + 1px);
 }
 
 .collapse-icon {
