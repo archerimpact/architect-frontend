@@ -7,6 +7,20 @@ export function initializeTooltip() {
   this.hideTooltip();
 }
 
+export function displayDebugTooltip(self) {
+  if (!this.debug) { return; }
+  const e = d3.event,
+        data = {
+          'eventX': e.x,
+          'eventY': e.y,
+          'mouseX': (e.x - this.zoomTranslate[0]) / this.zoomScale,
+          'mouseY': (e.y - this.zoomTranslate[1]) / this.zoomScale
+        };
+
+  this.displayData('node-tooltip', 'Coordinate debugger', this.populateNodeInfoBody, data);
+  $('#node-tooltip').show();
+}
+
 export function displayTooltip(d) {
   const attrs = ['id', 'name', 'type'];
   this.displayData('node-tooltip', utils.processNodeName(d.name), this.populateNodeInfoBody, d, attrs);

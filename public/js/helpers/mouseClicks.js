@@ -120,10 +120,12 @@ export function mousedown(d, self) {
 }
 
 export function mouseup(d, self) {
-  // Reduce size of focused node
+  // Reduce size of drag link focused node
   if (this.mousedownNode && d != this.mousedownNode) {
-    d3.select(self).select('circle')
+    const currNode = d3.select(self);
+    currNode.select('circle')
       .attr('transform', '');
+
   }
 
   resetDragLink(this);
@@ -131,13 +133,15 @@ export function mouseup(d, self) {
 
 export function mouseover(d, self) {
   var classThis = this;
+
+  // Drag link node emphasis
   if (this.mousedownNode && d != this.mousedownNode) {
     d3.select(self).select('circle')
       .attr('transform', 'scale(1.1)');
   }
 
   if (!this.isDragging && !this.isBrushing && !this.mousedownNode) {
-    // Node emphasis
+    // Hovered node emphasis
     this.isEmphasized = true;
     this.hoveredNode = d;
     this.node
@@ -200,12 +204,14 @@ export function clickedCanvas() {
   }
 }
 
-export function mousemoveCanvas() {
+export function mousemoveCanvas(self) {
   const classThis = this;
   const e = d3.event;
+  this.displayDebugTooltip(self);
   if (this.mousedownNode) {
     const currNode = this.node.filter(function(o) { return classThis.mousedownNode.id === o.id; });
     this.dragDistance++;
+    console.log(e.x, e.y)
     this.dragLink
       .attr('tx2', e.x)
       .attr('ty2', e.y);

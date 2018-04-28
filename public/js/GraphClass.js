@@ -93,6 +93,7 @@ class Graph {
     this.initializeZoomButtons = this.initializeZoomButtons.bind(this);
     this.textWrap = this.textWrap.bind(this);
     this.displayTooltip = this.displayTooltip.bind(this);
+    this.displayDebugTooltip = this.displayDebugTooltip.bind(this);
     this.populateNodeInfoBody = this.populateNodeInfoBody.bind(this);
     this.resetDragLink = this.resetDragLink.bind(this);
 
@@ -338,7 +339,7 @@ class Graph {
 
     this.force
       .gravity(.33)
-      .charge(-1 * Math.max(Math.pow(100*this.nodes.length/this.links.length, 2.5), 750))
+      .charge(-1 * Math.max(Math.pow(100*this.nodes.length/this.links.length, 2 + Math.log(Math.pow(this.nodes.length, 2)/(10*this.links.length))), 750))
       .friction(this.nodes.length < 15 ? .75 : .65)
       .alpha(.8)
       .nodes(this.nodes)
@@ -449,7 +450,7 @@ class Graph {
       .on('dblclick', function (d) {
         self.toggleGroupView(d.groupId);
         d3.event.stopPropagation();
-      })
+      });
     this.hull.exit().remove();
 
     this.force.start();
@@ -490,8 +491,8 @@ class Graph {
       .attr('y2', function (d) { return d.targetY; });
 
     if (this.mousedownNode) {
-      const x1 = this.mousedownNode.x,
-            y1 = this.mousedownNode.y,
+      const x1 = (this.mousedownNode.x + this.zoomTranslate[0]) * this.zoomScale,
+            y1 = (this.mousedownNode.y + this.zoomTranslate[1]) * this.zoomScale,
             x2 = this.dragLink.attr('tx2'),
             y2 = this.dragLink.attr('ty2'),
             dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2)),
@@ -561,8 +562,8 @@ class Graph {
               .on('mouseup', function (d) { self.mouseup(d, this); });
 
             this.svg
-              .on('click', this.clickedCanvas)
-              .on('mousemove', this.mousemoveCanvas);
+              .on('click', function () { self.clickedCanvas(this); })
+              .on('mousemove', function () { self.mousemoveCanvas(this); });
           } else {
             this.node
               .on('mousedown', null)
@@ -706,6 +707,7 @@ Graph.prototype.createGroupFromSelect = d3Data.createGroupFromSelect;
 //From tooltips
 Graph.prototype.initializeTooltip = tt.initializeTooltip;
 Graph.prototype.displayTooltip = tt.displayTooltip;
+Graph.prototype.displayDebugTooltip = tt.displayDebugTooltip;
 Graph.prototype.hideTooltip = tt.hideTooltip;
 Graph.prototype.moveTooltip = tt.moveTooltip;
 Graph.prototype.populateNodeInfoBody = tt.populateNodeInfoBody;
