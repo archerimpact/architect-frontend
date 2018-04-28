@@ -80,8 +80,8 @@ class Entity extends Component {
         <div>
           <div onClick={()=>this.props.history.goBack()}> Back to results </div>
           <EntityCard nodeItem={this.state.nodeData[0]} />
-          <hr></hr>
-          <SummaryInfo nodeItem={this.state.nodeData[0]} nodeRelationships={this.state.relationshipData} />
+          {/* <hr></hr>
+          <SummaryInfo nodeItem={this.state.nodeData[0]} nodeRelationships={this.state.relationshipData} /> */}
           <div className="tabs" style={{ width: '100%' }}>
             <div className="tab">
               <div label={"Connections (" + this.state.relationshipData.length + ")"} type="default" style={tab_style}>
