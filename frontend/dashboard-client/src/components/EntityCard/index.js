@@ -166,7 +166,7 @@ class EntityCard extends Component {
     }
   }
 
-  redner() {
+  render() {
     return (
       <div className="outerBox">
         <div className="heading">
