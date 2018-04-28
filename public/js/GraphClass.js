@@ -90,7 +90,7 @@ class Graph {
     this.initializeZoom = this.initializeZoom.bind(this);
     this.initializeBrush = this.initializeBrush.bind(this);
     this.drawHull = this.drawHull.bind(this);
-    this.doZoom = this.doZoom.bind(this);
+    this.zoomButton = this.zoomButton.bind(this);
     this.initializeZoomButtons = this.initializeZoomButtons.bind(this);
     this.textWrap = this.textWrap.bind(this);
     this.displayTooltip = this.displayTooltip.bind(this);
@@ -277,7 +277,7 @@ class Graph {
       .on('mousedown', function () {
         self.zoomPressed = true;
         self.disableZoom();
-        self.doZoom(this.id === 'zoom_in')
+        self.zoomButton(this.id === 'zoom_in')
       })
       .on('mouseup', function () { self.zoomPressed = false; })
       .on('mouseout', function () { self.zoomPressed = false; })
@@ -669,7 +669,7 @@ Graph.prototype.stopPropagation = mouseClicks.stopPropagation;
 Graph.prototype.zoomstart = mouseClicks.zoomstart;
 Graph.prototype.zooming = mouseClicks.zooming;
 Graph.prototype.zoomend = mouseClicks.zoomend;
-Graph.prototype.doZoom = mouseClicks.doZoom;
+Graph.prototype.zoomButton = mouseClicks.zoomButton;
 Graph.prototype.translateGraphAroundNode = mouseClicks.translateGraphAroundNode;
 Graph.prototype.translateGraphAroundId = mouseClicks.translateGraphAroundId;
 Graph.prototype.disableZoom = mouseClicks.disableZoom;
@@ -694,6 +694,7 @@ Graph.prototype.createHull = d3Data.createHull;
 Graph.prototype.calculateAllHulls = d3Data.calculateAllHulls;
 Graph.prototype.drawHull = d3Data.drawHull;
 
+Graph.prototype.addLink = d3Data.addLink;
 Graph.prototype.removeLink = d3Data.removeLink;
 Graph.prototype.createGroupFromNode = d3Data.createGroupFromNode;
 Graph.prototype.checkLinkAddGroup = d3Data.checkLinkAddGroup;

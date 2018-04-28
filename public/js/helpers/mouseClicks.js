@@ -126,6 +126,7 @@ export function mouseup(d, self) {
     currNode.select('circle')
       .attr('transform', '');
 
+    this.addLink(d, this.mousedownNode);
   }
 
   resetDragLink(this);
@@ -258,7 +259,7 @@ export function zoomend(d, self) {
 }
 
 // Zoom button functionality
-export function doZoom(zoom_in) {
+export function zoomButton(zoom_in) {
   var self = this;
   var scale = this.zoom.scale(),
     extent = this.zoom.scaleExtent(),
@@ -296,7 +297,7 @@ export function doZoom(zoom_in) {
       self.manualZoom();
     };
   }).each("end", () => {
-    if (this.zoomPressed) this.doZoom(zoom_in); 
+    if (this.zoomPressed) this.zoomButton(zoom_in); 
     else this.isZooming = false;
   });
 }

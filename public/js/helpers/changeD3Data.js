@@ -61,12 +61,15 @@ export function deleteSelectedLinks() {
   this.update();
 }
 
+export function addLink(source, target) {
+  this.links.push({ id: this.globallinkid--, source: this.nodes.indexOf(source), target: this.nodes.indexOf(target), type: "Custom" });
+  this.update();
+}
+
 export function addNodeToSelected(selection, event=null) {
-  /* create a new node using the globalnodeid counter
-    for each node selected, create a link attaching the new node to the selected node
-    remove highlighting of all nodes and links */
   const nodeId = this.globalnodeid;
   let newNode;
+  // If event passed, create node at given coordinates
   if (event) {
     const xPos = (event.x - this.zoomTranslate[0]) / this.zoomScale;
     const yPos = (event.y - this.zoomTranslate[1]) / this.zoomScale;
@@ -75,15 +78,18 @@ export function addNodeToSelected(selection, event=null) {
     newNode = { id: nodeId, name: `Node ${-1 * nodeId}`, type: "Custom"};
   }
 
+  // Create a new node using the globalnodeid counter 
   this.globalnodeid -= 1;
   this.nodes.push(newNode);
 
+  // For each node selected, create a link attaching the new node to the selected node
   selection
     .each((d) => {
       this.links.push({ id: this.globallinkid, source: this.nodes.length - 1, target: this.nodes.indexOf(d), type: "Custom" });
       this.globallinkid -= 1;
     })
 
+  // Remove highlighting of all nodes and links 
   this.node.classed("selected", false);
   this.link.classed("selected", false);
   this.nodeSelection = {};
