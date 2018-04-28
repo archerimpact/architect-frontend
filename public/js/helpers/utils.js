@@ -22,6 +22,7 @@ export function printObject(object) {
 export function isInArray(value, array) {
   return array.indexOf(value) > -1;
 }
+
 // Normalize node text to same casing conventions and length
 // printFull states - 0: abbrev, 1: none, 2: full
 export function processNodeName(str, printFull) {
@@ -49,6 +50,7 @@ export function capitalize(str, first) {
   return str.charAt(0).toUpperCase() + (first ? str.slice(1).toLowerCase() : str.slice(1));
 }
 
+// Wrapper to get d3 event without worrying about event vs sourceEvent
 export function getD3Event() {
   if (d3.event) {
     return d3.event.sourceEvent ? d3.event.sourceEvent : d3.event;
@@ -56,4 +58,14 @@ export function getD3Event() {
 
   console.error('Attempted to access nonexistant d3 event.')
   return null;
+}
+
+// Execute callback after transition has completed for EVERY element in a selection
+export function then(transition, callback) {
+  if (typeof callback !== "function") throw new Error("Invalid callback in then");
+  if (transition.size() === 0) { callback(); }
+  var n = 0; 
+  transition 
+    .each(function() { ++n; }) 
+    .each("end", function() { if (!--n) callback.apply(this, arguments); }); 
 }

@@ -1,4 +1,4 @@
-import * as utils from './utils.js';
+import { getD3Event, processNodeName, then } from './utils.js';
 import { maxTextLength, minScale, maxScale, gridLength } from './constants.js'
 import { resetDragLink } from './aesthetics.js';
 
@@ -162,7 +162,7 @@ export function mouseover(d, self) {
     if (this.printFull == 0) {
       d3.select(self)
         .select('.node-name')
-        .text(utils.processNodeName(d.name, 2))
+        .text(processNodeName(d.name, 2))
         .call(this.textWrap, 2);
     }
   }
@@ -188,7 +188,7 @@ export function mouseout(d, self) {
   if (this.printFull != 1) {
     d3.select(self)
       .select('.node-name')
-      .text((d) => { return utils.processNodeName(d.name, this.printFull); })
+      .text((d) => { return processNodeName(d.name, this.printFull); })
       .call(this.textWrap, this.printFull);
   }
 }
@@ -225,11 +225,12 @@ export function mouseoverLink(d) {
 
 // Node text handlers
 export function stopPropagation() {
-  utils.getD3Event().stopPropagation();
+  getD3Event().stopPropagation();
 }
 
 // SVG zoom & pan
 export function zoomstart(d, self) {
+  this.isZooming = true;
   this.zoomTranslate = this.zoom.translate();
   this.zoomScale = this.zoom.scale();
 }
@@ -253,6 +254,7 @@ export function zoomend(d, self) {
 
   this.zoomTranslate = this.zoom.translate();
   this.zoomScale = this.zoom.scale();
+  this.isZooming = false;
 }
 
 // Zoom button functionality
@@ -280,7 +282,9 @@ export function doZoom(zoom_in) {
   y = (y - this.center[1]) * factor + this.center[1];
 
   // Transition to the new view over 100ms
+  this.isZooming = true;
   d3.transition().duration(100).tween("zoom", function () {
+    console.log(self.isZooming);
     var interpolate_scale = d3.interpolate(scale, targetScale),
         interpolate_trans = d3.interpolate(translate, [x, y]);
     return function (t) {
@@ -289,10 +293,11 @@ export function doZoom(zoom_in) {
           .translate(interpolate_trans(t));
       self.zoomTranslate = self.zoom.translate();
       self.zoomScale = self.zoom.scale();
-      self.zoomingButton();
+      self.manualZoom();
     };
   }).each("end", () => {
-    if (this.zoomPressed) this.doZoom(zoom_in);
+    if (this.zoomPressed) this.doZoom(zoom_in); 
+    else this.isZooming = false;
   });
 }
 
@@ -301,6 +306,7 @@ export function translateGraphAroundNode(d) {
   var x = this.center[0] > d.x ? (this.center[0] - d.x) : -1*(d.x-this.center[0]);
   var y = this.center[1] > d.y ? (this.center[1] - d.y) : -1*(d.y-this.center[1]);
   var translate = this.zoom.translate();
+  this.isZooming = true;
   var self = this;
 
   // Transition to the new view over 500ms
@@ -311,9 +317,9 @@ export function translateGraphAroundNode(d) {
           .translate(interpolateTranslate(t));
       self.zoomTranslate = self.zoom.translate();
       self.zoomScale = self.zoom.scale();
-      self.zoomingButton();
+      self.manualZoom();
     };
-  })
+  }).call(then, () => { this.isZooming = false; });
 }
 
 export function translateGraphAroundId(id) {
@@ -325,6 +331,7 @@ export function translateGraphAroundId(id) {
   var y = this.zoomScale*(this.center[1] > d.py? (this.center[1] - d.py) : -1*(d.py-this.center[1]));
 
   //console.log("this is where x is after: ", x, " and where y is after: ", y)
+  this.isZooming = true;
   var translate = this.zoom.translate();
   var self = this;
 
@@ -336,12 +343,12 @@ export function translateGraphAroundId(id) {
           .translate(interpolateTranslate(t));
       self.zoomTranslate = self.zoom.translate();
       self.zoomScale = self.zoom.scale();
-      self.zoomingButton();
+      self.manualZoom();
     };
-  })
+  }).call(then, () => { this.isZooming = false; });
 }
 
-export function zoomingButton() {
+export function manualZoom() {
   this.container.attr('transform', 'translate(' + this.zoom.translate() + ')scale(' + this.zoom.scale() + ')');
   const transform = 'translate(' + (((this.zoom.translate()[0] / this.zoom.scale()) % gridLength) - this.zoom.translate()[0] / this.zoom.scale())
     + ',' + (((this.zoom.translate()[1] / this.zoom.scale()) % gridLength) - this.zoom.translate()[1] / this.zoom.scale()) + ')scale(1)';

@@ -40,10 +40,11 @@ class Graph {
     this.hoveredNode = null; // Store reference to currently hovered/emphasized node, null otherwise
     this.printFull = 0; // Allow user to toggle node text length
     this.isGraphFixed = false; // Track whether or not all nodes should be fixed
+    this.isZooming = false; // Track if graph is actively being transformed
     this.zoomTranslate = [0, 0]; // Keep track of original zoom state to restore after right-drag
     this.zoomScale = 1;
     this.zoomPressed = null;
-    this.debug = true; // Show all node/link attributes in tooltip
+    this.debug = false; // Show all node/link attributes in tooltip, coordinate box
 
     this.node = null;
     this.link = null;
@@ -491,8 +492,8 @@ class Graph {
       .attr('y2', function (d) { return d.targetY; });
 
     if (this.mousedownNode) {
-      const x1 = (this.mousedownNode.x + this.zoomTranslate[0]) * this.zoomScale,
-            y1 = (this.mousedownNode.y + this.zoomTranslate[1]) * this.zoomScale,
+      const x1 = this.mousedownNode.x * this.zoomScale + this.zoomTranslate[0],
+            y1 = this.mousedownNode.y * this.zoomScale + this.zoomTranslate[1],
             x2 = this.dragLink.attr('tx2'),
             y2 = this.dragLink.attr('ty2'),
             dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2)),
@@ -672,7 +673,7 @@ Graph.prototype.doZoom = mouseClicks.doZoom;
 Graph.prototype.translateGraphAroundNode = mouseClicks.translateGraphAroundNode;
 Graph.prototype.translateGraphAroundId = mouseClicks.translateGraphAroundId;
 Graph.prototype.disableZoom = mouseClicks.disableZoom;
-Graph.prototype.zoomingButton = mouseClicks.zoomingButton;
+Graph.prototype.manualZoom = mouseClicks.manualZoom;
 
 //From changeD3Data.js
 Graph.prototype.deleteSelectedNodes = d3Data.deleteSelectedNodes;
