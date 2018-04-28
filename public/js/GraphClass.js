@@ -490,8 +490,8 @@ class Graph {
       .attr('y2', function (d) { return d.targetY; });
 
     if (this.mousedownNode) {
-      const x1 = this.mousedownNode[0][0].__data__.x,
-            y1 = this.mousedownNode[0][0].__data__.y,
+      const x1 = this.mousedownNode.x,
+            y1 = this.mousedownNode.y,
             x2 = this.dragLink.attr('tx2'),
             y2 = this.dragLink.attr('ty2'),
             dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2)),

@@ -36,7 +36,6 @@ export function brushend() {
 export function clicked(d, self, i) {
   if (d3.event.defaultPrevented) return;
   if (this.editMode && this.dragDistance > 0) return;
-  console.log('click')
   const node = d3.select(self);
   const fixed = !(node.attr('dragfix') == 'true');
   node.classed('fixed', d.fixed = fixed);
@@ -69,7 +68,6 @@ export function isRightClick() {
 
 // Click-drag node interactions
 export function dragstart(d, self) {
-  console.log('drag')
   d3.event.sourceEvent.preventDefault();
   d3.event.sourceEvent.stopPropagation();
   if (this.isEmphasized) this.resetGraphOpacity();
@@ -111,9 +109,8 @@ export function dragend(d, self) {
 }
 
 export function mousedown(d, self) {
-  console.log('mousedown')
   d3.event.stopPropagation();
-  if (!this.mousedownNode) { this.mousedownNode = d3.select(self); };
+  if (!this.mousedownNode) { this.mousedownNode = d; };
   this.dragDistance = 0;
   this.dragLink
     .attr('tx1', d.x)
@@ -123,13 +120,23 @@ export function mousedown(d, self) {
 }
 
 export function mouseup(d, self) {
-  console.log('mouseup')
-  resetDragLink(self);
+  // Reduce size of focused node
+  if (this.mousedownNode && d != this.mousedownNode) {
+    d3.select(self).select('circle')
+      .attr('transform', '');
+  }
+
+  resetDragLink(this);
 }
 
 export function mouseover(d, self) {
   var classThis = this;
-  if (!this.isDragging && !this.isBrushing) {
+  if (this.mousedownNode && d != this.mousedownNode) {
+    d3.select(self).select('circle')
+      .attr('transform', 'scale(1.1)');
+  }
+
+  if (!this.isDragging && !this.isBrushing && !this.mousedownNode) {
     // Node emphasis
     this.isEmphasized = true;
     this.hoveredNode = d;
@@ -145,7 +152,7 @@ export function mouseover(d, self) {
     });
 
     // Hide drag link
-    if (this.mousedownNode) { this.dragLink.classed('hidden', true); }
+    if (this.mousedownNode && d == this.mousedownNode) { this.dragLink.classed('hidden', true); }
 
     // Text elongation
     if (this.printFull == 0) {
@@ -160,11 +167,20 @@ export function mouseover(d, self) {
 }
 
 export function mouseout(d, self) {
+  // Reset node emphasis
   this.hoveredNode = null;
   this.resetGraphOpacity();
 
+  // Reduce size of focused node
+  if (this.mousedownNode && d != this.mousedownNode) {
+    d3.select(self).select('circle')
+      .attr('transform', '');
+  }
+
   // Show drag link
   if (this.mousedownNode) { this.dragLink.classed('hidden', false); }
+
+  // Text truncation
   if (this.printFull != 1) {
     d3.select(self)
       .select('.node-name')
@@ -175,7 +191,6 @@ export function mouseout(d, self) {
 
 // Canvas mouse handlers
 export function clickedCanvas() {
-  console.log('click canvas')
   resetDragLink(this);
   if (this.dragDistance == 0) {
     const selection = this.svg.selectAll('.node.selected');
@@ -194,9 +209,6 @@ export function mousemoveCanvas() {
     this.dragLink
       .attr('tx2', e.x)
       .attr('ty2', e.y);
-    // currNode
-    //   .attr('cx', function(o) { return o.px = o.x = d3.event.x; })
-    //   .attr('cy', function(o) { return o.py = o.y = d3.event.y; });
   }
 }
 
@@ -300,9 +312,6 @@ export function translateGraphAroundNode(d) {
 
 export function translateGraphAroundId(id) {
   // Center each vector, stretch, then put back
-  //d.x + (?) = this.center[0]
-  // console.log("this is center[0]: ", this.center[0], " and this is d.px: ", d.px)
-  // console.log("this is center[1]: ", this.center[1], " and this is d.py: ", d.py, " and this is height: ", this.height)
   var d;
   this.nodes.map((node)=> { if (node.id === id) { d = node; } });
   if (d == null) { return; }
