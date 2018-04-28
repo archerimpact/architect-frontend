@@ -69,6 +69,15 @@ button:focus {
   stroke: #0d77e2;
 }
 
+
+.link.dynamic {
+  pointer-events: none;
+}
+
+.link.hidden {
+  stroke-width: 0;
+}
+
 .node {
   fill: #ebebeb;
   stroke: #545454;

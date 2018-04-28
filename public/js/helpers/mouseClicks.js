@@ -1,5 +1,6 @@
 import * as utils from './utils.js';
 import { maxTextLength, minScale, maxScale, gridLength } from './constants.js'
+import { resetDragLink } from './aesthetics.js';
 
 // Click-drag node selection
 export function brushstart() {
@@ -34,6 +35,8 @@ export function brushend() {
 // Single-node interactions
 export function clicked(d, self, i) {
   if (d3.event.defaultPrevented) return;
+  if (this.editMode && this.dragDistance > 0) return;
+  console.log('click')
   const node = d3.select(self);
   const fixed = !(node.attr('dragfix') == 'true');
   node.classed('fixed', d.fixed = fixed);
@@ -66,6 +69,7 @@ export function isRightClick() {
 
 // Click-drag node interactions
 export function dragstart(d, self) {
+  console.log('drag')
   d3.event.sourceEvent.preventDefault();
   d3.event.sourceEvent.stopPropagation();
   if (this.isEmphasized) this.resetGraphOpacity();
@@ -106,6 +110,23 @@ export function dragend(d, self) {
   this.force.resume();
 }
 
+export function mousedown(d, self) {
+  console.log('mousedown')
+  d3.event.stopPropagation();
+  if (!this.mousedownNode) { this.mousedownNode = d3.select(self); };
+  this.dragDistance = 0;
+  this.dragLink
+    .attr('tx1', d.x)
+    .attr('ty1', d.y)
+    .attr('tx2', d.x)
+    .attr('ty2', d.y);
+}
+
+export function mouseup(d, self) {
+  console.log('mouseup')
+  resetDragLink(self);
+}
+
 export function mouseover(d, self) {
   var classThis = this;
   if (!this.isDragging && !this.isBrushing) {
@@ -123,6 +144,9 @@ export function mouseover(d, self) {
       return (o.source == d || o.target == d) ? 1 : .075;
     });
 
+    // Hide drag link
+    if (this.mousedownNode) { this.dragLink.classed('hidden', true); }
+
     // Text elongation
     if (this.printFull == 0) {
       d3.select(self)
@@ -138,6 +162,9 @@ export function mouseover(d, self) {
 export function mouseout(d, self) {
   this.hoveredNode = null;
   this.resetGraphOpacity();
+
+  // Show drag link
+  if (this.mousedownNode) { this.dragLink.classed('hidden', false); }
   if (this.printFull != 1) {
     d3.select(self)
       .select('.node-name')
@@ -147,17 +174,30 @@ export function mouseout(d, self) {
 }
 
 // Canvas mouse handlers
-export function clickedCanvas(self) {
-  if (d3.event.defaultPrevented) return;
-  if (this.editMode) {
+export function clickedCanvas() {
+  console.log('click canvas')
+  resetDragLink(this);
+  if (this.dragDistance == 0) {
     const selection = this.svg.selectAll('.node.selected');
     this.addNodeToSelected(selection, d3.event);
+  } else {
+    this.dragDistance = 0;
   }
 }
 
-export function dragstartCanvas() {
-  d3.event.sourceEvent.preventDefault();
-  d3.event.sourceEvent.stopPropagation();
+export function mousemoveCanvas() {
+  const classThis = this;
+  const e = d3.event;
+  if (this.mousedownNode) {
+    const currNode = this.node.filter(function(o) { return classThis.mousedownNode.id === o.id; });
+    this.dragDistance++;
+    this.dragLink
+      .attr('tx2', e.x)
+      .attr('ty2', e.y);
+    // currNode
+    //   .attr('cx', function(o) { return o.px = o.x = d3.event.x; })
+    //   .attr('cy', function(o) { return o.py = o.y = d3.event.y; });
+  }
 }
 
 // Link mouse handlers
@@ -286,16 +326,16 @@ export function translateGraphAroundId(id) {
   })
 }
 
-export function disableZoom() {
-  this.svg.on("mousedown.zoom", null)
-    .on("touchstart.zoom", null)
-    .on("touchmove.zoom", null)
-    .on("touchend.zoom", null);
-}
-
 export function zoomingButton() {
   this.container.attr('transform', 'translate(' + this.zoom.translate() + ')scale(' + this.zoom.scale() + ')');
   const transform = 'translate(' + (((this.zoom.translate()[0] / this.zoom.scale()) % gridLength) - this.zoom.translate()[0] / this.zoom.scale())
     + ',' + (((this.zoom.translate()[1] / this.zoom.scale()) % gridLength) - this.zoom.translate()[1] / this.zoom.scale()) + ')scale(1)';
   this.svgGrid.attr('transform', transform);
+}
+
+export function disableZoom() {
+  this.svg.on("mousedown.zoom", null)
+    .on("touchstart.zoom", null)
+    .on("touchmove.zoom", null)
+    .on("touchend.zoom", null);
 }

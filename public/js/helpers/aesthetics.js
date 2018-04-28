@@ -1,4 +1,3 @@
-
 // Link highlighting
 export function highlightLinksFromAllNodes() {
   this.link
@@ -23,7 +22,7 @@ export function highlightLinksFromNode(node) {
 // Fill group nodes blue
 export function fillGroupNodes() {
   this.svg.selectAll('.node')
-    .classed('grouped', function (d) { return d.id < 0; });
+    .classed('grouped', function (d) { return d.type === 'group' || d.type === 'same_as_group'; });
 }
 
 // Reset all node/link opacities to 1
@@ -32,6 +31,13 @@ export function resetGraphOpacity() {
   this.node.style('stroke-opacity', 1)
     .style('fill-opacity', 1);
   this.link.style('opacity', 1);
+}
+
+// Reset edit mode's dynamic drag link
+export function resetDragLink(self) {
+  self.mousedownNode = null;
+  self.dragLink
+    .classed('hidden', true);
 }
 
 // Wrap text
@@ -50,7 +56,8 @@ export function textWrap(textSelection, printFull, width=100) {
       .attr('x', 0)
       .attr('y', 0)
       .attr('dy', dy)
-      .classed('text-shadow', true);
+      .classed('text-shadow', true)
+      .classed('unselectable', true);
 
     for (let i = 0; i < tokens.length; i++) {
       line.push(tokens[i]);
@@ -62,13 +69,15 @@ export function textWrap(textSelection, printFull, width=100) {
           .attr('x', 0)
           .attr('y', 0)
           .attr('dy', 15 * (lineNum++) + dy)
-          .text(line.join(' '));
+          .text(line.join(' '))
+          .classed('unselectable', true);
           
         tspan = text.append('tspan')
           .attr('x', 0)
           .attr('y', 0)
           .attr('dy', 15 * lineNum + dy)
-          .classed('text-shadow', true);
+          .classed('text-shadow', true)
+          .classed('unselectable', true);
 
         line = remainder ? [remainder] : [];
       }
@@ -83,6 +92,7 @@ export function textWrap(textSelection, printFull, width=100) {
           .attr('x', 0)
           .attr('y', 0)
           .attr('dy', 15 * (lineNum++) + dy)
-          .text(finalLine);
+          .text(finalLine)
+          .classed('unselectable', true);
   });
 }

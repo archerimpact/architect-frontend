@@ -29,6 +29,10 @@ class Graph {
     this.numTicks = null;
 
     this.editMode = false; // Keep track of edit mode (add/remove/modify nodes + links)
+    this.dragCallback = null; // Store reference to drag callback to restore after disabling node drag
+    this.dragDistance = 0; // Keep track of drag distance starting on node to disable click during edit mode
+    this.mousedownNode = null; // Store reference to current node on mousedown (aka currently edited node)
+
     this.isDragging = false; // Keep track of dragging to disallow node emphasis on drag
     this.draggedNode = null; // Store reference to currently dragged node, null otherwise
     this.isBrushing = false;
@@ -55,6 +59,7 @@ class Graph {
     this.curve = null;
     this.svgGrid = null;
     this.force = null;
+    this.dragLink = null; // Dynamic link from selected node in edit mode
 
     this.ticked = this.ticked.bind(this);
     this.brushstart = this.brushstart.bind(this);
@@ -67,10 +72,12 @@ class Graph {
     this.dragstart = this.dragstart.bind(this);
     this.dragging = this.dragging.bind(this);
     this.dragend = this.dragend.bind(this);
+    this.mousedown = this.mousedown.bind(this);
+    this.mouseup = this.mouseup.bind(this);
     this.mouseover = this.mouseover.bind(this);
     this.mouseout = this.mouseout.bind(this);
     this.clickedCanvas = this.clickedCanvas.bind(this);
-    this.dragstartCanvas = this.dragstartCanvas.bind(this);
+    this.mousemoveCanvas = this.mousemoveCanvas.bind(this);
     this.mouseoverLink = this.mouseoverLink.bind(this);
     this.dragstart = this.dragstart.bind(this);
     this.dragging = this.dragging.bind(this);
@@ -87,6 +94,7 @@ class Graph {
     this.textWrap = this.textWrap.bind(this);
     this.displayTooltip = this.displayTooltip.bind(this);
     this.populateNodeInfoBody = this.populateNodeInfoBody.bind(this);
+    this.resetDragLink = this.resetDragLink.bind(this);
 
     this.bindDisplayFunctions({}); //no display functions yet
   }
@@ -128,10 +136,6 @@ class Graph {
       .attr('id', 'canvas')
       .attr('pointer-events', 'all')
       .classed('svg-content', true)
-      .on('click', this.clickedCanvas)
-      .call(d3.behavior.drag()
-        .on('dragstart', this.dragstartCanvas)
-      )
       .call(this.zoom);
 
     // Disable context menu from popping up on right click
@@ -235,6 +239,16 @@ class Graph {
         .style('fill-opacity', 1);
   }
 
+  initializeDragLink() {
+    return this.svg.append('line')
+      .attr('class', 'link dynamic hidden')
+      .attr('x1', 0)
+      .attr('y1', 0)
+      .attr('x2', 0)
+      .attr('y2', 0)
+      .attr('marker-end', function(d) { return d3.select(this).classed('selected') ? 'url(#end-arrow-blue)' : 'url(#end-arrow-gray)'});
+  }
+
   initializeZoomButtons() {
     var self = this;
     this.svg.selectAll('.button')
@@ -288,6 +302,7 @@ class Graph {
     this.curve = this.initializeCurve();
     this.svgGrid = this.initializeSVGgrid();
     this.force = this.initializeForce();
+    this.dragLink = this.initializeDragLink();
     this.initializeMarkers();
     this.initializeZoomButtons();
     this.initializeTooltip();
@@ -384,6 +399,13 @@ class Graph {
         .on('dragend', function (d) { self.dragend(d, this) })
       );
 
+    if (this.editMode) {
+      this.nodeEnter
+        .on('mousedown.drag', null)
+        .on('mousedown', function (d) { self.mousedown(d, this); })
+        .on('mouseup', function (d) { self.mouseup(d, this); });
+    }
+
     this.nodeEnter
       .filter((o) => { if (this.hoveredNode && !this.neighbors(this.hoveredNode, o)) { return o; } })
       .style('stroke-opacity', .15)
@@ -398,7 +420,8 @@ class Graph {
       .attr('dominant-baseline', 'central')
       .attr('font-family', 'FontAwesome')
       .attr('font-size', '20px')
-      .text(function (d) { return (d.type && icons[d.type]) ? icons[d.type] : ''; });
+      .text(function (d) { return (d.type && icons[d.type]) ? icons[d.type] : ''; })
+      .classed('unselectable', true);
 
     this.nodeEnter.append('text')
       .attr('class', 'node-name')
@@ -435,11 +458,12 @@ class Graph {
 
   // Occurs each tick of simulation
   ticked(e, self) {
+    const classThis = this;
     this.force.resume();
 
     this.node
       .each(this.groupNodesForce(.3))
-      .each(function(d) {d.px = d.x; d.py = d.y;})
+      .each(function(d) { d.px = d.x; d.py = d.y; })
       .attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
 
     if (!this.hull.empty()) {
@@ -464,6 +488,22 @@ class Graph {
       .attr('y1', function (d) { return d.sourceY; })
       .attr('x2', function (d) { return d.targetX; })
       .attr('y2', function (d) { return d.targetY; });
+
+    if (this.mousedownNode) {
+      const x1 = this.mousedownNode[0][0].__data__.x,
+            y1 = this.mousedownNode[0][0].__data__.y,
+            x2 = this.dragLink.attr('tx2'),
+            y2 = this.dragLink.attr('ty2'),
+            dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2)),
+            targetX = x2 - (x2-x1) * (dist-27) / dist,
+            targetY = y2 - (y2-y1) * (dist-27) / dist;
+
+      this.dragLink
+        .attr('x1', targetX)
+        .attr('y1', targetY)
+        .attr('x2', x2)
+        .attr('y2', y2);
+    }
   }
 
   // Custom force that takes the parent group position as the centroid to moves all contained nodes toward
@@ -482,8 +522,6 @@ class Graph {
   setupKeycodes() {
     d3.select('body')
       .on('keydown', () => {
-        this.force.stop();
-        
         // u: Unpin selected nodes
         if (d3.event.keyCode == 85) {
           this.svg.selectAll('.node.selected')
@@ -513,8 +551,28 @@ class Graph {
 
         // e: Toggle edit mode
         else if (d3.event.keyCode == 69) {
+          const self = this;
           this.editMode = !this.editMode;
-          console.log(this.editMode)
+          if (this.editMode) {
+            this.dragCallback = this.node.property('__onmousedown.drag')['_'];
+            this.node
+              .on('mousedown.drag', null)
+              .on('mousedown', function (d) { self.mousedown(d, this); })
+              .on('mouseup', function (d) { self.mouseup(d, this); });
+
+            this.svg
+              .on('click', this.clickedCanvas)
+              .on('mousemove', this.mousemoveCanvas);
+          } else {
+            this.node
+              .on('mousedown', null)
+              .on('mouseup', null)
+              .on('mousedown.drag', this.dragCallback);
+
+            this.svg
+              .on('click', null)
+              .on('mousemove', null);
+          }
         }
 
         // r/del: Remove selected nodes/links
@@ -583,6 +641,7 @@ Graph.prototype.highlightLinksFromAllNodes = aesthetics.highlightLinksFromAllNod
 Graph.prototype.highlightLinksFromNode = aesthetics.highlightLinksFromNode;
 Graph.prototype.fillGroupNodes = aesthetics.fillGroupNodes;
 Graph.prototype.resetGraphOpacity = aesthetics.resetGraphOpacity;
+Graph.prototype.resetDragLink = aesthetics.resetDragLink;
 Graph.prototype.textWrap = aesthetics.textWrap;
 
 //From mouseClicks.js
@@ -596,10 +655,12 @@ Graph.prototype.isRightClick = mouseClicks.isRightClick;
 Graph.prototype.dragstart = mouseClicks.dragstart;
 Graph.prototype.dragging = mouseClicks.dragging;
 Graph.prototype.dragend = mouseClicks.dragend;
+Graph.prototype.mousedown = mouseClicks.mousedown;
+Graph.prototype.mouseup = mouseClicks.mouseup;
 Graph.prototype.mouseover = mouseClicks.mouseover;
 Graph.prototype.mouseout = mouseClicks.mouseout;
 Graph.prototype.clickedCanvas = mouseClicks.clickedCanvas;
-Graph.prototype.dragstartCanvas = mouseClicks.dragstartCanvas;
+Graph.prototype.mousemoveCanvas = mouseClicks.mousemoveCanvas;
 Graph.prototype.mouseoverLink = mouseClicks.mouseoverLink;
 Graph.prototype.stopPropagation = mouseClicks.stopPropagation;
 
