@@ -16,7 +16,7 @@ const auth = require('./passport-connector')
 
 const credentials = require('./credentials')
 
-const mongoURL = 'mongodb://alice:archer@ds125578.mlab.com:25578/redtwine1'
+const mongoURL = 'mongodb://arch2:' + credentials.mongoPassword + '@ds263639.mlab.com:63639/architect'
 mongoose.connect(mongoURL)
 
 app.use(bodyParser.urlencoded({extended: true}))
