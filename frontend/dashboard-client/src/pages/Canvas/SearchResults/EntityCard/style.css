@@ -1,51 +1,46 @@
-
-.outerBox{
-  display: block;
-  background-color: white;
-  padding: 16px;
+.card {
+    margin-bottom: 0;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
+    background-color: transparent;
 }
 
-.heading, .identifyingInfo{
-  white-space:nowrap;
+.card-header {
+    border: 0;
+    background-color: transparent;
 }
 
-.titleName, .info, .status, .actions{
-  display:inline-block;
+.left-card-col {
+    border-left: 1px solid #bbbbbb;
+    padding-left: 1em;
 }
 
-.titleName {
-  font-size: 20px;
-  color: #0D77E2;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
+.card-body {
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-bottom: 2em;
+    margin-left: 1.25rem;     /* match bootstrap */
+    border-left: 1px solid #e5e5e5;
 }
 
-.info, .status{
-  font-size: 14px;
-  color: #000;
-  letter-spacing: 1px;
+.card-body-condensed {
+    margin-left: 0;
+    border-left: 0;
 }
 
-.info{
-  margin-right:15px;
-  margin-top:10px;
+small.card-sdn-type {
+    font-size: 12px;
+    color: #aaaaaa;
+    margin-left: 1em;
 }
 
-.actions{
-  float:right;
+h5.card-detail-header {
+    font-size: 14px;
+    margin-top: 1em;
+    letter-spacing: 2px;
 }
 
-.titleText, .status {
-  margin:0px;
-  padding:0px;
-}
-
-.status{
-  margin-left: 15px;
-  color: green;
-}
-
-.heading {
-  margin-bottom: 7px;
+li.no-bullet {
+    list-style: none;
 }

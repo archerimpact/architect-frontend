@@ -9,10 +9,11 @@ class EntityCard extends Component {
   constructor(props) {
     super(props);
     this.fetchSearchQuery = this.fetchSearchQuery.bind(this);
+    this.toggleCollapse = this.toggleCollapse.bind(this);
     var entity = this.props.entity
-    this.renderBody = this.renderBody.bind(this);
     //handle toggling and stuff in here
     this.state = {
+      collapsed: false,
       link: this.fetchSearchQuery(),
       neo4j_id : entity._source !== null ? entity._source.neo4j_id : entity.metadata.id,
       name : entity._source !== null ? entity._source.name : entity.data.name,
@@ -23,6 +24,11 @@ class EntityCard extends Component {
       company_status : entity._source !== null ? entity._source.company_status : entity.data.company_status,
       nationality : entity._source !== null ? entity._source.nationality : entity.data.nationality,
     }
+  }
+
+  toggleCollapse() {
+    const current = this.state.collapsed;
+    this.setState({collapsed: !current});
   }
 
   fetchSearchQuery() {
@@ -36,46 +42,34 @@ class EntityCard extends Component {
     };
   }
 
-  renderBody() {
-    switch(this.state.type){
-      case 'person':
-        return  (<span className="identifyingInfo">
-                  <span className="info">[United Kingdom Companies House Business Registry]</span>
-                </span>)
-      case 'corporation':
-        return (<div className="identifyingInfo">
-                <div>{this.state.nationality} </div>
-                <div className="info">{"Jurisdiction: " + this.state.jurisdiction}</div>
-                <div className="info">{"Date Created: " + this.state.date_of_creation}</div>
-              </div>)
-      case 'Document':
-        return <p>{"GCS Self: " + this.state.source }</p>
-      default:
-        return <p>Data type not supported.</p>
-    }
-  }
-
   render() {
     return (
-      <div className='entity-result' onClick={()=>this.setState({toggled:!this.state.toggled})}>
-      <div className="outerBox">
-        <div className="heading">
-          <div className="titleName underline">
-            <Link to={this.state.link}>{this.state.name}</Link>
+      <div className="card" key={this.props.neo4j_id}>
+        <div className="card-header">
+          <a href="#" className="collapse-link" onClick={this.toggleCollapse}>
+            { this.state.name }
+          </a>
+          <small className="card-sdn-type">
+              { this.state.type }
+          </small>
+
+          <div className="float-right card-program">
+              
           </div>
-          <i style={{marginRight: '8px'}}>{this.state.type}</i>
-          <span className="identifyingInfo">
-              <span className="info">[United Kingdom Companies House Business Registry]</span>
-            </span>
-            <div className="status">
-              {this.state.company_status}
+
+          </div>
+          <div className={ this.state.collapsed ? 'collapse' : null}>
+              <div className="card-body">
+                <p>
+                  { this.state.source }
+                </p>
+                <p>hi</p>
+              </div>
             </div>
-          {this.renderBody(this.state.type)}
-        </div>
-      </div>
-      {/* {this.state.toggled?<SummaryInfo entity={this.props.entity}/>: null } */}
-      </div>
-    )
+          </div>
+
+    );
   }
+
 }
 export default withRouter(EntityCard);
