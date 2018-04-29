@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 
 import Entity from '../Entity';
-import Search from '../Search';
+import SearchResults from '../SearchResults';
 import DatabaseSearchBar from '../../../components/SearchBar/databaseSearchBar';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -47,7 +47,7 @@ class GraphSidebar extends Component {
               <div className="search-bar">
                 <DatabaseSearchBar/>
               </div>
-              {this.state.renderSearch ? <Search graph={this.props.graph} search={this.props.search} entity/> : null}
+              {this.state.renderSearch ? <SearchResults graph={this.props.graph} search={this.props.search} entity/> : null}
               {this.state.renderEntity ? <Entity /> : null}
             </div>
           </div>

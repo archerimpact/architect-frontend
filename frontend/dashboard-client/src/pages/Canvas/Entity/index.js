@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import './style.css'
 
-import EntityCard from '../../../components/EntityCard/';
+// import EntityCard from '../../SearchResults/EntityCard';
 import ConnectionsTab from './components/ConnectionsTab/';
 
 import queryString from 'query-string';
@@ -77,7 +77,7 @@ class Entity extends Component {
       return (
         <div>
           <div onClick={()=>this.props.history.goBack()}> Back to results </div>
-          <EntityCard nodeItem={this.state.nodeData[0]} />
+          {/* <EntityCard nodeItem={this.state.nodeData[0]} /> */}
           {/* <hr></hr>
           <SummaryInfo nodeItem={this.state.nodeData[0]} nodeRelationships={this.state.relationshipData} /> */}
           <div className="tabs" style={{ width: '100%' }}>

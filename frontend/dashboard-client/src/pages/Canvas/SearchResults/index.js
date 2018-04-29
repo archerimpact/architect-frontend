@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import './style.css'
-import EntityResult from './components/SearchDataList/'
+import EntityCard from './EntityCard';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -44,7 +44,7 @@ class BackendSearch extends Component {
   render() {
     if (this.props.searchData === null) {
       return (
-        <div>Loading</div>
+        <div>Loading...</div>
       );
     } else {
       return (
@@ -54,9 +54,9 @@ class BackendSearch extends Component {
           </div>
           {this.state.showResults && this.props.searchData ?
             <div className="searchResults">
-              {this.props.searchData.map((item) => {
+              {this.props.searchData.map((entity) => {
                 return (
-                  <EntityResult searchResultItem={item} key={item._source.neo4j_id} newgraphid={true} />
+                  <EntityCard entity={entity} key={entity._source.neo4j_id} newgraphid={true} />
                 );
               })}
             </div>
