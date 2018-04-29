@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import './style.css'
 
 import EntityCard from '../../../components/EntityCard/';
-
-import SummaryInfo from './components/SummaryInfo/';
 import ConnectionsTab from './components/ConnectionsTab/';
 
 import queryString from 'query-string';

@@ -1,0 +1,50 @@
+.row {
+	height: 100%;
+}
+
+.page-col {
+	align-items: center;
+	flex-direction: column;
+}
+
+.left-col {
+	background-color: #3d3d3d;
+	color: #f2f2f2;
+
+}
+
+.right-col {
+	/*background-color: #f2f2f2;*/
+}
+
+.login-box {
+	width: 400px;
+    margin: 4em auto;
+    padding: 3em 2em 2em 2em;
+    background: #fafafa;
+    border: 1px solid #ebebeb;
+    box-shadow: rgba(0,0,0,0.14902) 0px 1px 1px 0px, rgba(0,0,0,0.09804) 0px 1px 2px 0px;
+}
+
+.large-fa-icon {
+	font-size: 2em;
+	margin-right: 20px;
+}
+
+.tagline {
+	display: flex;
+	margin-bottom: 40px;
+}
+
+.sexy-input {
+	border: 0;
+	border-bottom: 1px solid #888888;
+	border-radius: 0;
+	margin-bottom: 20px;
+}
+
+.sexy-input:focus {
+	outline: none;
+	box-shadow: none;
+	border-bottom: 3px solid #888888;
+}

@@ -5,7 +5,6 @@
 }
 .search-side-container {
   height: 100%;
-  max-height: calc(100% - 48px);  /* exclude navbar */
 	position: absolute;
   right: 0px;
   top: 0px;

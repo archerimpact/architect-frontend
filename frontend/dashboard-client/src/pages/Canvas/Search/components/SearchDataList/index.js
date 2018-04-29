@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 import EntityCard from '../../../../../components/EntityCard/';
-import SummaryInfo from '../../../Entity/components/SummaryInfo/';
 import './style.css';
 
 class EntityResult extends Component {
@@ -20,7 +19,7 @@ class EntityResult extends Component {
           key={this.props.key} 
           newgraphid={this.props.newgraphid}
         />
-        {this.state.toggled?<SummaryInfo nodeItem={this.props.searchResultItem}/>: null }
+        {/* {this.state.toggled?<SummaryInfo nodeItem={this.props.searchResultItem}/>: null } */}
       </div>
     );
   }

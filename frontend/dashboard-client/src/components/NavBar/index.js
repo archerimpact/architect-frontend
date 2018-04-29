@@ -74,6 +74,36 @@ class NavBar extends Component {
 		)
 		);
 
+
+
+		const nav = (
+			<nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+				<Link className="navbar-brand" to="/">
+					<span className="architect">ARCHITECT</span>
+				</Link>
+
+				<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02">
+	                <span className="navbar-toggler-icon"></span>
+	            </button>
+
+	            <div className="collapse navbar-collapse" id="navbarColor02">
+	                <ul className="navbar-nav ml-auto">
+	                	<NavLink className="nav-item" activeClassName="active-" to="/projects">
+							<span className="nav-link">Build</span>
+						</NavLink>
+						<NavLink className="nav-item" activeClassName="active-" to="/explore">
+							<span className="nav-link">Explore</span>
+						</NavLink>
+	                    <NavLink className="nav-item" activeClassName="active-" to="/projects">
+							<span className="nav-link">My Account</span>
+						</NavLink>
+	                </ul>
+	            </div>
+	        </nav>
+	    );
+
+	    return nav;
+
 		return (
 			<div className="outerContainer">
 				<Link className="nav-link" to="/">

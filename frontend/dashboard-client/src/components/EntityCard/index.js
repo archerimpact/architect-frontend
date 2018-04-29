@@ -120,7 +120,6 @@ class EntityCard extends Component {
     this.fetchSearchQuery = this.fetchSearchQuery.bind(this);
     var nodeItem = this.props.nodeItem
     this.renderBody = this.renderBody.bind(this);
-    debugger
     this.state = {
       link: this.fetchSearchQuery(),
       neo4j_id : nodeItem._source !== null ? nodeItem._source.neo4j_id : nodeItem.metadata.id,

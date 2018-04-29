@@ -1,3 +1,4 @@
+/*
 .outerContainer{
   width: 100%;
   height: 46px;
@@ -121,4 +122,44 @@
 .right-buttons {
   float: right;
   margin-right: 20px;
+}
+
+*/
+
+.navbar-expand-lg .navbar-nav .nav-link {
+    padding: 0;
+}
+
+nav.navbar {
+    padding: 1em 1em;
+}
+
+.active>.nav-link {
+    color: #ff7700 !important;
+}
+
+.nav-item {
+    border-bottom: 3px solid transparent;
+}
+
+.nav-link:hover, .nav-link:focus {
+  color: #ff7700 !important;
+}
+
+@media (min-width: 992px) {
+    .nav-item.active {
+        border-bottom: 3px solid #ff7700;
+    }
+}
+
+.nav-link {
+    font-size: 1.1em;
+}
+
+.nav-item {
+    margin-right: 30px;
+}
+
+.navbar-dark {
+    background-color: #343a40 !important;
 }
