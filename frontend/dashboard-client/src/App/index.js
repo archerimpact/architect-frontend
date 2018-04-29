@@ -35,6 +35,7 @@ class App extends Component {
           <Route path="/create_account" component={CreateAccount} />
           <PrivateRoute path="/explore" component={Canvas} />
           <Route path="/build" component={Investigations} />
+          <Route path="/build/:investigationId" component={Canvas} /> {/* TODO pass in investigationID as a prop*/}
         </div>
       </div>
     );

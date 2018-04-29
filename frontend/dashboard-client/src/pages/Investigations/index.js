@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
 
-import { Route, Redirect, withRouter } from 'react-router-dom';
+import { Link, Route, Redirect, withRouter } from 'react-router-dom';
 import { getProjects } from "../../server/index.js";
 
 import './style.css';
@@ -30,7 +30,11 @@ class Investigations extends Component {
 				<p>{"All projects as JSON: " + JSON.stringify(this.state.projects)}</p>
 				<ul>
 				{this.state.projects.map((proj) => 
-					<li key={proj._id}>{proj.name}</li>
+					<li key={proj._id}>
+						<Link to={`/build/${proj._id}`}>
+							{proj.name}
+						</Link>
+					</li>
 				)}
 				</ul>
 			</div>
