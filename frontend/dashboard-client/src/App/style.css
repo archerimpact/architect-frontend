@@ -1,7 +1,12 @@
+@import url('https://fonts.googleapis.com/css?family=Open Sans');
+
+body {
+	font-family: 'Open Sans', sans-serif;
+}
+
 .main {
   margin-left: 0px;
-  min-height: calc(100% - 46px);
+  height: calc(100% - 46px);
   width: calc(100%);
   position: absolute;
-  margin-top: 46px;
 }

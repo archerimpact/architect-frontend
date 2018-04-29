@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import './style.css';
-import EntityCard from '../../../../../components/EntityCard/';
+import EntityCard from '../../../SearchResults/EntityCard';
 
 class ConnectionsTab extends Component {
 

@@ -12,6 +12,7 @@ import Login from '../pages/Login/';
 import CreateAccount from '../pages/CreateAccount/';
 import Home from '../pages/Home/';
 import Canvas from '../pages/Canvas';
+import Investigations from '../pages/Investigations';
 import './style.css';
 
 class App extends Component {
@@ -33,6 +34,8 @@ class App extends Component {
           <Route path="/login" component={Login} />
           <Route path="/create_account" component={CreateAccount} />
           <PrivateRoute path="/explore" component={Canvas} />
+          <Route path="/build" component={Investigations} />
+          <Route path="/build/:investigationId" component={Canvas} /> {/* TODO pass in investigationID as a prop*/}
         </div>
       </div>
     );
