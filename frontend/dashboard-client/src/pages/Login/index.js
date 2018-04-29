@@ -15,7 +15,7 @@ class Login extends Component {
             email: '',
             password: '',
             redirectToReferrer: false,
-            error: false
+            error: '',
         };
         this.handleEmailInputChange = this.handleEmailInputChange.bind(this);
         this.handlePasswordInputChange = this.handlePasswordInputChange.bind(this);
@@ -35,18 +35,25 @@ class Login extends Component {
         event.preventDefault();
         console.log('Submitting...');
         // TODO: Implement form validation
-        authenticateAccount({username: this.state.email, password: this.state.password})
-        .then(data => {
+        authenticateAccount({
+            username: this.state.email,
+            password: this.state.password
+        }).then(data => {
             if (data.success) {
+                this.setState({error: false});
                 console.log('logged in!');
-                // this.props.dispatch(actions.userLogIn());
+                this.props.dispatch(actions.userLogIn());
                 this.setState({email: '', password: '', redirectToReferrer: true})
             } else {
+                this.setState({error: data.error});
                 console.log('failed to login!');
                 this.setState({email: '', password: '', passwordConf: '', error: true})
             }
         })
-        .catch(err => console.log('Could not authenticate'))
+        .catch((err, i) => {
+            console.log('Could not authenticate');
+            this.setState({error: err.response.data});
+        });
     }
 
 
@@ -108,7 +115,6 @@ class Login extends Component {
                             className="btn btn-outline-primary"
                             style={{margin: 15}}
                             onClick={this.handleSubmit}
-                            
                         >Login </button>
 
 
@@ -117,7 +123,6 @@ class Login extends Component {
                             className="btn btn-primary"
                             style={{margin: 15}}
                             onClick={this.handleSubmit} 
-                            
                         >Sign Up </button>
                         
                         {/*}
