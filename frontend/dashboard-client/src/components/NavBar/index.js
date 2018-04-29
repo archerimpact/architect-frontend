@@ -58,13 +58,13 @@ class NavBar extends Component {
 
 	            <div className="collapse navbar-collapse" id="navbarColor02">
 	                <ul className="navbar-nav ml-auto">
-	                	<NavLink className="nav-item" activeClassName="active-" to="/projects">
+	                	<NavLink className="nav-item" activeClassName="active-" to="/build">
 							<span className="nav-link">Build</span>
 						</NavLink>
 						<NavLink className="nav-item" activeClassName="active-" to="/explore">
 							<span className="nav-link">Explore</span>
 						</NavLink>
-						<NavLink className="nav-item" activeClassName="active-" to="/projects">
+						<NavLink className="nav-item" activeClassName="active-" to="/login">
 							<span className="nav-link" onClick={this.props.logOut}>Log Out</span>
 						</NavLink>
 	                </ul>
