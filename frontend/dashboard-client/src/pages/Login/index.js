@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Redirect, withRouter, Link } from 'react-router-dom';
-import {authenticateAccount} from "../../server/auth_routes";
+import { authenticateAccount } from "../../server/auth_routes";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import './style.css';
@@ -23,6 +23,7 @@ class Login extends Component {
     }
 
     handleEmailInputChange(event) {
+        console.log('typing email');
         this.setState({email: event.target.value});
     }
 
@@ -31,13 +32,17 @@ class Login extends Component {
     }
 
     handleSubmit(event) {
+        event.preventDefault();
+        console.log('Submitting...');
         // TODO: Implement form validation
         authenticateAccount({username: this.state.email, password: this.state.password})
         .then(data => {
             if (data.success) {
-                this.props.dispatch(actions.userLogIn());
+                console.log('logged in!');
+                // this.props.dispatch(actions.userLogIn());
                 this.setState({email: '', password: '', redirectToReferrer: true})
             } else {
+                console.log('failed to login!');
                 this.setState({email: '', password: '', passwordConf: '', error: true})
             }
         })
@@ -47,15 +52,14 @@ class Login extends Component {
 
 
     render() {
-
         const { from } = this.props.location.state || { from: { pathname: '/' } };
-        const { redirectToReferrer } = this.state;
+        // const { redirectToReferrer } = this.state;
 
-        if (redirectToReferrer) {
-          return (
-            <Redirect to={from}/>
-          )
-        }
+        // if (redirectToReferrer) {
+        //   return (
+        //     <Redirect to={from}/>
+        //   )
+        // }
 
         return (
             <div className="row">
@@ -78,7 +82,7 @@ class Login extends Component {
                     { this.state.error ? <p> Error! Invalid login or password. Please try again. </p> : [] }
 
                     <form>
-                        <div class="form-group">
+                        <div className="form-group">
                             <input
                                 className="form-control sexy-input"
                                 placeholder="Email"
@@ -89,7 +93,7 @@ class Login extends Component {
                             />
                         </div>
                         
-                        <div class="form-group">
+                        <div className="form-group">
                             <input
                                 className="form-control sexy-input"
                                 placeholder="Password"
@@ -104,7 +108,7 @@ class Login extends Component {
                             className="btn btn-outline-primary"
                             style={{margin: 15}}
                             onClick={this.handleSubmit}
-                            type="submit"
+                            
                         >Login </button>
 
 
@@ -113,7 +117,7 @@ class Login extends Component {
                             className="btn btn-primary"
                             style={{margin: 15}}
                             onClick={this.handleSubmit} 
-                            type="submit"
+                            
                         >Sign Up </button>
                         
                         {/*}

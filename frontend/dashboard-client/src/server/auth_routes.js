@@ -14,6 +14,8 @@ export const registerAccount = async (dataObj) => {
         "password": dataObj.password
     };
     let responseData = await api_inst.post("/auth/register", payload);
+    console.log(responseData);
+    console.log('registered');
     return responseData.data;
 };
 
@@ -23,6 +25,7 @@ export const authenticateAccount = async (dataObj) => {
         "password": dataObj.password
     };
     let responseData = await api_inst.post("/auth/login", payload);
+    console.log(responseData);
     return responseData.data;
 };
 

@@ -2,6 +2,18 @@ import 'whatwg-fetch';
 import { configData } from '../config.js';
 import axios from 'axios';
 
+let api_inst = axios.create({
+    baseURL: configData.backend_url,
+    timeout: 2000,
+    headers: {},
+    withCredentials: true
+});
+
+export async function getProjects() {
+  const response = await api_inst.get('/projects/all');
+  return response.data;
+}
+
 export function searchBackendText(searchQuery) {
   /* Takes in a searchQuery parameter and sends a query directly to the hosted elastic
     search instance. Query format below is the standard for elastic. Matches only if the
