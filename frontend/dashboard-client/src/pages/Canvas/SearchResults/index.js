@@ -48,19 +48,15 @@ class BackendSearch extends Component {
       );
     } else {
       return (
-        <div>
-          <div onClick={this.toggleSearchResults}>
-            {this.state.showResults ? "collapse search results" : "show search results"}
-          </div>
-          {this.state.showResults && this.props.searchData ?
-            <div className="searchResults">
-              {this.props.searchData.map((entity) => {
-                return (
-                  <EntityCard entity={entity} key={entity._source.neo4j_id} newgraphid={true} />
-                );
-              })}
-            </div>
-            : null}
+        <div className="searchResults">
+          { !this.props.searchData ? 
+            null :
+            this.props.searchData.map((entity) => {
+              return (
+                <EntityCard entity={entity} key={entity._source.neo4j_id} newgraphid={true} />
+              );
+            })
+          }
         </div>
       );
     }

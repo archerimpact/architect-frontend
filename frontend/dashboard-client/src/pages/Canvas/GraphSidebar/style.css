@@ -1,3 +1,12 @@
+.sidebar {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 500px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  height: 100%;
+}
+
 .sidebar-collapse {
   position: absolute;
   top: calc(10px + 8px);
@@ -27,4 +36,35 @@
   margin-left: 6px;
   margin-top: 10px;
   font-size: 20px;
+}
+
+
+.searchbar-container, .results-container {
+  width: 100%;
+}
+
+.results-container {
+  flex-grow: 10;
+}
+
+.sidebar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  height: 100%;
+  padding: 20px;
+
+  z-index: 10;
+  /*transition: left 2.5s;*/
+  -webkit-transform: translateX(0px);
+  transform: translateX(0px);
+  transition-property: -webkit-transform,transform,visibility,opacity;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.0,0.0,0.2,1);
+  overflow-y: auto;
+
+  
+  border: 1px;
+  background-color: #FFFFFF;
 }

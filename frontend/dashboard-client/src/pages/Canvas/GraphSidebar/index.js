@@ -36,20 +36,24 @@ class GraphSidebar extends Component {
 
   render() {
     return (
-      <div>
+      <div className="sidebar">
         <div className={"sidebar-collapse " + (this.props.sidebarVisible ? "sidebar-attached" : "edge-attached")} onClick={() => this.props.dispatch(actions.toggleSidebar())}>
           <span className={"collapse-icon fa " + (this.props.sidebarVisible ? "fa-caret-right" : "fa-caret-left")}></span>
         </div>
+
         { !this.props.sidebarVisible ?
           null :
-          <div className="search-side-container">
-            <div className="search-side">
-              <div className="search-bar">
+          <div className="sidebar-container">
+              <div className="searchbar-container">
                 <DatabaseSearchBar/>
               </div>
-              {this.state.renderSearch ? <SearchResults graph={this.props.graph} search={this.props.search} entity/> : null}
-              {this.state.renderEntity ? <Entity /> : null}
-            </div>
+              
+              <div className="results-container">
+                <SearchResults graph={this.props.graph} search={this.props.search} entity/>
+              </div>
+              
+
+              {/*this.state.renderEntity ? <Entity /> : null */}
           </div>
         }     
       </div>    
