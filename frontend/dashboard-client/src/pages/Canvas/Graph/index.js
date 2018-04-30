@@ -4,7 +4,8 @@ import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {withRouter } from 'react-router-dom';
-import * as actions from './graphActions';
+import * as graphActions from './graphActions';
+import * as actions from '../../../redux/actions';
 
 import './graph.css'
 
@@ -21,8 +22,11 @@ const urlPropsQueryConfig = {
 class Graph extends Component {
 
   componentWillMount() {
+    if (this.props.match.params && this.props.match.params.investigationId) {
+      this.props.actions.fetchProject(this.props.match.params.investigationId);
+    }
     if (this.props.search != null ){
-      if (this.props.graphid !== null && this.props.graphid !== undefined) {
+      if (this.props.graphid !== null && this.props.graphid !== undefined && this.props.graphid !== "undefined") {
         this.props.actions.fetchGraphFromId(this.props.graph, this.props.graphid);
       }
     }  
@@ -33,7 +37,7 @@ class Graph extends Component {
   }
 
   componentWillReceiveProps(nextprops){
-    if (this.props.graphid !== nextprops.graphid) {
+    if (this.props.graphid !== nextprops.graphid && nextprops.graphid !== null) {
       this.props.actions.fetchGraphFromId(this.props.graph, nextprops.graphid);
     } else if (this.props.entityid != null && this.props.entityid !== nextprops.entityid) {
       this.props.graph.translateGraphAroundId(parseInt(nextprops.entityid, 10))
@@ -42,14 +46,17 @@ class Graph extends Component {
 
   render() {
     return( 
-      <div id="graph-container" style={{"height": this.props.height + "px", "width": this.props.width + "px"}}></div>
+      <div>
+        {this.props.project ? <div> {this.props.project.name} </div> : null}
+        <div id="graph-container" style={{"height": this.props.height + "px", "width": this.props.width + "px"}}></div>
+      </div>
     );
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(actions, dispatch),
+    actions: bindActionCreators({ ...actions, ...graphActions}, dispatch),
     dispatch: dispatch,
   };
 }
@@ -58,7 +65,8 @@ function mapStateToProps(state, props) {
   let sidebarSize = state.data.sidebarVisible ? 500 : 0;
   return{
       height: window.innerHeight,
-      width: Math.max(window.innerWidth - sidebarSize)
+      width: Math.max(window.innerWidth - sidebarSize),
+      project: state.data.currentProject
   };
 }
 export default addUrlProps({ urlPropsQueryConfig })(withRouter(connect(mapStateToProps, mapDispatchToProps)(Graph)));

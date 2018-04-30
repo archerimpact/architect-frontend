@@ -72,7 +72,7 @@ class NavBar extends Component {
 	        </nav>
 	    );
 
-	    const unauthenticated = (
+		const unauthenticated = (
 	    	<nav className="navbar navbar-expand-lg navbar-dark bg-primary">
 				<Link className="navbar-brand" to="/">
 					<span className="architect">ARCHITECT</span>
@@ -103,4 +103,4 @@ class NavBar extends Component {
 	};
 };
 
-export default NavBar;
+export default withRouter(NavBar);

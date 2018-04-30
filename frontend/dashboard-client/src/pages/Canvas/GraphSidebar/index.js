@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 
-import Entity from '../Entity';
+// import Entity from '../Entity';
 import SearchResults from '../SearchResults';
 import DatabaseSearchBar from '../../../components/SearchBar/databaseSearchBar';
 import { connect } from 'react-redux';
@@ -20,16 +20,16 @@ class GraphSidebar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      renderSearch: props.location.pathname === "/explore/search",
-      renderEntity: props.location.pathname === "/explore/entity",
+      renderSearch: props.match.params ? props.match.params.sidebarState === "search" : null,
+      renderEntity: props.match.params ? props.match.params.sidebarState === "entity" : null
     };
   }
 
   componentWillReceiveProps(nextprops) {
     if (this.props.location.pathname !== nextprops.location.pathname) {
       this.setState({
-        renderSearch: nextprops.location.pathname === "/explore/search",
-        renderEntity: nextprops.location.pathname === "/explore/entity",
+        renderSearch: nextprops.match.params ? nextprops.match.params.sidebarState === "search" : null,
+        renderEntity: nextprops.match.params ? nextprops.match.params.sidebarState === "entity" : null
       })
     }
   }
@@ -52,7 +52,6 @@ class GraphSidebar extends Component {
                 <SearchResults graph={this.props.graph} search={this.props.search} entity/>
               </div>
               
-
               {/*this.state.renderEntity ? <Entity /> : null */}
           </div>
         }     

@@ -41,6 +41,7 @@ class BackendSearch extends Component {
   toggleSearchResults() {
     return this.setState({ showResults: !this.state.showResults })
   }
+
   render() {
     if (this.props.searchData === null) {
       return (

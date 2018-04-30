@@ -14,6 +14,14 @@ export async function getProjects() {
   return response.data;
 }
 
+export async function getProject(id) {
+  const response = await api_inst.get('/projects/get', {
+    params: {
+      projectid: id
+    }});
+  return response.data;
+}
+
 export function searchBackendText(searchQuery) {
   /* Takes in a searchQuery parameter and sends a query directly to the hosted elastic
     search instance. Query format below is the standard for elastic. Matches only if the

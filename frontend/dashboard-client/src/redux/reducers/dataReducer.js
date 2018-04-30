@@ -1,7 +1,8 @@
 import {
   USER_LOGIN,
 	USER_LOGOUT,
-	TOGGLE_SIDEBAR
+	TOGGLE_SIDEBAR,
+    STORE_PROJECT
   } from '../actions/actionTypes';
 import {
 	INITIALIZE_CANVAS,
@@ -23,10 +24,19 @@ export default function (state = initialState, action) {
 				}
 			};
 		case TOGGLE_SIDEBAR:
-            // debugger;
 			return {
 				...state,
 				sidebarVisible: !state.sidebarVisible
+			}
+		case STORE_PROJECT:
+			return { 
+				...state,
+				currentProject: {
+					name: action.payload.name,
+					description: action.payload.description,
+					users: action.payload.users,
+					_id: action.payload._id
+				}
 			}
 		case UPDATE_GRAPH_DATA:
 			return {

@@ -56,7 +56,7 @@ function makeDeepCopy(array) {
 
 export function fetchGraphFromId(graph, id) {
   return (dispatch, getState) => {
-
+    debugger
     function setCurrentNode(d) {
       dispatch(storeCurrentNodeDispatch(d.id));
       graph.translateGraphAroundNode(d)
@@ -89,7 +89,7 @@ export function fetchSearchResults(graph, query) {
         dispatch(storeSearchResults(data.hits.hits));
         // fetchGraphFromId(graph, data.hits.hits[0]._source.neo4j_id)
       })
-      .catch((error) => { debugger; console.log(error); });
+      .catch((error) => console.log(error));
   }
 }
 function storeSearchResults(data) {

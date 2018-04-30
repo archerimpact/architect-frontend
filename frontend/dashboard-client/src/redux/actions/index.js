@@ -1,11 +1,12 @@
 import { 
   USER_LOGIN,
 	USER_LOGOUT, 
-	TOGGLE_SIDEBAR
+	TOGGLE_SIDEBAR,
+	STORE_PROJECT
   } from './actionTypes';
 
 import { logoutAccount } from "../../server/auth_routes";
-
+import * as server from '../../server';
 export function userLogIn() {
   return {
     type: USER_LOGIN,
@@ -34,6 +35,23 @@ export function toggleSidebar() {
 	return {
 		type: TOGGLE_SIDEBAR
 	}
+}
+
+export function fetchProject(id) {
+	return (dispatch) => {
+		server.getProject(id)
+			.then((data)=>{
+				dispatch(storeProject(data.message));
+			})
+			.catch((error) =>  console.log(error));
+	}
+}
+
+function storeProject(project) {
+	return {
+		type: STORE_PROJECT,
+		payload: project
+	};
 }
 
 
