@@ -29,7 +29,6 @@ class EntityCard extends Component {
   }
 
   addToGraph() {
-    debugger;
     this.props.fetch(this.state.neo4j_id);
   }
 
