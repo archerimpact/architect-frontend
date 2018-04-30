@@ -47,7 +47,7 @@ class Graph extends Component {
   render() {
     return( 
       <div>
-        {this.props.project ? <div> {this.props.project.name} </div> : null}
+        {this.props.project && !this.props.match.path === "/explore/:sidebarState?" ? <div> {this.props.project.name} </div> : null}
         <div id="graph-container" style={{"height": this.props.height + "px", "width": this.props.width + "px"}}></div>
       </div>
     );

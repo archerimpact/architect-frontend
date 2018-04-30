@@ -56,7 +56,6 @@ function makeDeepCopy(array) {
 
 export function fetchGraphFromId(graph, id) {
   return (dispatch, getState) => {
-    debugger
     function setCurrentNode(d) {
       dispatch(storeCurrentNodeDispatch(d.id));
       graph.translateGraphAroundNode(d)

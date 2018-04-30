@@ -33,7 +33,7 @@ class App extends Component {
           <PrivateRoute exact path="/" component={Home} />
           <Route path="/login" component={Login} />
           <Route path="/create_account" component={CreateAccount} />
-          <PrivateRoute path="/explore/:sidebarState" component={Canvas} />
+          <PrivateRoute path="/explore/:sidebarState?" component={Canvas} />
           <PrivateRoute path="/build/:investigationId" component={Canvas} /> {/* TODO pass in investigationID as a prop*/}
           <PrivateRoute exact path="/build" component={Investigations} />
         </div>
