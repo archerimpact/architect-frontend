@@ -66,6 +66,12 @@ export function addLink(source, target) {
   this.update();
 }
 
+export function selectLink(source, target) {
+  const linkId = this.linkedById[source.id + ',' + target.id] || this.linkedById[target.id + ',' + source.id];
+  this.link.filter((d) => { return d.id === linkId; })
+    .call(this.styleLink, true);
+}
+
 export function addNodeToSelected(selection, event=null) {
   const nodeId = this.globalnodeid;
   let newNode;
@@ -90,8 +96,8 @@ export function addNodeToSelected(selection, event=null) {
     })
 
   // Remove highlighting of all nodes and links 
-  this.node.classed("selected", false);
-  this.link.classed("selected", false);
+  this.node.classed('selected', false);
+  this.link.call(this.styleLink, false);
   this.nodeSelection = {};
   this.update();
   this.fillGroupNodes();
@@ -225,10 +231,8 @@ export function ungroupSelectedGroups() {
   select.each((d) => { delete this.groups[d.id]; }); //delete this group from the global groups 
 
   this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
-  this.node.classed("selected", false)
-  this.link
-      .classed("selected", false)
-      .attr('marker-end', 'url(#end-arrow-gray)');
+  this.node.classed('selected', false);
+  this.link.call(this.styleLink, false);
   this.update();
   this.displayGroupInfo(this.groups);
 }

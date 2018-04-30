@@ -127,6 +127,7 @@ export function mouseup(d, self) {
       .attr('transform', '');
 
     this.addLink(d, this.mousedownNode);
+    this.selectLink(d, this.mousedownNode);
   }
 
   resetDragLink(this);
@@ -212,7 +213,6 @@ export function mousemoveCanvas(self) {
   if (this.mousedownNode) {
     const currNode = this.node.filter(function(o) { return classThis.mousedownNode.id === o.id; });
     this.dragDistance++;
-    console.log(e.x, e.y)
     this.dragLink
       .attr('tx2', e.x)
       .attr('ty2', e.y);

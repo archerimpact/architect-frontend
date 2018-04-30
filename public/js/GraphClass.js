@@ -633,7 +633,7 @@ class Graph {
   reloadNeighbors() {
     this.linkedById = {};
     this.links.forEach((d) => {
-      this.linkedById[d.source.id + "," + d.target.id] = true;
+      this.linkedById[d.source.id + "," + d.target.id] = d.id;
     });
   }
 }
@@ -641,6 +641,7 @@ class Graph {
 //From aesthetics.js
 Graph.prototype.highlightLinksFromAllNodes = aesthetics.highlightLinksFromAllNodes;
 Graph.prototype.highlightLinksFromNode = aesthetics.highlightLinksFromNode;
+Graph.prototype.styleLink = aesthetics.styleLink;
 Graph.prototype.fillGroupNodes = aesthetics.fillGroupNodes;
 Graph.prototype.resetGraphOpacity = aesthetics.resetGraphOpacity;
 Graph.prototype.resetDragLink = aesthetics.resetDragLink;
@@ -695,6 +696,7 @@ Graph.prototype.calculateAllHulls = d3Data.calculateAllHulls;
 Graph.prototype.drawHull = d3Data.drawHull;
 
 Graph.prototype.addLink = d3Data.addLink;
+Graph.prototype.selectLink = d3Data.selectLink;
 Graph.prototype.removeLink = d3Data.removeLink;
 Graph.prototype.createGroupFromNode = d3Data.createGroupFromNode;
 Graph.prototype.checkLinkAddGroup = d3Data.checkLinkAddGroup;

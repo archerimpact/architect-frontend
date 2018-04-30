@@ -1,22 +1,19 @@
 // Link highlighting
 export function highlightLinksFromAllNodes() {
-  this.link
-    .classed('selected', (d, i) => {
-      return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index];
-    })
-    .attr('marker-end', function(d) { return d3.select(this).classed('selected') ? 'url(#end-arrow-blue)' : 'url(#end-arrow-gray)'});
+  this.link.call(this.styleLink, false);
+  this.link.filter((d) => { return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index] })
+    .call(this.styleLink, true);
 }
 
 export function highlightLinksFromNode(node) {
   node = node[0].__data__.index;
-  this.link
-    .filter((d, i) => {
-      return d.source.index == node || d.target.index == node;
-    })
-    .classed('selected', (d, i) => {
-      return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index];
-    })
-    .attr('marker-end', function(d) { return d3.select(this).classed('selected') ? 'url(#end-arrow-blue)' : 'url(#end-arrow-gray)'});
+  this.link.filter((d) => { return d.source.index == node || d.target.index == node; })
+    .call(this.styleLink, (d) => { return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index]; });
+}
+
+export function styleLink(selection, isSelected) {
+  selection.classed('selected', isSelected)
+    .attr('marker-end', (d) => { return (typeof isSelected === 'function' ? isSelected(d) : isSelected) ? 'url(#end-arrow-blue)' : 'url(#end-arrow-gray)' });
 }
 
 // Fill group nodes blue
@@ -36,8 +33,7 @@ export function resetGraphOpacity() {
 // Reset edit mode's dynamic drag link
 export function resetDragLink(self) {
   self.mousedownNode = null;
-  self.dragLink
-    .classed('hidden', true);
+  self.dragLink.classed('hidden', true);
 }
 
 // Wrap text
