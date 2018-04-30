@@ -10,10 +10,11 @@ class EntityCard extends Component {
     super(props);
     this.fetchSearchQuery = this.fetchSearchQuery.bind(this);
     this.toggleCollapse = this.toggleCollapse.bind(this);
+    this.addToGraph = this.addToGraph.bind(this);
     var entity = this.props.entity
     //handle toggling and stuff in here
     this.state = {
-      collapsed: false,
+      collapsed: true,
       link: this.fetchSearchQuery(),
       neo4j_id : entity._source !== null ? entity._source.neo4j_id : entity.metadata.id,
       name : entity._source !== null ? entity._source.name : entity.data.name,
@@ -23,7 +24,12 @@ class EntityCard extends Component {
       source : entity._source !== null ? entity._source.self : entity.self,
       company_status : entity._source !== null ? entity._source.company_status : entity.data.company_status,
       nationality : entity._source !== null ? entity._source.nationality : entity.data.nationality,
+
     }
+  }
+
+  addToGraph() {
+    console.log('Added to graph');
   }
 
   toggleCollapse() {
@@ -46,27 +52,28 @@ class EntityCard extends Component {
     return (
       <div className="card" key={this.props.neo4j_id}>
         <div className="card-header">
+          <i className="fa fa-share-alt add-to-graph-icon" onClick={this.addToGraph}></i>
           <a href="#" className="collapse-link" onClick={this.toggleCollapse}>
             { this.state.name }
           </a>
           <small className="card-sdn-type">
-              { this.state.type }
+              
           </small>
 
           <div className="float-right card-program">
-              
+              { this.state.type }
           </div>
 
-          </div>
-          <div className={ this.state.collapsed ? 'collapse' : null}>
-              <div className="card-body">
-                <p>
-                  { this.state.source }
-                </p>
-                <p>hi</p>
-              </div>
+        </div>
+        <div className={ this.state.collapsed ? 'collapse' : null}>
+            <div className="card-body">
+              <p>{ this.state.jurisdiction }</p>
+              <p>{ this.state.date_of_creation }</p>
+              <p>{ this.state.company_status }</p>
+              <p>{ this.state.nationality }</p>
             </div>
-          </div>
+        </div>
+      </div>
 
     );
   }

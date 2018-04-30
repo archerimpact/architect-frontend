@@ -9,19 +9,11 @@
 .card-header {
     border: 0;
     background-color: transparent;
-}
-
-.left-card-col {
-    border-left: 1px solid #bbbbbb;
-    padding-left: 1em;
+    padding: 12px 5px;
 }
 
 .card-body {
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-bottom: 2em;
-    margin-left: 1.25rem;     /* match bootstrap */
-    border-left: 1px solid #e5e5e5;
+    padding: 0 0 0 35px;
 }
 
 .card-body-condensed {
@@ -43,4 +35,9 @@ h5.card-detail-header {
 
 li.no-bullet {
     list-style: none;
+}
+
+.add-to-graph-icon {
+  margin-right: 15px;
+  cursor: pointer;
 }

@@ -10,3 +10,13 @@ body {
   width: calc(100%);
   position: absolute;
 }
+
+a {
+  color: #4f4844;
+  /*color: #f48942;*/
+}
+
+a:hover {
+  color: #222;
+  text-decoration: underline;
+}

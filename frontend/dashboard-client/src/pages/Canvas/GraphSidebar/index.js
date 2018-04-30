@@ -38,7 +38,7 @@ class GraphSidebar extends Component {
     return (
       <div className="sidebar">
         <div className={"sidebar-collapse " + (this.props.sidebarVisible ? "sidebar-attached" : "edge-attached")} onClick={() => this.props.dispatch(actions.toggleSidebar())}>
-          <span className={"collapse-icon fa " + (this.props.sidebarVisible ? "fa-caret-right" : "fa-caret-left")}></span>
+          <span className={"collapse-icon fa " + (this.props.sidebarVisible ? "fa-angle-right" : "fa-angle-left")}></span>
         </div>
 
         { !this.props.sidebarVisible ?
