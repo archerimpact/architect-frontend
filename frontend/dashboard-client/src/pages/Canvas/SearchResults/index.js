@@ -54,7 +54,7 @@ class BackendSearch extends Component {
             null :
             this.props.searchData.map((entity) => {
               return (
-                <EntityCard entity={entity} key={entity._source.neo4j_id} newgraphid={true} />
+                <EntityCard entity={entity} key={entity._source.neo4j_id} fetch={this.props.actions.fetchGraphFromId} newgraphid={true} />
               );
             })
           }

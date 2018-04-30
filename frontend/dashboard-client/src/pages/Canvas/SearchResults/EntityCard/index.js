@@ -29,7 +29,8 @@ class EntityCard extends Component {
   }
 
   addToGraph() {
-    console.log('Added to graph');
+    debugger;
+    this.props.fetch(this.state.neo4j_id);
   }
 
   toggleCollapse() {
