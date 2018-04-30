@@ -9,6 +9,7 @@ body {
   height: calc(100% - 46px);
   width: calc(100%);
   position: absolute;
+  overflow-y: scroll;
 }
 
 a {

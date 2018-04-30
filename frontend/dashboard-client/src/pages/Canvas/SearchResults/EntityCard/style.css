@@ -1,4 +1,4 @@
-.card {
+.result-card {
     margin-bottom: 0;
     border-left: 0;
     border-right: 0;
@@ -6,13 +6,13 @@
     background-color: transparent;
 }
 
-.card-header {
+.result-card-header {
     border: 0;
     background-color: transparent;
     padding: 12px 5px;
 }
 
-.card-body {
+.result-card-body {
     padding: 0 0 0 35px;
 }
 

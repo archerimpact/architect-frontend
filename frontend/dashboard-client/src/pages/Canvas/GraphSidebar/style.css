@@ -37,9 +37,22 @@
   font-size: 20px;
 }
 
+.no-bottom-margin {
+  margin-bottom: 0;
+}
+
 
 .searchbar-container, .results-container {
   width: 100%;
+}
+
+.searchbar-container {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  background-color: #ffffff;
+  z-index: 100;
+  padding-top: 10px;
 }
 
 .results-container {
@@ -54,6 +67,7 @@
 
   height: 100%;
   padding: 20px;
+  padding-top: 0;
 
   z-index: 10;
   /*transition: left 2.5s;*/

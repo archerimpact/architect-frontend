@@ -46,6 +46,8 @@ class GraphSidebar extends Component {
           <div className="sidebar-container">
               <div className="searchbar-container">
                 <DatabaseSearchBar/>
+                <p>filter options go here</p>
+                <hr className="no-bottom-margin" />
               </div>
               
               <div className="results-container">
