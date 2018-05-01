@@ -69,6 +69,7 @@ class Graph {
     this.clicked = this.clicked.bind(this);
     this.rightclicked = this.rightclicked.bind(this);
     this.dblclicked = this.dblclicked.bind(this);
+    this.isLeftClick = this.isLeftClick.bind(this);
     this.isRightClick = this.isRightClick.bind(this);
     this.dragstart = this.dragstart.bind(this);
     this.dragging = this.dragging.bind(this);
@@ -78,11 +79,9 @@ class Graph {
     this.mouseover = this.mouseover.bind(this);
     this.mouseout = this.mouseout.bind(this);
     this.clickedCanvas = this.clickedCanvas.bind(this);
+    this.dragstartCanvas = this.dragstartCanvas.bind(this);
     this.mousemoveCanvas = this.mousemoveCanvas.bind(this);
     this.mouseoverLink = this.mouseoverLink.bind(this);
-    this.dragstart = this.dragstart.bind(this);
-    this.dragging = this.dragging.bind(this);
-    this.dragend = this.dragend.bind(this);
     this.zoomstart = this.zoomstart.bind(this);
     this.zooming = this.zooming.bind(this);
     this.zoomend = this.zoomend.bind(this);
@@ -124,7 +123,7 @@ class Graph {
   }
 
   initializeBrush() {
-    var self = this;
+    const self = this;
     return d3.svg.brush()
       .on('brushstart', function (d) { self.brushstart(d, this) })
       .on('brush', function (d) { self.brushing(d, this) })
@@ -134,10 +133,14 @@ class Graph {
 
   // Create canvas
   initializeSVG() {
+    const self = this;
     const svg = d3.select('#graph-container').append('svg')
       .attr('id', 'canvas')
       .attr('pointer-events', 'all')
       .classed('svg-content', true)
+      .call(d3.behavior.drag()
+        .on('dragstart', function (d) { self.dragstartCanvas(d, this) })
+      )
       .call(this.zoom);
 
     // Disable context menu from popping up on right click
@@ -431,9 +434,9 @@ class Graph {
       .attr('dy', '35px')
       .text(function (d) { return utils.processNodeName(d.name, this.printFull); })
       .call(this.textWrap, this.printFull)
-      .on('click', function (d) { self.stopPropagation(d, this); })
-      .on('mouseover', function (d) { self.stopPropagation(d, this); })
-      .on('mouseout', function (d) { self.stopPropagation(d, this); })
+      .on('click', function (d) { self.stopPropagation(); })
+      .on('mouseover', function (d) { self.stopPropagation(); })
+      .on('mouseout', function (d) { self.stopPropagation(); })
       .call(d3.behavior.drag()
         .on('dragstart', this.stopPropagation)
         .on('drag', this.stopPropagation)
@@ -497,8 +500,8 @@ class Graph {
             x2 = this.dragLink.attr('tx2'),
             y2 = this.dragLink.attr('ty2'),
             dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2)),
-            targetX = x2 - (x2-x1) * (dist-27) / dist,
-            targetY = y2 - (y2-y1) * (dist-27) / dist;
+            targetX = x2 - (x2-x1) * (dist-20) / dist,
+            targetY = y2 - (y2-y1) * (dist-20) / dist;
 
       this.dragLink
         .attr('x1', targetX)
@@ -654,6 +657,7 @@ Graph.prototype.brushend = mouseClicks.brushend;
 Graph.prototype.clicked = mouseClicks.clicked;
 Graph.prototype.rightclicked = mouseClicks.rightclicked;
 Graph.prototype.dblclicked = mouseClicks.dblclicked;
+Graph.prototype.isLeftClick = mouseClicks.isLeftClick;
 Graph.prototype.isRightClick = mouseClicks.isRightClick;
 Graph.prototype.dragstart = mouseClicks.dragstart;
 Graph.prototype.dragging = mouseClicks.dragging;
@@ -663,6 +667,7 @@ Graph.prototype.mouseup = mouseClicks.mouseup;
 Graph.prototype.mouseover = mouseClicks.mouseover;
 Graph.prototype.mouseout = mouseClicks.mouseout;
 Graph.prototype.clickedCanvas = mouseClicks.clickedCanvas;
+Graph.prototype.dragstartCanvas = mouseClicks.dragstartCanvas;
 Graph.prototype.mousemoveCanvas = mouseClicks.mousemoveCanvas;
 Graph.prototype.mouseoverLink = mouseClicks.mouseoverLink;
 Graph.prototype.stopPropagation = mouseClicks.stopPropagation;

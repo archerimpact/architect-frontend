@@ -35,7 +35,6 @@ export function brushend() {
 // Single-node interactions
 export function clicked(d, self, i) {
   if (d3.event.defaultPrevented) return;
-  if (this.editMode && this.dragDistance > 0) return;
   const node = d3.select(self);
   const fixed = !(node.attr('dragfix') == 'true');
   node.classed('fixed', d.fixed = fixed);
@@ -64,6 +63,11 @@ export function dblclicked(d) {
 export function isRightClick() {
   return (d3.event && (d3.event.which == 3 || d3.event.button == 2))
     || (d3.event.sourceEvent && (d3.event.sourceEvent.which == 3 || d3.event.sourceEvent.button == 2));
+}
+
+export function isLeftClick() {
+  return (d3.event && d3.event.which == 1)
+    || (d3.event.sourceEvent && d3.event.sourceEvent.which == 1);
 }
 
 // Click-drag node interactions
@@ -110,6 +114,7 @@ export function dragend(d, self) {
 
 export function mousedown(d, self) {
   d3.event.stopPropagation();
+  if (this.isLeftClick) { this.link.call(this.styleLink, false); }
   if (!this.mousedownNode) { this.mousedownNode = d; };
   this.dragDistance = 0;
   this.dragLink
@@ -198,12 +203,17 @@ export function mouseout(d, self) {
 // Canvas mouse handlers
 export function clickedCanvas() {
   resetDragLink(this);
+  if (d3.event.defaultPrevented) return;
   if (this.dragDistance == 0) {
     const selection = this.svg.selectAll('.node.selected');
     this.addNodeToSelected(selection, d3.event);
   } else {
     this.dragDistance = 0;
   }
+}
+
+export function dragstartCanvas() {
+  if (this.editMode) d3.event.sourceEvent.preventDefault();
 }
 
 export function mousemoveCanvas(self) {
