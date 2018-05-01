@@ -17,6 +17,22 @@ import './style.css';
 
 class App extends Component {
 
+  constructor(props) {
+    super(props);
+    this.isNavbarVisible = this.isNavbarVisible.bind(this);
+    this.state = {
+      navbarVisible: this.isNavbarVisible(props),
+    };
+  }
+
+  componentDidMount() {
+    this.setState({navbarVisible: this.isNavbarVisible(this.props)})
+	}
+
+	componentWillReceiveProps(nextProps){
+    this.setState({navbarVisible: this.isNavbarVisible(nextProps)})
+	}
+
   logOut() {
     return this.props.actions.userLogOut();
   }
@@ -25,16 +41,29 @@ class App extends Component {
     return (<Redirect to={'/login'} />);
   }
 
+  isNavbarVisible(props) {
+    var exploreCanvasPath = RegExp('\/explore\/*');
+    var buildCanvasPath = RegExp('\/build\/\\d+');
+    let currentPath = props.location.pathname;
+		if (exploreCanvasPath.test(currentPath) || buildCanvasPath.test(currentPath)) {
+      return false;
+    }
+    return true;
+  }
+
   render() {
     return (
       <div>
-        <NavBar isAuthenticated={this.props.isAuthenticated} logOut={this.logOut.bind(this)} logIn={this.logIn.bind(this)} />
-        <div className="main">
+        { !this.state.navbarVisible ? 
+          null : 
+          <NavBar isAuthenticated={this.props.isAuthenticated} logOut={this.logOut.bind(this)} logIn={this.logIn.bind(this)} />
+        }
+        <div className={"main " + (this.state.navbarVisible ? "show-nav" : "no-nav")}>
           <PrivateRoute exact path="/" component={Home} />
           <Route path="/login" component={Login} />
           <Route path="/create_account" component={CreateAccount} />
           <PrivateRoute path="/explore/:sidebarState?" component={Canvas} />
-          <PrivateRoute path="/build/:investigationId" component={Canvas} /> {/* TODO pass in investigationID as a prop*/}
+          <PrivateRoute path="/build/:investigationId" component={Canvas} />
           <PrivateRoute exact path="/build" component={Investigations} />
         </div>
       </div>

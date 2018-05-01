@@ -4,24 +4,40 @@ import './style.css'
 
 import { NavLink, Link, withRouter } from 'react-router-dom';
 
+
 class NavBar extends Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			dropdownShow: 'none'
+			dropdownShow: 'none',
+			visible: true,
 		};
 		this.toggleDropdown = this.toggleDropdown.bind(this);
 		this.handleClickOutside = this.handleClickOutside.bind(this);
 	}
 
 	componentDidMount() {
+		// let currentPath = this.props.location.pathname;
+		// if (this.exploreCanvasPath.test(currentPath) || this.buildCanvasPath.test(currentPath)) {
+		// 	this.setState({ visible: false });
+		// }
 		document.addEventListener('mousedown', this.handleClickOutside);
 	}
 
 	componentWillUnmount() {
 		document.removeEventListener('mousedown', this.handleClickOutside);
 	}
+
+	// componentWillReceiveProps(nextProps){
+	// 	let currentPath = nextProps.location.pathname;
+	// 	// if (currentRoutes.pathname === '/explore/:sidebarState?"' || currentRoutes.pathname === '/build/:investigationId') {
+	// 	if (this.exploreCanvasPath.test(currentPath) || this.buildCanvasPath.test(currentPath)) {
+	// 		this.setState({ visible: false });
+	// 	} else {
+	// 		this.setState({ visibility: true });
+	// 	}
+	// }
 
 	handleClickOutside(event) {
 		let targetClass = event.target.className;
@@ -96,9 +112,7 @@ class NavBar extends Component {
 	    )
 
 	    return (
-	    	<div>
-	    		{ this.props.isAuthenticated ? authenticated : unauthenticated }
-	    	</div>
+	    	this.props.isAuthenticated ? authenticated : unauthenticated
 	    );
 	};
 };

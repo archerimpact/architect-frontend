@@ -24,7 +24,6 @@ class EntityCard extends Component {
       source : entity._source !== null ? entity._source.self : entity.self,
       company_status : entity._source !== null ? entity._source.company_status : entity.data.company_status,
       nationality : entity._source !== null ? entity._source.nationality : entity.data.nationality,
-
     }
   }
 

@@ -6,10 +6,17 @@ body {
 
 .main {
   margin-left: 0px;
-  height: calc(100% - 46px);
   width: calc(100%);
   position: absolute;
   overflow-y: scroll;
+}
+
+.show-nav {
+  height: calc(100% - 46px);
+}
+
+.no-nav {
+  height: 100%;
 }
 
 a {
