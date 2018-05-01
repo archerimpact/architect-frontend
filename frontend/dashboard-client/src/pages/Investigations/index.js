@@ -42,8 +42,8 @@ class Investigations extends Component {
 					
 				
 					return (
-						<div className='col-md-4'>
-							<div key={proj._id} className="card investigation-card">
+						<div key={proj._id} className='col-md-4'>
+							<div className="card investigation-card">
 								<img className="card-img-top" src={image_blob}>
 									
 								</img>

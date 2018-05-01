@@ -7,7 +7,8 @@ import {withRouter } from 'react-router-dom';
 import * as graphActions from './graphActions';
 import * as actions from '../../../redux/actions';
 
-import './graph.css'
+import './graph.css';
+import './style.css';
 
 const urlPropsQueryConfig = {
   /* type specifies the type of encoding necessary, queryParam sets which
@@ -20,6 +21,11 @@ const urlPropsQueryConfig = {
 } 
 
 class Graph extends Component {
+
+  constructor(props) {
+    super(props);
+    this.renderProjectToolbar = this.renderProjectToolbar.bind(this);
+  }
 
   componentWillMount() {
     if (this.props.match.params && this.props.match.params.investigationId) {
@@ -44,10 +50,21 @@ class Graph extends Component {
     }
   }
 
+
+  renderProjectToolbar() {
+    return (
+      <div className="project-toolbar" >
+        <div className="project-name"> {this.props.project.name} <span className="settings fa fa-cog"></span> </div>
+        <div onClick={this.props.history.goBack}> <span className="back-proj-icon fa fa-angle-left"></span> <span>Back to Projects </span></div>
+      </div>
+    )
+  }
   render() {
     return( 
       <div>
-        {this.props.project && !this.props.match.path === "/explore/:sidebarState?" ? <div> {this.props.project.name} </div> : null}
+        {this.props.project && this.props.match.path !== "/explore/:sidebarState?" ? this.renderProjectToolbar() : 
+          null
+        }
         <div id="graph-container" style={{"height": this.props.height + "px", "width": this.props.width + "px"}}></div>
       </div>
     );

@@ -43,7 +43,7 @@ class App extends Component {
 
   isNavbarVisible(props) {
     var exploreCanvasPath = RegExp('\/explore\/*');
-    var buildCanvasPath = RegExp('\/build\/\\d+');
+    var buildCanvasPath = RegExp('\/build\/\\S+');
     let currentPath = props.location.pathname;
 		if (exploreCanvasPath.test(currentPath) || buildCanvasPath.test(currentPath)) {
       return false;
