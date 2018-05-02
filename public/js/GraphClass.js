@@ -247,7 +247,7 @@ class Graph {
       .append('marker')
         .attr('id', 'start-arrow-gray')
         .attr('viewBox', '5 -5 10 10')
-        .attr('refX', 13)
+        .attr('refX', 10)
         .attr('markerWidth', 5)
         .attr('markerHeight', 5)
         .attr('orient', 'auto-start-reverse')
@@ -264,9 +264,9 @@ class Graph {
         .attr('refX', 10)
         .attr('markerWidth', 5)
         .attr('markerHeight', 5)
-        .attr('orient', 'auto')
+        .attr('orient', 'auto-start-reverse')
       .append('path')
-        .attr('d', 'M 10,-5 L 0,0 L 10,5')
+        .attr('d', 'M 0,-5 L 10,0 L 0,5')
         .style('stroke', '#0d77e2')
         .style('fill', '#0d77e2')
         .style('fill-opacity', 1);
@@ -407,7 +407,6 @@ class Graph {
       .enter().append('line')
       .attr('class', 'link')
       .style('marker-end', 'url(#end-arrow-gray)')
-      .style('marker-start', 'url(#start-arrow-gray)')
       .style('stroke-dasharray', function (d) { return d.type === 'possibly_same_as' ? ('3,3') : false; })
       .on('mouseover', this.mouseoverLink)
       .style('stroke-opacity', (o) => {
@@ -513,10 +512,12 @@ class Graph {
               x2 = d.target.x,
               y2 = d.target.y;
         const dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
-        d.sourceX = x1 + (x2-x1) * (dist-20) / dist;
-        d.sourceY = y1 + (y2-y1) * (dist-20) / dist;
-        d.targetX = x2 - (x2-x1) * (dist-27) / dist;
-        d.targetY = y2 - (y2-y1) * (dist-27) / dist;
+        const sourcePadding = (d.bidirectional || false) ? 27 : 20,
+              targetPadding = 27;
+        d.sourceX = x1 + (x2-x1) * (dist-sourcePadding) / dist;
+        d.sourceY = y1 + (y2-y1) * (dist-sourcePadding) / dist;
+        d.targetX = x2 - (x2-x1) * (dist-targetPadding) / dist;
+        d.targetY = y2 - (y2-y1) * (dist-targetPadding) / dist;
       })
       .attr('x1', function (d) { return d.sourceX; })
       .attr('y1', function (d) { return d.sourceY; })

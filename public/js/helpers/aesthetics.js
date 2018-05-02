@@ -13,7 +13,7 @@ export function highlightLinksFromNode(node) {
 
 export function styleLink(selection, isSelected) {
   selection.classed('selected', isSelected)
-    .style('marker-start', (d) => { return (d.bidrectional || false) ? ((typeof isSelected === 'function' ? isSelected(d) : isSelected) ? 'url(#start-arrow-blue)' : 'url(#start-arrow-gray)') : '' })
+    .style('marker-start', (d) => { return (d.bidirectional || false) ? ((typeof isSelected === 'function' ? isSelected(d) : isSelected) ? 'url(#start-arrow-blue)' : 'url(#start-arrow-gray)') : '' })
     .style('marker-end', (d) => { return (typeof isSelected === 'function' ? isSelected(d) : isSelected) ? 'url(#end-arrow-blue)' : 'url(#end-arrow-gray)' });
 }
 
