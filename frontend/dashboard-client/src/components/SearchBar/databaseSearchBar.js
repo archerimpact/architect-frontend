@@ -12,15 +12,15 @@ class DatabaseSearchBar extends Component {
   }
 
   goToSearchPage(query){ 
-    let newPathname = this.props.location.pathname === '/' ? 'explore' :  this.props.location.pathname;
+    let newPathname = this.props.location.pathname === '/' ? 'explore/search' :  this.props.location.pathname;
     let searchQuery = query ? 'search=' + query : '';
     let graphQuery = this.props.graphid ? '&graphid=' + this.props.graphid : '';
-    this.props.history.push(newPathname+'/search?' + searchQuery + graphQuery);
+    this.props.history.push(newPathname + '?' + searchQuery + graphQuery);
   }
 
   render() {
     return(
-      <SearchBar onSubmit={this.goToSearchPage}/>
+      <SearchBar onSubmit={this.goToSearchPage} value={this.props.search}/>
     );
   }
 }

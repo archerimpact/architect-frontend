@@ -77,7 +77,7 @@ class GraphSidebar extends Component {
     return (
       <div className="sidebar-container" key="sidebar-container">
         <div className="searchbar-container">
-          <DatabaseSearchBar graphid={this.props.graphid} />
+          <DatabaseSearchBar graphid={this.props.graphid} search={this.props.search}/>
 
           <div className="filter-controls flex-row">
             <select className="form-control filter-select" id="data-source-select">

@@ -6,20 +6,21 @@ class SearchBar extends Component {
 
   constructor() {
     super();
-    this.state = {
-      searchQuery: ''
-    };
-    this.updateSearch = this.updateSearch.bind(this);
     this.submitSearch = this.submitSearch.bind(this);
   }
 
-  updateSearch() {
-    this.setState({searchQuery: this.refs.query.value});
+  componentDidMount() {
+    this.refs.query.value = this.props.value ? this.props.value : null;
+  }
+  componentWillReceiveProps(nextprops) {
+    if (this.props.value !== nextprops.value) {
+      this.refs.query.value = nextprops.value;
+    }
   }
 
   submitSearch(e) {
     e.preventDefault();
-    this.props.onSubmit(this.state.searchQuery);
+    this.props.onSubmit(this.refs.query.value);
   }
 
   render (){
@@ -31,7 +32,6 @@ class SearchBar extends Component {
             ref="query" 
             type="text" 
             placeholder="Search our connected data"
-            onChange={this.updateSearch}
           />
         </form>
         <div className="search-button">
