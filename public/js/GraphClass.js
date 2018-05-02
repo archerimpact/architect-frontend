@@ -406,12 +406,9 @@ class Graph {
     this.link
       .enter().append('line')
       .attr('class', 'link')
-      //.style('marker-end', 'url(#end-arrow-gray)')
       .style('stroke-dasharray', function (d) { return d.type === 'possibly_same_as' ? ('3,3') : false; })
+      .style('stroke-opacity', (o) => { if (this.hoveredNode) { return (o.source == this.hoveredNode || o.target == this.hoveredNode) ? 1 : .05 }; })
       .on('mouseover', this.mouseoverLink)
-      .style('stroke-opacity', (o) => {
-        if (this.hoveredNode) { return (o.source == this.hoveredNode || o.target == this.hoveredNode) ? 1 : .05 };
-      })
       .call(this.styleLink, false);
 
     this.link.exit().remove();
@@ -643,10 +640,12 @@ class Graph {
   }
 
   toggleFixedNodes() {
+    const self = this;
+    this.isGraphFixed = !this.isGraphFixed;
     d3.selectAll('.node')
       .each(function (d) {
         const currNode = d3.select(this);
-        currNode.classed('fixed', d.fixed = this.isGraphFixed = !this.isGraphFixed)
+        currNode.classed('fixed', d.fixed = self.isGraphFixed)
       });
   }
 
