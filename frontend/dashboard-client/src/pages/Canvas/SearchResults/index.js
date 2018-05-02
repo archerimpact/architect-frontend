@@ -15,15 +15,19 @@ class BackendSearch extends Component {
     this.toggleSearchResults = this.toggleSearchResults.bind(this);
     this.state = {
       showResults: true,
+      history: []
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     /* handles the case when the URL containts the search params and you're
       linking there directly. Only search if there's params */
     if (this.props.search !== null) {
       this.props.actions.fetchSearchResults(this.props.graph, this.props.search);
     }
+    this.props.history.listen((location, action) => {
+      this.setState({history: [...this.state.history, location]});
+    })
   }
 
   componentWillReceiveProps(nextprops) {

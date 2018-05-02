@@ -27,6 +27,7 @@ class App extends Component {
 
   componentDidMount() {
     this.setState({navbarVisible: this.isNavbarVisible(this.props)})
+
 	}
 
 	componentWillReceiveProps(nextProps){

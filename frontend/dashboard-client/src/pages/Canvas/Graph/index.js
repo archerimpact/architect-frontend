@@ -55,7 +55,7 @@ class Graph extends Component {
     return (
       <div className="project-toolbar" >
         <div className="project-name"> {this.props.project.name} <span className="settings fa fa-cog"></span> </div>
-        <div onClick={this.props.history.goBack}> <span className="back-proj-icon fa fa-angle-left"></span> <span>Back to Projects </span></div>
+        <div onClick={this.props.history.goBack}> <span className="back-proj-icon fa fa-angle-left"></span> <span>Back to {this.props.project.name} </span></div>
       </div>
     )
   }
