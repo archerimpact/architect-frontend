@@ -43,7 +43,7 @@
   background-color: #fafafa;
 }
 
-.collapse-icon {
+.tab-icon {
   margin-left: 0;
   margin-top: 10px;
   font-size: 20px;
@@ -87,7 +87,7 @@
 }
 
 .slide-in {
-  transform: translate(470px);
+  transform: translate(600px);
   transition: transform 400ms ease-in-out;
 }
 
