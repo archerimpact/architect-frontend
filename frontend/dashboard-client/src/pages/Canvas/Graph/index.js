@@ -48,7 +48,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, props) {
-  let sidebarSize = state.data.sidebarVisible ? 500 : 0;
+  let sidebarSize = state.data.sidebarVisible ? 600 : 0;
   return{
       height: window.innerHeight,
       width: Math.max(window.innerWidth - sidebarSize),
