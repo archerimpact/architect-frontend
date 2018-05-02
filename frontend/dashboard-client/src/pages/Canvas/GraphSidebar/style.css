@@ -1,3 +1,9 @@
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
 .sidebar {
   position: absolute;
   right: 0;
@@ -6,29 +12,24 @@
   height: 100%;
 }
 
+.tabs {
+  width: 20px;
+  margin-top: 30px;
+  z-index: 100;
+}
+
 .sidebar-collapse {
-  position: absolute;
-  top: calc(10px + 8px);
   width: 20px;
   border: 1px solid #D4D4D4;
   border-right: 0;
   height: 42px;
   cursor: pointer;
   /*box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.3);*/
-  background-color: #f0f0f0;
-  z-index: 100;
+  background-color: #ffffff;
 }
 
 .sidebar-collapse:hover {
   background-color: #fafafa;
-}
-
-.edge-attached {
-  right: 0;
-}
-
-.sidebar-attached {
-  right: calc(500px + 1px);
 }
 
 .collapse-icon {
@@ -64,21 +65,22 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-
+  width: 100% !important;
   height: 100%;
   padding: 20px;
   padding-top: 0;
-
   z-index: 10;
-  /*transition: left 2.5s;*/
-  -webkit-transform: translateX(0px);
-  transform: translateX(0px);
-  transition-property: -webkit-transform,transform,visibility,opacity;
-  transition-duration: 200ms;
-  transition-timing-function: cubic-bezier(0.0,0.0,0.2,1);
   overflow-y: auto;
-
-  
   border: 1px;
   background-color: #FFFFFF;
+}
+
+.slide-in {
+  transform: translate(480px);
+  transition: transform 500ms ease-in-out;
+}
+
+.slide-out {
+  transform: translate(0);
+  transition: transform 500ms ease-in-out;
 }

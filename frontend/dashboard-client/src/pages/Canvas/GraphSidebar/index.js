@@ -18,11 +18,13 @@ class GraphSidebar extends Component {
       renderEntity: props.match.params ? props.match.params.sidebarState === "entity" : null,
       history: []
     };
+    this.renderTabs = this.renderTabs.bind(this);
+    this.renderSidebarContainer = this.renderSidebarContainer.bind(this);
   }
 
   componentDidMount() {
     this.props.history.listen((location, action) => {
-      this.setState({history: [...this.state.history, location]});
+      this.setState({ history: [...this.state.history, location] });
     })
   }
 
@@ -35,30 +37,42 @@ class GraphSidebar extends Component {
     }
   }
 
-  render() {
+  renderTabs() {
     return (
-      <div className="sidebar">
-        <div className={"sidebar-collapse " + (this.props.sidebarVisible ? "sidebar-attached" : "edge-attached")} onClick={() => this.props.dispatch(actions.toggleSidebar())}>
+      <div className="tabs" key="tabs">
+        <div className="sidebar-collapse" onClick={() => this.props.dispatch(actions.toggleSidebar())}>
           <span className={"collapse-icon fa " + (this.props.sidebarVisible ? "fa-angle-right" : "fa-angle-left")}></span>
         </div>
+      </div>
+    )
+  }
 
-        { !this.props.sidebarVisible ?
-          null :
-          <div className="sidebar-container">
-              <div className="searchbar-container">
-                <DatabaseSearchBar graphid={this.props.graphid}/>
-                <p>filter options go here</p>
-                <hr className="no-bottom-margin" />
-              </div>
-              
-              <div className="results-container">
-                <SearchResults graph={this.props.graph} search={this.props.search} entity/>
-              </div>
-              {this.state.history.map((res, key) => (<div key={key}> {res.pathname+res.search} </div>))}
-              {/*this.state.renderEntity ? <Entity /> : null */}
-          </div>
-        }     
-      </div>    
+  renderSidebarContainer() {
+    return (
+      <div className="sidebar-container" key="sidebar-container">
+        <div className="searchbar-container">
+          <DatabaseSearchBar graphid={this.props.graphid} />
+          <p>filter options go here</p>
+          <hr className="no-bottom-margin" />
+        </div>
+
+        <div className="results-container">
+          <SearchResults graph={this.props.graph} search={this.props.search} entity />
+        </div>
+        {this.state.history.map((res, key) => (<div key={key}> {res.pathname + res.search} </div>))}
+        {/*this.state.renderEntity ? <Entity /> : null */}
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div className={"sidebar " + (this.props.sidebarVisible ? "slide-out" : "slide-in")}>
+        <div className="flex-row">
+          {this.renderTabs()}
+          {this.renderSidebarContainer()}
+        </div>
+      </div>
     );
   }
 }
