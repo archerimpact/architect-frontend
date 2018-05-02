@@ -30,13 +30,19 @@ function validate(str) {
 exports.create = async function(req, res) {
     if (!checkUserAuth(req, res)) { return }
 
-    const projId   = mongoose.Types.ObjectId()
-    const projName = validate(req.body.name) || 'Untitled'
-    const projDesc = validate(req.body.description) || ''
-    const project  = {
+    const projId    = mongoose.Types.ObjectId()
+    const projName  = validate(req.body.name) || 'Untitled'
+    const projDesc  = validate(req.body.description) || ''
+    const projImg   = req.body.img || ''
+    const projData  = req.body.data || ''
+    const published = false
+    const project   = {
         _id: projId,
         name: projName,
         description: projDesc,
+        img: projImg,
+        data: projData,
+        published: published,
         users: [req.user._id],
       }
 

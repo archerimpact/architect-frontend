@@ -42,7 +42,7 @@ class Investigations extends Component {
 					
 				
 					return (
-						<div key={proj._id} className='col-md-4'>
+						<div key={proj._id} className='col-md-3'>
 							<div className="card investigation-card">
 								<img className="card-img-top" src={image_blob}>
 									
@@ -53,7 +53,7 @@ class Investigations extends Component {
 									<div className="text-center">
 										<Link to={`/build/${proj._id}`}>
 											<button className="btn btn-primary">
-												Open Project
+												Launch Investigation
 											</button>
 										</Link>
 									</div>
