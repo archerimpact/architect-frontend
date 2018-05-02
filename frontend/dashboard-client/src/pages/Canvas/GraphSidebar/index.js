@@ -19,6 +19,8 @@ class GraphSidebar extends Component {
       history: [],
       listener: null
     };
+    this.getDataSources = this.getDataSources.bind(this);
+    this.getEntityTypes = this.getEntityTypes.bind(this);
     this.renderTabs = this.renderTabs.bind(this);
     this.renderSidebarContainer = this.renderSidebarContainer.bind(this);
   }
@@ -62,12 +64,43 @@ class GraphSidebar extends Component {
     )
   }
 
+  getDataSources() {
+    /* TODO can later be replaced with an actual call to the server to get the datasets */
+    return ['All datasets', 'OFAC sanctions', 'OpenCorporate records', 'UK Corporate Registry records'];
+  }
+
+  getEntityTypes() {
+    return ['All types', 'Individual', 'Organization', 'Vessel', 'Aircraft'];
+  }
+
   renderSidebarContainer() {
     return (
       <div className="sidebar-container" key="sidebar-container">
         <div className="searchbar-container">
           <DatabaseSearchBar graphid={this.props.graphid} />
-          <p>filter options go here</p>
+
+          <div className="filter-controls flex-row">
+            <select className="form-control filter-select" id="data-source-select">
+              { this.getDataSources().map(s => 
+                <option value={s}>{s}</option>
+              ) }
+            </select>
+
+            <select className="form-control filter-select" id="entity-type-select">
+              { this.getEntityTypes().map(e => 
+                <option value={e}>{e}</option>
+              ) }
+            </select>
+
+            <button className="btn btn-outline-primary filter-btn">
+              <span className="fa fa-filter filter-icon"></span>
+            </button>
+
+            <button className="btn btn-outline-primary sort-btn">
+              <span className="fa fa-sort sort-icon"></span>
+            </button>
+
+          </div>
           <hr className="no-bottom-margin" />
         </div>
 

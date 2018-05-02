@@ -95,3 +95,23 @@
   transform: translate(0);
   transition: transform 400ms ease-in-out;
 }
+
+
+.filter-select, .filter-btn {
+  margin-right: 20px;
+}
+
+
+.filter-controls {
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+.filter-icon, .sort-icon {
+  font-size: 20px;
+}
+
+.filter-btn, .sort-btn {
+  padding: 4px 10px;
+  border-color: rgb(206, 212, 218);   /* match bootstrap select */
+}
