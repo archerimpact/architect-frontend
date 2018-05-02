@@ -15,10 +15,10 @@ class SearchBar extends Component {
 
   updateSearch() {
     this.setState({searchQuery: this.refs.query.value});
-    this.props.onChange(this.state.searchQuery);
   }
 
-  submitSearch() {
+  submitSearch(e) {
+    e.preventDefault();
     this.props.onSubmit(this.state.searchQuery);
   }
 
@@ -26,7 +26,7 @@ class SearchBar extends Component {
     return(
       <div className="searchBody">
         <div className="search-input-container">
-        <form className="search-form" onSubmit={() => this.submitSearch()}>
+        <form className="search-form" onSubmit={(e) => this.submitSearch(e)}>
           <input className="search-input" 
             ref="query" 
             type="text" 

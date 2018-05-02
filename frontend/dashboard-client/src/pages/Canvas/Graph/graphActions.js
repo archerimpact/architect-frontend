@@ -81,7 +81,7 @@ export function fetchGraphFromId(graph, id) {
 //     .catch(err => { console.log(err); });
 // }
 
-export function fetchSearchResults(graph, query) {
+export function fetchSearchResults(query) {
   return (dispatch) => {
     server.searchBackendText(query)
       .then((data)=>{

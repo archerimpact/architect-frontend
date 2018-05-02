@@ -41,3 +41,8 @@ li.no-bullet {
   margin-right: 15px;
   cursor: pointer;
 }
+
+.collapse-link:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}

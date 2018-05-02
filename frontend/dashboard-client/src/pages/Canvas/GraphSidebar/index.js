@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 
 // import Entity from '../Entity';
 import SearchResults from '../SearchResults';
@@ -10,19 +9,21 @@ import { withRouter } from 'react-router-dom';
 import './style.css';
 import * as actions from '../../../redux/actions';
 
-const urlPropsQueryConfig = {
-  search: { type: UrlQueryParamTypes.string, queryParam: 'search' },
-  entityid: { type: UrlQueryParamTypes.string, queryParam: 'entityid'},
-  graphid: { type: UrlQueryParamTypes.string, queryParam: 'graphid'}
-} 
 
 class GraphSidebar extends Component {
   constructor(props) {
     super(props);
     this.state = {
       renderSearch: props.match.params ? props.match.params.sidebarState === "search" : null,
-      renderEntity: props.match.params ? props.match.params.sidebarState === "entity" : null
+      renderEntity: props.match.params ? props.match.params.sidebarState === "entity" : null,
+      history: []
     };
+  }
+
+  componentDidMount() {
+    this.props.history.listen((location, action) => {
+      this.setState({history: [...this.state.history, location]});
+    })
   }
 
   componentWillReceiveProps(nextprops) {
@@ -45,7 +46,7 @@ class GraphSidebar extends Component {
           null :
           <div className="sidebar-container">
               <div className="searchbar-container">
-                <DatabaseSearchBar/>
+                <DatabaseSearchBar graphid={this.props.graphid}/>
                 <p>filter options go here</p>
                 <hr className="no-bottom-margin" />
               </div>
@@ -53,7 +54,7 @@ class GraphSidebar extends Component {
               <div className="results-container">
                 <SearchResults graph={this.props.graph} search={this.props.search} entity/>
               </div>
-              
+              {this.state.history.map((res, key) => (<div key={key}> {res.pathname+res.search} </div>))}
               {/*this.state.renderEntity ? <Entity /> : null */}
           </div>
         }     
@@ -75,4 +76,4 @@ function mapStateToProps(state, props) {
   };
 }
 
-export default addUrlProps({ urlPropsQueryConfig })(withRouter(connect(mapStateToProps, mapDispatchToProps)(GraphSidebar)));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(GraphSidebar));

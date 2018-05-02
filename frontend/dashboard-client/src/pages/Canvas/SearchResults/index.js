@@ -13,37 +13,24 @@ class BackendSearch extends Component {
   constructor(props) {
     super(props);
     this.toggleSearchResults = this.toggleSearchResults.bind(this);
+    this.addToGraph = this.addToGraph.bind(this);
     this.state = {
       showResults: true,
-      history: []
     };
   }
 
-  componentDidMount() {
-    /* handles the case when the URL containts the search params and you're
-      linking there directly. Only search if there's params */
-    if (this.props.search !== null) {
-      this.props.actions.fetchSearchResults(this.props.graph, this.props.search);
-    }
-    this.props.history.listen((location, action) => {
-      this.setState({history: [...this.state.history, location]});
-    })
-  }
-
   componentWillReceiveProps(nextprops) {
-    /* handles the case when you are already on backend search and are
-      searching again in the nav bar; react only recognizes that there's nextprops */
     if (this.props.search !== null && this.props.search !== nextprops.search) {
-      if (this.props.entity !== null && this.props.entity !== undefined) {
-        this.props.actions.fetchGraphFromId(this.props.entity);
-      }
-      this.props.actions.fetchSearchResults(this.props.search);
       this.setState({ showResults: true })
     }
   }
 
   toggleSearchResults() {
     return this.setState({ showResults: !this.state.showResults })
+  }
+
+  addToGraph(id) {
+    this.props.actions.fetchGraphFromId(this.props.graph, id)
   }
 
   render() {
@@ -58,7 +45,7 @@ class BackendSearch extends Component {
             null :
             this.props.searchData.map((entity) => {
               return (
-                <EntityCard entity={entity} key={entity._source.neo4j_id} fetch={this.props.actions.fetchGraphFromId} newgraphid={true} />
+                <EntityCard entity={entity} key={entity._source.neo4j_id} addToGraph={this.addToGraph} newgraphid={true} />
               );
             })
           }
@@ -86,4 +73,4 @@ function mapStateToProps(state, props) {
   };
 }
 
-export default (withRouter(connect(mapStateToProps, mapDispatchToProps)(BackendSearch)));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(BackendSearch));

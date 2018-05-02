@@ -8,14 +8,10 @@ class EntityCard extends Component {
 
   constructor(props) {
     super(props);
-    this.fetchSearchQuery = this.fetchSearchQuery.bind(this);
     this.toggleCollapse = this.toggleCollapse.bind(this);
-    this.addToGraph = this.addToGraph.bind(this);
     var entity = this.props.entity
-    //handle toggling and stuff in here
     this.state = {
       collapsed: true,
-      link: this.fetchSearchQuery(),
       neo4j_id : entity._source !== null ? entity._source.neo4j_id : entity.metadata.id,
       name : entity._source !== null ? entity._source.name : entity.data.name,
       type : entity._source !== null ? entity._type : entity.metadata.labels[0],
@@ -27,34 +23,19 @@ class EntityCard extends Component {
     }
   }
 
-  addToGraph() {
-    this.props.fetch(this.state.neo4j_id);
-  }
-
   toggleCollapse() {
     const current = this.state.collapsed;
     this.setState({collapsed: !current});
-  }
-
-  fetchSearchQuery() {
-    let qs = queryString.parse(this.props.location.search);
-    let newEntityid = this.props.entity._source ? this.props.entity._source.neo4j_id : this.props.entity.metadata.id
-    let graphid = this.props.newgraphid ? newEntityid : qs.graphid;
-    let newQs = queryString.stringify({search: qs.search, graphid: graphid, entityid: newEntityid})
-    return {
-      pathname: '/explore/entity',
-      search: newQs
-    };
   }
 
   render() {
     return (
       <div className="card result-card" key={this.props.neo4j_id}>
         <div className="card-header result-card-header">
-          <i className="fa fa-share-alt add-to-graph-icon" onClick={this.addToGraph}></i>
-          <a href="#" className="collapse-link" onClick={this.toggleCollapse}>
+          <i className="fa fa-share-alt add-to-graph-icon" onClick={()=> this.props.addToGraph(this.state.neo4j_id)}></i>
+          <span className="collapse-link" onClick={this.toggleCollapse}>
             { this.state.name }
-          </a>
+          </span>
           <small className="card-sdn-type">
               
           </small>
