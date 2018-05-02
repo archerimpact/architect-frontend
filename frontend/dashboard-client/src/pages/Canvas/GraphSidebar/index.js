@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
+import { CSSTransitionGroup } from 'react-transition-group'
 
 // import Entity from '../Entity';
 import SearchResults from '../SearchResults';
@@ -23,6 +24,8 @@ class GraphSidebar extends Component {
       renderSearch: props.match.params ? props.match.params.sidebarState === "search" : null,
       renderEntity: props.match.params ? props.match.params.sidebarState === "entity" : null
     };
+    this.renderTabs = this.renderTabs.bind(this);
+    this.renderSidebarContainer = this.renderSidebarContainer.bind(this);
   }
 
   componentWillReceiveProps(nextprops) {
@@ -34,16 +37,19 @@ class GraphSidebar extends Component {
     }
   }
 
-  render() {
+  renderTabs() {
     return (
-      <div className="sidebar">
-        <div className={"sidebar-collapse " + (this.props.sidebarVisible ? "sidebar-attached" : "edge-attached")} onClick={() => this.props.dispatch(actions.toggleSidebar())}>
+      <div className="tabs" key="tabs">
+        <div className="sidebar-collapse" onClick={() => this.props.dispatch(actions.toggleSidebar())}>
           <span className={"collapse-icon fa " + (this.props.sidebarVisible ? "fa-angle-right" : "fa-angle-left")}></span>
         </div>
+      </div>
+    )
+  }
 
-        { !this.props.sidebarVisible ?
-          null :
-          <div className="sidebar-container">
+  renderSidebarContainer() {
+    return (
+      <div className="sidebar-container" key="sidebar-container">
               <div className="searchbar-container">
                 <DatabaseSearchBar/>
                 <p>filter options go here</p>
@@ -56,7 +62,16 @@ class GraphSidebar extends Component {
               
               {/*this.state.renderEntity ? <Entity /> : null */}
           </div>
-        }     
+    );
+  }
+
+  render() {
+    return (
+      <div className={"sidebar " + (this.props.sidebarVisible ? "slide-out" : "slide-in")}>
+        <div className="flex-row">
+          { this.renderTabs() }
+          { this.renderSidebarContainer() }
+        </div>
       </div>    
     );
   }
