@@ -38,6 +38,10 @@
   position: absolute;
   top: 40px;
   left: 20px;
-  box-shadow: rgba(0,0,0,0.64902) 0px 2px 3px 1px, rgba(0,0,0,0.09804) 0px 1px 2px 0px;
+  box-shadow: rgba(0,0,0,0.64902) 0px 2px 3px 0px, rgba(0,0,0,0.09804) 0px 1px 2px 0px;
   cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: #cecece;
 }
