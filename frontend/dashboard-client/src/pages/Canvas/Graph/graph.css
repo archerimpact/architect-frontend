@@ -37,26 +37,6 @@ svg line {
   stroke-width: 1.5px; 
 }
 
-button {
-    font-size: 14px;
-    color: #000;
-    letter-spacing: 1px;
-    background-color: white;
-    border: 1px solid #0d77e2;
-    border-radius: 4px;
-    padding: 10px;
-}
-
-button:hover {
-  color: white;
-  background-color: #0d77e2;
-  border: none;
-}
-
-button:focus {
-  outline: none;
-}
-
 .link {
   stroke: #545454;
   stroke-width: 3px;
