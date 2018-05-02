@@ -21,16 +21,20 @@ class BackendSearch extends Component {
 
   componentWillReceiveProps(nextprops) {
     if (this.props.search !== null && this.props.search !== nextprops.search) {
-      this.setState({ showResults: true })
+      this.setState({ showResults: true });
     }
   }
 
   toggleSearchResults() {
-    return this.setState({ showResults: !this.state.showResults })
+    return this.setState({ showResults: !this.state.showResults });
   }
 
   addToGraph(id) {
-    this.props.actions.fetchGraphFromId(this.props.graph, id)
+    let path =  this.props.location.pathname;
+    let searchQuery = this.props.search ? 'search=' + this.props.search : '';
+    let graphQuery = id ? '&graphid=' + id : '';
+    this.props.history.push(path + '?' + searchQuery + graphQuery);
+    this.props.actions.fetchGraphFromId(this.props.graph, id);
   }
 
   render() {

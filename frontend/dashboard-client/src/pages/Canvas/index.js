@@ -29,7 +29,7 @@ class Canvas extends Component {
 
     // Set up graph and fetch if id given
     if (this.state.graphid !== null) {
-      this.props.actions.fetchGraphFromId(this.state.graph, this.state.graphid);
+      this.props.actions.fetchGraphFromId(this.graph, this.state.graphid);
     }
 
     // If in build fetch current investigation

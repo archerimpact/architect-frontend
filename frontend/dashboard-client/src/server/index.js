@@ -47,7 +47,8 @@ export function searchBackendText(searchQuery) {
           fuzziness: 2
         }
       }
-    }
+    },
+    size: 50,
   };
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
