@@ -23,6 +23,15 @@ export function isInArray(value, array) {
   return array.indexOf(value) > -1;
 }
 
+// Get entry from list of dictionaries by id attr
+export function findEntryById(dictList, id) {
+  for (let i = 0; i < dictList.length; i++) {
+    if (dictList[i].id === id) return dictList[i];
+  }
+
+  return null;
+}
+
 // Normalize node text to same casing conventions and length
 // printFull states - 0: abbrev, 1: none, 2: full
 export function processNodeName(str, printFull) {

@@ -242,6 +242,34 @@ class Graph {
         .style('stroke', '#0d77e2')
         .style('fill', '#0d77e2')
         .style('fill-opacity', 1);
+
+    this.svg.append('defs')
+      .append('marker')
+        .attr('id', 'start-arrow-gray')
+        .attr('viewBox', '5 -5 10 10')
+        .attr('refX', 13)
+        .attr('markerWidth', 5)
+        .attr('markerHeight', 5)
+        .attr('orient', 'auto-start-reverse')
+      .append('path')
+        .attr('d', 'M 0,-5 L 10,0 L 0,5')
+        .style('stroke', '#545454')
+        .style('fill', '#545454')
+        .style('fill-opacity', 1);
+
+    this.svg.append('defs')
+      .append('marker')
+        .attr('id', 'start-arrow-blue')
+        .attr('viewBox', '5 -5 10 10')
+        .attr('refX', 10)
+        .attr('markerWidth', 5)
+        .attr('markerHeight', 5)
+        .attr('orient', 'auto')
+      .append('path')
+        .attr('d', 'M 10,-5 L 0,0 L 10,5')
+        .style('stroke', '#0d77e2')
+        .style('fill', '#0d77e2')
+        .style('fill-opacity', 1);
   }
 
   initializeDragLink() {
@@ -378,7 +406,8 @@ class Graph {
     this.link
       .enter().append('line')
       .attr('class', 'link')
-      .attr('marker-end', 'url(#end-arrow-gray)')
+      .style('marker-end', 'url(#end-arrow-gray)')
+      .style('marker-start', 'url(#start-arrow-gray)')
       .style('stroke-dasharray', function (d) { return d.type === 'possibly_same_as' ? ('3,3') : false; })
       .on('mouseover', this.mouseoverLink)
       .style('stroke-opacity', (o) => {
@@ -500,8 +529,8 @@ class Graph {
             x2 = this.dragLink.attr('tx2'),
             y2 = this.dragLink.attr('ty2'),
             dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2)),
-            targetX = x2 - (x2-x1) * (dist-20) / dist,
-            targetY = y2 - (y2-y1) * (dist-20) / dist;
+            targetX = x2 - (x2-x1) * (dist-20*this.zoomScale) / dist,
+            targetY = y2 - (y2-y1) * (dist-20*this.zoomScale) / dist;
 
       this.dragLink
         .attr('x1', targetX)

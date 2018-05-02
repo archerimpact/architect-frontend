@@ -1,4 +1,4 @@
-import { getD3Event, processNodeName, then } from './utils.js';
+import { getD3Event, findEntryById, processNodeName, then } from './utils.js';
 import { maxTextLength, minScale, maxScale, gridLength } from './constants.js'
 import { resetDragLink } from './aesthetics.js';
 
@@ -131,8 +131,20 @@ export function mouseup(d, self) {
     currNode.select('circle')
       .attr('transform', '');
 
-    this.addLink(d, this.mousedownNode);
-    this.selectLink(d, this.mousedownNode);
+    const source = d,
+          target = this.mousedownNode;
+    if (this.linkedById[source.id + ',' + target.id]) {
+      this.selectLink(source, target);
+    } else if (this.linkedById[target.id + ',' + source.id]) {
+      const linkId = this.linkedById[target.id + ',' + source.id];
+      const currLink = findEntryById(this.links, linkId);
+      currLink.bidirectional = true;
+      this.link.filter((o) => { return o.id === linkId; })
+        .call(this.styleLink, true);
+    } else {
+      this.addLink(source, target);
+      this.selectLink(source, target);
+    }
   }
 
   resetDragLink(this);
