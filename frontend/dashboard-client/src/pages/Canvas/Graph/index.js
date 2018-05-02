@@ -21,9 +21,8 @@ class Graph extends Component {
 
   renderProjectToolbar() {
     return (
-      <div className="project-toolbar">
-        <div className="project-name"> {this.props.project.name} <span className="settings fa fa-cog"></span> </div>
-        <div onClick={() => this.props.history.push('/build')}> <span className="back-proj-icon fa fa-angle-left"></span> <span>Back to Projects </span></div>
+      <div className="back-button" onClick={() => this.props.history.push('/build')}>
+        <span className="fa fa-arrow-left back-button-icon"></span>
       </div>
     )
   }

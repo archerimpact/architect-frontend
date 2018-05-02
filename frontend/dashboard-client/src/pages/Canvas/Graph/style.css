@@ -22,6 +22,22 @@
   border-left: 1px solid #D4D4D4;
 }
 
-.back-proj-icon {
-  font-size: 20px;
+.back-button-icon {
+  font-size: 30px;
+  color: #444;
+}
+
+.back-button {
+  display: flex;
+  background-color: #eeeeee;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 40px;
+  left: 20px;
+  box-shadow: rgba(0,0,0,0.64902) 0px 2px 3px 1px, rgba(0,0,0,0.09804) 0px 1px 2px 0px;
+  cursor: pointer;
 }
