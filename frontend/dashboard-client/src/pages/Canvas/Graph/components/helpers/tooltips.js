@@ -3,7 +3,7 @@ import { maxHeight } from './constants.js';
 var $ = require("jquery");
 
 export function initializeTooltip() {
-  $('body').append("<div id='node-tooltip'></div>");
+  $('#graph-container').append("<div id='node-tooltip'></div>");
   this.hideTooltip();
 }
 
