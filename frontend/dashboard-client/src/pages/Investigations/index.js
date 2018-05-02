@@ -48,7 +48,7 @@ class Investigations extends Component {
 									
 								</img>
 								<div className="card-body investigation-card-body">
-									<h5 className="card-title investigation-card-title">{proj.name}</h5>
+									<h5 className="card-title investigation-card-title text-center">{proj.name}</h5>
 									<p className="card-text investigation-card-text">{proj.description}</p>
 									<div className="text-center">
 										<Link to={`/build/${proj._id}`}>

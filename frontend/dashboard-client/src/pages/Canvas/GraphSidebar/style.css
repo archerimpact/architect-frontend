@@ -14,7 +14,8 @@
 
 .tabs {
   width: 30px;
-  margin-top: 30px;
+  margin-top: auto;
+  margin-bottom: auto;
   z-index: 100;
 }
 
@@ -67,11 +68,13 @@
   padding-top: 10px;
   width: 100%;
   padding: 20px 20px 0 20px;
+  background-color: #ff5d4c;
 }
 
 .results-container {
   flex-grow: 10;
   padding: 0 20px;
+  overflow-y: scroll;
 }
 
 .sidebar-container {
@@ -83,10 +86,8 @@
   height: 100%;
   padding:  0;
   z-index: 10;
-  overflow-y: auto;
   border: 1px;
   background-color: #FFFFFF;
-
 }
 
 .slide-in {
@@ -110,11 +111,15 @@
     border-radius: 0;
     outline: none;
     box-shadow: none;
+    background-color: #ff5d4c;
+    color: #4a0700;
 }
 
 .sexy-select:focus {
     outline: none;
     box-shadow: none;
+    background-color: #ff5d4c;
+    color: #4a0700;
 }
 
 .filter-select, .filter-btn {

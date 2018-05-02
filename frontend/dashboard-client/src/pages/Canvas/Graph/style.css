@@ -29,7 +29,7 @@
 
 .back-button {
   display: flex;
-  background-color: #eeeeee;
+  background-color: #ff5d4c;
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -43,5 +43,5 @@
 }
 
 .back-button:hover {
-  background-color: #cecece;
+  background-color: #FF7D6F;
 }
