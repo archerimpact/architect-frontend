@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
 
-import { Link, Route, Redirect, withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { getProjects } from "../../server/index.js";
 
 import './style.css';

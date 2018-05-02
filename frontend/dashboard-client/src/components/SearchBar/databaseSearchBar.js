@@ -4,8 +4,6 @@ import './style.css'
 
 import SearchBar from './../SearchBar';
 
-import * as server from '../../server/';
-
 class DatabaseSearchBar extends Component {
 
   constructor(props) {

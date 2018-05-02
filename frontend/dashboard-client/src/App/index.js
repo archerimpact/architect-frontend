@@ -26,13 +26,13 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.setState({navbarVisible: this.isNavbarVisible(this.props)})
+    this.setState({ navbarVisible: this.isNavbarVisible(this.props) })
 
-	}
+  }
 
-	componentWillReceiveProps(nextProps){
-    this.setState({navbarVisible: this.isNavbarVisible(nextProps)})
-	}
+  componentWillReceiveProps(nextProps) {
+    this.setState({ navbarVisible: this.isNavbarVisible(nextProps) })
+  }
 
   logOut() {
     return this.props.actions.userLogOut();
@@ -43,10 +43,10 @@ class App extends Component {
   }
 
   isNavbarVisible(props) {
-    // var exploreCanvasPath = RegExp('\/explore\/*');
-    var buildCanvasPath = RegExp('\/build\/\\S+');
+    // var exploreCanvasPath = RegExp('/explore/*');
+    var buildCanvasPath = new RegExp('/build/\\S+');
     let currentPath = props.location.pathname;
-		if (buildCanvasPath.test(currentPath)) {
+    if (buildCanvasPath.test(currentPath)) {
       return false;
     }
     return true;
@@ -55,8 +55,8 @@ class App extends Component {
   render() {
     return (
       <div>
-        { !this.state.navbarVisible ? 
-          null : 
+        {!this.state.navbarVisible ?
+          null :
           <NavBar isAuthenticated={this.props.isAuthenticated} logOut={this.logOut.bind(this)} logIn={this.logIn.bind(this)} />
         }
         <div className={"main " + (this.state.navbarVisible ? "show-nav" : "no-nav")}>

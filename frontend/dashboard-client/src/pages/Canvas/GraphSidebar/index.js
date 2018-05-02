@@ -16,16 +16,22 @@ class GraphSidebar extends Component {
     this.state = {
       renderSearch: props.match.params ? props.match.params.sidebarState === "search" : null,
       renderEntity: props.match.params ? props.match.params.sidebarState === "entity" : null,
-      history: []
+      history: [],
+      listener: null
     };
     this.renderTabs = this.renderTabs.bind(this);
     this.renderSidebarContainer = this.renderSidebarContainer.bind(this);
   }
 
   componentDidMount() {
-    this.props.history.listen((location, action) => {
+    let listener = this.props.history.listen((location, action) => {
       this.setState({ history: [...this.state.history, location] });
     })
+    this.setState({listener: listener})
+  }
+
+  componentWillUnmount(){
+    this.state.listener();
   }
 
   componentWillReceiveProps(nextprops) {
