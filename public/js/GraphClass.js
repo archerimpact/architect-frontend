@@ -406,12 +406,13 @@ class Graph {
     this.link
       .enter().append('line')
       .attr('class', 'link')
-      .style('marker-end', 'url(#end-arrow-gray)')
+      //.style('marker-end', 'url(#end-arrow-gray)')
       .style('stroke-dasharray', function (d) { return d.type === 'possibly_same_as' ? ('3,3') : false; })
       .on('mouseover', this.mouseoverLink)
       .style('stroke-opacity', (o) => {
         if (this.hoveredNode) { return (o.source == this.hoveredNode || o.target == this.hoveredNode) ? 1 : .05 };
-      });
+      })
+      .call(this.styleLink, false);
 
     this.link.exit().remove();
 
@@ -529,15 +530,18 @@ class Graph {
             y1 = this.mousedownNode.y * this.zoomScale + this.zoomTranslate[1],
             x2 = this.dragLink.attr('tx2'),
             y2 = this.dragLink.attr('ty2'),
-            dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2)),
-            targetX = x2 - (x2-x1) * (dist-20*this.zoomScale) / dist,
-            targetY = y2 - (y2-y1) * (dist-20*this.zoomScale) / dist;
+            dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
 
-      this.dragLink
-        .attr('x1', targetX)
-        .attr('y1', targetY)
-        .attr('x2', x2)
-        .attr('y2', y2);
+      if (dist > 0) {
+        const targetX = x2 - (x2-x1) * (dist-20*this.zoomScale) / dist,
+              targetY = y2 - (y2-y1) * (dist-20*this.zoomScale) / dist;
+
+        this.dragLink
+          .attr('x1', targetX)
+          .attr('y1', targetY)
+          .attr('x2', x2)
+          .attr('y2', y2);
+      }
     }
   }
 
@@ -667,6 +671,7 @@ class Graph {
     this.linkedById = {};
     this.links.forEach((d) => {
       this.linkedById[d.source.id + "," + d.target.id] = d.id;
+      if (d.bidirectional) this.linkedById[d.target.id + "," + d.source.id] = d.id;
     });
   }
 }

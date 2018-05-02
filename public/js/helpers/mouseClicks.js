@@ -131,17 +131,21 @@ export function mouseup(d, self) {
     currNode.select('circle')
       .attr('transform', '');
 
-    const source = d,
-          target = this.mousedownNode;
-    if (this.linkedById[source.id + ',' + target.id]) {
+    const source = d, 
+          target = this.mousedownNode,
+          fwdLinkId = this.linkedById[source.id + ',' + target.id],
+          bwdLinkId = this.linkedById[target.id + ',' + source.id];
+    if (fwdLinkId) {
+      // If link already exists, select it
       this.selectLink(source, target);
-    } else if (this.linkedById[target.id + ',' + source.id]) {
-      const linkId = this.linkedById[target.id + ',' + source.id];
-      const currLink = findEntryById(this.links, linkId);
+    } else if (bwdLinkId) {
+      // If link exists in opposite direction, make it bidirectional and select it
+      const currLink = findEntryById(this.links, bwdLinkId);
       currLink.bidirectional = true;
-      this.link.filter((o) => { return o.id === linkId; })
+      this.link.filter((o) => { return o.id === bwdLinkId; })
         .call(this.styleLink, true);
     } else {
+      // If link doesn't exist, create and select it
       this.addLink(source, target);
       this.selectLink(source, target);
     }
@@ -307,7 +311,6 @@ export function zoomButton(zoom_in) {
   // Transition to the new view over 100ms
   this.isZooming = true;
   d3.transition().duration(100).tween("zoom", function () {
-    console.log(self.isZooming);
     var interpolate_scale = d3.interpolate(scale, targetScale),
         interpolate_trans = d3.interpolate(translate, [x, y]);
     return function (t) {

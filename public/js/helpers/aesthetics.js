@@ -17,6 +17,15 @@ export function styleLink(selection, isSelected) {
     .style('marker-end', (d) => { return (typeof isSelected === 'function' ? isSelected(d) : isSelected) ? 'url(#end-arrow-blue)' : 'url(#end-arrow-gray)' });
 }
 
+// Directions: forward, reverse, both
+export function changeLinkDirectionality(selection, newDirection) {
+  selection.each((d) => {
+    if (d.bidirectional) {
+      // Implement after matrix adjacency done
+    }
+  });
+}
+
 // Fill group nodes blue
 export function fillGroupNodes() {
   this.svg.selectAll('.node')
