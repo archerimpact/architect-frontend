@@ -80,28 +80,24 @@ class GraphSidebar extends Component {
           <DatabaseSearchBar graphid={this.props.graphid} />
 
           <div className="filter-controls flex-row">
-            <select className="form-control filter-select" id="data-source-select">
+            <select className="form-control filter-select sexy-select" id="data-source-select">
               { this.getDataSources().map(s => 
                 <option value={s}>{s}</option>
               ) }
             </select>
 
-            <select className="form-control filter-select" id="entity-type-select">
+            <select className="form-control filter-select sexy-select" id="entity-type-select">
               { this.getEntityTypes().map(e => 
                 <option value={e}>{e}</option>
               ) }
             </select>
 
-            <button className="btn btn-outline-primary filter-btn">
-              <span className="fa fa-filter filter-icon"></span>
-            </button>
+            <span className="ml-auto fa fa-filter filter-icon"></span>
 
-            <button className="btn btn-outline-primary sort-btn">
-              <span className="fa fa-sort sort-icon"></span>
-            </button>
+            <span className="fa fa-sort sort-icon"></span>
 
           </div>
-          <hr className="no-bottom-margin" />
+          <hr className="no-margin" />
         </div>
 
         <div className="results-container">
