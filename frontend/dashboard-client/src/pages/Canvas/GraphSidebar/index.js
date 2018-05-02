@@ -46,7 +46,16 @@ class GraphSidebar extends Component {
   renderTabs() {
     return (
       <div className="tabs" key="tabs">
-        <div className="sidebar-collapse" onClick={() => this.props.dispatch(actions.toggleSidebar())}>
+        <div className="tab active-tab" onClick={() => this.props.dispatch(actions.toggleSidebar())}>
+          <span className="collapse-icon fa fa-search"></span>
+        </div>
+        <div className="tab" onClick={() => {/* TODO */}}>
+          <span className="collapse-icon fa fa-ellipsis-v"></span>
+        </div>
+        <div className="tab" onClick={() => {/* TODO */}}>
+          <span className="collapse-icon fa fa-cog"></span>
+        </div>
+        <div className="tab" onClick={() => {/* TODO */}}>
           <span className={"collapse-icon fa " + (this.props.sidebarVisible ? "fa-angle-right" : "fa-angle-left")}></span>
         </div>
       </div>
