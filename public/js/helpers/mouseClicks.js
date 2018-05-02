@@ -2,6 +2,8 @@ import { getD3Event, findEntryById, processNodeName, then } from './utils.js';
 import { maxTextLength, minScale, maxScale, gridLength } from './constants.js'
 import { resetDragLink } from './aesthetics.js';
 
+import * as utils from './utils.js';
+
 // Click-drag node selection
 export function brushstart() {
   this.isBrushing = true;
@@ -52,8 +54,8 @@ export function rightclicked(node, d) {
 }
 
 export function dblclicked(d) {
-  if (this.groups[d.id]) {
-    this.toggleGroupView(d.id);
+  if (utils.isGroup(d)) {
+    this.toggleGroupView(d);
   }
 
   d3.event.stopPropagation();

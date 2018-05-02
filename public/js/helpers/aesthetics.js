@@ -1,3 +1,6 @@
+
+import * as utils from './utils.js';
+
 // Link highlighting
 export function highlightLinksFromAllNodes() {
   this.link.call(this.styleLink, false);
@@ -29,7 +32,7 @@ export function changeLinkDirectionality(selection, newDirection) {
 // Fill group nodes blue
 export function fillGroupNodes() {
   this.svg.selectAll('.node')
-    .classed('grouped', function (d) { return d.type === 'group' || d.type === 'same_as_group'; });
+    .classed('grouped', function (d) { return utils.isGroup(d) || d.type === 'same_as_group'; });
 }
 
 // Reset all node/link opacities to 1

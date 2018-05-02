@@ -1,3 +1,47 @@
+import { 
+  NONEXISTENT, 
+  TO_REMOVE, 
+  REMOVED, 
+  TO_ADD, 
+  DISPLAYED, 
+  TO_HIDE, 
+  TO_UNHIDE,
+  HIDDEN, 
+  GROUP_MEMBER,
+  TO_ADD_GROUP,
+  TO_UNGROUP,
+  DISPLAYED_GROUP
+} from './matrixConstants.js';
+
+import { 
+  ENTITY, 
+  GROUP,
+  GROUP_HULL
+} from './typeConstants.js';
+
+export function isVisibleNode(val) {
+  return (val === DISPLAYED || val === DISPLAYED_GROUP);
+}
+
+export function isRemovableNode(val) {
+  return (val === TO_UNHIDE || val === TO_REMOVE || val === TO_UNGROUP || isVisibleNode(val));
+}
+
+export function isGroup(d) {
+  return (d.type === GROUP || d.type === GROUP_HULL || d === DISPLAYED_GROUP);
+}
+
+export function addRowColumn(matrix) {
+    for(var i = 0 ; i < matrix.length ; i++) {
+    matrix[i].push(NONEXISTENT);
+  }
+  
+  matrix.push(new Array(matrix.length + 1));
+  for(var i = 0; i < matrix.length; i++) {
+    matrix[matrix.length - 1][i] = NONEXISTENT;
+  }
+  return matrix
+}
 // =================
 // DEBUGGING METHODS
 // =================

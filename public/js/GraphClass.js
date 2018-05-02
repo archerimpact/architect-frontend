@@ -8,14 +8,18 @@ import * as aesthetics from './helpers/aesthetics.js';
 import * as utils from './helpers/utils.js';
 import * as mouseClicks from './helpers/mouseClicks.js';
 import * as tt from './helpers/tooltips.js';
+import * as matrix from './helpers/matrix.js';
 import * as d3Data from './helpers/changeD3Data.js';
 import { maxTextLength, minScale, maxScale, gridLength } from './helpers/constants.js';
+import { TO_REMOVE, REMOVED, TO_HIDE, HIDDEN } from './helpers/matrixConstants.js';
+import { GROUP, HULL_GROUP } from './helpers/typeConstants.js';
+
 
 const icons = {
   'person': '',
   'Document': '',
   'corporation': '',
-  'group': '',
+   'group': '',
   'same_as_group': ''
 };
     
@@ -37,6 +41,7 @@ class Graph {
     this.draggedNode = null; // Store reference to currently dragged node, null otherwise
     this.isBrushing = false;
     this.isEmphasized = false; // Keep track of node emphasis to end node emphasis on drag
+    this.documentsShown = true;
     this.hoveredNode = null; // Store reference to currently hovered/emphasized node, null otherwise
     this.printFull = 0; // Allow user to toggle node text length
     this.isGraphFixed = false; // Track whether or not all nodes should be fixed
@@ -60,6 +65,11 @@ class Graph {
     this.curve = null;
     this.svgGrid = null;
     this.force = null;
+
+    this.adjacencyMatrix = new Array();
+    this.globalLinks = {};
+    this.globalNodes = [];
+
     this.dragLink = null; // Dynamic link from selected node in edit mode
 
     this.ticked = this.ticked.bind(this);
@@ -351,6 +361,7 @@ class Graph {
   // Completely rerenders the graph, assuming all new nodes and links
   // centerid currently doesn't do anything
   setData(centerid, nodes, links) {
+    this.setMatrix(nodes, links);
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
 
     this.nodes = nodes;
@@ -481,7 +492,7 @@ class Graph {
       .attr('class', 'hull')
       .attr('d', this.drawHull)
       .on('dblclick', function (d) {
-        self.toggleGroupView(d.groupId);
+        self.toggleGroupView(d.groupNode);
         d3.event.stopPropagation();
       });
     this.hull.exit().remove();
@@ -757,6 +768,24 @@ Graph.prototype.moveTooltip = tt.moveTooltip;
 Graph.prototype.populateNodeInfoBody = tt.populateNodeInfoBody;
 Graph.prototype.displayData = tt.displayData;
 Graph.prototype.createTitleElement = tt.createTitleElement;
+
+//from matrix
+Graph.prototype.setMatrix = matrix.setMatrix;
+Graph.prototype.addToMatrix = matrix.addToMatrix;
+Graph.prototype.matrixToGraph = matrix.matrixToGraph;
+Graph.prototype.removeNodeFromDOM = matrix.removeNodeFromDOM;
+Graph.prototype.addGroup = matrix.addGroup;
+Graph.prototype.ungroup = matrix.ungroup;
+Graph.prototype.toggleGroup = matrix.toggleGroup;
+Graph.prototype.unhideNode = matrix.unhideNode;
+Graph.prototype.addNode = matrix.addNode;
+Graph.prototype.matrixAddLink = matrix.matrixAddLink;
+Graph.prototype.removeInternalLinks = matrix.removeInternalLinks;
+Graph.prototype.createNode = matrix.createNode;
+Graph.prototype.createLink = matrix.createLink;
+Graph.prototype.reattachLinks = matrix.reattachLinks;
+Graph.prototype.createGroup = matrix.createGroup;
+Graph.prototype.getGroup = matrix.getGroup;
 
 // Uncomment below for React implementation
 export default Graph;

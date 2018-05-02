@@ -16,3 +16,7 @@ d3.json("/data/well_connected.json", function(json) {
   graph.setData(18210, json.nodes, json.links);
 });
 
+// d3.json("/data/four_leaf_clover.json", function(json) {
+//   graph.addToMatrix(18210, json.nodes, json.links);
+// });
+
