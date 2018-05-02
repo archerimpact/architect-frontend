@@ -2,269 +2,24 @@ import 'whatwg-fetch';
 import { configData } from '../config.js';
 import axios from 'axios';
 
-var qs = require('qs');
+let api_inst = axios.create({
+    baseURL: configData.backend_url,
+    timeout: 2000,
+    headers: {},
+    withCredentials: true
+});
 
-export function submitText(title, text, projectid) {
-	var url = configData.backend_url + '/investigation/project/entityExtractor';
-	var options = {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json' },
-		body: JSON.stringify({
-			'title': title,
-			'text': text,
-      'project': projectid
-		})
-	};
-	return new Promise(function(fulfill, reject) {
-		fetch(url, options)
-		.then(res => {
-			fulfill(res);
-		})
-		.catch(err => {
-			reject('Error: could not add entity because: ' + err);
-		});
-	});
+export async function getProjects() {
+  const response = await api_inst.get('/projects/all');
+  return response.data;
 }
 
-/*
-export function getSuggestedEntities(projectid) {
-	/* Gets all entities related to a project. Server returns an object of objects containing all notes. 
-
-	var url ='http://localhost:8000/investigation/project/sources';
-
-	let suggestedEntities = null;
-
-  return new Promise(function(fulfill, reject) {
-    axios.get(url, {
-      params: {
-        projectid: projectid
-      }
-    })
-    .then(function (documents) {
-      suggestedEntities = documentsToEntities(documents.data);
-      fulfill({entities: suggestedEntities, documents: documents.data})
-    })
-    .catch(function(error) {
-      console.log(error);
-    })
-  });
-}*/
-
-/*function documentsToEntities(vertexes) {
-    /* map over all notes, then map over all entities in each note, and build a new array entities 
-       which contains all entities of all notes 
-       
-    var entities = vertexes.map((vertex) => {
-      return vertex.source.document.entities.map((entity) => {
-        return {"name": entity.normalized, "type": entity.type, "qid": entity.entityId, "sourceid": document._id}
-      });
-    });
-    return [].concat.apply([], entities);
-  } */
-
-export function getSource(sourceid) {
-  /* Gets sources related to a project. Server returns an object of objects containing all notes. */
-
-  var url = configData.backend_url + '/investigation/source';
-
-  let newEntities = null;
-  return new Promise(function(fulfill, reject) {
-    axios.get(url, {
-      params: {
-        sourceid: sourceid
-      }
-    })
-    .then(function (documents) {
-      //newEntities = documentsToEntities(documents.data);
-      fulfill({documents: documents.data})
-    })
-    .catch(function(error) {
-      console.log(error);
-    })
-  });
-}
-
-
-export function getProject(projectid) {
-  var url = configData.backend_url + '/investigation/project';
-  return new Promise(function(fulfill, reject) {
-    axios.get(url, {
-      params: {
-        projectid: projectid
-      }
-    })
-    .then(function (response) {
-      fulfill(response.data)
-    })
-    .catch(function(error) {
-      console.log(error);
-    })
-  });
-}
-
-
-export function getProjectEntities(projectid) {
-  /* Gets all entities related to a project. Server returns an object of objects containing all notes. */
-
-  var url = configData.backend_url + '/investigation/project/entities';
-
-  return new Promise(function(fulfill, reject) {
-    axios.get(url, {
-      params: {
-        projectid: projectid
-      }
-    })
-    .then(response => {
-      var entities = Object.values(response.data)
-      fulfill(entities)
-    })
-    .catch(function(error) {
-      console.log(error);
-    })
-  });
-}
-
-
-/* For if you only want project sources and not suggested entities,
-    currently not being used. */
-    
-export function getProjectSources(projectid) {
-  // Gets all entities related to a project. Server returns an object of objects containing all notes. 
-
-  var url = configData.backend_url + '/investigation/project/sources';
-
-  return new Promise(function(fulfill, reject) {
-    axios.get(url, {
-      params: {
-        projectid: projectid
-      }
-    })
-    .then(function (documents) {
-      fulfill({documents: documents.data})
-    })
-    .catch(function(error) {
-      console.log(error);
-    })
-  })
-}
-
-export function addEntity(name, type, sources, project, neo4jid) {
-    var url = configData.backend_url + '/investigation/entity';
-    var options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: qs.stringify({
-            name: name,
-            type: type,
-            sources: sources,
-            project: project,
-            neo4jid: neo4jid
-        })
-    };
-
-    return new Promise(function(fulfill, reject) {
-      fetch(url, options)
-      .then(response => {
-          // TODO: depending on the response, give user information about project add
-          fulfill(response);
-      })
-      .catch(err => {
-          console.log('Error: could not add entity because: ' + err);
-      });
-    });
-}
-
-export function deleteEntity(entity, projectid) {
-  var url = configData.backend_url + '/investigation/entity';
-
-  return new Promise(function(fulfill, reject) {
-    axios.delete(url, {
-      params: {
-        entityid: entity._id,
-        projectid: projectid
-      }
-    })
-    .then(response => {
-      fulfill(response)
-    })
-    .catch(function(error) {
-      console.log(error);
-    })
-  });
-}
-
-export function deleteSuggestedEntity(suggestedEntity, sourceid) {
-  var url = configData.backend_url + '/investigation/suggestedEntity';
-
-  return new Promise(function(fulfill, reject) {
-    axios.delete(url, {
-      params: {
-        name: suggestedEntity.name,
-        sourceid: sourceid
-      }
-    })
-    .then(response => {
-      fulfill(response)
-    })
-    .catch(function(error) {
-      console.log(error);
-    })
-  });
-}
-
-export function addConnection(idOne, idTwo, description, projectid) {
-    var url = configData.backend_url + '/investigation/connection';
-    var options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: qs.stringify({
-            idOne: idOne,
-            idTwo: idTwo,
-            description: description,
-            projectid: projectid
-        })
-    };
-    return new Promise(function(fulfill, reject) {
-      fetch(url, options)
-      .then(response => {
-          // TODO: depending on the response, give user information about project add
-          fulfill(response);
-      })
-      .catch(err => {
-          console.log('Error: could not add connection because: ' + err);
-      });
-    });
-}
-
-export function addGraph(projectid, entities, sources, connections) {
-    var url = configData.backend_url + '/investigation/project/graph';
-    var options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: qs.stringify({
-            projectid: projectid,
-            entities: entities,
-            sources: sources,
-            connections: connections
-        })
-    };
-    return new Promise(function(fulfill, reject) {
-      fetch(url, options)
-      .then(response => {
-          // TODO: depending on the response, give user information about project add
-          fulfill(response);
-      })
-      .catch(err => {
-          console.log('Error: could not add connection because: ' + err);
-      });
-    });
+export async function getProject(id) {
+  const response = await api_inst.get('/projects/get', {
+    params: {
+      projectid: id
+    }});
+  return response.data;
 }
 
 export function searchBackendText(searchQuery) {
@@ -293,7 +48,7 @@ export function searchBackendText(searchQuery) {
         }
       }
     }
-  } 
+  };
   return new Promise(function(fulfill, reject) {
     axios.get(url, {
         params: {
@@ -306,7 +61,7 @@ export function searchBackendText(searchQuery) {
     })
     .catch(function(error) {
       console.log(error);
-    })
+    });
   });
 }
 
@@ -321,7 +76,7 @@ export function getBackendNode(neo4j_id){
           }
     */
 
-  var url = configData.neo4j_url + '/db/data/cypher'
+  var url = configData.neo4j_url + '/db/data/cypher';
   var headers = {
     headers: {
       'Content-Type': 'application/json',
@@ -331,9 +86,9 @@ export function getBackendNode(neo4j_id){
   var data = {
     "query" : "MATCH (node) WHERE ID(node)={neo4j_id} RETURN node",
     params: {
-      neo4j_id: parseInt(neo4j_id)
+      neo4j_id: parseInt(neo4j_id, 10)
     }   
-  }
+  };
   return new Promise(function(fulfill, reject) {
     axios.post(url, data, headers)
     .then(function (response) {
@@ -341,7 +96,7 @@ export function getBackendNode(neo4j_id){
     })
     .catch(function(error) {
       console.log(error);
-    })
+    });
   }); 
 }
 
@@ -358,7 +113,7 @@ export function getBackendNodes(neo4j_ids){
 
   */
 
-  var url = configData.neo4j_url + '/db/data/cypher'
+  var url = configData.neo4j_url + '/db/data/cypher';
   var headers = {
     headers: {
       'Content-Type': 'application/json',
@@ -370,7 +125,8 @@ export function getBackendNodes(neo4j_ids){
     params: {
       neo4j_ids: neo4j_ids
     }   
-  }
+  };
+
   return new Promise(function(fulfill, reject) {
     axios.post(url, data, headers)
     .then(function (response) {
@@ -378,7 +134,7 @@ export function getBackendNodes(neo4j_ids){
     })
     .catch(function(error) {
       console.log(error);
-    })
+    });
   }); 
 }
 
@@ -393,7 +149,7 @@ export function getBackendRelationships(neo4j_id){
         }
   */
 
-  var url = configData.neo4j_url + '/db/data/cypher'
+  var url = configData.neo4j_url + '/db/data/cypher';
   var headers = {
     headers: {
       'Content-Type': 'application/json',
@@ -403,9 +159,10 @@ export function getBackendRelationships(neo4j_id){
   var data = {
   'query' : 'MATCH (node) WHERE id(node)={neo4j_id} MATCH (node)-[r]-(end) RETURN r, node, end',
     'params': {
-      'neo4j_id': parseInt(neo4j_id)
+      'neo4j_id': parseInt(neo4j_id, 10)
     } 
-  }
+  };
+
   return new Promise(function(fulfill, reject) {
     axios.post(url, data, headers)
     .then(function (response) {
@@ -413,6 +170,54 @@ export function getBackendRelationships(neo4j_id){
     })
     .catch(function(error) {
       console.log(error);
-    })
+    });
   }); 
+}
+
+export function getGraph(neo4j_id){
+  /* Retrieves the subgraph of a neo4j node two degrees away.
+    Neo4j returns items in this format:
+    response.data = {
+      data: 
+        [
+          [
+            edge1,
+            edge2,
+            edge3
+          ],
+          [
+            node1,
+            node2,
+            node3
+          ],
+          startNode
+        ]
+    }
+  */
+
+  var url = 'http://35.203.167.230:7474/db/data/cypher';
+  var headers = {
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    }
+  };
+
+  var data = {
+  "query" : "MATCH path=(g)-[r*0..5]-(p) WHERE id(g)={neo4j_id} UNWIND r as rel UNWIND nodes(path) as n RETURN COLLECT(distinct rel) AS collected, COLLECT(distinct n) as nodes, g",
+    'params': {
+      'neo4j_id': parseInt(neo4j_id, 10)
+    } 
+  };
+
+  return new Promise(function(fulfill, reject) {
+    axios.post(url, data, headers)
+    .then(function (response) {
+      fulfill(response.data.data);
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+  }); 
+
 }

@@ -1,9 +1,30 @@
+@import url('https://fonts.googleapis.com/css?family=Open Sans');
+
+body {
+	font-family: 'Open Sans', sans-serif;
+}
 
 .main {
-    margin-left: 220px; /* Same as the width of the sidebar */
-    background-color: #F5F5F5;
-    min-height: calc(100% - 64px);
-    width: calc(100% - 220px);
-    position: absolute;
-    margin-top: 64px;
+  margin-left: 0px;
+  width: calc(100%);
+  position: absolute;
+  overflow-y: scroll;
+}
+
+.show-nav {
+  height: calc(100% - 46px);
+}
+
+.no-nav {
+  height: 100%;
+}
+
+a {
+  color: #4f4844;
+  /*color: #f48942;*/
+}
+
+a:hover {
+  color: #222;
+  text-decoration: underline;
 }

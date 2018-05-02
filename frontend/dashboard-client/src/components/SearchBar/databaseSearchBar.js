@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
-
+import {withRouter} from 'react-router-dom';
 import './style.css'
 
-import Search from 'material-ui/svg-icons/action/search';
 import SearchBar from './../SearchBar';
 
 import * as server from '../../server/';
 import { Redirect } from 'react-router'
 
 const urlPropsQueryConfig = {
-  search: { type: UrlQueryParamTypes.string },
+  search: { type: UrlQueryParamTypes.string, queryParam: 'search' },
+  graphid: { type: UrlQueryParamTypes.string, queryParam: 'graphid'}
 };
 
 class DatabaseSearchBar extends Component {
@@ -22,13 +22,13 @@ class DatabaseSearchBar extends Component {
     this.state={
       searchData: null,
       fireRedirect: false,
-    }
+    };
   }
 
   searchBackendText(query){
     server.searchBackendText(query)
       .then((data)=>{
-        this.setState({searchData: data.hits.hits})
+        this.setState({searchData: data.hits.hits});
       })
       .catch((error) => {console.log(error)});
   }
@@ -40,17 +40,15 @@ class DatabaseSearchBar extends Component {
 
   render() {
     if (this.state.fireRedirect) {
-      this.setState({fireRedirect:false})
+      this.setState({fireRedirect:false});
       return (
-        <Redirect to={'/search?search=' + this.props.search}  />
+        <Redirect to={'/explore/search?search=' + this.props.search + "&graphid=" + this.props.graphid} />
       );
     }
 
     return(
-      <div className="searchBody">
-        <SearchBar onChange={this.searchBackendText} onSubmit={this.goToSearchPage}/>
-      </div>
+      <SearchBar onChange={this.searchBackendText} onSubmit={this.goToSearchPage}/>
     );
   }
 }
-export default addUrlProps({ urlPropsQueryConfig }) (DatabaseSearchBar);
+export default addUrlProps({ urlPropsQueryConfig }) (withRouter(DatabaseSearchBar));

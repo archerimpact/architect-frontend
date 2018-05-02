@@ -1,8 +1,19 @@
 .search-main{
-	margin-top: 100px;
+	margin-top: 40px;
 }
 
 .home-container {
-	margin-top: 50px;
-	text-align: center;
+  margin-top: 60px;
+  text-align: center;
+}
+
+.home-header {
+  font-size: 90px;
+  letter-spacing: 2px;
+  color: #555555
+}
+
+.home-subheader {
+  margin-top: 15px;
+  font-family: 'Courier New', Courier, monospace;
 }

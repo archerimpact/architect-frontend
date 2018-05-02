@@ -1,23 +1,66 @@
-import { 
-  ADD_LINK, 
-  ADD_ENTITY, 
-  REMOVE_ENTITY, 
-  ADD_TAG, 
-  STORE_ENTITIES, 
-  STORE_SOURCES, 
-  STORE_PROJECTS, 
-  CURRENT_PROJECT, 
-  STORE_VERTICES, 
-  STORE_CONNECTIONS, 
-  ADD_GRAPH,
-  USER_LOGIN, 
-  USER_LOGOUT,
+import {
+  USER_LOGIN,
+	USER_LOGOUT,
+	TOGGLE_SIDEBAR,
+    STORE_PROJECT
   } from '../actions/actionTypes';
+import {
+	INITIALIZE_CANVAS,
+	UPDATE_GRAPH_DATA,
+	STORE_SEARCH_RESULTS,
+  STORE_CURRENT_NODE
+} from '../../pages/Canvas/Graph/graphActions';
 
 import initialState from './initialState';
 
 export default function (state = initialState, action) {
 	switch(action.type) {
+		case INITIALIZE_CANVAS:
+			return {
+				...state,
+				canvas: {
+					// graph: action.payload,
+					graphData: null
+				}
+			};
+		case TOGGLE_SIDEBAR:
+			return {
+				...state,
+				sidebarVisible: !state.sidebarVisible
+			}
+		case STORE_PROJECT:
+			return { 
+				...state,
+				currentProject: {
+					name: action.payload.name,
+					description: action.payload.description,
+					users: action.payload.users,
+					_id: action.payload._id
+				}
+			}
+		case UPDATE_GRAPH_DATA:
+			return {
+				...state,
+				canvas: {
+					...state.canvas,
+					graphData: action.payload
+				}
+			};
+		case STORE_SEARCH_RESULTS:
+			return {
+				...state,
+				canvas: {
+					...state.canvas,
+					searchData: action.payload
+				}
+			};
+    case STORE_CURRENT_NODE:
+      return {
+        ...state,
+        currentNode: {
+          id: action.payload
+        }
+      }
 	    case USER_LOGIN:
 	    	return {
 	    		...state,
@@ -33,112 +76,6 @@ export default function (state = initialState, action) {
 	    			isAuthenticated: false
 	    		}
 	    	};
-		case ADD_LINK:
-			return {
-				...state,
-				savedLinks: {
-					...state.savedLinks,
-					status: 'isLoaded',
-					links: state.savedLinks.links.concat(action.payload)
-				}
-			};
-		case ADD_ENTITY:
-			return {
-				...state,
-				savedEntities: {
-					...state.savedEntities,
-					status: 'isLoaded',
-					entities: state.savedEntities.entities.concat(action.payload)
-				},
-				entityNames: state.entityNames.concat(action.payload.name)
-			};
-    case REMOVE_ENTITY:
-      return {
-        ...state,
-        savedEntities: {
-          ...state.savedEntities,
-          status: 'isLoaded',
-          entities: state.savedEntities.entities.filter(function(entity) {
-            return (entity._id !== action.payload._id);
-          })
-        },
-        entityNames: state.entityNames.concat(action.payload.name)        
-      }
-		case STORE_ENTITIES:
-			return {
-				...state,
-				savedEntities: {
-					//...state.savedEntities,
-					status: 'isLoaded',
-					entities: action.payload
-				},
-				entityNames: action.payload.map((entity) => {return entity.name})
-			};
-		case STORE_SOURCES:
-			return {
-				...state,
-				savedSources: {
-					//...state.savedSources,
-					status: 'isLoaded',
-					documents: action.payload
-				},
-			};
-		case ADD_TAG:
-			return {
-				...state,
-				savedEntities: {
-					...state.savedEntities,
-					status: 'isLoaded',
-					entities: action.payload
-				},
-
-      }
-    case ADD_GRAPH:
-      return {
-        ...state,
-        savedGraphs: {
-          ...state.savedGraphs,
-          status: 'isLoaded',
-          graphs: action.payload
-        },
-        currentProject: {
-          ...state.currentProject,
-          status: 'isLoaded',
-          graphs: state.currentProject.graphs.concat(action.payload)
-        }
-      }
-		case STORE_PROJECTS:
-			return {
-				...state,
-				savedProjects: {
-					//...state.savedProjects,
-					status: 'isLoaded',
-					projects: action.payload
-				}
-			}
-		case STORE_VERTICES:
-			return {
-				...state,
-				savedVertices: {
-					//...state.savedVertices,
-					status: 'isLoaded',
-					vertices: action.payload
-				}
-			}
-    case STORE_CONNECTIONS:
-      return {
-        ...state,
-        savedConnections: {
-          //...state.savedConnections,
-          status: 'isLoaded',
-          connections: action.payload
-        }
-      }
-    case CURRENT_PROJECT:
-      return {
-        ...state,
-        currentProject: action.payload
-      }
 		default:
 			return state;
 	}
