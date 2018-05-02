@@ -48,7 +48,7 @@ class Canvas extends Component {
         this.setState({ showResults: true })
       }
       if (this.state.graphid !== nextGraphid && nextGraphid !== null) {
-        this.props.actions.fetchGraphFromId(this.props.graph, nextGraphid);
+        this.props.actions.fetchGraphFromId(this.graph, nextGraphid);
       }
       // } else if (this.props.entityid != null && this.props.entityid !== nextEntityid) {
       //   this.props.graph.translateGraphAroundId(parseInt(nextEntityid, 10))
