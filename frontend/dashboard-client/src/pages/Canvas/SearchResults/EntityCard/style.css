@@ -37,15 +37,23 @@ li.no-bullet {
     list-style: none;
 }
 
-.add-to-graph-icon {
-  cursor: pointer;
-  color: #ff5d4c;
-  margin: auto 15px auto 0;
-  font-size: 20px;
+.entity-icon {
+    cursor: pointer;
+    color: #ff5d4c;
+    margin: auto 10px auto 0;
+    font-size: 20px;
+}
+
+.entity-icon:hover {
+    color: #000;
+}
+
+.collapse-link, .card-program {
+    color: #666666;
 }
 
 .collapse-link {
-    color: #666666;
+    margin-left: 10px;
 }
 
 .collapse-link:hover {
