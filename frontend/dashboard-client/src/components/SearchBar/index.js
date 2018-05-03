@@ -45,19 +45,19 @@ class SearchBar extends Component {
   }
 
   render (){
-    return(
-      <div className="searchBody">
+    return (
+      <div>
         <div className="search-input-container">
-          <form className="search-form" onSubmit={(e) => this.submitSearch(e)}>
-            <input className="search-input"
-              ref="query"
-              type="text"
-              placeholder="Search our connected data"
-            />
-          </form>
-          <div className="search-button d-flex">
-            <i className="search-icon material-icons" onClick={(e) => this.submitSearch(e)}>search</i>
-            <i className="search-icon material-icons" onClick={(e) => {this.toggleSettings(e)}}>sort</i>
+          <div className="d-flex flex-row">
+            <i id="sort-icon" className="searchbar-icon material-icons" onClick={(e) => {this.toggleSettings(e)}}>sort</i>
+            <form className="search-form" onSubmit={(e) => this.submitSearch(e)}>
+              <input className="search-input"
+                ref="query"
+                type="text"
+                placeholder="Search our connected data"
+              />
+            </form>
+            <i id="search-icon" className="searchbar-icon mr-auto material-icons" onClick={(e) => this.submitSearch(e)}>search</i>
           </div>
         </div>
         <div className={this.state.settingsExpanded ? "settings-expanded" : "settings-collapsed"}>
