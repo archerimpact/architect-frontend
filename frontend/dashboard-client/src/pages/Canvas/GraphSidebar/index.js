@@ -66,7 +66,7 @@ class GraphSidebar extends Component {
     return (
       <div className="sidebar-container" key="sidebar-container">
         <div className="searchbar-container">
-          <DatabaseSearchBar graphid={this.props.graphid} search={this.props.search}/>
+          <DatabaseSearchBar graphid={this.props.graphid} search={this.props.search} showSettings={true}/>
         </div>
 
         <div className="results-container">

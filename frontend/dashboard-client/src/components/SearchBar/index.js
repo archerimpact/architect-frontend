@@ -49,7 +49,10 @@ class SearchBar extends Component {
       <div>
         <div className="search-input-container">
           <div className="d-flex flex-row">
-            <i id="sort-icon" className="searchbar-icon material-icons" onClick={(e) => {this.toggleSettings(e)}}>sort</i>
+            { !this.props.showSettings ? 
+              null :
+              <i id="sort-icon" className="searchbar-icon material-icons" onClick={(e) => {this.toggleSettings(e)}}>sort</i>
+            }
             <form className="search-form" onSubmit={(e) => this.submitSearch(e)}>
               <input className="search-input"
                 ref="query"

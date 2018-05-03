@@ -28,8 +28,8 @@ class DatabaseSearchBar extends Component {
   }
 
   render() {
-    return(
-      <SearchBar onSubmit={this.goToSearchPage} value={this.props.search}/>
+    return (
+      <SearchBar onSubmit={this.goToSearchPage} value={this.props.search} showSettings={this.props.showSettings}/>
     );
   }
 }

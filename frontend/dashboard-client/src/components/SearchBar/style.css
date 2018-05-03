@@ -28,6 +28,7 @@
 
 .search-form {
   flex-grow: 100;
+  margin-left: 10px;    /* fixes issue with white rectangle clipping outside the rounded rect search bar */
 }
 
 .search-input:focus{
@@ -53,7 +54,6 @@
 
 #sort-icon {
   padding-left: 20px;
-  padding-right: 10px;
 }
 
 #search-icon {

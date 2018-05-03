@@ -10,7 +10,7 @@ class Home extends Component {
           <h1 className="home-header">ARCHITECT</h1>
           <p className="home-subheader">A World of Data at Your Fingertips</p>
           <div className="search-main">
-            <DatabaseSearchBar/>
+            <DatabaseSearchBar showSettings={false}/>
           </div>
         </div>
     );
