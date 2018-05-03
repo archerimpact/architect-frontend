@@ -402,7 +402,7 @@ class Graph {
   update(event=null) {
     var self = this;
     // this.force.stop();
-    this.matrixToGraph(event);
+    this.matrixToGraph();
     this.link = this.link.data(this.links, function (d) { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
     this.link
       .enter().append('line')
@@ -749,19 +749,8 @@ Graph.prototype.toggleGroupView = d3Data.toggleGroupView;
 Graph.prototype.createHull = d3Data.createHull;
 Graph.prototype.calculateAllHulls = d3Data.calculateAllHulls;
 Graph.prototype.drawHull = d3Data.drawHull;
-
 Graph.prototype.addLink = d3Data.addLink;
 Graph.prototype.selectLink = d3Data.selectLink;
-Graph.prototype.removeLink = d3Data.removeLink;
-Graph.prototype.createGroupFromNode = d3Data.createGroupFromNode;
-Graph.prototype.checkLinkAddGroup = d3Data.checkLinkAddGroup;
-Graph.prototype.removeSelectiveLink = d3Data.removeSelectiveLink;
-Graph.prototype.reattachLink = d3Data.reattachLink;
-Graph.prototype.moveLinksFromOldNodesToGroup = d3Data.moveLinksFromOldNodesToGroup;
-Graph.prototype.removeNodesFromDOM = d3Data.removeNodesFromDOM;
-Graph.prototype.removeNodeLinksFromDOM = d3Data.removeNodeLinksFromDOM;
-Graph.prototype.removeNodeLinksSelectiveFromDOM = d3Data.removeNodeLinksSelectiveFromDOM;
-Graph.prototype.createGroupFromSelect = d3Data.createGroupFromSelect;
 
 //From tooltips
 Graph.prototype.initializeTooltip = tt.initializeTooltip;
@@ -777,6 +766,7 @@ Graph.prototype.createTitleElement = tt.createTitleElement;
 Graph.prototype.setMatrix = matrix.setMatrix;
 Graph.prototype.addToMatrix = matrix.addToMatrix;
 Graph.prototype.matrixToGraph = matrix.matrixToGraph;
+
 Graph.prototype.createNode = matrix.createNode;
 Graph.prototype.createLink = matrix.createLink;
 Graph.prototype.deleteNode = matrix.deleteNode;
@@ -785,6 +775,7 @@ Graph.prototype.hideNode = matrix.hideNode;
 Graph.prototype.hideLink = matrix.hideLink;
 Graph.prototype.displayLink = matrix.displayLink;
 Graph.prototype.displayNode = matrix.displayNode;
+
 Graph.prototype.setGroupMembers = matrix.setGroupMembers;
 Graph.prototype.createGroup = matrix.createGroup;
 Graph.prototype.getGroupMembers = matrix.getGroupMembers;
@@ -792,15 +783,6 @@ Graph.prototype.copyLinks = matrix.copyLinks;
 Graph.prototype.ungroup = matrix.ungroup;
 Graph.prototype.expandGroup = matrix.expandGroup;
 Graph.prototype.collapseGroup = matrix.collapseGroup;
-
-
-Graph.prototype.toggleGroup = matrix.toggleGroup;
-Graph.prototype.unhideNode = matrix.unhideNode;
-Graph.prototype.addNode = matrix.addNode;
-Graph.prototype.matrixAddLink = matrix.matrixAddLink;
-Graph.prototype.removeInternalLinks = matrix.removeInternalLinks;
-
-Graph.prototype.reattachLinks = matrix.reattachLinks;
 
 // Uncomment below for React implementation
 export default Graph;

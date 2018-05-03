@@ -63,10 +63,50 @@ The third method introduces the possibility of dealing with a large nuber of sel
 
 The reason we must use the dictionary is that the link datum gives the origin/terminal node indices, but does not include references to the nodes themselves, so we cannot check the class of each node to determine whether or not it is selected. To address this obstacle, we must either store a mapping between node index and node reference or node index and selection state, where we utilize the latter approach.
 
+### Adjacency Matrix for nodes and links
+The adjacency matrix is the best way to store a series of links and nodes in a graph.
+
+The matrix is first constructed in setMatrix(), and looks like the following:
+
+|    |  0  |  1  |  2  |  3  |
+|----|-----|-----|-----|-----|
+| 0  | {}  | {}  | {}  | {}  |
+|----|-----|-----|-----|-----|
+| 1  | {}  | {}  | {}  | {}  |
+
+The objects in each box contain the following:
+  {
+    state: ,
+    data: 
+  }
+
+Where state can be NONEXISTENT, DISPLAYED, HIDDEN, GROUP_MEMBER, or BELONGS_TO.
+Data contains the datum object of the node or link in question, if it exists.
+
+The entries along the diagonal (i.e. (0, 0) or (1, 1) or (2, 2)) contain the state and data for the node of index 0, 1, 2, etc. Nodes only contain the states NONEXISTENT, DISPLAYED, or HIDDEN in practice.
+
+The entry at (1, 2) contains the link going from source: node at index 1 to target: node at index 2.
+
+Description of the different states:
+NONEXISTENT -- the link doesn't exist. Data is also null.
+DISPLAYED -- the link or node is displayed.
+HIDDEN -- the link or node exists, but is not displayed; data contains the data of the hidden item.
+GROUP_MEMBER -- for (i, j) === GROUP_MEMBER, j is a group member of i.
+BELONGS_TO -- for (i, j) === BELONGS_TO, i is a group member of j.
+ 
+I decided to include hidden nodes in the matrix so that it's easy to add the node or linke back when you unhide it, and so that operations which delete or hide links will still reflect when you unhide a node (i.e. there won't be a hanging link). When you create a group, you essentially hide the nodes that have been grouped; when you expand a group, you essentially hide the group's node and display the nodes in the group. Thus the nodes only need three states: NONEXISTENT, DISPLAYED, and HIDDEN.
+
+The benefits of a matrix includes:
+1. When you delete a node, you can delete the entire column and row so that none of the past links are available.
+2. You can access a node and any links associated with that node with constant time for each access.
+
+Now, changeD3Data contains the functions for converting d or select data into the indexes that the matrix understands. Matrix.js contains all the logic for manipulating matrix items and does not rely on any other file; the matrix should probably be its own class in the future.
+
 ### Updating data
 We want to have a generic update function that can handle any case of nodes and links being deleted, added, modified, grouped, and so on. Thus I've implemented one update() function that calls .data() on the global nodes and links variables. Whenever a function wants to alter the nodes and links on the SVG, it should follow this flow:
 
-1. Edit the global nodes & links variables directly to reflect the new display
+1. Edit the adjacency matrix display setting for the node or link of your choice
+2. Update() calls matrixToGraph() which constructs the links and nodes from the items that are displayed
 2. Each entry in links and nodes should have an id field that contains a unique id 
 3. Call update()
 
@@ -83,7 +123,7 @@ Update works as follows for nodes:
 
 
 ### Removing Nodes
-We want to remove all the selected nodes and all the links that have either a target or source linking to a selected node. Thus I created a dictionary called remove that maps an id of a node to "true" if the node is being removed. When iterating through all links to check if a link should be removed, we can then easily check if the target or source are being removed, significantly reducing runtime.
+To remove a node, simply delete that node's row/column in the adjacency matrix. This will delete all links as well.
 
 ### Grouping Nodes
 We want to remember which groups map to which nodes. This is for three reasons:
@@ -91,8 +131,9 @@ We want to remember which groups map to which nodes. This is for three reasons:
 2. to be able to reverse the grouping and ungroup nodes
 3. to be able to easily group together nodes that are already groups.
 
-I thus decided to create a global variable called groups, which is a dictionary where the key is the id of the group node and the value is the array of nodes in the group.
+Process for grouping:
+1. You create a new row/column for the group node
+2. You collapse all existing links into the group node
+3. You hide all the grouped nodes
 
-When we create a new group, we want to remove all of the node and link elements of the nodes about to be grouped. We then want to create a new node representing the group and re-draw links that point to members of the nodes in the group to point to the new node instead.
-
-I chose to give the new nodes representing a group a negative id, so that it will never overlap with the id from a neo4j node.
+You can tell if a node is a group if that node contains any links that are GROUP_MEMBER, or by accessing the type on the d object.

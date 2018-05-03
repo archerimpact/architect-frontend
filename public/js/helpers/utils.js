@@ -1,16 +1,8 @@
 import { 
   NONEXISTENT, 
-  TO_REMOVE, 
-  REMOVED, 
-  TO_ADD, 
   DISPLAYED, 
-  TO_HIDE, 
-  TO_UNHIDE,
   HIDDEN, 
   GROUP_MEMBER,
-  TO_ADD_GROUP,
-  TO_UNGROUP,
-  DISPLAYED_GROUP,
   BELONGS_TO
 } from './matrixConstants.js';
 
@@ -32,15 +24,11 @@ export function isMorePreferredState(val1, val2) {
 }
 
 export function isVisibleNode(val) {
-  return (val === DISPLAYED || val === DISPLAYED_GROUP);
-}
-
-export function isRemovableNode(val) {
-  return (val === TO_UNHIDE || val === TO_REMOVE || val === TO_UNGROUP || isVisibleNode(val));
+  return (val === DISPLAYED);
 }
 
 export function isGroup(d) {
-  return (d.type === GROUP || d.type === GROUP_HULL || d === DISPLAYED_GROUP);
+  return (d.type === GROUP || d.type === GROUP_HULL);
 }
 
 export function addRowColumn(matrix) {

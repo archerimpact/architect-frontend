@@ -1,19 +1,8 @@
 import { 
   NONEXISTENT, 
-  TO_REMOVE, 
-  REMOVED, 
-  TO_ADD, 
-  TO_ADD_LINK,
   DISPLAYED, 
-  TO_HIDE, 
-  TO_UNHIDE,
   HIDDEN, 
   GROUP_MEMBER,
-  TO_ADD_GROUP,
-  TO_UNGROUP,
-  TO_TOGGLE_GROUP,
-  DISPLAYED_GROUP,
-  TO_COLLAPSE_GROUP,
   BELONGS_TO
 } from './matrixConstants.js';
 
@@ -59,7 +48,7 @@ export function addToMatrix(centerid, nodes, links) {
   for (var i = 0; i < numLinks; i++) {
     var sourceIndex = links[i].source + originalNodes;
     var targetIndex = links[i].target + originalNodes;
-    if (!this.globalLinks.hasOwnProperty(key)) {
+    if (this.adjacencyMatrix[sourceIndex][targetIndex].state === NONEXISTENT) {
       links[i].source = sourceIndex;
       links[i].target = targetIndex;
       this.adjacencyMatrix[sourceIndex][targetIndex].state = DISPLAYED;
@@ -68,7 +57,7 @@ export function addToMatrix(centerid, nodes, links) {
   this.update();
 }
 
-export function matrixToGraph(event=null) {
+export function matrixToGraph() {
   this.links.length = 0;
   this.nodes.length = 0;
   for (var i = 0; i < this.adjacencyMatrix.length; i++) {
@@ -113,7 +102,6 @@ export function createNode(type, event=null) {
     state: DISPLAYED,
     data: newNode
   }
-
   return newNode;
 }
 

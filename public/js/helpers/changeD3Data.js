@@ -1,22 +1,6 @@
 import * as utils from './utils.js';
 
 import { 
-  NONEXISTENT, 
-  TO_REMOVE, 
-  REMOVED, 
-  TO_ADD,
-  TO_ADD_LINK, 
-  TO_ADD_GROUP,
-  TO_HIDE, 
-  TO_UNHIDE,
-  HIDDEN, 
-  GROUP_MEMBER,
-  TO_UNGROUP,
-  TO_TOGGLE_GROUP,
-  TO_COLLAPSE_GROUP
-} from './matrixConstants.js';
-
-import { 
   ENTITY,
   GROUP,
   GROUP_HULL,
@@ -26,8 +10,6 @@ import {
 
 // Multi-node manipulation methods
 export function deleteSelectedNodes() {
-  /* remove selected nodes from DOM
-      if the node is a group, delete the group */
 
   var select = this.svg.selectAll('.node.selected');
   select.each((d) => {
@@ -42,8 +24,6 @@ export function deleteSelectedNodes() {
 
 // Delete selected links
 export function deleteSelectedLinks() {
-  /* remove selected nodes from DOM
-      if the node is a group, delete the group */
   var select = this.svg.selectAll('.link.selected');
 
   select.each((d) => {
@@ -116,8 +96,6 @@ export function showHiddenDocuments() {
 }
 
 export function groupSelectedNodes() {
-  /* turn selected nodes into a new group, then delete the selected nodes and 
-    move links that attached to selected nodes to link to the node of the new group instead */
   var select = this.svg.selectAll('.node.selected');
   if (select[0].length <= 1) { return; } //do nothing if nothing is selected & if there's one node
 
@@ -134,7 +112,6 @@ export function groupSelectedNodes() {
 }
 
 export function ungroupSelectedGroups() {
-  /* expand nodes and links in the selected groups, then delete the group from the global groups dict */
   var select = this.svg.selectAll('.node.selected')
     .filter((d) => {
       for (var i = this.adjacencyMatrix.length-1; i >=0; i--) {
@@ -152,10 +129,7 @@ export function ungroupSelectedGroups() {
 }
 
 export function expandGroups(select, centered = false) {
-  /* bring nodes and links from a group back to the DOM, with optional centering around the node of the group's last position */
-  var newNodes = [];
-  select
-    .each((d) => { this.expandGroup(this.idToIndex[d.id]); });
+  select.each((d) => { this.expandGroup(this.idToIndex[d.id]); });
 }
 
 export function toggleGroupView(d) {
@@ -254,7 +228,6 @@ export function createHull(groupNode, group) {
       );   
     }
   }
-
   return { groupNode: groupNode, groupId: groupNode.id, path: d3.geom.hull(vertices), type: GROUP_HULL }; //returns a hull object
 }
 
