@@ -10,7 +10,8 @@ import {
   GROUP_MEMBER,
   TO_ADD_GROUP,
   TO_UNGROUP,
-  DISPLAYED_GROUP
+  DISPLAYED_GROUP,
+  BELONGS_TO
 } from './matrixConstants.js';
 
 import { 
@@ -18,6 +19,17 @@ import {
   GROUP,
   GROUP_HULL
 } from './typeConstants.js';
+
+export function isMorePreferredState(val1, val2) {
+  if (val1 === GROUP_MEMBER) { return true; }
+  else if (val2 === GROUP_MEMBER) { return false;}
+  else if (val1 === BELONGS_TO) { return true; }
+  else if (val2 === BELONGS_TO) { return false; }
+  else if (val1 === DISPLAYED) { return true; }
+  else if (val2 === DISPLAYED) { return false; }
+  else if (val1 === HIDDEN) { return true; }
+
+}
 
 export function isVisibleNode(val) {
   return (val === DISPLAYED || val === DISPLAYED_GROUP);
@@ -32,15 +44,23 @@ export function isGroup(d) {
 }
 
 export function addRowColumn(matrix) {
-    for(var i = 0 ; i < matrix.length ; i++) {
-    matrix[i].push(NONEXISTENT);
+  for(var i = 0 ; i < matrix.length ; i++) {
+    matrix[i].push({state: NONEXISTENT, data: null});
   }
   
   matrix.push(new Array(matrix.length + 1));
   for(var i = 0; i < matrix.length; i++) {
-    matrix[matrix.length - 1][i] = NONEXISTENT;
+    matrix[matrix.length - 1][i] = {state: NONEXISTENT, data: null};
   }
   return matrix
+}
+
+export function removeColumn(matrix, index) {
+  for(var i = 0 ; i < matrix.length ; i++)
+  {
+     matrix[i].splice(index, 1);
+  }
+  matrix.splice(index, 1);
 }
 // =================
 // DEBUGGING METHODS

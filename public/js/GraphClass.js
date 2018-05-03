@@ -368,18 +368,6 @@ class Graph {
     this.links = links;
     this.hulls = [];
 
-    // Needed this code when loading 43.json to prevent it from disappearing forever by pinning the initial node
-    // var index
-    //   nodes.map((node, i)=> {
-    //     if (node.id===43) {
-    //       index = i
-    //     }
-    //   })
-
-    //   nodes[index].fixed = true;
-    //   nodes[index].px = width/2
-    //   nodes[index].py = height/2; 
-
     this.force
       .gravity(.33)
       .charge(-1 * Math.max(Math.pow(100*this.nodes.length/this.links.length, 2 + Math.log(Math.pow(this.nodes.length, 2)/(10*this.links.length))), 750))
@@ -411,8 +399,10 @@ class Graph {
     this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
   }
 
-  update() {
+  update(event=null) {
     var self = this;
+    // this.force.stop();
+    this.matrixToGraph(event);
     this.link = this.link.data(this.links, function (d) { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
     this.link
       .enter().append('line')
@@ -520,6 +510,7 @@ class Graph {
               y1 = d.source.y,
               x2 = d.target.x,
               y2 = d.target.y;
+        if (!d.source.x) {debugger;}
         const dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
         const sourcePadding = (d.bidirectional || false) ? 27 : 20,
               targetPadding = 27;
@@ -569,6 +560,7 @@ class Graph {
   setupKeycodes() {
     d3.select('body')
       .on('keydown', () => {
+
         // u: Unpin selected nodes
         if (d3.event.keyCode == 85) {
           this.svg.selectAll('.node.selected')
@@ -592,9 +584,9 @@ class Graph {
         }
 
         // c: Group all of the possibly same as's
-        else if (d3.event.keyCode == 67) {
-          this.groupSame();
-        }
+        // else if (d3.event.keyCode == 67) {
+        //   this.groupSame();
+        // }
 
         // e: Toggle edit mode
         else if (d3.event.keyCode == 69) {
@@ -625,6 +617,10 @@ class Graph {
         // r/del: Remove selected nodes/links
         else if ((d3.event.keyCode == 82 || d3.event.keyCode == 46) && this.editMode) {
           this.deleteSelectedNodes();
+        }
+        // l: remove selected links only
+        else if (d3.event.keyCode == 76 && this.editMode) {
+          this.deleteSelectedLinks();
         }
 
         // a: Add node linked to selected
@@ -684,6 +680,16 @@ class Graph {
       if (d.bidirectional) this.linkedById[d.target.id + "," + d.source.id] = d.id;
     });
   }
+
+  reloadIdToIndex() {
+    this.idToIndex = {};
+    this.indexToId = {};
+    for (var i = 0; i < this.adjacencyMatrix.length; i++) {
+      let id = this.adjacencyMatrix[i][i].data.id
+      this.idToIndex[id] = i;
+      this.indexToId[i] = id;
+    }
+  }
 }
 
 //From aesthetics.js
@@ -733,11 +739,10 @@ Graph.prototype.addNodeToSelected = d3Data.addNodeToSelected;
 Graph.prototype.toggleDocumentView = d3Data.toggleDocumentView;
 Graph.prototype.hideDocumentNodes = d3Data.hideDocumentNodes;
 Graph.prototype.hideNodes = d3Data.hideNodes;
-Graph.prototype.showHiddenNodes = d3Data.showHiddenNodes;
+Graph.prototype.showHiddenDocuments = d3Data.showHiddenDocuments;
 Graph.prototype.groupSame = d3Data.groupSame;
 Graph.prototype.groupSelectedNodes = d3Data.groupSelectedNodes;
 Graph.prototype.ungroupSelectedGroups = d3Data.ungroupSelectedGroups;
-Graph.prototype.expandGroup = d3Data.expandGroup;
 Graph.prototype.expandGroups = d3Data.expandGroups;
 Graph.prototype.collapseGroupNodes = d3Data.collapseGroupNodes;
 Graph.prototype.toggleGroupView = d3Data.toggleGroupView;
@@ -772,19 +777,30 @@ Graph.prototype.createTitleElement = tt.createTitleElement;
 Graph.prototype.setMatrix = matrix.setMatrix;
 Graph.prototype.addToMatrix = matrix.addToMatrix;
 Graph.prototype.matrixToGraph = matrix.matrixToGraph;
-Graph.prototype.removeNodeFromDOM = matrix.removeNodeFromDOM;
-Graph.prototype.addGroup = matrix.addGroup;
+Graph.prototype.createNode = matrix.createNode;
+Graph.prototype.createLink = matrix.createLink;
+Graph.prototype.deleteNode = matrix.deleteNode;
+Graph.prototype.deleteLink = matrix.deleteLink;
+Graph.prototype.hideNode = matrix.hideNode;
+Graph.prototype.hideLink = matrix.hideLink;
+Graph.prototype.displayLink = matrix.displayLink;
+Graph.prototype.displayNode = matrix.displayNode;
+Graph.prototype.setGroupMembers = matrix.setGroupMembers;
+Graph.prototype.createGroup = matrix.createGroup;
+Graph.prototype.getGroupMembers = matrix.getGroupMembers;
+Graph.prototype.copyLinks = matrix.copyLinks;
 Graph.prototype.ungroup = matrix.ungroup;
+Graph.prototype.expandGroup = matrix.expandGroup;
+Graph.prototype.collapseGroup = matrix.collapseGroup;
+
+
 Graph.prototype.toggleGroup = matrix.toggleGroup;
 Graph.prototype.unhideNode = matrix.unhideNode;
 Graph.prototype.addNode = matrix.addNode;
 Graph.prototype.matrixAddLink = matrix.matrixAddLink;
 Graph.prototype.removeInternalLinks = matrix.removeInternalLinks;
-Graph.prototype.createNode = matrix.createNode;
-Graph.prototype.createLink = matrix.createLink;
+
 Graph.prototype.reattachLinks = matrix.reattachLinks;
-Graph.prototype.createGroup = matrix.createGroup;
-Graph.prototype.getGroup = matrix.getGroup;
 
 // Uncomment below for React implementation
 export default Graph;

@@ -13,3 +13,4 @@ export const TO_TOGGLE_GROUP = -9;
 export const DISPLAYED_GROUP = -10;
 export const TO_COLLAPSE_GROUP = -11;
 export const TO_ADD_LINK = -12;
+export const BELONGS_TO = -13;
