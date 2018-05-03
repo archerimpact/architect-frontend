@@ -67,13 +67,13 @@ class SearchBar extends Component {
           <div className="filter-controls flex-row">
             <select className="form-control filter-select sexy-select" id="data-source-select">
               { this.getDataSources().map(s => 
-                <option value={s}>{s}</option>
+                <option value={s} key={s}>{s}</option>
               ) }
             </select>
 
             <select className="form-control filter-select sexy-select" id="entity-type-select">
               { this.getEntityTypes().map(e => 
-                <option value={e}>{e}</option>
+                <option value={e} key={e}>{e}</option>
               ) }
             </select>
           </div>
