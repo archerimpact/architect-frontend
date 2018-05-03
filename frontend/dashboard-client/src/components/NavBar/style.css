@@ -55,10 +55,11 @@
 .right-link:hover, .right-link:active {
   border-bottom: 2px solid #FE6060
 }
-
+*/
 .active-right-link {
   border-bottom: 2px solid #FE6060;
 }
+/*
 .nav-dropdown:hover .nav-dropbtn, .nav-dropbtn:focus {
 }
 
@@ -138,9 +139,9 @@ nav.navbar {
     color: #ff7700 !important;
 }
 
-.nav-item {
+/*.nav-item {
     border-bottom: 3px solid transparent;
-}
+}*/
 
 .nav-link:hover, .nav-link:focus {
   color: #ff7700 !important;

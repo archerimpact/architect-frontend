@@ -38,9 +38,10 @@ li.no-bullet {
 }
 
 .add-to-graph-icon {
-  margin-right: 15px;
   cursor: pointer;
   color: #ff5d4c;
+  margin: auto 15px auto 0;
+  font-size: 20px;
 }
 
 .collapse-link {

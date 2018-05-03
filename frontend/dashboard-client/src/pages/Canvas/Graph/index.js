@@ -22,7 +22,7 @@ class Graph extends Component {
   renderProjectToolbar() {
     return (
       <div className="back-button" onClick={() => this.props.history.push('/build')}>
-        <span className="fa fa-arrow-left back-button-icon"></span>
+        <i className="material-icons back-button-icon">home</i>
       </div>
     )
   }

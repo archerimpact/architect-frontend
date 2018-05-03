@@ -19,8 +19,6 @@ class GraphSidebar extends Component {
       history: [],
       listener: null
     };
-    this.getDataSources = this.getDataSources.bind(this);
-    this.getEntityTypes = this.getEntityTypes.bind(this);
     this.renderTabs = this.renderTabs.bind(this);
     this.renderSidebarContainer = this.renderSidebarContainer.bind(this);
   }
@@ -49,28 +47,19 @@ class GraphSidebar extends Component {
     return (
       <div className="tabs" key="tabs">
         <div className="tab active-tab" onClick={() => {/* TODO */}}>
-          <span className="tab-icon fa fa-search"></span>
+          <i className="tab-icon material-icons">search</i>
         </div>
         <div className="tab" onClick={() => {/* TODO */}}>
-          <span className="tab-icon fa fa-ellipsis-v"></span>
+          <i className="tab-icon material-icons">list</i>
         </div>
         <div className="tab" onClick={() => {/* TODO */}}>
-          <span className="tab-icon fa fa-cog"></span>
+          <i className="tab-icon material-icons">settings</i>
         </div>
         <div className="tab" onClick={() => this.props.dispatch(actions.toggleSidebar())}>
-          <span className={"tab-icon fa " + (this.props.sidebarVisible ? "fa-angle-right" : "fa-angle-left")}></span>
+          <i className="tab-icon material-icons">{this.props.sidebarVisible ? "chevron_right" : "chevron_left"}</i>
         </div>
       </div>
     )
-  }
-
-  getDataSources() {
-    /* TODO can later be replaced with an actual call to the server to get the datasets */
-    return ['All datasets', 'OFAC sanctions', 'OpenCorporate records', 'UK Corporate Registry records'];
-  }
-
-  getEntityTypes() {
-    return ['All types', 'Individual', 'Organization', 'Vessel', 'Aircraft'];
   }
 
   renderSidebarContainer() {
@@ -78,26 +67,6 @@ class GraphSidebar extends Component {
       <div className="sidebar-container" key="sidebar-container">
         <div className="searchbar-container">
           <DatabaseSearchBar graphid={this.props.graphid} search={this.props.search}/>
-
-          <div className="filter-controls flex-row">
-            <select className="form-control filter-select sexy-select" id="data-source-select">
-              { this.getDataSources().map(s => 
-                <option value={s}>{s}</option>
-              ) }
-            </select>
-
-            <select className="form-control filter-select sexy-select" id="entity-type-select">
-              { this.getEntityTypes().map(e => 
-                <option value={e}>{e}</option>
-              ) }
-            </select>
-
-            <span className="ml-auto fa fa-filter filter-icon"></span>
-
-            <span className="fa fa-sort sort-icon"></span>
-
-          </div>
-          <hr className="no-margin" />
         </div>
 
         <div className="results-container">

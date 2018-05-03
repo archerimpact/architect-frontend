@@ -31,8 +31,8 @@ class EntityCard extends Component {
   render() {
     return (
       <div className="card result-card" key={this.props.neo4j_id}>
-        <div className="card-header result-card-header">
-          <i className="fa fa-share-alt add-to-graph-icon" onClick={()=> this.props.addToGraph(this.state.neo4j_id)}></i>
+        <div className="card-header result-card-header flex-row">
+          <i className="add-to-graph-icon material-icons" onClick={()=> this.props.addToGraph(this.state.neo4j_id)}>share</i>
           <span className="collapse-link" onClick={this.toggleCollapse}>
             { this.state.name }
           </span>
@@ -40,7 +40,7 @@ class EntityCard extends Component {
               
           </small>
 
-          <div className="float-right card-program">
+          <div className="ml-auto card-program">
               { this.state.type }
           </div>
 
