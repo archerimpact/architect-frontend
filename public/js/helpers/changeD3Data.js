@@ -115,7 +115,12 @@ export function ungroupSelectedGroups() {
   var select = this.svg.selectAll('.node.selected')
     .filter((d) => {
       for (var i = this.adjacencyMatrix.length-1; i >=0; i--) {
-        if (this.adjacencyMatrix[i][i].data.id === d.id && utils.isGroup(d)) { this.ungroup(i); }
+        if (this.adjacencyMatrix[i][i].data.id === d.id && utils.isGroup(d)) { 
+          this.ungroup(i);
+          this.hulls.slice().map((hull, i) => {
+            if (hull.groupId === d.id) { this.hulls.splice(this.hulls.indexOf(hull), 1); }
+          }) 
+        }
       }
     });
 
@@ -135,7 +140,7 @@ export function expandGroups(select, centered = false) {
 export function toggleGroupView(d) {
   /* switch between viewing the group in expanded and collapsed state.
     When expanded, the nodes in the group will have a hull polygon encircling it */
-  let index = this.globalNodes.indexOf(d)
+  let index = this.idToIndex[d.id]
 
   if (!utils.isGroup(d)) { return; }
   if (this.expandedGroups[index]) {
@@ -215,7 +220,6 @@ export function createHull(groupNode, group) {
   var vertices = [];
   var offset = 30; //arbitrary, the size of the node radius
 
-  const nodes = [];
   for (var a = 0; a < group.length; a++) {
     let i = group[a]
     if (utils.isVisibleNode(this.adjacencyMatrix[i][i].state)) {
