@@ -169,13 +169,17 @@ export function createGroup(group) {
   for (var a = 0; a < group.length; a++) {
     this.copyLinks(i, group[a]);
     this.adjacencyMatrix[group[a]][i].state = BELONGS_TO;
+    this.adjacencyMatrix[group[a]][group[a]].data.group = this.adjacencyMatrix[i][i].data.id;
   }
   for (var a = 0; a < group.length; a++) { this.hideNode(group[a]); }
 }
 
 export function ungroup(i) {
   const group = this.getGroupMembers(i);
-  for (var a = 0; a < group.length; a++) { this.displayNode(group[a]); }
+  for (var a = 0; a < group.length; a++) { 
+    delete this.adjacencyMatrix[group[a]][group[a]].data.group;
+    this.displayNode(group[a]); 
+  }
   this.deleteNode(i); 
 } 
 
@@ -183,7 +187,6 @@ export function expandGroup(i) {
   const group = this.getGroupMembers(i);
   for (var a = 0; a < group.length; a++) {
     let d = this.adjacencyMatrix[group[a]][group[a]].data
-    d.group = this.adjacencyMatrix[i][i].data.id;
     d.centroidx = this.adjacencyMatrix[i][i].data.fixedX = this.adjacencyMatrix[i][i].data.x;
     d.centroidy = this.adjacencyMatrix[i][i].data.fixedY = this.adjacencyMatrix[i][i].data.y;
     this.displayNode(group[a]); 

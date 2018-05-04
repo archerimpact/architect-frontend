@@ -584,9 +584,9 @@ class Graph {
         }
 
         // c: Group all of the possibly same as's
-        // else if (d3.event.keyCode == 67) {
-        //   this.groupSame();
-        // }
+        else if (d3.event.keyCode == 67) {
+          this.groupSame();
+        }
 
         // e: Toggle edit mode
         else if (d3.event.keyCode == 69) {
@@ -751,6 +751,9 @@ Graph.prototype.calculateAllHulls = d3Data.calculateAllHulls;
 Graph.prototype.drawHull = d3Data.drawHull;
 Graph.prototype.addLink = d3Data.addLink;
 Graph.prototype.selectLink = d3Data.selectLink;
+
+Graph.prototype.createGroupFromNode = d3Data.createGroupFromNode;
+Graph.prototype.checkLinkAddGroup = d3Data.checkLinkAddGroup;
 
 //From tooltips
 Graph.prototype.initializeTooltip = tt.initializeTooltip;

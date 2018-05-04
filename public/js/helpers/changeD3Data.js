@@ -158,62 +158,90 @@ export function toggleGroupView(d) {
     this.expandedGroups[index] = true;
   }
   this.hoveredNode = null;
-  this.matrixToGraph();
   this.update();
   this.fillGroupNodes();
 }
 
 
-// export function groupSame() {
-//   /* Groups all the nodes that are connected to each other with possibly_same_as */
-//   var select = this.svg.selectAll('.node');
-//   var grouped = {}; 
+export function groupSame() {
+  /* Groups all the nodes that are connected to each other with possibly_same_as */
+  this.force.stop();
+  var select = this.svg.selectAll('.node');
+  var grouped = {}; 
 
 //   // update this.sameGroups dict
-//   var createdGroup = {};
+  var createdGroup = {};
+  select
+    .each((d) => {
+      if (!grouped[d.id]) { //this node is already in a same-as group
+        grouped[d.id] = true;
+        var groupId = this.globalnodeid;        
+        createdGroup[d.id] = { group: [this.idToIndex[d.id]] };
 
-//   select
-//     .each((d) => {
-//       if (!grouped[d.id]) { //this node is already in a same-as group
-//         grouped[d.id] = true;
-//         var groupId = this.globalnodeid;
-        
-//         createdGroup[d.id] = { links: [], nodes: [d], id: groupId, name: d.name };
+        this.createGroupFromNode(d, createdGroup[d.id].group, grouped); // Makes a group with d in it
 
-//         this.createGroupFromNode(d, createdGroup[d.id], grouped); // Makes a group with d in it
+        if (createdGroup[d.id].group.length > 1) { 
+          //d.group = groupId; 
+        }
+        else { delete createdGroup[d.id]; }
+      }
+    });
 
-//         if (createdGroup[d.id].nodes.length > 1) {
-//           d.group = groupId;
-//           this.groups[groupId] = createdGroup[d.id];
-//           this.globalnodeid -= 1;
-//         }
-//         else {
-//           delete createdGroup[d.id];
-//         }
-//       }
-//     });
+  for (var key in createdGroup) {
+    // check if the property/key is defined in the object itself, not in parent
+    if (createdGroup.hasOwnProperty(key)) {  
+      const group = createdGroup[key]['group'];
+      this.createGroup(group)
+    }
+  }
+  this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
+  this.update();
+  this.fillGroupNodes();
+  this.displayGroupInfo(this.groups);
+}
 
-//   for (var key in createdGroup) {
-//     // check if the property/key is defined in the object itself, not in parent
-//     if (createdGroup.hasOwnProperty(key)) {           
-//       const group_same = createdGroup[key];
-//       const nodes_same = createdGroup[key]['nodes'];
-//       nodes_same.map(node => {
-//         this.nodes.splice(this.nodes.indexOf(node), 1);
-//         }
-//       ); 
 
-//       this.nodes.push({ id: group_same.id, name: group_same.name, type: "same_as_group" }); //add the new node for the group
-//       this.moveLinksFromOldNodesToGroup(nodes_same, group_same);
+export function createGroupFromNode(node, group, grouped) { 
+  /* Creates a group connected by possibly_same_as around node, adding it to group,
+  and marking it as true in grouped so it isn't revisited later */
+  this.links.map((link) => {
+    this.checkLinkAddGroup(link, group, grouped);
+    if (!link.source.x || !link.target.x) { debugger; }
+  });
+}
 
-//       this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
-//       this.matrixToGraph();
-//       this.update();
-//       this.fillGroupNodes();
-//       this.displayGroupInfo(this.groups);
-//     }
-//   }
-// }
+export function checkLinkAddGroup(link, group, grouped) {
+  /* takes in a list of nodes and the link to be removed
+      if the one of the nodes in the link target or source is attached to the link AND link is of type 'possibly_same_as',
+      remove the link and add whatever is connected to this link to the group if it isn't already */
+  let checkedLink;
+  const target = this.idToIndex[link.target.id];
+  const source = this.idToIndex[link.source.id];
+  //only remove a link if it's attached to a removed node
+  if (link.type === 'possibly_same_as' && (group.indexOf(source) > -1 || group.indexOf(target) > -1)) { //remove all links connected to a node in group and with correct type
+    // Make sure both sides of this link are in the group, and recursively add theirs to group as well
+    if (group.indexOf(source) <= -1) {
+      //group[link.source.id] = true;
+      group.push(source);
+      this.createGroupFromNode(link.source, group, grouped);
+    }
+    else if (group.indexOf(target) <= -1) {
+      group.push(target);
+      //group[link.target.id] = true;
+      this.createGroupFromNode(link.target, group, grouped);
+    }
+    // So that these nodes aren't checked again later to try and create a possibly same as
+    grouped[link.source.id] = true;
+    grouped[link.target.id] = true;
+  }
+  // else if (group.nodes.indexOf(source) > -1 || group.nodes.indexOf(target) > -1) {
+  //   group.links.push(link);
+  // }
+
+  return checkedLink;
+}
+
+
 
 //Hull functions
 export function createHull(groupNode, group) {
