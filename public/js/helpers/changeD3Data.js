@@ -24,7 +24,6 @@ export function deleteSelectedNodes() {
   })
 
   this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
-  this.resetGraphOpacity();
   this.update();
 }
 
@@ -78,11 +77,7 @@ export function addNodeToSelected(selection, event=null) {
 }
 
 export function toggleDocumentView() {
-  if (this.documentsShown) { //nothing is hidden, hide them
-    this.hideDocumentNodes();
-  } else {
-    this.showHiddenDocuments();
-  }
+  this.documentsShown ? this.hideDocumentNodes() : this.showHiddenDocuments();
   this.update();
 }
 
@@ -91,6 +86,7 @@ export function hideDocumentNodes() {
     .filter((d) => {
       if (d.type === DOCUMENT) { this.hideNode(this.idToIndex[d.id]); }
     });
+
   this.documentsShown = false;
 }
 
@@ -98,6 +94,7 @@ export function showHiddenDocuments() {
   for (var i = 0; i < this.adjacencyMatrix.length; i++) {
     if (this.adjacencyMatrix[i][i].data.type === DOCUMENT) { this.displayNode(i); }
   }
+
   this.documentsShown = true;
 }
 

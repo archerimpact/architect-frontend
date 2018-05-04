@@ -402,6 +402,7 @@ class Graph {
   update(event=null) {
     var self = this;
     // this.force.stop();
+    this.resetGraphOpacity();
     this.matrixToGraph();
     this.link = this.link.data(this.links, function (d) { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
     this.link
