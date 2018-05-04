@@ -70,17 +70,31 @@ class Login extends Component {
         return (
             <div className="row">
                 <div className="col-sm-6 page-col left-col d-flex justify-content-center">
-                    <div className="explore-tagline tagline">
-                        <i className="fa fa-binoculars large-fa-icon"></i>
-                        <h4>Explore public data.</h4>
-                    </div>
-                    <div className="build-tagline tagline">
-                        <i className="fa fa-building large-fa-icon"></i>
-                        <h4>Build investigations.</h4>
-                    </div>
-                    <div className="publish-tagline tagline">
-                        <i className="fa fa-newspaper large-fa-icon"></i>
-                        <h4>Publish information.</h4>
+                    <div className="d-flex">
+                        <div className="flex-column">
+                            <div className="feature-row flex-row d-flex">
+                                <i className="splash-icon material-icons">find_in_page</i> {/* explore */}
+                                <h4 className="tagline">
+                                    <span className="orange-underline">Explore</span>
+                                    public data.
+                                </h4>
+                            </div>
+                            <div className="feature-row flex-row d-flex">
+                                <i className="splash-icon material-icons">build</i>
+                                <h4 className="tagline">
+                                    <span className="orange-underline">Build</span>
+                                    investigations.
+                                </h4>
+                            </div>
+                            <div className="feature-row flex-row d-flex">
+                                <i className="splash-icon material-icons">backup</i>
+                                <h4 className="tagline">
+                                    <span className="orange-underline">Publish</span>
+                                    your findings.
+                                </h4>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
 

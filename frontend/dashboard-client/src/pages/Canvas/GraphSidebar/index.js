@@ -81,7 +81,7 @@ class GraphSidebar extends Component {
   render() {
     return (
       <div className={"sidebar " + (this.props.sidebarVisible ? "slide-out" : "slide-in")}>
-        <div className="flex-row">
+        <div className="flex-row d-flex full-height">
           {this.renderTabs()}
           {this.renderSidebarContainer()}
         </div>

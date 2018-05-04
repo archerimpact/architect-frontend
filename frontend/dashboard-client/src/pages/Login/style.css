@@ -10,7 +10,8 @@
 .left-col {
 	background-color: #3d3d3d;
 	color: #f2f2f2;
-
+	box-shadow: 2px 0px 20px rgba(0,0,0,0.5);
+	z-index: -1;
 }
 
 .right-col {
@@ -26,14 +27,14 @@
     box-shadow: rgba(0,0,0,0.14902) 0px 1px 1px 0px, rgba(0,0,0,0.09804) 0px 1px 2px 0px;
 }
 
-.large-fa-icon {
-	font-size: 2em;
+.splash-icon {
+	font-size: 50px;
 	margin-right: 20px;
 }
 
 .tagline {
-	display: flex;
-	margin-bottom: 40px;
+	margin: auto 0 auto 0;
+	font-size: 26px;
 }
 
 .sexy-input {
@@ -47,4 +48,13 @@
 	outline: none;
 	box-shadow: none;
 	border-bottom: 3px solid #888888;
+}
+
+.feature-row {
+	margin-bottom: 40px;
+}
+
+.orange-underline {
+	border-bottom: 3px solid orange;
+	margin-right: 10px;
 }

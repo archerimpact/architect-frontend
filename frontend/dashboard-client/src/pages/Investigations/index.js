@@ -44,7 +44,7 @@ class Investigations extends Component {
 					return (
 						<div key={proj._id} className='col-md-3'>
 							<div className="card investigation-card">
-								<img className="card-img-top" src={image_blob}>
+								<img className="card-img-top" src={image_blob} alt={"investigation-" + proj.name1}>
 									
 								</img>
 								<div className="card-body investigation-card-body">

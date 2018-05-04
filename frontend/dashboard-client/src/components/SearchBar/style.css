@@ -113,6 +113,7 @@
   padding-left: 15px;
   padding-right: 15px;
   overflow: hidden;
+  height: 100%;
 }
 
 .filter-icon, .sort-icon {

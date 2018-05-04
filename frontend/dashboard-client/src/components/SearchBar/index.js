@@ -48,7 +48,7 @@ class SearchBar extends Component {
     return (
       <div>
         <div className="search-input-container">
-          <div className="d-flex flex-row">
+          <div className="d-flex flex-row full-height">
             { !this.props.showSettings ? 
               null :
               <i id="sort-icon" className="searchbar-icon material-icons" onClick={(e) => {this.toggleSettings(e)}}>sort</i>
@@ -64,7 +64,7 @@ class SearchBar extends Component {
           </div>
         </div>
         <div className={this.state.settingsExpanded ? "settings-expanded" : "settings-collapsed"}>
-          <div className="filter-controls flex-row">
+          <div className="filter-controls flex-row d-flex">
             <select className="form-control filter-select sexy-select" id="data-source-select">
               { this.getDataSources().map(s => 
                 <option value={s} key={s}>{s}</option>

@@ -44,7 +44,7 @@ li.no-bullet {
     font-size: 20px;
 }
 
-.entity-icon:hover {
+.collapse-link:hover, .entity-icon:hover {
     color: #000;
 }
 
