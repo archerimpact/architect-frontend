@@ -24,6 +24,7 @@ export function deleteSelectedNodes() {
   })
 
   this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
+  this.resetGraphOpacity();
   this.update();
 }
 

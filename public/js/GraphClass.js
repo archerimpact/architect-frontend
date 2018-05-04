@@ -19,7 +19,7 @@ const icons = {
   'person': '',
   'Document': '',
   'corporation': '',
-   'group': '',
+  'group': '',
   'same_as_group': ''
 };
     
