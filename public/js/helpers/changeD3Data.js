@@ -14,7 +14,12 @@ export function deleteSelectedNodes() {
   var select = this.svg.selectAll('.node.selected');
   select.each((d) => {
     for (var i = this.adjacencyMatrix.length-1; i >=0; i--) {
-      if (this.adjacencyMatrix[i][i].data.id === d.id) { this.deleteNode(i); }
+      if (this.adjacencyMatrix[i][i].data.id === d.id) { 
+        this.hulls.slice().map((hull, i) => {
+          if (hull.groupId === d.id) { this.hulls.splice(this.hulls.indexOf(hull), 1); }
+        }) 
+        this.deleteNode(i); 
+      }
     }
   })
 
