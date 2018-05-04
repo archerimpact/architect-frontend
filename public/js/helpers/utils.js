@@ -13,7 +13,7 @@ import {
 } from './typeConstants.js';
 
 export function isMorePreferredState(val1, val2) {
-  if (val1 === GROUP_MEMBER) { return true; }
+  if (val1 === GROUP_MEMBER) { return false; }
   else if (val2 === GROUP_MEMBER) { return false;}
   else if (val1 === BELONGS_TO) { return true; }
   else if (val2 === BELONGS_TO) { return false; }
