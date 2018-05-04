@@ -21,9 +21,27 @@ function checkUserAuth(req, res) {
 }
 
 
-function validate(str) {
+function validate(str, res) {
     // TODO write real validation
     return str
+}
+
+function toBool(str) {
+    if (!str) { return null }
+
+    let parsed
+    try {
+        parsed = JSON.parse(str)
+    }
+    catch (err) {
+        parsed = false
+    }
+
+    if (typeof(parsed) !== 'boolean') {
+        return false
+    }
+
+    return parsed
 }
 
 
@@ -69,6 +87,50 @@ exports.get = async function(req, res) {
     if (projects.length === 0) { return error('Project not found', res) }
 
     return success(projects[0], res)
+}
+
+
+exports.update = async function(req, res) {
+    if (!checkUserAuth(req, res)) { return }
+    if (!req.body.projectid) { return error('Empty project ID', res) }
+
+    const updates = {}
+
+    const projName  = validate(req.body.name)
+    const projDesc  = validate(req.body.description)
+    const projImg   = req.body.img
+    const projData  = req.body.data
+    const published = toBool(req.body.published)
+
+    if (projName)  { updates.name        = projName  }
+    if (projDesc)  { updates.description = projDesc  }
+    if (projImg)   { updates.img         = projImg   }
+    if (projData)  { updates.data        = projData  }
+    if (published) { updates.published   = published }
+
+    if (Object.keys(updates).length === 0) {
+        return error('No fields to update', res)
+    }
+
+    let dbResponse
+    try {
+        dbResponse = await Project
+            .update(
+                { _id: mongoose.Types.ObjectId(req.body.projectid) },
+                { $set: updates },
+                { upsert: false }
+            )
+            .exec()
+    }
+    catch (err) {
+        return error(err, res)
+    }
+
+    if (!dbResponse || dbResponse.ok !== 1) {
+        return error('An error occurred; please try again', res)
+    }
+
+    return success('Project updated', res)
 }
 
 

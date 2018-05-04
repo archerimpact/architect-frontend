@@ -22,7 +22,9 @@ const projectSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     name: String,
     description: String,
-    d3json: String,
+    img: String,
+    data: String,
+    published: Boolean,
     users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 })
 
