@@ -203,6 +203,14 @@ export function collapseGroup(i) {
   }
 }
 
+export function getParent(i) {
+  for (var j = 0; j < this.adjacencyMatrix.length; j++) {
+    if (this.adjacencyMatrix[i][j].state === BELONGS_TO) { return j; }
+  }
+  debugger
+  return null;
+}
+
 export function copyLinks(i, j) {
   for (var k = 0; k < this.adjacencyMatrix.length; k++) {
     if (i === k || j === k) { continue; } //don't do anything if the k is just the group node!

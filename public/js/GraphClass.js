@@ -43,6 +43,7 @@ class Graph {
     this.isEmphasized = false; // Keep track of node emphasis to end node emphasis on drag
     this.documentsShown = true;
     this.hoveredNode = null; // Store reference to currently hovered/emphasized node, null otherwise
+    this.deletingHoveredNode = false; // Store whether you are deleting a hovered node, if so you reset graph opacity
     this.printFull = 0; // Allow user to toggle node text length
     this.isGraphFixed = false; // Track whether or not all nodes should be fixed
     this.isZooming = false; // Track if graph is actively being transformed
@@ -401,17 +402,26 @@ class Graph {
 
   update(event=null) {
     var self = this;
-    // this.force.stop();
+    this.force.stop();
     this.matrixToGraph();
+    this.reloadNeighbors();
+
+    if (this.deletingHoveredNode) {
+      this.hoveredNode = null;
+      this.resetGraphOpacity();
+      this.deletingHoveredNode = false; // reset to false after updating
+    }
+
     this.link = this.link.data(this.links, function (d) { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
     this.link
       .enter().append('line')
       .attr('class', 'link')
       .style('stroke-dasharray', function (d) { return d.type === 'possibly_same_as' ? ('3,3') : false; })
-      .style('stroke-opacity', (o) => { if (this.hoveredNode) { return (o.source == this.hoveredNode || o.target == this.hoveredNode) ? 1 : .05 }; })
+      .style('opacity', (o) => { if (this.hoveredNode) { return (o.source == this.hoveredNode || o.target == this.hoveredNode) ? 1 : .05; } })
       .on('mouseover', this.mouseoverLink)
       .call(this.styleLink, false);
 
+    this.resetGraphOpacity;
     this.link.exit().remove();
 
     this.node = this.node.data(this.nodes, function (d) { return d.id; });
@@ -440,8 +450,8 @@ class Graph {
 
     this.nodeEnter
       .filter((o) => { if (this.hoveredNode && !this.neighbors(this.hoveredNode, o)) { return o; } })
-      .style('stroke-opacity', .15)
-      .style('fill-opacity', .15);
+      .style('stroke-opacity', .075)
+      .style('fill-opacity', .075);
 
     this.nodeEnter.append('circle')
       .attr('r', '20');
@@ -479,7 +489,7 @@ class Graph {
       .attr('class', 'hull')
       .attr('d', this.drawHull)
       .on('dblclick', function (d) {
-        self.toggleGroupView(d.groupNode);
+        self.toggleGroupView(d.groupId);
         d3.event.stopPropagation();
       });
     this.hull.exit().remove();
@@ -786,6 +796,7 @@ Graph.prototype.copyLinks = matrix.copyLinks;
 Graph.prototype.ungroup = matrix.ungroup;
 Graph.prototype.expandGroup = matrix.expandGroup;
 Graph.prototype.collapseGroup = matrix.collapseGroup;
+Graph.prototype.getParent = matrix.getParent;
 
 // Uncomment below for React implementation
 export default Graph;

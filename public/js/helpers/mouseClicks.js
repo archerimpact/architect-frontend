@@ -55,7 +55,7 @@ export function rightclicked(node, d) {
 
 export function dblclicked(d) {
   if (utils.isGroup(d)) {
-    this.toggleGroupView(d);
+    this.toggleGroupView(d.id);
   }
 
   d3.event.stopPropagation();
@@ -177,9 +177,8 @@ export function mouseover(d, self) {
       .style('fill-opacity', .075);
 
     this.link.style('opacity', function (o) {
-      return (o.source == d || o.target == d) ? 1 : .075;
+      return (o.source === d || o.target === d) ? 1 : .075;
     });
-
     // Hide drag link
     if (this.mousedownNode && d == this.mousedownNode) { this.dragLink.classed('hidden', true); }
 
