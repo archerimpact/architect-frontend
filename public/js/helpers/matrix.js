@@ -51,10 +51,10 @@ export function addToMatrix(centerid, nodes, links) {
     if (this.adjacencyMatrix[sourceIndex][targetIndex].state === NONEXISTENT) {
       links[i].source = sourceIndex;
       links[i].target = targetIndex;
-      this.adjacencyMatrix[sourceIndex][targetIndex].state = DISPLAYED;
+      this.adjacencyMatrix[sourceIndex][targetIndex] = {state: DISPLAYED, data: links[i]};
     }
   }
-  this.update();
+  this.update(null, 150);
 }
 
 export function matrixToGraph() {
@@ -195,20 +195,20 @@ export function expandGroup(i) {
       d.py += (d.centroidy > groupY ? d.centroidy - groupY : groupY - d.centroidy); 
     }
 
-    d.centroidx = this.adjacencyMatrix[i][i].data.fixedX = this.adjacencyMatrix[i][i].data.x;
-    d.centroidy = this.adjacencyMatrix[i][i].data.fixedY = this.adjacencyMatrix[i][i].data.y;
+    d.centroidx = groupX;
+    d.centroidy = groupY;
     this.displayNode(group[a]); 
   }
   this.hideNode(i);  
 } 
 
 export function collapseGroup(i) {
-  this.displayNode(i);
   const group = this.getGroupMembers(i);
   for (var a = 0; a < group.length; a++) {
+    if (this.getGroupMembers(group[a]).length > 0 && this.adjacencyMatrix[group[a]][group[a]].state === HIDDEN) { this.collapseGroup(group[a]); }
     this.hideNode(group[a]);
-    if (group[a] === i) { debugger;}
   }
+  this.displayNode(i);
 }
 
 export function getParent(i) {

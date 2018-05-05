@@ -400,7 +400,7 @@ class Graph {
     this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
   }
 
-  update(event=null) {
+  update(event=null, ticks=null) {
     var self = this;
     this.matrixToGraph();
     this.reloadNeighbors();
@@ -494,6 +494,8 @@ class Graph {
     this.hull.exit().remove();
 
     this.force.start();
+    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }      
+
     this.reloadNeighbors();
   }
 

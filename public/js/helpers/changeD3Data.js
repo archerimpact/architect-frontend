@@ -145,19 +145,19 @@ export function toggleGroupView(id) {
   let index = this.idToIndex[id]
 
   if (!utils.isGroup(this.adjacencyMatrix[index][index].data)) { return; }
-  if (this.expandedGroups[index]) {
+  if (this.expandedGroups[id]) {
     this.collapseGroup(index);
     this.hulls.map((hull, i) => {
       if (hull.groupId === id) {
         this.hulls.splice(i, 1); // remove this hull from the global list of hulls
       }
     });
-    this.expandedGroups[index] = false;
+    this.expandedGroups[id] = false;
   } else {
     this.expandGroup(index);
     const group = this.getGroupMembers(index);
     this.hulls.push(this.createHull(id, group));
-    this.expandedGroups[index] = true;
+    this.expandedGroups[id] = true;
   }
   this.hoveredNode = null;
   this.update();
@@ -254,7 +254,14 @@ export function calculateAllHulls() {
   /* calculates paths of all hulls in the global hulls list */
   this.hulls.slice().map((hull, i) => {
     if (this.idToIndex[hull.groupId]) {
-      const group = this.getGroupMembers(this.idToIndex[hull.groupId]);
+      let group = this.getGroupMembers(this.idToIndex[hull.groupId]);
+      for (var a = 0; a < group.length; a++) {
+        let subGroup = this.getGroupMembers(group[a]);
+        if (subGroup.length > 0 
+          && this.expandedGroups[this.indexToId[group[a]]]) { 
+          group = group.concat(subGroup);
+        }
+      }
       this.hulls[i] = this.createHull(hull.groupId, group);
     } else {
       delete this.hulls.splice(this.hulls.indexOf(hull), 1);
