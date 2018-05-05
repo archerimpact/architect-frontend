@@ -186,7 +186,15 @@ export function ungroup(i) {
 export function expandGroup(i) {
   const group = this.getGroupMembers(i);
   for (var a = 0; a < group.length; a++) {
+    let groupX = this.adjacencyMatrix[i][i].data.x;
+    let groupY = this.adjacencyMatrix[i][i].data.y;
     let d = this.adjacencyMatrix[group[a]][group[a]].data
+
+    if (d.fixed && d.centroidx && d.centroidy) { 
+      d.px += (d.centroidx > groupX) ? d.centroidx - groupX : groupX - d.centroidx;
+      d.py += (d.centroidy > groupY ? d.centroidy - groupY : groupY - d.centroidy); 
+    }
+
     d.centroidx = this.adjacencyMatrix[i][i].data.fixedX = this.adjacencyMatrix[i][i].data.x;
     d.centroidy = this.adjacencyMatrix[i][i].data.fixedY = this.adjacencyMatrix[i][i].data.y;
     this.displayNode(group[a]); 
@@ -207,7 +215,6 @@ export function getParent(i) {
   for (var j = 0; j < this.adjacencyMatrix.length; j++) {
     if (this.adjacencyMatrix[i][j].state === BELONGS_TO) { return j; }
   }
-  debugger
   return null;
 }
 
