@@ -70,39 +70,16 @@ class Login extends Component {
         return (
             <div className="row">
                 <div className="col-sm-6 page-col left-col d-flex justify-content-center">
-                    <div className="d-flex">
-                        <div className="flex-column">
-                            <div className="feature-row flex-row d-flex">
-                                <i className="splash-icon material-icons">find_in_page</i> {/* explore */}
-                                <h4 className="tagline">
-                                    <span className="orange-underline">Explore</span>
-                                    public data.
-                                </h4>
-                            </div>
-                            <div className="feature-row flex-row d-flex">
-                                <i className="splash-icon material-icons">build</i>
-                                <h4 className="tagline">
-                                    <span className="orange-underline">Build</span>
-                                    investigations.
-                                </h4>
-                            </div>
-                            <div className="feature-row flex-row d-flex">
-                                <i className="splash-icon material-icons">backup</i>
-                                <h4 className="tagline">
-                                    <span className="orange-underline">Publish</span>
-                                    your findings.
-                                </h4>
-                            </div>
-                        </div>
-                        
-                    </div>
+                    <img src="https://image.ibb.co/jU5GpS/architect_dark_hex_promo_angle_fixed_01.png" id="tagline-img" className="img-fluid"/>
                 </div>
 
                 <div className='col-sm-6 page-col right-col d-flex justify-content-center'>
+                    <h2 className="temp-logo">Architect</h2>
                     { this.state.error ? <p> Error! Invalid login or password. Please try again. </p> : [] }
 
                     <form>
-                        <div className="form-group">
+                        <div className="form-group row">
+                            <i className="material-icons login-icon">{ this.state.email !== '' ? "person" : "perm_identity"}</i>
                             <input
                                 className="form-control sexy-input"
                                 placeholder="Email"
@@ -110,10 +87,12 @@ class Login extends Component {
                                 style = {{width: 300}}
                                 onChange={this.handleEmailInputChange}
                                 type="text"
+                                autoFocus
                             />
                         </div>
                         
-                        <div className="form-group">
+                        <div className="form-group row">
+                            <i className="material-icons login-icon">{ this.state.password !== '' ? "lock_open" : "lock_outline"}</i>
                             <input
                                 className="form-control sexy-input"
                                 placeholder="Password"
@@ -125,20 +104,19 @@ class Login extends Component {
                         </div>
 
                         <button 
-                            className="btn btn-outline-primary"
+                            className="btn btn-primary"
                             style={{margin: 15}}
                             onClick={this.handleSubmit}
                         >Login </button>
 
 
-                        {/* this should go to create_account */}
+                        {/* this should go to create_account }
                         <button 
                             className="btn btn-primary"
                             style={{margin: 15}}
                             onClick={this.handleSubmit} 
                         >Sign Up </button>
                         
-                        {/*}
                         <div>
                             <Link to={'/create_account'} style={{color: 'inherit'}}> New around here? Create an Account!</Link>
                         </div>
