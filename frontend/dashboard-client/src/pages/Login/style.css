@@ -8,13 +8,15 @@
 }
 
 .left-col {
-
+	padding-right: 0;
 }
 
 .right-col {
-	background-color: #404040/*#3d3d3d */;
-	box-shadow: -2px 0px 20px rgba(0,0,0,0.5);
+	background-color: #fafafa;
+	border-left: 1px solid #dedede;
+	/*box-shadow: -2px 0px 20px rgba(0,0,0,0.5);*/
 	z-index: 1;
+	padding-left: 0;
 }
 
 .login-box {
@@ -28,11 +30,11 @@
 
 .sexy-input {
 	border: 0;
-	border-bottom: 1px solid #dddddd;
+	border-bottom: 1px solid #aaa;
 	border-radius: 0;
 	margin-bottom: 20px;
 	background-color: transparent;
-	color: #fff;
+	color: #333;
 	padding-left: 0;
 }
 
@@ -41,11 +43,11 @@
 	box-shadow: none;
 	border-bottom: 1px solid #ff6060;
 	background-color: transparent;
-	color: #fff;
+	color: #333;
 }
 
 .sexy-input::placeholder {
-	color: #cccccc;
+	color: #999;
 }
 
 .sexy-input:focus::placeholder {
@@ -59,6 +61,27 @@
 	margin-right: 10px;
 }
 
+/*#right-img {
+	height: 100%;
+	margin-bottom: 20px;
+	position: absolute;
+	top: 0;
+	left: 0;
+}*/
+
+
+.login-form {
+	/*margin-top: auto;*/
+	margin-top: 150px;
+}
+#right-img {
+	width: 95%;
+/*	position: absolute;
+	bottom: 0;
+	right: 0;*/
+	margin-bottom: 20px;
+	opacity: 1;
+}
 
 #tagline-img {
 	height: 100%;
@@ -75,7 +98,7 @@
 .temp-logo {
 	position: absolute;
 	top: 30px;
-	color: #ffffff;
+	color: #1c1c1c
 }
 
 .btn-outline-primary {
@@ -86,4 +109,9 @@
 .btn-primary {
 	border-color: #ff6060;
 	background-color: #ff6060;
+}
+
+.login-btn {
+	margin-left: auto;
+	margin-right: 20px;
 }

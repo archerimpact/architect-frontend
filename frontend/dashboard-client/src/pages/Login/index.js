@@ -77,7 +77,7 @@ class Login extends Component {
                     <h2 className="temp-logo">Architect</h2>
                     { this.state.error ? <p> Error! Invalid login or password. Please try again. </p> : [] }
 
-                    <form>
+                    <form className="login-form">
                         <div className="form-group row">
                             <i className="material-icons login-icon">{ this.state.email !== '' ? "person" : "perm_identity"}</i>
                             <input
@@ -103,12 +103,12 @@ class Login extends Component {
                             />
                         </div>
 
-                        <button 
-                            className="btn btn-primary"
-                            style={{margin: 15}}
-                            onClick={this.handleSubmit}
-                        >Login </button>
-
+                        <div className="form-group row">
+                            <button 
+                                className="btn btn-primary login-btn"
+                                onClick={this.handleSubmit}
+                            >Login </button>
+                        </div>
 
                         {/* this should go to create_account }
                         <button 
@@ -122,6 +122,7 @@ class Login extends Component {
                         </div>
                         */}
                     </form>
+                    <img src="https://preview.ibb.co/egm3KS/gradient_real_bottom_graph.png" id="right-img" className="mt-auto" />
                 </div>
             </div>
         );
