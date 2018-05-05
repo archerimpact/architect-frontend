@@ -19,7 +19,7 @@ const icons = {
   'person': '',
   'Document': '',
   'corporation': '',
-   'group': '',
+  'group': '',
   'same_as_group': ''
 };
     
@@ -402,7 +402,6 @@ class Graph {
 
   update(event=null) {
     var self = this;
-    this.force.stop();
     this.matrixToGraph();
     this.reloadNeighbors();
 
