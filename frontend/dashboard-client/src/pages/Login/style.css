@@ -17,6 +17,7 @@
 	/*box-shadow: -2px 0px 20px rgba(0,0,0,0.5);*/
 	z-index: 1;
 	padding-left: 0;
+	justify-content: space-between;
 }
 
 .login-box {
@@ -72,15 +73,16 @@
 
 .login-form {
 	/*margin-top: auto;*/
-	margin-top: 150px;
+	/*margin-top: 150px;*/
 }
 #right-img {
-	width: 95%;
+	width: 100%;
 /*	position: absolute;
 	bottom: 0;
 	right: 0;*/
-	margin-bottom: 20px;
 	opacity: 1;
+	align-self: flex-end;
+
 }
 
 #tagline-img {
@@ -96,9 +98,11 @@
 }
 
 .temp-logo {
-	position: absolute;
-	top: 30px;
-	color: #1c1c1c
+	/*position: absolute;*/
+	/*top: 30px;*/
+	color: #1c1c1c;
+	align-self: flex-start;
+	margin: 30px auto 30px auto;
 }
 
 .btn-outline-primary {

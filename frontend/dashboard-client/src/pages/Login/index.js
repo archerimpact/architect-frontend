@@ -73,7 +73,7 @@ class Login extends Component {
                     <img src="https://image.ibb.co/jU5GpS/architect_dark_hex_promo_angle_fixed_01.png" id="tagline-img" className="img-fluid"/>
                 </div>
 
-                <div className='col-sm-6 page-col right-col d-flex justify-content-center'>
+                <div className='col-sm-6 page-col right-col d-flex'>
                     <h2 className="temp-logo">Architect</h2>
                     { this.state.error ? <p> Error! Invalid login or password. Please try again. </p> : [] }
 
@@ -122,7 +122,7 @@ class Login extends Component {
                         </div>
                         */}
                     </form>
-                    <img src="https://preview.ibb.co/egm3KS/gradient_real_bottom_graph.png" id="right-img" className="mt-auto" />
+                    <img src="https://preview.ibb.co/egm3KS/gradient_real_bottom_graph.png" id="right-img" className="" />
                 </div>
             </div>
         );
