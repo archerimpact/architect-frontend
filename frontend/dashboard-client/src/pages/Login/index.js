@@ -79,7 +79,7 @@ class Login extends Component {
 
                     <form className="login-form">
                         <div className="form-group row">
-                            <i className="material-icons login-icon">{ this.state.email !== '' ? "person" : "perm_identity"}</i>
+                            <i className="material-icons login-icon">{ this.state.email !== '' ?  "perm_identity" : "person" }</i>
                             <input
                                 className="form-control sexy-input"
                                 placeholder="Email"
@@ -92,7 +92,7 @@ class Login extends Component {
                         </div>
                         
                         <div className="form-group row">
-                            <i className="material-icons login-icon">{ this.state.password !== '' ? "lock_open" : "lock_outline"}</i>
+                            <i className="material-icons login-icon">{ this.state.password !== '' ? "lock_open" : "lock"}</i>
                             <input
                                 className="form-control sexy-input"
                                 placeholder="Password"
@@ -104,7 +104,7 @@ class Login extends Component {
                         </div>
 
                         <div className="form-group row">
-                            <button 
+                            <button
                                 className="btn btn-primary login-btn"
                                 onClick={this.handleSubmit}
                             >Login </button>
