@@ -55,40 +55,18 @@
 	opacity: 0.3;
 }
 
-
-
-.orange-underline {
-	border-bottom: 3px solid orange;
-	margin-right: 10px;
-}
-
-/*#right-img {
-	height: 100%;
-	margin-bottom: 20px;
-	position: absolute;
-	top: 0;
-	left: 0;
-}*/
-
-
 .login-form {
-	/*margin-top: auto;*/
-	/*margin-top: 150px;*/
+
 }
+
 #right-img {
 	width: 100%;
-/*	position: absolute;
-	bottom: 0;
-	right: 0;*/
-	opacity: 1;
+	opacity: 0.7;
 	align-self: flex-end;
+	margin-bottom: 20px;
 
 }
 
-#tagline-img {
-	height: 100%;
-	margin-bottom: 20px;		/* should probably just resize the image as appropriate but ok */
-}
 
 .login-icon {
 	color: #ff6060;
@@ -98,8 +76,6 @@
 }
 
 .temp-logo {
-	/*position: absolute;*/
-	/*top: 30px;*/
 	color: #1c1c1c;
 	align-self: flex-start;
 	margin: 30px auto 30px auto;
