@@ -51,10 +51,10 @@ export function addToMatrix(centerid, nodes, links) {
     if (this.adjacencyMatrix[sourceIndex][targetIndex].state === NONEXISTENT) {
       links[i].source = sourceIndex;
       links[i].target = targetIndex;
-      this.adjacencyMatrix[sourceIndex][targetIndex].state = DISPLAYED;
+      this.adjacencyMatrix[sourceIndex][targetIndex] = {state: DISPLAYED, data: links[i]};
     }
   }
-  this.update();
+  this.update(null, 150);
 }
 
 export function matrixToGraph() {
@@ -186,21 +186,36 @@ export function ungroup(i) {
 export function expandGroup(i) {
   const group = this.getGroupMembers(i);
   for (var a = 0; a < group.length; a++) {
+    let groupX = this.adjacencyMatrix[i][i].data.x;
+    let groupY = this.adjacencyMatrix[i][i].data.y;
     let d = this.adjacencyMatrix[group[a]][group[a]].data
-    d.centroidx = this.adjacencyMatrix[i][i].data.fixedX = this.adjacencyMatrix[i][i].data.x;
-    d.centroidy = this.adjacencyMatrix[i][i].data.fixedY = this.adjacencyMatrix[i][i].data.y;
+
+    if (d.fixed && d.centroidx && d.centroidy) { 
+      d.px += (d.centroidx > groupX) ? d.centroidx - groupX : groupX - d.centroidx;
+      d.py += (d.centroidy > groupY ? d.centroidy - groupY : groupY - d.centroidy); 
+    }
+
+    d.centroidx = groupX;
+    d.centroidy = groupY;
     this.displayNode(group[a]); 
   }
   this.hideNode(i);  
 } 
 
 export function collapseGroup(i) {
-  this.displayNode(i);
   const group = this.getGroupMembers(i);
   for (var a = 0; a < group.length; a++) {
+    if (this.getGroupMembers(group[a]).length > 0 && this.adjacencyMatrix[group[a]][group[a]].state === HIDDEN) { this.collapseGroup(group[a]); }
     this.hideNode(group[a]);
-    if (group[a] === i) { debugger;}
   }
+  this.displayNode(i);
+}
+
+export function getParent(i) {
+  for (var j = 0; j < this.adjacencyMatrix.length; j++) {
+    if (this.adjacencyMatrix[i][j].state === BELONGS_TO) { return j; }
+  }
+  return null;
 }
 
 export function copyLinks(i, j) {

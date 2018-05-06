@@ -43,6 +43,7 @@ class Graph {
     this.isEmphasized = false; // Keep track of node emphasis to end node emphasis on drag
     this.documentsShown = true;
     this.hoveredNode = null; // Store reference to currently hovered/emphasized node, null otherwise
+    this.deletingHoveredNode = false; // Store whether you are deleting a hovered node, if so you reset graph opacity
     this.printFull = 0; // Allow user to toggle node text length
     this.isGraphFixed = false; // Track whether or not all nodes should be fixed
     this.isZooming = false; // Track if graph is actively being transformed
@@ -399,11 +400,12 @@ class Graph {
     this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
   }
 
-  update(event=null) {
+  update(event=null, ticks=null) {
     var self = this;
-    // this.force.stop();
-    this.resetGraphOpacity(false);
+    this.force.stop();
+    this.resetGraphOpacity();
     this.matrixToGraph();
+
     this.link = this.link.data(this.links, (d) => { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
     this.link
       .enter().append('line')
@@ -413,6 +415,7 @@ class Graph {
       .on('mouseover', this.mouseoverLink)
       .call(this.styleLink, false);
 
+    this.resetGraphOpacity;
     this.link.exit().remove();
 
     this.node = this.node.data(this.nodes, (d) => { return d.id; });
@@ -477,12 +480,14 @@ class Graph {
       .attr('d', this.drawHull)
       .classed('faded', this.mousedownNode)
       .on('dblclick', function (d) {
-        self.toggleGroupView(d.groupNode);
+        self.toggleGroupView(d.groupId);
         d3.event.stopPropagation();
       });
     this.hull.exit().remove();
 
     this.force.start();
+    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }      
+
     this.reloadNeighbors();
   }
 
@@ -785,6 +790,7 @@ Graph.prototype.copyLinks = matrix.copyLinks;
 Graph.prototype.ungroup = matrix.ungroup;
 Graph.prototype.expandGroup = matrix.expandGroup;
 Graph.prototype.collapseGroup = matrix.collapseGroup;
+Graph.prototype.getParent = matrix.getParent;
 
 // Uncomment below for React implementation
 export default Graph;

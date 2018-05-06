@@ -55,7 +55,7 @@ export function rightclicked(node, d) {
 
 export function dblclicked(d) {
   if (utils.isGroup(d)) {
-    this.toggleGroupView(d);
+    this.toggleGroupView(d.id);
   }
 
   d3.event.stopPropagation();

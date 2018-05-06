@@ -34,7 +34,7 @@ export function fillGroupNodes() {
     .classed('grouped', function (d) { return isGroup(d) || d.type === 'same_as_group'; });
 }
 
-export function fadeGraph(d, opacity=.075) {
+export function fadeGraph(d) {
   const classThis = this;
   this.isEmphasized = true;
   this.node
@@ -45,7 +45,7 @@ export function fadeGraph(d, opacity=.075) {
 }
 
 // Reset all node/link opacities to 1
-export function resetGraphOpacity(transitionDelay=true) {
+export function resetGraphOpacity() {
   this.isEmphasized = false;
   this.node.classed('faded', false);
   this.link.classed('faded', false);
