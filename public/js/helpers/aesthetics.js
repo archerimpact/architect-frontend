@@ -1,5 +1,4 @@
-
-import * as utils from './utils.js';
+import { isGroup, then } from './utils.js';
 
 // Link highlighting
 export function highlightLinksFromAllNodes() {
@@ -32,15 +31,25 @@ export function changeLinkDirectionality(selection, newDirection) {
 // Fill group nodes blue
 export function fillGroupNodes() {
   this.svg.selectAll('.node')
-    .classed('grouped', function (d) { return utils.isGroup(d) || d.type === 'same_as_group'; });
+    .classed('grouped', function (d) { return isGroup(d) || d.type === 'same_as_group'; });
+}
+
+export function fadeGraph(d, opacity=.075) {
+  const classThis = this;
+  this.isEmphasized = true;
+  this.node
+    .filter(function (o) { return !classThis.areNeighbors(d, o); })
+    .classed('faded', true);
+  this.link.classed('faded', o => { return !(o.source == d || o.target == d); });
+  this.hull.classed('faded', true);
 }
 
 // Reset all node/link opacities to 1
-export function resetGraphOpacity() {
+export function resetGraphOpacity(transitionDelay=true) {
   this.isEmphasized = false;
-  this.node.style('stroke-opacity', 1)
-    .style('fill-opacity', 1);
-  this.link.style('opacity', 1);
+  this.node.classed('faded', false);
+  this.link.classed('faded', false);
+  this.hull.classed('faded', false);
 }
 
 // Reset edit mode's dynamic drag link

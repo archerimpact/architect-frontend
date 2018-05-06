@@ -157,8 +157,6 @@ export function mouseup(d, self) {
 }
 
 export function mouseover(d, self) {
-  var classThis = this;
-
   // Drag link node emphasis
   if (this.mousedownNode && d != this.mousedownNode) {
     d3.select(self).select('circle')
@@ -167,18 +165,8 @@ export function mouseover(d, self) {
 
   if (!this.isDragging && !this.isBrushing && !this.mousedownNode) {
     // Hovered node emphasis
-    this.isEmphasized = true;
     this.hoveredNode = d;
-    this.node
-      .filter(function (o) {
-        return !classThis.neighbors(d, o);
-      })
-      .style('stroke-opacity', .075)
-      .style('fill-opacity', .075);
-
-    this.link.style('opacity', function (o) {
-      return (o.source == d || o.target == d) ? 1 : .075;
-    });
+    this.fadeGraph(d);
 
     // Hide drag link
     if (this.mousedownNode && d == this.mousedownNode) { this.dragLink.classed('hidden', true); }

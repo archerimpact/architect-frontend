@@ -402,20 +402,20 @@ class Graph {
   update(event=null) {
     var self = this;
     // this.force.stop();
-    this.resetGraphOpacity();
+    this.resetGraphOpacity(false);
     this.matrixToGraph();
-    this.link = this.link.data(this.links, function (d) { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
+    this.link = this.link.data(this.links, (d) => { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
     this.link
       .enter().append('line')
       .attr('class', 'link')
-      .style('stroke-dasharray', function (d) { return d.type === 'possibly_same_as' ? ('3,3') : false; })
-      .style('stroke-opacity', (o) => { if (this.hoveredNode) { return (o.source == this.hoveredNode || o.target == this.hoveredNode) ? 1 : .05 }; })
+      .style('stroke-dasharray', (d) => { return d.type === 'possibly_same_as' ? ('3,3') : false; })
+      .classed('faded', (o) => { return this.hoveredNode && !(o.source == this.hoveredNode || o.target == this.hoveredNode); })
       .on('mouseover', this.mouseoverLink)
       .call(this.styleLink, false);
 
     this.link.exit().remove();
 
-    this.node = this.node.data(this.nodes, function (d) { return d.id; });
+    this.node = this.node.data(this.nodes, (d) => { return d.id; });
     this.nodeEnter = this.node.enter().append('g')
       .attr('class', 'node')
       .attr('dragfix', false)
@@ -424,9 +424,10 @@ class Graph {
       .on('dblclick', function (d) { self.dblclicked(d, this); })
       .on('mouseover', function (d) { self.mouseover(d, this); })
       .on('mouseout', function (d) { self.mouseout(d, this); })
-      .classed('fixed', function (d) { return d.fixed; })
+      .classed('fixed', (d) => { return d.fixed; })
+      .classed('faded', (d) => { return this.hoveredNode && !this.areNeighbors(this.hoveredNode, d)})
       .call(this.force.drag()
-        .origin(function (d) { return d; })
+        .origin((d) => { return d; })
         .on('dragstart', function (d) { self.dragstart(d, this) })
         .on('drag', function (d) { self.dragging(d, this) })
         .on('dragend', function (d) { self.dragend(d, this) })
@@ -439,11 +440,6 @@ class Graph {
         .on('mouseup', function (d) { self.mouseup(d, this); });
     }
 
-    this.nodeEnter
-      .filter((o) => { if (this.hoveredNode && !this.neighbors(this.hoveredNode, o)) { return o; } })
-      .style('stroke-opacity', .15)
-      .style('fill-opacity', .15);
-
     this.nodeEnter.append('circle')
       .attr('r', '20');
 
@@ -453,7 +449,7 @@ class Graph {
       .attr('dominant-baseline', 'central')
       .attr('font-family', 'FontAwesome')
       .attr('font-size', '20px')
-      .text(function (d) { return (d.type && icons[d.type]) ? icons[d.type] : ''; })
+      .text((d) => { return (d.type && icons[d.type]) ? icons[d.type] : ''; })
       .classed('unselectable', true);
 
     this.nodeEnter.append('text')
@@ -479,6 +475,7 @@ class Graph {
       .enter().append('path')
       .attr('class', 'hull')
       .attr('d', this.drawHull)
+      .classed('faded', this.mousedownNode)
       .on('dblclick', function (d) {
         self.toggleGroupView(d.groupNode);
         d3.event.stopPropagation();
@@ -536,11 +533,11 @@ class Graph {
         const targetX = x2 - (x2-x1) * (dist-20*this.zoomScale) / dist,
               targetY = y2 - (y2-y1) * (dist-20*this.zoomScale) / dist;
 
-        this.dragLink
-          .attr('x1', targetX)
-          .attr('y1', targetY)
-          .attr('x2', x2)
-          .attr('y2', y2);
+      this.dragLink
+        .attr('x1', targetX)
+        .attr('y1', targetY)
+        .attr('x2', x2)
+        .attr('y2', y2);
       }
     }
   }
@@ -668,7 +665,7 @@ class Graph {
   }
 
   // Determine if neighboring nodes
-  neighbors(a, b) {
+  areNeighbors(a, b) {
     return this.linkedById[a.id + ',' + b.id]
       || this.linkedById[b.id + ',' + a.id]
       || a.id == b.id;
@@ -698,6 +695,7 @@ Graph.prototype.highlightLinksFromAllNodes = aesthetics.highlightLinksFromAllNod
 Graph.prototype.highlightLinksFromNode = aesthetics.highlightLinksFromNode;
 Graph.prototype.styleLink = aesthetics.styleLink;
 Graph.prototype.fillGroupNodes = aesthetics.fillGroupNodes;
+Graph.prototype.fadeGraph = aesthetics.fadeGraph;
 Graph.prototype.resetGraphOpacity = aesthetics.resetGraphOpacity;
 Graph.prototype.resetDragLink = aesthetics.resetDragLink;
 Graph.prototype.textWrap = aesthetics.textWrap;
