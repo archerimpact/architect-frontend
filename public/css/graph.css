@@ -23,6 +23,7 @@ body {
 
 svg {
   border: 3px solid #fff;
+  z-index: -3;
 }
 
 
@@ -209,6 +210,12 @@ i.fa-close {
   font-size: 14px;
   max-width: 165px;
   color: #545454;
+}
+
+#minimap-box-square {
+  fill: #b1b1b1;
+  opacity: 0.4;
+  border:3px solid #fff;
 }
 
 .faded {

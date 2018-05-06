@@ -7,7 +7,7 @@ Making Architect look snazzy~
 1. Clone repo, navigate to root folder
 2. Install relevant node modules ('npm install')
 3. Run 'node server.js' and navigate to localhost:4567 in browser
-4. After making changes to code, run 'npm run build' to regenerate correct bundle.js with webpack
+4. After making changes to code, run 'npm run watch' to regenerate correct bundle.js with webpack
 
 ## Architecture details (hehehe)
 ### Node dragging and selection
@@ -137,3 +137,35 @@ Process for grouping:
 3. You hide all the grouped nodes
 
 You can tell if a node is a group if that node contains any links that are GROUP_MEMBER, or by accessing the type on the d object.
+
+I chose to give the new nodes representing a group a negative id, so that it will never overlap with the id from a neo4j node.
+
+### Generate Image of SVG
+I chose to serialize the SVG to a string, then convert that to a blob url, and display the image by having an svg:image item link to the blob. This was much cleaner than embedding the image or canvas version of the SVG into an SVG foreign object. Update the url of the image link is also easy, meaning we don't have to remove the minimap item on the SVG every time we want to re-initialize it; we can simply replace the image URL.
+
+A few difficulties occurred:
+1. I had to remove the grid & zoom buttons from the target SVG so that they wouldn't display in the image
+2. I had to append all the css as a defs in the svg to include it
+
+### Minimap
+The minimap has three areas of difficulty:
+1. to be able to re-render as appropriate
+2. to know where to put the box to start with and how large it should be; i.e. correlating the (total size of the SVG/size of viewport) to the (total size of minimap/ size of box)
+3. to accurately translate and zoom the box and graph, involving:
+  a. Dragging the minimap box should move the graph;
+  b. Zooming out on the graph should make the minimap box smaller and still center around what's shown in the SVG viewport, meaning the box needs to translate appropriately while zooming.
+  c. After zooming out on the graph, dragging the minimap box should move the graph MORE than before
+  d. Panning on the graph should also move the minimap
+  e. Right clicking/ making edits on the graph should NOT move the minimap
+
+The workflow of the minimap is this:
+
+Upon generation of the entire graph canvas in .generateCanvs():
+  1. create a new Minimap instance;
+  2. initialize the Minimap using the target SVG;
+
+After initial loading period of x number of ticks:
+  1. Render the minimap with the targetSVG and the boundaries of the SVG
+
+
+

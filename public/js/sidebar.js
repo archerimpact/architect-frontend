@@ -23,6 +23,7 @@ function populateGraphUsageBody(graphUsageBody) {
   $(graphUsageBody).append(createGraphUsageEntry('toggle text length', 'P'));  
   $(graphUsageBody).append(createGraphUsageEntry('toggle if nodes are fixed', 'F'));  
   $(graphUsageBody).append(createGraphUsageEntry('groups all the possibly same as nodes', 'C'));  
+  $(graphUsageBody).append(createGraphUsageEntry('save svg as .svg file', 'O'));  
 }
 
 function createGraphUsageEntry(key) {

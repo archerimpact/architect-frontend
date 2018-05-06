@@ -1,5 +1,9 @@
-export const maxTextLength = 20;
 export const minScale = 0.1;
 export const maxScale = 9.0;
-export const gridLength = 80;
-export const maxHeight = 100000;
+export const GRID_LENGTH = 80;
+export const MAX_HEIGHT = 100000;
+export const MINIMAP_SCALE = 0.15;
+export const MINIMAP_PADDING = 100;
+export const DEFAULT_MINIMAP_SIZE = 300;
+export const MINIMAP_MARGIN = 20;
+export const MINIMAP_TICK = 15;
