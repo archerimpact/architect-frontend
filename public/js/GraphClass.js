@@ -2,7 +2,6 @@
 // FontAwesome icon unicode-to-node type dict
 // Use this to find codes for FA icons: https://fontawesome.com/cheatsheet
 
-// Uncomment below for React implementation
 import * as d3 from './d3.min.js';
 import * as aesthetics from './helpers/aesthetics.js';
 import * as utils from './helpers/utils.js';
@@ -10,10 +9,9 @@ import * as mouseClicks from './helpers/mouseClicks.js';
 import * as tt from './helpers/tooltips.js';
 import * as matrix from './helpers/matrix.js';
 import * as d3Data from './helpers/changeD3Data.js';
-import { maxTextLength, minScale, maxScale, gridLength } from './helpers/constants.js';
-import { TO_REMOVE, REMOVED, TO_HIDE, HIDDEN } from './helpers/matrixConstants.js';
+import Minimap from './MinimapClass.js'
+import { minScale, maxScale, GRID_LENGTH, MINIMAP_MARGIN, DEFAULT_MINIMAP_SIZE, MINIMAP_TICK } from './helpers/constants.js';
 import { GROUP, HULL_GROUP } from './helpers/typeConstants.js';
-
 
 const icons = {
   'person': '',
@@ -22,7 +20,7 @@ const icons = {
   'group': '',
   'same_as_group': ''
 };
-    
+
 class Graph {
   constructor() {
     this.height = null;
@@ -31,6 +29,9 @@ class Graph {
     this.brushX = null;
     this.brushY = null;
     this.numTicks = null;
+    this.tickCount = 0;
+    this.xbound = [0, 0];
+    this.ybound = [0, 0];
 
     this.editMode = false; // Keep track of edit mode (add/remove/modify nodes + links)
     this.dragCallback = null; // Store reference to drag callback to restore after disabling node drag
@@ -66,6 +67,7 @@ class Graph {
     this.curve = null;
     this.svgGrid = null;
     this.force = null;
+    this.minimap = null;
 
     this.adjacencyMatrix = new Array();
     this.globalLinks = {};
@@ -80,8 +82,9 @@ class Graph {
     this.clicked = this.clicked.bind(this);
     this.rightclicked = this.rightclicked.bind(this);
     this.dblclicked = this.dblclicked.bind(this);
+
     this.isLeftClick = this.isLeftClick.bind(this);
-    this.isRightClick = this.isRightClick.bind(this);
+
     this.dragstart = this.dragstart.bind(this);
     this.dragging = this.dragging.bind(this);
     this.dragend = this.dragend.bind(this);
@@ -171,17 +174,17 @@ class Graph {
       .call(this.brush);
 
     this.svg.on('mousedown', () => {
-      svgBrush.style('opacity', this.isRightClick() ? 1 : 0);
+      svgBrush.style('opacity', utils.isRightClick() ? 1 : 0);
     });
 
     return svgBrush;
   }
 
-
   // We need this reference because selectAll and listener calls will refer to svg, 
   // whereas new append calls must be within the same g, in order for zoom to work.
   initializeContainer() {
-    return this.svg.append('g');
+    return this.svg.append('g')
+      .attr('class', 'graphItems');
   }
 
   //set up how to draw the hulls
@@ -191,29 +194,29 @@ class Graph {
       .tension(.85);
   }
 
-
   initializeSVGgrid() {
-    const svgGrid = this.container.append('g');
+    const svgGrid = this.container.append('g')
+      .attr('class', 'svggrid');
     svgGrid
       .append('g')
       .attr('class', 'x-ticks')
       .selectAll('line')
-      .data(d3.range(0, (this.numTicks + 1) * gridLength, gridLength))
+      .data(d3.range(0, (this.numTicks + 1) * GRID_LENGTH, GRID_LENGTH))
       .enter().append('line')
       .attr('x1', (d) => { return d; })
-      .attr('y1', (d) => { return -1 * gridLength; })
+      .attr('y1', (d) => { return -1 * GRID_LENGTH; })
       .attr('x2', (d) => { return d; })
-      .attr('y2', (d) => { return (1 / minScale) * this.height + gridLength; });
+      .attr('y2', (d) => { return (1 / minScale) * this.height + GRID_LENGTH; });
 
     svgGrid
       .append('g')
       .attr('class', 'y-ticks')
       .selectAll('line')
-      .data(d3.range(0, (this.numTicks + 1) * gridLength, gridLength))
+      .data(d3.range(0, (this.numTicks + 1) * GRID_LENGTH, GRID_LENGTH))
       .enter().append('line')
-      .attr('x1', (d) => { return -1 * gridLength; })
+      .attr('x1', (d) => { return -1 * GRID_LENGTH; })
       .attr('y1', (d) => { return d; })
-      .attr('x2', (d) => { return (1 / minScale) * this.width + gridLength; })
+      .attr('x2', (d) => { return (1 / minScale) * this.width + GRID_LENGTH; })
       .attr('y2', (d) => { return d; });
 
     return svgGrid;
@@ -284,7 +287,7 @@ class Graph {
   }
 
   initializeDragLink() {
-    return this.svg.append('line')
+    return this.container.append('line')
       .attr('class', 'link dynamic hidden')
       .attr('x1', 0)
       .attr('y1', 0)
@@ -335,8 +338,11 @@ class Graph {
     this.center = [this.width / 2, this.height / 2];
     this.brushX = d3.scale.linear().range([0, width]),
     this.brushY = d3.scale.linear().range([0, height]);
+    this.minimapPaddingX = MINIMAP_MARGIN;
+    this.minimapPaddingY = height - DEFAULT_MINIMAP_SIZE - MINIMAP_MARGIN;
+    this.minimapScale = 0.25;
 
-    this.numTicks = width / gridLength * (1 / minScale);
+    this.numTicks = width / GRID_LENGTH * (1 / minScale);
 
     this.zoom = this.initializeZoom();
     this.brush = this.initializeBrush();
@@ -357,6 +363,14 @@ class Graph {
     this.hull = this.container.append('g').selectAll('.hull')
     this.link = this.container.append('g').selectAll('.link');
     this.node = this.container.append('g').selectAll('.node');
+
+    this.minimap = new Minimap()
+                    .setZoom(this.zoom)
+                    .setTarget(this.container) // that's what you're trying to track/the images
+                    .setMinimapPositionX(this.minimapPaddingX)
+                    .setMinimapPositionY(this.minimapPaddingY)
+
+    this.minimap.initializeMinimap(this.svg, this.width, this.height)
   }
 
   // Completely rerenders the graph, assuming all new nodes and links
@@ -378,10 +392,16 @@ class Graph {
       .links(this.links);
 
     // Updates nodes and links according to current data
-    this.update();
+    this.update(null, null, false);
     this.force.on('tick', (e) => { this.ticked(e, this) });
-    for (let i = 150; i > 0; --i) this.force.tick(); // Avoid initial chaos and skip the wait for graph to drift back onscreen
+    // Avoid initial chaos and skip the wait for graph to drift back onscreen
+    for (let i = 150; i > 0; --i) this.force.tick(); 
     this.reloadNeighbors();       
+
+    // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
+    this.minimap
+      .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
+      .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); 
 
     // var centerd;
     // this.nodes.map((d)=> {
@@ -390,7 +410,7 @@ class Graph {
     //   }
     // });
 
-    // this.translateGraphAroundNode(centerd);
+    //this.translateGraphAroundNode(centerd);
   }
 
   bindDisplayFunctions(displayFunctions) {
@@ -399,12 +419,13 @@ class Graph {
     this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
   }
 
-  update(event=null, ticks=null) {
+  update(event=null, ticks=null, minimap=true) {
     var self = this;
     this.force.stop();
     this.matrixToGraph();
     this.reloadNeighbors(); 
 
+    // Update links
     this.link = this.link.data(this.links, (d) => { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
     this.link
       .enter().append('line')
@@ -416,6 +437,7 @@ class Graph {
 
     this.link.exit().remove();
 
+    // Update nodes
     this.node = this.node.data(this.nodes, (d) => { return d.id; });
     this.nodeEnter = this.node.enter().append('g')
       .attr('class', 'node')
@@ -470,8 +492,8 @@ class Graph {
 
     this.node.exit().remove();
 
+    // Update hulls
     this.hull = this.hull.data(this.hulls);
-
     this.hull
       .enter().append('path')
       .attr('class', 'hull')
@@ -481,21 +503,47 @@ class Graph {
         self.toggleGroupView(d.groupId);
         d3.event.stopPropagation();
       });
+
     this.hull.exit().remove();
 
+    // Update minimap   
+    if (minimap) { 
+      this.toRenderMinimap = true;
+      this.tickCount = 0;
+    }
+
     this.force.start();
-    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); } 
+    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }   
   }
 
   // Occurs each tick of simulation
   ticked(e, self) {
     const classThis = this;
     this.force.resume();
+    this.xbound = [0, 0];
+    this.ybound = [0, 0];
+    this.tickCount += 1;
 
     this.node
       .each(this.groupNodesForce(.3))
-      .each(function(d) { d.px = d.x; d.py = d.y; })
+      .each((d) => {
+        d.px = d.x; d.py = d.y;
+        if (d.x < this.xbound[0]) { this.xbound[0] = d.x; } 
+        else if (d.x > this.xbound[1]) { this.xbound[1] = d.x; }
+        if (d.y < this.ybound[0]) { this.ybound[0] = d.y; } 
+        else if (d.y > this.ybound[1]) { this.ybound[1] = d.y; }
+      })
       .attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
+
+    if (this.toRenderMinimap) { 
+      if (this.tickCount === MINIMAP_TICK) {
+        const translate = this.zoom.translate();
+        const scale = this.zoom.scale();
+        this.minimap.syncToSVG(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
+        this.tickCount = 0;
+        this.toRenderMinimap = false;
+      }
+    }
 
     if (!this.hull.empty()) {
       this.calculateAllHulls();
@@ -628,6 +676,11 @@ class Graph {
           this.addNodeToSelected(selection);
         }
 
+        // // o: save as PNG
+        // else if (d3.event.keyCode == 79) {
+        //   this.saveAsPng();
+        // }
+
         // d: Hide document nodes
         else if (d3.event.keyCode == 68) {
           this.toggleDocumentView();
@@ -640,6 +693,7 @@ class Graph {
               .text((d) => { return utils.processNodeName(d.name, this.printFull); })
               .call(this.textWrap, this.printFull);
         }
+
 
         this.force.resume();
       });
@@ -708,8 +762,9 @@ Graph.prototype.brushend = mouseClicks.brushend;
 Graph.prototype.clicked = mouseClicks.clicked;
 Graph.prototype.rightclicked = mouseClicks.rightclicked;
 Graph.prototype.dblclicked = mouseClicks.dblclicked;
+
 Graph.prototype.isLeftClick = mouseClicks.isLeftClick;
-Graph.prototype.isRightClick = mouseClicks.isRightClick;
+
 Graph.prototype.dragstart = mouseClicks.dragstart;
 Graph.prototype.dragging = mouseClicks.dragging;
 Graph.prototype.dragend = mouseClicks.dragend;

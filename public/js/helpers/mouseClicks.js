@@ -1,5 +1,5 @@
-import { getD3Event, findEntryById, processNodeName, then } from './utils.js';
-import { maxTextLength, minScale, maxScale, gridLength } from './constants.js'
+import { maxScale, GRID_LENGTH } from './constants.js'
+import { getD3Event, findEntryById, processNodeName, isRightClick, then } from './utils.js';
 import { resetDragLink } from './aesthetics.js';
 
 import * as utils from './utils.js';
@@ -11,7 +11,7 @@ export function brushstart() {
 
 export function brushing() {
   var self = this;
-  if (this.isRightClick()) {
+  if (utils.isRightClick()) {
     const extent = this.brush.extent();
     this.svg.selectAll('.node')
       .classed('selected', function (d) {
@@ -61,12 +61,6 @@ export function dblclicked(d) {
   d3.event.stopPropagation();
 }
 
-// Click helper
-export function isRightClick() {
-  return (d3.event && (d3.event.which == 3 || d3.event.button == 2))
-    || (d3.event.sourceEvent && (d3.event.sourceEvent.which == 3 || d3.event.sourceEvent.button == 2));
-}
-
 export function isLeftClick() {
   return (d3.event && d3.event.which == 1)
     || (d3.event.sourceEvent && d3.event.sourceEvent.which == 1);
@@ -87,7 +81,8 @@ export function dragstart(d, self) {
     .attr('dragselect', node.classed('selected'))
     .attr('dragdistance', 0);
 
-  if (this.isRightClick()) {
+  // node.classed('fixed', d.fixed = true);
+  if (utils.isRightClick()) {
     node.classed('selected', this.nodeSelection[d.index] = true);
     this.highlightLinksFromNode(node[0]);
   } else {
@@ -105,12 +100,14 @@ export function dragging(d, self) {
 
 export function dragend(d, self) {
   const node = d3.select(self);
-  if (!parseInt(node.attr('dragdistance')) && this.isRightClick()) {
+  if (!parseInt(node.attr('dragdistance')) && utils.isRightClick()) {
     this.rightclicked(node, d);
   }
 
   this.isDragging = false;
   this.draggedNode = null;
+  this.toRenderMinimap = true;
+  this.tickCount = 0;
   this.force.resume();
 }
 
@@ -247,16 +244,21 @@ export function stopPropagation() {
 
 // SVG zoom & pan
 export function zoomstart(d, self) {
+  const e = d3.event;
+  if (utils.isRightClick()) {
+    this.zoomTranslate = this.zoom.translate();
+    this.zoomScale = this.zoom.scale();
+  }
   this.isZooming = true;
   this.zoomTranslate = this.zoom.translate();
   this.zoomScale = this.zoom.scale();
 }
 
 export function zooming(d, self) {
-  if (!this.isRightClick()) {
+  if (!utils.isRightClick()) {
     const e = d3.event;
-    const transform = 'translate(' + (((e.translate[0] / e.scale) % gridLength) - e.translate[0] / e.scale)
-      + ',' + (((e.translate[1] / e.scale) % gridLength) - e.translate[1] / e.scale) + ')scale(1)';
+    const transform = 'translate(' + (((e.translate[0] / e.scale) % GRID_LENGTH) - e.translate[0] / e.scale)
+      + ',' + (((e.translate[1] / e.scale) % GRID_LENGTH) - e.translate[1] / e.scale) + ')scale(' + 1 + ')';
     this.svgGrid.attr('transform', transform);
     this.container.attr('transform', `translate(${e.translate})scale(${e.scale})`);
   }
@@ -264,7 +266,7 @@ export function zooming(d, self) {
 
 export function zoomend(d, self) {
   this.svg.attr('cursor', 'move');
-  if (this.isRightClick()) {
+  if (utils.isRightClick()) {
     this.zoom.translate(this.zoomTranslate);
     this.zoom.scale(this.zoomScale);
   }
@@ -322,6 +324,7 @@ export function translateGraphAroundNode(d) {
   var x = this.center[0] > d.x ? (this.center[0] - d.x) : -1*(d.x-this.center[0]);
   var y = this.center[1] > d.y ? (this.center[1] - d.y) : -1*(d.y-this.center[1]);
   var translate = this.zoom.translate();
+  var scale = this.zoom.scale();
   this.isZooming = true;
   var self = this;
 
@@ -366,8 +369,8 @@ export function translateGraphAroundId(id) {
 
 export function manualZoom() {
   this.container.attr('transform', 'translate(' + this.zoom.translate() + ')scale(' + this.zoom.scale() + ')');
-  const transform = 'translate(' + (((this.zoom.translate()[0] / this.zoom.scale()) % gridLength) - this.zoom.translate()[0] / this.zoom.scale())
-    + ',' + (((this.zoom.translate()[1] / this.zoom.scale()) % gridLength) - this.zoom.translate()[1] / this.zoom.scale()) + ')scale(1)';
+  const transform = 'translate(' + (((this.zoom.translate()[0] / this.zoom.scale()) % GRID_LENGTH) - this.zoom.translate()[0] / this.zoom.scale())
+    + ',' + (((this.zoom.translate()[1] / this.zoom.scale()) % GRID_LENGTH) - this.zoom.translate()[1] / this.zoom.scale()) + ')scale(1)';
   this.svgGrid.attr('transform', transform);
 }
 

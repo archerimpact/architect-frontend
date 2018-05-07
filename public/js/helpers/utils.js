@@ -51,6 +51,69 @@ export function removeColumn(matrix, index) {
   matrix.splice(index, 1);
 }
 // =================
+// D3 UTILS
+// =================
+
+export function isRightClick() {
+  return (d3.event && (d3.event.which == 3 || d3.event.button == 2))
+    || (d3.event.sourceEvent && (d3.event.sourceEvent.which == 3 || d3.event.sourceEvent.button == 2));
+}
+
+export function getXYFromTranslate(translateString) {
+  var currentTransform = d3.transform(translateString);
+  var currentX = currentTransform.translate[0];
+  var currentY = currentTransform.translate[1];
+  return [currentX, currentY];
+};
+
+export function getScaleFromZoom(translateString) {
+  var currentTransform = d3.transform(translateString);
+  var currentX = currentTransform.scale[0];
+  var currentY = currentTransform.scale[1];
+  return [currentX, currentY];
+};
+
+export function createSVGImage(targetSVG, x1, x2, y1, y2, width=null, height=null){
+  var svgClone = targetSVG.cloneNode(true);
+  
+  if (!width) { width = x2 - x1; }
+  if (!height) { height = y2 - y1; }
+  svgClone.setAttribute('viewBox', `${x1} ${y1} ${width} ${height}`);
+
+  Array.from(svgClone.childNodes).map((e) => {
+    if (e.classList[0] !== "graphItems") { svgClone.removeChild(e); }
+    Array.from(e.childNodes).map((e) => {
+        if (e.classList[0] === "svggrid") { e.parentNode.removeChild(e); }
+    });
+  });
+
+  const sheets = document.styleSheets;
+  var styleStr = '';
+  Array.prototype.forEach.call(sheets, function(sheet) {
+    try { // we need a try-catch block for external stylesheets that could be there...
+      if (sheet.cssRules) {
+        styleStr += Array.prototype.reduce.call(sheet.cssRules, function(a, b){
+          return a + b.cssText; // just concatenate all our cssRules' text
+        }, "");       
+      }
+    }
+    catch(e) { console.log(e); }
+  });
+  // create our svg nodes that will hold all these rules
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+  style.innerHTML = styleStr;
+  defs.appendChild(style);
+  svgClone.insertBefore(defs, svgClone.firstElementChild);
+  
+  const svgString = new XMLSerializer().serializeToString(svgClone);
+  const blob = new Blob([ svgString ], { type: 'image/svg+xml' });
+  const url = URL.createObjectURL(blob);
+
+  return url;
+}
+
+// =================
 // DEBUGGING METHODS
 // =================
 

@@ -1,5 +1,5 @@
 import * as utils from './utils.js';
-import { maxHeight } from './constants.js';
+import { MAX_HEIGHT } from './constants.js';
 var $ = require("jquery");
 
 export function initializeTooltip() {
@@ -67,7 +67,7 @@ export function displayData(targetId, titleText, populateBody) {
   const bodyId = `#${sectionBody.id}`;
 
   sectionTitle.onclick = () => {
-    $(bodyId).css('max-height',  $(titleId).hasClass('open') ? 0 : maxHeight);
+    $(bodyId).css('max-height',  $(titleId).hasClass('open') ? 0 : MAX_HEIGHT);
     $(titleId).toggleClass('open');
   }
 
