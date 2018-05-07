@@ -324,6 +324,7 @@ export function translateGraphAroundNode(d) {
   var x = this.center[0] > d.x ? (this.center[0] - d.x) : -1*(d.x-this.center[0]);
   var y = this.center[1] > d.y ? (this.center[1] - d.y) : -1*(d.y-this.center[1]);
   var translate = this.zoom.translate();
+  var scale = this.zoom.scale();
   this.isZooming = true;
   var self = this;
 

@@ -4,7 +4,7 @@ import * as utils from './helpers/utils.js'
 import { GRID_LENGTH, MINIMAP_PADDING, DEFAULT_MINIMAP_SIZE } from './helpers/constants.js';
 
 class Minimap {
-  constructor() {
+  constructor(svg) {
     this.scale = 1;
     this.zoom = null;
     this.target = null;
@@ -65,10 +65,10 @@ class Minimap {
     return this;
   }
 
-  initializeMinimap(svg, width, height) { // svg is the target SVG containing the graph
-    this.svg = svg;
+  initializeMinimap(svg, width, height) { // svg is the target SVG containing the graph    this.svg = svg;
     this.viewportWidth = width;
     this.viewportHeight = height;
+    this.svg = svg;
 
     this.zoom
       .on("zoom.minimap", this.zooming);
@@ -113,8 +113,6 @@ class Minimap {
       .on("drag", this.dragging);
 
     this.box.call(drag);
-
-    this.initializeBoxToCenter(this.targetSVG, this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
   }
 
   dragstart() {

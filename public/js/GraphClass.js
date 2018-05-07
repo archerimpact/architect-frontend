@@ -194,7 +194,6 @@ class Graph {
       .tension(.85);
   }
 
-
   initializeSVGgrid() {
     const svgGrid = this.container.append('g')
       .attr('class', 'svggrid');
@@ -288,7 +287,7 @@ class Graph {
   }
 
   initializeDragLink() {
-    return this.svg.append('line')
+    return this.container.append('line')
       .attr('class', 'link dynamic hidden')
       .attr('x1', 0)
       .attr('y1', 0)
@@ -370,6 +369,8 @@ class Graph {
                     .setTarget(this.container) // that's what you're trying to track/the images
                     .setMinimapPositionX(this.minimapPaddingX)
                     .setMinimapPositionY(this.minimapPaddingY)
+
+    this.minimap.initializeMinimap(this.svg, this.width, this.height)
   }
 
   // Completely rerenders the graph, assuming all new nodes and links
@@ -399,7 +400,7 @@ class Graph {
     
     this.minimap
       .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
-      .initializeMinimap(this.svg, this.width, this.height); // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
+      .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
 
     // var centerd;
     // this.nodes.map((d)=> {
@@ -675,6 +676,11 @@ class Graph {
         // else if (d3.event.keyCode == 79) {
         //   this.saveAsPng();
         // }
+
+        // d: Hide document nodes
+        else if (d3.event.keyCode == 68) {
+          this.toggleDocumentView();
+        }
 
         // p: Toggle btwn full/abbrev text
         else if (d3.event.keyCode == 80) {
