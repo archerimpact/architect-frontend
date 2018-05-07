@@ -35,10 +35,9 @@ export function fillGroupNodes() {
 }
 
 export function fadeGraph(d) {
-  const classThis = this;
   this.isEmphasized = true;
   this.node
-    .filter(function (o) { return !classThis.areNeighbors(d, o); })
+    .filter((o) => { return !this.areNeighbors(d, o); })
     .classed('faded', true);
   this.link.classed('faded', o => { return !(o.source == d || o.target == d); });
   this.hull.classed('faded', true);

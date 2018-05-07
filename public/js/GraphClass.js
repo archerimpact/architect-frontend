@@ -379,10 +379,9 @@ class Graph {
 
     // Updates nodes and links according to current data
     this.update();
-
     this.force.on('tick', (e) => { this.ticked(e, this) });
-    // Avoid initial chaos and skip the wait for graph to drift back onscreen
-    for (let i = 150; i > 0; --i) this.force.tick();      
+    for (let i = 150; i > 0; --i) this.force.tick(); // Avoid initial chaos and skip the wait for graph to drift back onscreen
+    this.reloadNeighbors();       
 
     // var centerd;
     // this.nodes.map((d)=> {
@@ -403,8 +402,8 @@ class Graph {
   update(event=null, ticks=null) {
     var self = this;
     this.force.stop();
-    this.resetGraphOpacity();
     this.matrixToGraph();
+    this.reloadNeighbors(); 
 
     this.link = this.link.data(this.links, (d) => { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
     this.link
@@ -415,7 +414,6 @@ class Graph {
       .on('mouseover', this.mouseoverLink)
       .call(this.styleLink, false);
 
-    this.resetGraphOpacity;
     this.link.exit().remove();
 
     this.node = this.node.data(this.nodes, (d) => { return d.id; });
@@ -428,7 +426,7 @@ class Graph {
       .on('mouseover', function (d) { self.mouseover(d, this); })
       .on('mouseout', function (d) { self.mouseout(d, this); })
       .classed('fixed', (d) => { return d.fixed; })
-      .classed('faded', (d) => { return this.hoveredNode && !this.areNeighbors(this.hoveredNode, d)})
+      .classed('faded', (d) => { return this.hoveredNode && !this.areNeighbors(this.hoveredNode, d); })
       .call(this.force.drag()
         .origin((d) => { return d; })
         .on('dragstart', function (d) { self.dragstart(d, this) })
@@ -486,9 +484,7 @@ class Graph {
     this.hull.exit().remove();
 
     this.force.start();
-    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }      
-
-    this.reloadNeighbors();
+    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); } 
   }
 
   // Occurs each tick of simulation
