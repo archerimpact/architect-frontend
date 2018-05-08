@@ -237,7 +237,7 @@ export function copyLinks(i, j) {
         data: this.createLink(i, k)
       };
     }
-    
+
     if (utils.isMorePreferredState(this.adjacencyMatrix[k][j].state, this.adjacencyMatrix[k][i].state)) {
       this.adjacencyMatrix[k][i] = {
         state: this.adjacencyMatrix[k][j].state, 

@@ -1,6 +1,7 @@
 export const minScale = 0.1;
 export const maxScale = 9.0;
 export const GRID_LENGTH = 80;
+export const MARKER_PADDING = 7;
 export const MAX_HEIGHT = 100000;
 export const MINIMAP_SCALE = 0.15;
 export const MINIMAP_PADDING = 100;

@@ -124,6 +124,7 @@ export function ungroupSelectedGroups() {
       for (var i = this.adjacencyMatrix.length-1; i >=0; i--) {
         if (this.adjacencyMatrix[i][i].data.id === d.id && utils.isGroup(d)) { this.ungroup(i); }
       }
+      
       if (d === this.hoveredNode) { this.deletingHoveredNode = true; }
     });
 
@@ -152,6 +153,7 @@ export function toggleGroupView(id) {
         this.hulls.splice(i, 1); // remove this hull from the global list of hulls
       }
     });
+
     this.expandedGroups[id] = false;
   } else {
     this.expandGroup(index);
@@ -159,6 +161,7 @@ export function toggleGroupView(id) {
     this.hulls.push(this.createHull(id, group));
     this.expandedGroups[id] = true;
   }
+
   this.hoveredNode = null;
   this.update();
   this.fillGroupNodes();
@@ -192,6 +195,7 @@ export function groupSame() {
       this.createGroup(group)
     }
   }
+
   this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
   this.update();
   this.fillGroupNodes();
@@ -220,10 +224,12 @@ export function checkLinkAddGroup(link, group, grouped) {
       group.push(source);
       this.createGroupFromNode(link.source, group, grouped);
     }
+
     else if (group.indexOf(target) <= -1) {
       group.push(target);
       this.createGroupFromNode(link.target, group, grouped);
     }
+
     // So that these nodes aren't checked again later to try and create a possibly same as
     grouped[link.source.id] = true;
     grouped[link.target.id] = true;
@@ -247,6 +253,7 @@ export function createHull(groupId, group) {
       );   
     }
   }
+
   return { groupId: groupId, path: d3.geom.hull(vertices), type: GROUP_HULL }; //returns a hull object
 }
 
@@ -262,6 +269,7 @@ export function calculateAllHulls() {
           group = group.concat(subGroup);
         }
       }
+
       this.hulls[i] = this.createHull(hull.groupId, group);
     } else {
       delete this.hulls.splice(this.hulls.indexOf(hull), 1);

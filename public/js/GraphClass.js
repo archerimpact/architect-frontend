@@ -10,7 +10,7 @@ import * as tt from './helpers/tooltips.js';
 import * as matrix from './helpers/matrix.js';
 import * as d3Data from './helpers/changeD3Data.js';
 import Minimap from './MinimapClass.js'
-import { minScale, maxScale, GRID_LENGTH, MINIMAP_MARGIN, DEFAULT_MINIMAP_SIZE, MINIMAP_TICK } from './helpers/constants.js';
+import { minScale, maxScale, GRID_LENGTH, MARKER_PADDING, MINIMAP_MARGIN, DEFAULT_MINIMAP_SIZE, MINIMAP_TICK } from './helpers/constants.js';
 import { GROUP, HULL_GROUP } from './helpers/typeConstants.js';
 
 const icons = {
@@ -396,7 +396,7 @@ class Graph {
     this.force.on('tick', (e) => { this.ticked(e, this) });
     // Avoid initial chaos and skip the wait for graph to drift back onscreen
     for (let i = 150; i > 0; --i) this.force.tick(); 
-    this.reloadNeighbors();       
+    this.reloadNeighbors();
 
     // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
     this.minimap
@@ -464,7 +464,7 @@ class Graph {
     }
 
     this.nodeEnter.append('circle')
-      .attr('r', '20');
+      .attr('r', (d) => { return d.radius = d.group ? 10 : 20; });
 
     this.nodeEnter.append('text')
       .attr('class', 'icon')
@@ -557,10 +557,9 @@ class Graph {
               y1 = d.source.y,
               x2 = d.target.x,
               y2 = d.target.y;
-        if (!d.source.x) {debugger;}
         const dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
-        const sourcePadding = (d.bidirectional || false) ? 27 : 20,
-              targetPadding = 27;
+        const sourcePadding = d.target.radius + (d.bidirectional ? MARKER_PADDING : 0),
+              targetPadding = d.source.radius + MARKER_PADDING;
         d.sourceX = x1 + (x2-x1) * (dist-sourcePadding) / dist;
         d.sourceY = y1 + (y2-y1) * (dist-sourcePadding) / dist;
         d.targetX = x2 - (x2-x1) * (dist-targetPadding) / dist;
@@ -579,8 +578,8 @@ class Graph {
             dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
 
       if (dist > 0) {
-        const targetX = x2 - (x2-x1) * (dist-20*this.zoomScale) / dist,
-              targetY = y2 - (y2-y1) * (dist-20*this.zoomScale) / dist;
+        const targetX = x2 - (x2-x1) * (dist-this.mousedownNode.radius*this.zoomScale) / dist,
+              targetY = y2 - (y2-y1) * (dist-this.mousedownNode.radius*this.zoomScale) / dist;
 
       this.dragLink
         .attr('x1', targetX)
