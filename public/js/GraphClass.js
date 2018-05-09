@@ -291,7 +291,7 @@ class Graph {
   }
 
   initializeDragLink() {
-    return this.container.append('line')
+    return this.svg.append('line')
       .attr('class', 'link dynamic hidden')
       .attr('x1', 0)
       .attr('y1', 0)
@@ -373,6 +373,7 @@ class Graph {
                     .setTarget(this.container) // that's what you're trying to track/the images
                     .setMinimapPositionX(this.minimapPaddingX)
                     .setMinimapPositionY(this.minimapPaddingY)
+                    .setGraph(this);
 
     this.minimap.initializeMinimap(this.svg, this.width, this.height)
   }
@@ -783,6 +784,7 @@ Graph.prototype.stopPropagation = mouseClicks.stopPropagation;
 
 Graph.prototype.zoomstart = mouseClicks.zoomstart;
 Graph.prototype.zooming = mouseClicks.zooming;
+Graph.prototype.performZoom = mouseClicks.performZoom;
 Graph.prototype.zoomend = mouseClicks.zoomend;
 Graph.prototype.zoomButton = mouseClicks.zoomButton;
 Graph.prototype.translateGraphAroundNode = mouseClicks.translateGraphAroundNode;

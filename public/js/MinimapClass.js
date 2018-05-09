@@ -30,6 +30,7 @@ class Minimap {
 
     this.dragstart = this.dragstart.bind(this);
     this.dragging = this.dragging.bind(this);
+    this.dragend = this.dragend.bind(this);
     this.zooming = this.zooming.bind(this);
   }
 
@@ -63,6 +64,11 @@ class Minimap {
   setMinimapPositionY(value) {
     this.positionY = value;
     return this;
+  }
+
+  setGraph(value) {
+    this.graph = value;
+    return this
   }
 
   initializeMinimap(svg, width, height) { // svg is the target SVG containing the graph    this.svg = svg;
@@ -110,7 +116,8 @@ class Minimap {
 
     var drag = d3.behavior.drag()
       .on("dragstart", this.dragstart)
-      .on("drag", this.dragging);
+      .on("drag", this.dragging)
+      .on("dragend", this.dragend);
 
     this.box.call(drag);
   }
@@ -122,6 +129,8 @@ class Minimap {
     var boxTranslate = utils.getXYFromTranslate(this.box.attr("transform"));
     this.boxX = boxTranslate[0];
     this.boxY = boxTranslate[1];
+
+    this.graph.zoomstart(null, null);
   }
 
   dragging() {
@@ -133,18 +142,14 @@ class Minimap {
     this.boxY += e.dy;
 
     this.box.attr("transform", "translate(" + this.boxX + "," + this.boxY + ")scale(" + 1 + ")");
-    
-    // move target graph to fit the drag
-    const transformGrid = 'translate(' + [((-this.boxX*this.boxScale % GRID_LENGTH) + this.boxX*this.boxScale) 
-      + ',' + ((-this.boxY*this.boxScale % GRID_LENGTH) + this.boxY*this.boxScale )] + ')scale(' + 1 + ')';
-    const translateGraph = [(-this.boxX*this.scale*this.boxScale),(-this.boxY*this.scale*this.boxScale)];
-    const transformGraph =  'translate(' + translateGraph + ")scale(" + this.scale + ")";
 
-    this.zoom.translate(translateGraph);
+    const translate = [-this.boxX*this.boxScale*this.scale, -this.boxY*this.boxScale*this.scale];
+    this.graph.performZoom(translate, this.scale);
+    this.zoom.translate(translate);
+  }
 
-    d3.select(".svggrid")
-      .attr("transform", transformGrid);
-    this.target.attr("transform", transformGraph); //this.target is the graphItems to be transformed
+  dragend() {
+    this.graph.zoomend(null, null);
   }
 
   zooming() {
