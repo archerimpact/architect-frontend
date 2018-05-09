@@ -257,11 +257,15 @@ export function zoomstart(d, self) {
 export function zooming(d, self) {
   if (!utils.isRightClick()) {
     const e = d3.event;
-    const transform = 'translate(' + (((e.translate[0] / e.scale) % GRID_LENGTH) - e.translate[0] / e.scale)
-      + ',' + (((e.translate[1] / e.scale) % GRID_LENGTH) - e.translate[1] / e.scale) + ')scale(' + 1 + ')';
-    this.svgGrid.attr('transform', transform);
-    this.container.attr('transform', `translate(${e.translate})scale(${e.scale})`);
+    this.performZoom(e.translate, e.scale); // perform the zoom with the translate and scale from the handlers triggered by the graph
   }
+}
+
+export function performZoom(translate, scale) {
+  const transform = 'translate(' + (((translate[0] / scale) % GRID_LENGTH) - translate[0] / scale)
+    + ',' + (((translate[1] / scale) % GRID_LENGTH) - translate[1] / scale) + ')scale(' + 1 + ')';
+  this.svgGrid.attr('transform', transform);
+  this.container.attr('transform', `translate(${translate})scale(${scale})`); 
 }
 
 export function zoomend(d, self) {

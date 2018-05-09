@@ -287,7 +287,7 @@ class Graph {
   }
 
   initializeDragLink() {
-    return this.container.append('line')
+    return this.svg.append('line')
       .attr('class', 'link dynamic hidden')
       .attr('x1', 0)
       .attr('y1', 0)
@@ -369,6 +369,7 @@ class Graph {
                     .setTarget(this.container) // that's what you're trying to track/the images
                     .setMinimapPositionX(this.minimapPaddingX)
                     .setMinimapPositionY(this.minimapPaddingY)
+                    .setGraph(this);
 
     this.minimap.initializeMinimap(this.svg, this.width, this.height)
   }
@@ -572,6 +573,8 @@ class Graph {
       .attr('y2', function (d) { return d.targetY; });
 
     if (this.mousedownNode) {
+      this.zoomScale = this.zoom.scale();
+      this.zoomTranslate = this.zoom.translate();
       const x1 = this.mousedownNode.x * this.zoomScale + this.zoomTranslate[0],
             y1 = this.mousedownNode.y * this.zoomScale + this.zoomTranslate[1],
             x2 = this.dragLink.attr('tx2'),
@@ -780,6 +783,7 @@ Graph.prototype.stopPropagation = mouseClicks.stopPropagation;
 
 Graph.prototype.zoomstart = mouseClicks.zoomstart;
 Graph.prototype.zooming = mouseClicks.zooming;
+Graph.prototype.performZoom = mouseClicks.performZoom;
 Graph.prototype.zoomend = mouseClicks.zoomend;
 Graph.prototype.zoomButton = mouseClicks.zoomButton;
 Graph.prototype.translateGraphAroundNode = mouseClicks.translateGraphAroundNode;
