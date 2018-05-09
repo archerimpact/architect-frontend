@@ -164,7 +164,6 @@ export function toggleGroupView(id) {
   this.fillGroupNodes();
 }
 
-
 export function groupSame() {
   /* Groups all the nodes that are connected to each other with possibly_same_as */
   this.force.stop();

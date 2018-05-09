@@ -15,8 +15,10 @@ import { GROUP, HULL_GROUP } from './helpers/typeConstants.js';
 
 const icons = {
   'person': '',
+  'Individual': '',
   'Document': '',
   'corporation': '',
+  'Entity': '',
   'group': '',
   'same_as_group': ''
 };
@@ -32,6 +34,8 @@ class Graph {
     this.tickCount = 0;
     this.xbound = [0, 0];
     this.ybound = [0, 0];
+    this.degreeExpanded = 0;
+    this.expandingNode = null;
 
     this.editMode = false; // Keep track of edit mode (add/remove/modify nodes + links)
     this.dragCallback = null; // Store reference to drag callback to restore after disabling node drag
@@ -420,20 +424,14 @@ class Graph {
 
   update(event=null, ticks=null, minimap=true) {
     var self = this;
-    this.force.stop();
+    // this.force.stop();
     this.resetGraphOpacity();
     this.matrixToGraph();
 
-    this.link = this.link.data(this.links, (d) => { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
-    this.link
-      .enter().append('line')
-      .attr('class', 'link')
-      .style('stroke-dasharray', (d) => { return d.type === 'possibly_same_as' ? ('3,3') : false; })
-      .classed('faded', (o) => { return this.hoveredNode && !(o.source == this.hoveredNode || o.target == this.hoveredNode); })
-      .on('mouseover', this.mouseoverLink)
-      .call(this.styleLink, false);
-
-    this.link.exit().remove();
+    this.force
+      .charge(-1 * Math.max(Math.pow(100*this.nodes.length/this.links.length, 2.25), 750))
+      .nodes(this.nodes)
+      .links(this.links);
 
     this.node = this.node.data(this.nodes, (d) => { return d.id; });
     this.nodeEnter = this.node.enter().append('g')
@@ -451,7 +449,16 @@ class Graph {
         .on('dragstart', function (d) { self.dragstart(d, this) })
         .on('drag', function (d) { self.dragging(d, this) })
         .on('dragend', function (d) { self.dragend(d, this) })
-      );
+      )
+      .call((node)=> {
+        if (this.expandingNode) {
+          debugger
+          node.transition().duration(7000)
+            .attr("fixed", true)
+            .attr("px", this.expandingNode.x)
+            .attr("py", this.expandingNode.y)
+        }
+      });
 
     if (this.editMode) {
       this.nodeEnter
@@ -461,7 +468,13 @@ class Graph {
     }
 
     this.nodeEnter.append('circle')
-      .attr('r', '20');
+      .attr('r', (d) => { return this.degreeExpanded > 0 ? 0 : 20})
+      .call((node) => {
+        if (this.degreeExpanded > 0) {
+          node.transition().duration(7000).attr("r", 20)
+
+        }
+      });
 
     this.nodeEnter.append('text')
       .attr('class', 'icon')
@@ -488,6 +501,27 @@ class Graph {
       );
 
     this.node.exit().remove();
+
+    this.link = this.link.data(this.links, (d) => { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
+    this.link
+      .enter().append('line')
+      .attr('class', 'link')
+      .style('stroke-dasharray', (d) => { return d.type === 'possibly_same_as' ? ('3,3') : false; })
+      .classed('faded', (o) => { return this.hoveredNode && !(o.source == this.hoveredNode || o.target == this.hoveredNode); })
+      .style('stroke-opacity', (o) => { return this.degreeExpanded > 0 ? 0 : 1})
+      .on('mouseover', this.mouseoverLink)
+      .call(this.styleLink, false)
+      .call((link) => {
+        if (this.degreeExpanded > 0) {
+          link.transition().duration(7000).style("stroke-opacity", 1)
+            .attrTween("x1", function(d) { if (d.source.x) { return function() { return d.source.x; } ; } })
+            .attrTween("x2", function(d) { if (d.target.x) { return function() { return d.target.x; }; } })
+            .attrTween("y1", function(d) { if (d.source.y) { return function() { return d.source.y; }; } })
+            .attrTween("y2", function(d) { if (d.target.y) { return function() { return d.target.y; }; } })
+        }
+      });
+
+    this.link.exit().remove();
 
     this.hull = this.hull.data(this.hulls);
 
@@ -604,6 +638,7 @@ class Graph {
     d3.select('body')
       .on('keydown', () => {
 
+        console.log("keycode: ", d3.event.keyCode);
         // u: Unpin selected nodes
         if (d3.event.keyCode == 85) {
           this.svg.selectAll('.node.selected')
@@ -689,9 +724,27 @@ class Graph {
               .text((d) => { return utils.processNodeName(d.name, this.printFull); })
               .call(this.textWrap, this.printFull);
         }
+        
+        // t: expand by degree
+        else if (d3.event.keyCode == 84) {
+          // if (this.degreeExpanded === 0 && this.nodes.length !== 0) { continue; }
+          
+          if (this.degreeExpanded === 0 && this.nodes.length === 1) {
+            this.expandingNode = this.nodes[0]
+          }
+
+          this.degreeExpanded += 1;
+
+          if (this.degreeExpanded <= 2) {
+            d3.json(`/data/well_connected_${this.degreeExpanded}.json`, (json) => {
+              this.addToMatrix(0, json.nodes, json.links);
+            });
+          }
 
 
-        this.force.resume();
+        }
+
+        // this.force.resume();
       });
   }
 

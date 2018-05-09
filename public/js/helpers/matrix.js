@@ -33,9 +33,10 @@ export function setMatrix(nodes, links) {
 
 export function addToMatrix(centerid, nodes, links) {
   var originalNodes = this.adjacencyMatrix.length;
+
   var numNodes = nodes.length;
   for (var i = 0; i < numNodes; i++) {
-    if (this.globalNodes.indexOf(nodes[i]) < 0) {
+    if (!this.idToIndex[nodes[i].id]) {
       utils.addRowColumn(this.adjacencyMatrix);
       this.adjacencyMatrix[this.adjacencyMatrix.length - 1][this.adjacencyMatrix.length - 1] = {
         state: DISPLAYED,
@@ -43,18 +44,20 @@ export function addToMatrix(centerid, nodes, links) {
       }
     }
   }
+
+  this.reloadIdToIndex();
   // CHECK FOR REPEATS
   var numLinks = links.length;
   for (var i = 0; i < numLinks; i++) {
-    var sourceIndex = links[i].source + originalNodes;
-    var targetIndex = links[i].target + originalNodes;
+    var sourceIndex = this.idToIndex[links[i].source];
+    var targetIndex = this.idToIndex[links[i].target];
     if (this.adjacencyMatrix[sourceIndex][targetIndex].state === NONEXISTENT) {
-      links[i].source = sourceIndex;
-      links[i].target = targetIndex;
+      links[i].source = this.adjacencyMatrix[sourceIndex][sourceIndex].data;
+      links[i].target = this.adjacencyMatrix[targetIndex][targetIndex].data;
       this.adjacencyMatrix[sourceIndex][targetIndex] = {state: DISPLAYED, data: links[i]};
     }
   }
-  this.update(null, 150);
+  this.update(null, null);
 }
 
 export function matrixToGraph() {
