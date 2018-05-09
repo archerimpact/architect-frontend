@@ -192,6 +192,15 @@ i.fa-close {
   color: #545454;
 }
 
+#svg-image {
+  border: none;
+}
+
+#minimap-box {
+  fill: #fff;
+  opacity: 0.8;
+}
+
 #minimap-box-square {
   fill: #b1b1b1;
   opacity: 0.4;

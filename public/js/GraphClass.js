@@ -390,7 +390,7 @@ class Graph {
 
     this.force
       .gravity(.33)
-      .charge((d) => { return d.group ? -5000 : -20000})
+      .charge((d) => { return d.group ? -7500 : -20000})
       .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
       .friction(this.nodes.length < 15 ? .75 : .65)
       .alpha(.8)
