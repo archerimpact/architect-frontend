@@ -10,7 +10,7 @@ import * as tt from './helpers/tooltips.js';
 import * as matrix from './helpers/matrix.js';
 import * as d3Data from './helpers/changeD3Data.js';
 import Minimap from './MinimapClass.js'
-import { minScale, maxScale, GRID_LENGTH, MARKER_PADDING, MINIMAP_MARGIN, DEFAULT_MINIMAP_SIZE, MINIMAP_TICK } from './helpers/constants.js';
+import * as constants from './helpers/constants.js';
 import { GROUP, HULL_GROUP } from './helpers/typeConstants.js';
 
 const icons = {
@@ -128,7 +128,7 @@ class Graph {
   initializeZoom() {
     var self = this;
     const zoom = d3.behavior.zoom()
-      .scaleExtent([minScale, maxScale])
+      .scaleExtent([constants.MIN_SCALE, constants.MAX_SCALE])
       .on('zoomstart', function (d) { self.zoomstart(d, this) })
       .on('zoom', function (d) { self.zooming(d, this) })
       .on('zoomend', function (d) { self.zoomend(d, this) });
@@ -201,22 +201,22 @@ class Graph {
       .append('g')
       .attr('class', 'x-ticks')
       .selectAll('line')
-      .data(d3.range(0, (this.numTicks + 1) * GRID_LENGTH, GRID_LENGTH))
+      .data(d3.range(0, (this.numTicks + 1) * constants.GRID_LENGTH, constants.GRID_LENGTH))
       .enter().append('line')
       .attr('x1', (d) => { return d; })
-      .attr('y1', (d) => { return -1 * GRID_LENGTH; })
+      .attr('y1', (d) => { return -1 * constants.GRID_LENGTH; })
       .attr('x2', (d) => { return d; })
-      .attr('y2', (d) => { return (1 / minScale) * this.height + GRID_LENGTH; });
+      .attr('y2', (d) => { return (1 / constants.MIN_SCALE) * this.height + constants.GRID_LENGTH; });
 
     svgGrid
       .append('g')
       .attr('class', 'y-ticks')
       .selectAll('line')
-      .data(d3.range(0, (this.numTicks + 1) * GRID_LENGTH, GRID_LENGTH))
+      .data(d3.range(0, (this.numTicks + 1) * constants.GRID_LENGTH, constants.GRID_LENGTH))
       .enter().append('line')
-      .attr('x1', (d) => { return -1 * GRID_LENGTH; })
+      .attr('x1', (d) => { return -1 * constants.GRID_LENGTH; })
       .attr('y1', (d) => { return d; })
-      .attr('x2', (d) => { return (1 / minScale) * this.width + GRID_LENGTH; })
+      .attr('x2', (d) => { return (1 / constants.MIN_SCALE) * this.width + constants.GRID_LENGTH; })
       .attr('y2', (d) => { return d; });
 
     return svgGrid;
@@ -224,7 +224,6 @@ class Graph {
 
   initializeForce() {
     return d3.layout.force()
-      .linkDistance(100)
       .size([this.width, this.height]);
   }
 
@@ -338,11 +337,11 @@ class Graph {
     this.center = [this.width / 2, this.height / 2];
     this.brushX = d3.scale.linear().range([0, width]),
     this.brushY = d3.scale.linear().range([0, height]);
-    this.minimapPaddingX = MINIMAP_MARGIN;
-    this.minimapPaddingY = height - DEFAULT_MINIMAP_SIZE - MINIMAP_MARGIN;
+    this.minimapPaddingX = constants.MINIMAP_MARGIN;
+    this.minimapPaddingY = height - constants.DEFAULT_MINIMAP_SIZE - constants.MINIMAP_MARGIN;
     this.minimapScale = 0.25;
 
-    this.numTicks = width / GRID_LENGTH * (1 / minScale);
+    this.numTicks = width / constants.GRID_LENGTH * (1 / constants.MIN_SCALE);
 
     this.zoom = this.initializeZoom();
     this.brush = this.initializeBrush();
@@ -385,7 +384,8 @@ class Graph {
 
     this.force
       .gravity(.33)
-      .charge(-1 * Math.max(Math.pow(100*this.nodes.length/this.links.length, 2 + Math.log(Math.pow(this.nodes.length, 2)/(10*this.links.length))), 750))
+      .charge((d) => { return -1 * Math.max(Math.pow(100*this.nodes.length/this.links.length, 2 + Math.log(Math.pow(this.nodes.length, 2)/(10*this.links.length))), 750) + (d.group ? this.nodes.length*this.links.length : 0); })
+      .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
       .friction(this.nodes.length < 15 ? .75 : .65)
       .alpha(.8)
       .nodes(this.nodes)
@@ -464,7 +464,7 @@ class Graph {
     }
 
     this.nodeEnter.append('circle')
-      .attr('r', (d) => { return d.radius = d.group ? 10 : 20; });
+      .attr('r', (d) => { return d.radius = (d.group ? constants.GROUP_NODE_RADIUS : constants.NODE_RADIUS); });
 
     this.nodeEnter.append('text')
       .attr('class', 'icon')
@@ -472,14 +472,14 @@ class Graph {
       .attr('dominant-baseline', 'central')
       .attr('font-family', 'FontAwesome')
       .attr('font-size', '20px')
-      .text((d) => { return (d.type && icons[d.type]) ? icons[d.type] : ''; })
+      .text((d) => { return (!d.group && d.type && icons[d.type]) ? icons[d.type] : ''; })
       .classed('unselectable', true);
 
     this.nodeEnter.append('text')
       .attr('class', 'node-name')
       .attr('text-anchor', 'middle')
       .attr('dy', '35px')
-      .text(function (d) { return utils.processNodeName(d.name, this.printFull); })
+      .text((d) => { return d.group ? '' : utils.processNodeName(d.name, this.printFull); })
       .call(this.textWrap, this.printFull)
       .on('click', function (d) { self.stopPropagation(); })
       .on('mouseover', function (d) { self.stopPropagation(); })
@@ -536,7 +536,7 @@ class Graph {
       .attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
 
     if (this.toRenderMinimap) { 
-      if (this.tickCount === MINIMAP_TICK) {
+      if (this.tickCount === constants.MINIMAP_TICK) {
         const translate = this.zoom.translate();
         const scale = this.zoom.scale();
         this.minimap.syncToSVG(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
@@ -552,23 +552,23 @@ class Graph {
     }
 
     this.link
-      .each(function(d) {
-        const x1 = d.source.x,
-              y1 = d.source.y,
-              x2 = d.target.x,
-              y2 = d.target.y;
+      .each(function(l) {
+        const x1 = l.source.x,
+              y1 = l.source.y,
+              x2 = l.target.x,
+              y2 = l.target.y;
         const dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
-        const sourcePadding = d.target.radius + (d.bidirectional ? MARKER_PADDING : 0),
-              targetPadding = d.source.radius + MARKER_PADDING;
-        d.sourceX = x1 + (x2-x1) * (dist-sourcePadding) / dist;
-        d.sourceY = y1 + (y2-y1) * (dist-sourcePadding) / dist;
-        d.targetX = x2 - (x2-x1) * (dist-targetPadding) / dist;
-        d.targetY = y2 - (y2-y1) * (dist-targetPadding) / dist;
+        const sourcePadding = l.target.radius + (l.bidirectional ? constants.MARKER_PADDING : 0),
+              targetPadding = l.source.radius + constants.MARKER_PADDING;
+        l.sourceX = x1 + (x2-x1) * (dist-sourcePadding) / dist;
+        l.sourceY = y1 + (y2-y1) * (dist-sourcePadding) / dist;
+        l.targetX = x2 - (x2-x1) * (dist-targetPadding) / dist;
+        l.targetY = y2 - (y2-y1) * (dist-targetPadding) / dist;
       })
-      .attr('x1', function (d) { return d.sourceX; })
-      .attr('y1', function (d) { return d.sourceY; })
-      .attr('x2', function (d) { return d.targetX; })
-      .attr('y2', function (d) { return d.targetY; });
+      .attr('x1', (l) => { return l.sourceX; })
+      .attr('y1', (l) => { return l.sourceY; })
+      .attr('x2', (l) => { return l.targetX; })
+      .attr('y2', (l) => { return l.targetY; });
 
     if (this.mousedownNode) {
       const x1 = this.mousedownNode.x * this.zoomScale + this.zoomTranslate[0],

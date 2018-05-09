@@ -1,4 +1,4 @@
-import { maxScale, GRID_LENGTH } from './constants.js'
+import { MAX_SCALE, GRID_LENGTH } from './constants.js'
 import { getD3Event, findEntryById, processNodeName, isRightClick, then } from './utils.js';
 import { resetDragLink } from './aesthetics.js';
 
@@ -198,7 +198,7 @@ export function mouseout(d, self) {
   if (this.printFull != 1) {
     d3.select(self)
       .select('.node-name')
-      .text((d) => { return processNodeName(d.name, this.printFull); })
+      .text((d) => { return d.group ? '' : processNodeName(d.name, this.printFull); })
       .call(this.textWrap, this.printFull);
   }
 }

@@ -1,6 +1,10 @@
-export const minScale = 0.1;
-export const maxScale = 9.0;
+export const MIN_SCALE = 0.1;
+export const MAX_SCALE = 9.0;
 export const GRID_LENGTH = 80;
+export const NODE_RADIUS = 20;
+export const LINK_DISTANCE = 100;
+export const GROUP_NODE_RADIUS = 10;
+export const GROUP_LINK_DISTANCE = 50;
 export const MARKER_PADDING = 7;
 export const MAX_HEIGHT = 100000;
 export const MINIMAP_SCALE = 0.15;
