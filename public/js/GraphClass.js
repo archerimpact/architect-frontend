@@ -227,62 +227,67 @@ class Graph {
       .size([this.width, this.height]);
   }
 
+  // direction-size-color
   initializeMarkers() {
-    this.svg.append('defs')
-      .append('marker')
-        .attr('id', 'end-arrow-gray')
-        .attr('viewBox', '5 -5 10 10')
-        .attr('refX', 10)
-        .attr('markerWidth', 5)
-        .attr('markerHeight', 5)
-        .attr('orient', 'auto')
-      .append('path')
-        .attr('d', 'M 0,-5 L 10,0 L 0,5')
-        .style('stroke', '#545454')
-        .style('fill', '#545454')
-        .style('fill-opacity', 1);
+    const possibleAttrs = [
+      ['start', 'end'],
+      ['big', 'small'],
+      ['gray', 'blue']];
+    const markerList = this.deriveMarkerData(this.getMarkerIdPermutations(possibleAttrs));
+    for (let marker of markerList) {
+      this.svg.append('defs')
+        .append('marker')
+          .attr('id', marker.id)
+          .attr('viewBox', '5 -5 10 10')
+          .attr('refX', 10)
+          .attr('markerWidth', marker.size)
+          .attr('markerHeight', marker.size)
+          .attr('orient', marker.direction)
+        .append('path')
+          .attr('d', 'M 0,-5 L 10,0 L 0,5')
+          .style('stroke', marker.color)
+          .style('fill', marker.color)
+          .style('fill-opacity', 1);
+    }
+  }
 
-    this.svg.append('defs')
-      .append('marker')
-        .attr('id', 'end-arrow-blue')
-        .attr('viewBox', '5 -5 10 10')
-        .attr('refX', 10)
-        .attr('markerWidth', 5)
-        .attr('markerHeight', 5)
-        .attr('orient', 'auto')
-      .append('path')
-        .attr('d', 'M 0,-5 L 10,0 L 0,5')
-        .style('stroke', '#0d77e2')
-        .style('fill', '#0d77e2')
-        .style('fill-opacity', 1);
+  // possibleAttrs is a list of lists that contains the possibilities for each attr
+  // This method should return a list of all possible permutations of the given attrs
+  getMarkerIdPermutations(possibleAttrs) {
+    if (!possibleAttrs) { return []; }
+    if (possibleAttrs.length == 1) { return possibleAttrs[0]; }
+    let i, j;
+    const markerIds = [];
+    const rest = this.getMarkerIdPermutations(possibleAttrs.slice(1));
+    for (i = 0; i < rest.length; i++) {
+      for (j = 0; j < possibleAttrs[0].length; j++) {
+        markerIds.push(`${possibleAttrs[0][j]}-${rest[i]}`);
+      }
+    }
 
-    this.svg.append('defs')
-      .append('marker')
-        .attr('id', 'start-arrow-gray')
-        .attr('viewBox', '5 -5 10 10')
-        .attr('refX', 10)
-        .attr('markerWidth', 5)
-        .attr('markerHeight', 5)
-        .attr('orient', 'auto-start-reverse')
-      .append('path')
-        .attr('d', 'M 0,-5 L 10,0 L 0,5')
-        .style('stroke', '#545454')
-        .style('fill', '#545454')
-        .style('fill-opacity', 1);
+    return markerIds;
+  }
 
-    this.svg.append('defs')
-      .append('marker')
-        .attr('id', 'start-arrow-blue')
-        .attr('viewBox', '5 -5 10 10')
-        .attr('refX', 10)
-        .attr('markerWidth', 5)
-        .attr('markerHeight', 5)
-        .attr('orient', 'auto-start-reverse')
-      .append('path')
-        .attr('d', 'M 0,-5 L 10,0 L 0,5')
-        .style('stroke', '#0d77e2')
-        .style('fill', '#0d77e2')
-        .style('fill-opacity', 1);
+  deriveMarkerData(permutationList) {
+    const markerList = [];
+    for (let markerId of permutationList) {
+      markerList.push({ id: markerId });
+    }
+
+    const colors = {
+      'gray': '#545454',
+      'blue': '#0d77e2'
+    };
+
+    let marker, id, tokens;
+    for (marker of markerList) {
+      tokens = marker.id.split('-');
+      marker.direction = (tokens[0] === 'start') ? 'auto' : 'auto-start-reverse';
+      marker.size = (tokens[1] === 'big') ? constants.MARKER_SIZE_BIG : constants.MARKER_SIZE_SMALL;
+      marker.color = colors[tokens[2]];
+    }
+
+    return markerList;
   }
 
   initializeDragLink() {
@@ -384,7 +389,7 @@ class Graph {
 
     this.force
       .gravity(.33)
-      .charge((d) => { return -1 * Math.max(Math.pow(100*this.nodes.length/this.links.length, 2 + Math.log(Math.pow(this.nodes.length, 2)/(10*this.links.length))), 750) + (d.group ? this.nodes.length*this.links.length : 0); })
+      .charge((d) => { return d.group ? -5000 : -20000})
       .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
       .friction(this.nodes.length < 15 ? .75 : .65)
       .alpha(.8)
@@ -430,11 +435,10 @@ class Graph {
     this.link
       .enter().append('line')
       .attr('class', 'link')
-      .style('stroke-dasharray', (d) => { return d.type === 'possibly_same_as' ? ('3,3') : false; })
-      .classed('faded', (o) => { return this.hoveredNode && !(o.source == this.hoveredNode || o.target == this.hoveredNode); })
+      .classed('same-as', (l) => { return l.type === 'possibly_same_as'; })
+      .classed('faded', (l) => { return this.hoveredNode && !(l.source == this.hoveredNode || l.target == this.hoveredNode); })
       .on('mouseover', this.mouseoverLink)
       .call(this.styleLink, false);
-
     this.link.exit().remove();
 
     // Update nodes

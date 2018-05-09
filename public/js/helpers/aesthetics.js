@@ -1,4 +1,5 @@
 import { isGroup, then } from './utils.js';
+import * as constants from './constants.js';
 
 // Link highlighting
 export function highlightLinksFromAllNodes() {
@@ -14,9 +15,20 @@ export function highlightLinksFromNode(node) {
 }
 
 export function styleLink(selection, isSelected) {
-  selection.classed('selected', isSelected)
-    .style('marker-start', (d) => { return (d.bidirectional || false) ? ((typeof isSelected === 'function' ? isSelected(d) : isSelected) ? 'url(#start-arrow-blue)' : 'url(#start-arrow-gray)') : '' })
-    .style('marker-end', (d) => { return (typeof isSelected === 'function' ? isSelected(d) : isSelected) ? 'url(#end-arrow-blue)' : 'url(#end-arrow-gray)' });
+  selection
+    .classed('selected', isSelected)
+    .style('stroke-width', (l) => { return (l.source.group && l.target.group ? constants.GROUP_STROKE_WIDTH : constants.STROKE_WIDTH) + 'px'; })
+    .style('marker-start', (l) => { 
+      if (!l.bidirectional) { return ''; }
+      const size = l.target.group ? 'small' : 'big';
+      const color = (typeof isSelected === 'function' ? isSelected(l) : isSelected) ? 'blue' : 'gray';
+      return `url(#start-${size}-${color})`;
+    })
+    .style('marker-end', (l) => { 
+      const size = l.source.group ? 'small' : 'big';
+      const color = (typeof isSelected === 'function' ? isSelected(l) : isSelected) ? 'blue' : 'gray';
+      return `url(#end-${size}-${color})`;
+    });
 }
 
 // Directions: forward, reverse, both

@@ -60,17 +60,11 @@ button:focus {
 
 .link {
   stroke: #545454;
-  stroke-width: 3px;
   opacity: 1;
   transition-property: opacity;
   transition-delay: 0ms;
   transition-duration: 50ms;
 }
-
-.link.selected {
-  stroke: #0d77e2;
-}
-
 
 .link.dynamic {
   pointer-events: none;
@@ -115,21 +109,7 @@ button:focus {
   fill: #bbbbbb;
 }
 
-.node.active circle {
-  stroke: #000;
-  stroke-width: 3px;
-}
-
-.node.selected circle {
-  stroke: #0d77e2;
-  stroke-width: 3px;
-}
-
 .node.grouped circle {
-  fill: #7cbdff;
-}
-
-.node.grouped_same circle {
   fill: #7cbdff;
 }
 
@@ -237,4 +217,17 @@ i.fa-close {
   stroke-opacity: 0.2;
   fill-opacity: 0.05;
   transition-property: stroke-opacity, fill-opacity;
+}
+
+.link.same-as {
+  stroke-dasharray: 5,3;
+}
+
+.node.selected circle {
+  stroke-width: 3px;
+  stroke: #0d77e2;
+}
+
+.link.selected {
+  stroke: #0d77e2;
 }
