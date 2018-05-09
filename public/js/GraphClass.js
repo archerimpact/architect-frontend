@@ -282,7 +282,7 @@ class Graph {
     let marker, id, tokens;
     for (marker of markerList) {
       tokens = marker.id.split('-');
-      marker.direction = (tokens[0] === 'start') ? 'auto' : 'auto-start-reverse';
+      marker.direction = (tokens[0] === 'end') ? 'auto' : 'auto-start-reverse';
       marker.size = (tokens[1] === 'big') ? constants.MARKER_SIZE_BIG : constants.MARKER_SIZE_SMALL;
       marker.color = colors[tokens[2]];
     }
