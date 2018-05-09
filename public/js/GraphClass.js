@@ -573,8 +573,6 @@ class Graph {
       .attr('y2', function (d) { return d.targetY; });
 
     if (this.mousedownNode) {
-      this.zoomScale = this.zoom.scale();
-      this.zoomTranslate = this.zoom.translate();
       const x1 = this.mousedownNode.x * this.zoomScale + this.zoomTranslate[0],
             y1 = this.mousedownNode.y * this.zoomScale + this.zoomTranslate[1],
             x2 = this.dragLink.attr('tx2'),

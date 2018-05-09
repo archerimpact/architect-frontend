@@ -215,6 +215,7 @@ export function collapseGroup(i) {
   for (var a = 0; a < group.length; a++) {
     if (this.getGroupMembers(group[a]).length > 0 && this.adjacencyMatrix[group[a]][group[a]].state === HIDDEN) { this.collapseGroup(group[a]); }
     this.hideNode(group[a]);
+    this.copyLinks(i, group[a]);
   }
 
   this.displayNode(i);
