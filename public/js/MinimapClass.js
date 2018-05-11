@@ -173,7 +173,7 @@ class Minimap {
     var translate = utils.getXYFromTranslate(this.target.attr("transform"));
     var scale = this.scale;
 
-    let boxX = this.xbound[0] > x1 ? this.xbound[0] - x1 : x1 - this.xbound[0];
+    // let boxX = this.xbound[0] > x1 ? this.xbound[0] - x1 : x1 - this.xbound[0];
 
     x1 = x1 * scale + translate[0];
     x2 = x2 * scale + translate[0];
@@ -206,8 +206,21 @@ class Minimap {
     x2 += MINIMAP_PADDING;
     y1 -= MINIMAP_PADDING;
     y2 += MINIMAP_PADDING;
-    const svgWidth = x2 - x1;
-    const svgHeight = y2 - y1;
+
+    let svgWidth = x2 - x1;
+    let svgHeight = y2 - y1;
+
+    if (this.viewportWidth > svgWidth) {
+      x1 = 0;
+      x2 = this.viewportWidth;
+      svgWidth = this.viewportWidth;
+    } 
+
+    if (this.viewportHeight > svgHeight) {
+      y1 = 0;
+      y2 = this.viewportHeight;
+      svgHeight = this.viewportHeight;
+    }
 
     // scale by the proportion of the actual SVG to the minimap, which is 300 px size
     this.boxWidth = (this.viewportWidth / svgWidth) * this.width;

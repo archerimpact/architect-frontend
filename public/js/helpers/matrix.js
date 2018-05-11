@@ -32,12 +32,17 @@ export function setMatrix(nodes, links) {
 }
 
 export function addToMatrix(centerid, nodes, links) {
+  debugger
   var originalNodes = this.adjacencyMatrix.length;
 
   var numNodes = nodes.length;
+  // var num = 1;
   for (var i = 0; i < numNodes; i++) {
     if (!this.idToIndex[nodes[i].id]) {
       utils.addRowColumn(this.adjacencyMatrix);
+      // nodes[i].x = this.width/2 + num;
+      // nodes[i].y = this.height/2 + num;
+      // num += 50;
       this.adjacencyMatrix[this.adjacencyMatrix.length - 1][this.adjacencyMatrix.length - 1] = {
         state: DISPLAYED,
         data: nodes[i]
@@ -45,13 +50,42 @@ export function addToMatrix(centerid, nodes, links) {
     }
   }
 
+  // set each node's starting x to be 
   this.reloadIdToIndex();
   // CHECK FOR REPEATS
   var numLinks = links.length;
+  let num = 0;
+
+  // const alreadyLinked = {}
   for (var i = 0; i < numLinks; i++) {
     var sourceIndex = this.idToIndex[links[i].source];
     var targetIndex = this.idToIndex[links[i].target];
     if (this.adjacencyMatrix[sourceIndex][targetIndex].state === NONEXISTENT) {
+      const source = this.adjacencyMatrix[sourceIndex][sourceIndex].data;
+      const target = this.adjacencyMatrix[targetIndex][targetIndex].data;
+
+      let distance = 10 + num;
+      if (!source.px && target.px) { 
+        if (target.px >= this.width/2) { source.x = target.px + distance;
+        } else { source.x = target.px - distance; }
+        
+        if (target.py >= this.height/2) { source.y = target.py + distance;
+        } else { source.y = target.py - distance; }
+
+        target.fixed = true;
+      }
+      else if (!target.px && source.px) {
+        if (source.px >= this.width/2) { target.x = source.px + distance;
+        } else { target.x = source.px - distance; }  
+        
+        if (source.py >= this.height/2) { target.y = source.py + distance; 
+        } else { target.y = source.py - distance; }  
+
+        source.fixed = true;
+      }
+
+      num += 10;
+
       links[i].source = this.adjacencyMatrix[sourceIndex][sourceIndex].data;
       links[i].target = this.adjacencyMatrix[targetIndex][targetIndex].data;
       this.adjacencyMatrix[sourceIndex][targetIndex] = {state: DISPLAYED, data: links[i]};

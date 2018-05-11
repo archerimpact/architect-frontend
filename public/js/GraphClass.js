@@ -390,7 +390,7 @@ class Graph {
     this.force
       .gravity(.33)
       .charge(-1 * Math.max(Math.pow(100*this.nodes.length/this.links.length, 2 + Math.log(Math.pow(this.nodes.length, 2)/(10*this.links.length))), 750))
-      .friction(this.nodes.length < 15 ? .75 : .65)
+      .friction(this.nodes.length < 15 ? .75 : .65)      
       .alpha(.8)
       .nodes(this.nodes)
       .links(this.links);
@@ -400,18 +400,10 @@ class Graph {
 
     this.force.on('tick', (e) => { this.ticked(e, this) });
     // Avoid initial chaos and skip the wait for graph to drift back onscreen
-    for (let i = 150; i > 0; --i) this.force.tick();      
+    for (let i = 300; i > 0; --i) this.force.tick();      
     
     this.minimap
-      .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
       .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
-
-    // var centerd;
-    // this.nodes.map((d)=> {
-    //   if (d.id === centerid) {
-    //     centerd = d;
-    //   }
-    // });
 
     //this.translateGraphAroundNode(centerd);
   }
@@ -424,12 +416,11 @@ class Graph {
 
   update(event=null, ticks=null, minimap=true) {
     var self = this;
-    // this.force.stop();
     this.resetGraphOpacity();
     this.matrixToGraph();
 
     this.force
-      .charge(-1 * Math.max(Math.pow(100*this.nodes.length/this.links.length, 2.25), 750))
+      .charge(-1 * Math.max(Math.pow(100*this.nodes.length/this.links.length, 2 + Math.log(Math.pow(this.nodes.length, 2)/(10*this.links.length))), 750))
       .nodes(this.nodes)
       .links(this.links);
 
@@ -449,16 +440,7 @@ class Graph {
         .on('dragstart', function (d) { self.dragstart(d, this) })
         .on('drag', function (d) { self.dragging(d, this) })
         .on('dragend', function (d) { self.dragend(d, this) })
-      )
-      .call((node)=> {
-        if (this.expandingNode) {
-          debugger
-          node.transition().duration(7000)
-            .attr("fixed", true)
-            .attr("px", this.expandingNode.x)
-            .attr("py", this.expandingNode.y)
-        }
-      });
+      );
 
     if (this.editMode) {
       this.nodeEnter
@@ -468,13 +450,7 @@ class Graph {
     }
 
     this.nodeEnter.append('circle')
-      .attr('r', (d) => { return this.degreeExpanded > 0 ? 0 : 20})
-      .call((node) => {
-        if (this.degreeExpanded > 0) {
-          node.transition().duration(7000).attr("r", 20)
-
-        }
-      });
+      .attr('r', "20");
 
     this.nodeEnter.append('text')
       .attr('class', 'icon')
@@ -508,18 +484,9 @@ class Graph {
       .attr('class', 'link')
       .style('stroke-dasharray', (d) => { return d.type === 'possibly_same_as' ? ('3,3') : false; })
       .classed('faded', (o) => { return this.hoveredNode && !(o.source == this.hoveredNode || o.target == this.hoveredNode); })
-      .style('stroke-opacity', (o) => { return this.degreeExpanded > 0 ? 0 : 1})
+      .style('stroke-opacity', 1)
       .on('mouseover', this.mouseoverLink)
       .call(this.styleLink, false)
-      .call((link) => {
-        if (this.degreeExpanded > 0) {
-          link.transition().duration(7000).style("stroke-opacity", 1)
-            .attrTween("x1", function(d) { if (d.source.x) { return function() { return d.source.x; } ; } })
-            .attrTween("x2", function(d) { if (d.target.x) { return function() { return d.target.x; }; } })
-            .attrTween("y1", function(d) { if (d.source.y) { return function() { return d.source.y; }; } })
-            .attrTween("y2", function(d) { if (d.target.y) { return function() { return d.target.y; }; } })
-        }
-      });
 
     this.link.exit().remove();
 
@@ -534,11 +501,14 @@ class Graph {
         self.toggleGroupView(d.groupId);
         d3.event.stopPropagation();
       });
+
     this.hull.exit().remove();
 
     this.force.start();
     if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }      
 
+    this.node.attr("fixed", false);
+    
     this.reloadNeighbors();
     if (minimap) { 
       this.toRenderMinimap = true;
@@ -549,9 +519,9 @@ class Graph {
   // Occurs each tick of simulation
   ticked(e, self) {
     const classThis = this;
-    this.force.resume();
-    this.xbound = [0, 0];
-    this.ybound = [0, 0];
+    // this.force.resume();
+    this.xbound = [this.width, 0];
+    this.ybound = [this.height, 0];
     this.tickCount += 1;
 
     this.node
@@ -559,9 +529,9 @@ class Graph {
       .each((d) => {
         d.px = d.x; d.py = d.y;
         if (d.x < this.xbound[0]) { this.xbound[0] = d.x; } 
-        else if (d.x > this.xbound[1]) { this.xbound[1] = d.x; }
+        if (d.x > this.xbound[1]) { this.xbound[1] = d.x; }
         if (d.y < this.ybound[0]) { this.ybound[0] = d.y; } 
-        else if (d.y > this.ybound[1]) { this.ybound[1] = d.y; }
+        if (d.y > this.ybound[1]) { this.ybound[1] = d.y; }
       })
       .attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
 
@@ -638,7 +608,6 @@ class Graph {
     d3.select('body')
       .on('keydown', () => {
 
-        console.log("keycode: ", d3.event.keyCode);
         // u: Unpin selected nodes
         if (d3.event.keyCode == 85) {
           this.svg.selectAll('.node.selected')
@@ -727,10 +696,10 @@ class Graph {
         
         // t: expand by degree
         else if (d3.event.keyCode == 84) {
-          // if (this.degreeExpanded === 0 && this.nodes.length !== 0) { continue; }
+          if (this.degreeExpanded === 0 && this.nodes.length !== 1) { return; }
           
           if (this.degreeExpanded === 0 && this.nodes.length === 1) {
-            this.expandingNode = this.nodes[0]
+            this.expandingNode = this.nodes[0];
           }
 
           this.degreeExpanded += 1;
@@ -740,11 +709,7 @@ class Graph {
               this.addToMatrix(0, json.nodes, json.links);
             });
           }
-
-
         }
-
-        // this.force.resume();
       });
   }
 
@@ -842,13 +807,11 @@ Graph.prototype.deleteSelectedLinks = d3Data.deleteSelectedLinks;
 Graph.prototype.addNodeToSelected = d3Data.addNodeToSelected;
 Graph.prototype.toggleDocumentView = d3Data.toggleDocumentView;
 Graph.prototype.hideDocumentNodes = d3Data.hideDocumentNodes;
-Graph.prototype.hideNodes = d3Data.hideNodes;
 Graph.prototype.showHiddenDocuments = d3Data.showHiddenDocuments;
 Graph.prototype.groupSame = d3Data.groupSame;
 Graph.prototype.groupSelectedNodes = d3Data.groupSelectedNodes;
 Graph.prototype.ungroupSelectedGroups = d3Data.ungroupSelectedGroups;
 Graph.prototype.expandGroups = d3Data.expandGroups;
-Graph.prototype.collapseGroupNodes = d3Data.collapseGroupNodes;
 Graph.prototype.toggleGroupView = d3Data.toggleGroupView;
 Graph.prototype.createHull = d3Data.createHull;
 Graph.prototype.calculateAllHulls = d3Data.calculateAllHulls;
