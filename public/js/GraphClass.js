@@ -2,7 +2,7 @@
 // FontAwesome icon unicode-to-node type dict
 // Use this to find codes for FA icons: https://fontawesome.com/cheatsheet
 
-import * as d3 from './d3.min.js';
+import * as d3 from 'd3';
 import * as aesthetics from './helpers/aesthetics.js';
 import * as utils from './helpers/utils.js';
 import * as mouseClicks from './helpers/mouseClicks.js';

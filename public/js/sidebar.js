@@ -1,3 +1,4 @@
+import * as d3 from 'd3';
 import * as utils from './helpers/utils.js';
 import { MAX_HEIGHT } from './helpers/constants.js';
 var $ = require("jquery");

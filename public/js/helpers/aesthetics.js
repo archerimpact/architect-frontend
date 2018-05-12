@@ -1,3 +1,4 @@
+import * as d3 from 'd3';
 import { isGroup, then } from './utils.js';
 import * as constants from './constants.js';
 
