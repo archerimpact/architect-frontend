@@ -25,14 +25,15 @@ export function setMatrix(nodes, links) {
       adjacencyMatrix[i][j] = {state: NONEXISTENT, data: null};
     }
   }
+
   for (var i = 0; i < links.length; i++) {
     adjacencyMatrix[links[i].source][links[i].target] = {state: DISPLAYED, data: links[i]};
   }
+
   this.adjacencyMatrix = adjacencyMatrix;
 }
 
 export function addToMatrix(centerid, nodes, links) {
-  debugger
   var originalNodes = this.adjacencyMatrix.length;
 
   var numNodes = nodes.length;
@@ -52,6 +53,7 @@ export function addToMatrix(centerid, nodes, links) {
 
   // set each node's starting x to be 
   this.reloadIdToIndex();
+
   // CHECK FOR REPEATS
   var numLinks = links.length;
   let num = 0;
@@ -125,7 +127,6 @@ export function displayNode(i) {
 
 export function createNode(type, event=null) {
   utils.addRowColumn(this.adjacencyMatrix);
-
   let id = this.globalnodeid--;
   let newNode;
   if (event) {
@@ -135,10 +136,12 @@ export function createNode(type, event=null) {
   } else {
     newNode = { id: id, name: `Node ${-1 * id}`, type: type };
   }
+
   this.adjacencyMatrix[this.adjacencyMatrix.length-1][this.adjacencyMatrix.length-1] = {
     state: DISPLAYED,
     data: newNode
   }
+
   return newNode;
 }
 
@@ -196,6 +199,7 @@ export function getGroupMembers(i) {
     if (i === j) { continue; }
     if (this.adjacencyMatrix[i][j].state === GROUP_MEMBER) { group.push(j); }
   }
+
   return group;
 }
 
@@ -208,6 +212,7 @@ export function createGroup(group) {
     this.adjacencyMatrix[group[a]][i].state = BELONGS_TO;
     this.adjacencyMatrix[group[a]][group[a]].data.group = this.adjacencyMatrix[i][i].data.id;
   }
+
   for (var a = 0; a < group.length; a++) { this.hideNode(group[a]); }
 }
 
@@ -236,6 +241,7 @@ export function expandGroup(i) {
     d.centroidy = groupY;
     this.displayNode(group[a]); 
   }
+
   this.hideNode(i);  
 } 
 
@@ -244,7 +250,9 @@ export function collapseGroup(i) {
   for (var a = 0; a < group.length; a++) {
     if (this.getGroupMembers(group[a]).length > 0 && this.adjacencyMatrix[group[a]][group[a]].state === HIDDEN) { this.collapseGroup(group[a]); }
     this.hideNode(group[a]);
+    this.copyLinks(i, group[a]);
   }
+
   this.displayNode(i);
 }
 
@@ -252,6 +260,7 @@ export function getParent(i) {
   for (var j = 0; j < this.adjacencyMatrix.length; j++) {
     if (this.adjacencyMatrix[i][j].state === BELONGS_TO) { return j; }
   }
+
   return null;
 }
 
@@ -264,6 +273,7 @@ export function copyLinks(i, j) {
         data: this.createLink(i, k)
       };
     }
+
     if (utils.isMorePreferredState(this.adjacencyMatrix[k][j].state, this.adjacencyMatrix[k][i].state)) {
       this.adjacencyMatrix[k][i] = {
         state: this.adjacencyMatrix[k][j].state, 

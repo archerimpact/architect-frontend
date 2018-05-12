@@ -10,7 +10,7 @@ import * as tt from './helpers/tooltips.js';
 import * as matrix from './helpers/matrix.js';
 import * as d3Data from './helpers/changeD3Data.js';
 import Minimap from './MinimapClass.js'
-import { minScale, maxScale, GRID_LENGTH, MINIMAP_MARGIN, DEFAULT_MINIMAP_SIZE, MINIMAP_TICK } from './helpers/constants.js';
+import * as constants from './helpers/constants.js';
 import { GROUP, HULL_GROUP } from './helpers/typeConstants.js';
 
 const icons = {
@@ -132,7 +132,7 @@ class Graph {
   initializeZoom() {
     var self = this;
     const zoom = d3.behavior.zoom()
-      .scaleExtent([minScale, maxScale])
+      .scaleExtent([constants.MIN_SCALE, constants.MAX_SCALE])
       .on('zoomstart', function (d) { self.zoomstart(d, this) })
       .on('zoom', function (d) { self.zooming(d, this) })
       .on('zoomend', function (d) { self.zoomend(d, this) });
@@ -205,22 +205,22 @@ class Graph {
       .append('g')
       .attr('class', 'x-ticks')
       .selectAll('line')
-      .data(d3.range(0, (this.numTicks + 1) * GRID_LENGTH, GRID_LENGTH))
+      .data(d3.range(0, (this.numTicks + 1) * constants.GRID_LENGTH, constants.GRID_LENGTH))
       .enter().append('line')
       .attr('x1', (d) => { return d; })
-      .attr('y1', (d) => { return -1 * GRID_LENGTH; })
+      .attr('y1', (d) => { return -1 * constants.GRID_LENGTH; })
       .attr('x2', (d) => { return d; })
-      .attr('y2', (d) => { return (1 / minScale) * this.height + GRID_LENGTH; });
+      .attr('y2', (d) => { return (1 / constants.MIN_SCALE) * this.height + constants.GRID_LENGTH; });
 
     svgGrid
       .append('g')
       .attr('class', 'y-ticks')
       .selectAll('line')
-      .data(d3.range(0, (this.numTicks + 1) * GRID_LENGTH, GRID_LENGTH))
+      .data(d3.range(0, (this.numTicks + 1) * constants.GRID_LENGTH, constants.GRID_LENGTH))
       .enter().append('line')
-      .attr('x1', (d) => { return -1 * GRID_LENGTH; })
+      .attr('x1', (d) => { return -1 * constants.GRID_LENGTH; })
       .attr('y1', (d) => { return d; })
-      .attr('x2', (d) => { return (1 / minScale) * this.width + GRID_LENGTH; })
+      .attr('x2', (d) => { return (1 / constants.MIN_SCALE) * this.width + constants.GRID_LENGTH; })
       .attr('y2', (d) => { return d; });
 
     return svgGrid;
@@ -228,70 +228,74 @@ class Graph {
 
   initializeForce() {
     return d3.layout.force()
-      .linkDistance(100)
       .size([this.width, this.height]);
   }
 
+  // direction-size-color
   initializeMarkers() {
-    this.svg.append('defs')
-      .append('marker')
-        .attr('id', 'end-arrow-gray')
-        .attr('viewBox', '5 -5 10 10')
-        .attr('refX', 10)
-        .attr('markerWidth', 5)
-        .attr('markerHeight', 5)
-        .attr('orient', 'auto')
-      .append('path')
-        .attr('d', 'M 0,-5 L 10,0 L 0,5')
-        .style('stroke', '#545454')
-        .style('fill', '#545454')
-        .style('fill-opacity', 1);
+    const possibleAttrs = [
+      ['start', 'end'],
+      ['big', 'small'],
+      ['gray', 'blue']];
+    const markerList = this.deriveMarkerData(this.getMarkerIdPermutations(possibleAttrs));
+    for (let marker of markerList) {
+      this.svg.append('defs')
+        .append('marker')
+          .attr('id', marker.id)
+          .attr('viewBox', '5 -5 10 10')
+          .attr('refX', 10)
+          .attr('markerWidth', marker.size)
+          .attr('markerHeight', marker.size)
+          .attr('orient', marker.direction)
+        .append('path')
+          .attr('d', 'M 0,-5 L 10,0 L 0,5')
+          .style('stroke', marker.color)
+          .style('fill', marker.color)
+          .style('fill-opacity', 1);
+    }
+  }
 
-    this.svg.append('defs')
-      .append('marker')
-        .attr('id', 'end-arrow-blue')
-        .attr('viewBox', '5 -5 10 10')
-        .attr('refX', 10)
-        .attr('markerWidth', 5)
-        .attr('markerHeight', 5)
-        .attr('orient', 'auto')
-      .append('path')
-        .attr('d', 'M 0,-5 L 10,0 L 0,5')
-        .style('stroke', '#0d77e2')
-        .style('fill', '#0d77e2')
-        .style('fill-opacity', 1);
+  // possibleAttrs is a list of lists that contains the possibilities for each attr
+  // This method should return a list of all possible permutations of the given attrs
+  getMarkerIdPermutations(possibleAttrs) {
+    if (!possibleAttrs) { return []; }
+    if (possibleAttrs.length == 1) { return possibleAttrs[0]; }
+    let i, j;
+    const markerIds = [];
+    const rest = this.getMarkerIdPermutations(possibleAttrs.slice(1));
+    for (i = 0; i < rest.length; i++) {
+      for (j = 0; j < possibleAttrs[0].length; j++) {
+        markerIds.push(`${possibleAttrs[0][j]}-${rest[i]}`);
+      }
+    }
 
-    this.svg.append('defs')
-      .append('marker')
-        .attr('id', 'start-arrow-gray')
-        .attr('viewBox', '5 -5 10 10')
-        .attr('refX', 10)
-        .attr('markerWidth', 5)
-        .attr('markerHeight', 5)
-        .attr('orient', 'auto-start-reverse')
-      .append('path')
-        .attr('d', 'M 0,-5 L 10,0 L 0,5')
-        .style('stroke', '#545454')
-        .style('fill', '#545454')
-        .style('fill-opacity', 1);
+    return markerIds;
+  }
 
-    this.svg.append('defs')
-      .append('marker')
-        .attr('id', 'start-arrow-blue')
-        .attr('viewBox', '5 -5 10 10')
-        .attr('refX', 10)
-        .attr('markerWidth', 5)
-        .attr('markerHeight', 5)
-        .attr('orient', 'auto-start-reverse')
-      .append('path')
-        .attr('d', 'M 0,-5 L 10,0 L 0,5')
-        .style('stroke', '#0d77e2')
-        .style('fill', '#0d77e2')
-        .style('fill-opacity', 1);
+  deriveMarkerData(permutationList) {
+    const markerList = [];
+    for (let markerId of permutationList) {
+      markerList.push({ id: markerId });
+    }
+
+    const colors = {
+      'gray': '#545454',
+      'blue': '#0d77e2'
+    };
+
+    let marker, id, tokens;
+    for (marker of markerList) {
+      tokens = marker.id.split('-');
+      marker.direction = (tokens[0] === 'end') ? 'auto' : 'auto-start-reverse';
+      marker.size = (tokens[1] === 'big') ? constants.MARKER_SIZE_BIG : constants.MARKER_SIZE_SMALL;
+      marker.color = colors[tokens[2]];
+    }
+
+    return markerList;
   }
 
   initializeDragLink() {
-    return this.container.append('line')
+    return this.svg.append('line')
       .attr('class', 'link dynamic hidden')
       .attr('x1', 0)
       .attr('y1', 0)
@@ -342,11 +346,11 @@ class Graph {
     this.center = [this.width / 2, this.height / 2];
     this.brushX = d3.scale.linear().range([0, width]),
     this.brushY = d3.scale.linear().range([0, height]);
-    this.minimapPaddingX = MINIMAP_MARGIN;
-    this.minimapPaddingY = height - DEFAULT_MINIMAP_SIZE - MINIMAP_MARGIN;
+    this.minimapPaddingX = constants.MINIMAP_MARGIN;
+    this.minimapPaddingY = height - constants.DEFAULT_MINIMAP_SIZE - constants.MINIMAP_MARGIN;
     this.minimapScale = 0.25;
 
-    this.numTicks = width / GRID_LENGTH * (1 / minScale);
+    this.numTicks = width / constants.GRID_LENGTH * (1 / constants.MIN_SCALE);
 
     this.zoom = this.initializeZoom();
     this.brush = this.initializeBrush();
@@ -373,6 +377,7 @@ class Graph {
                     .setTarget(this.container) // that's what you're trying to track/the images
                     .setMinimapPositionX(this.minimapPaddingX)
                     .setMinimapPositionY(this.minimapPaddingY)
+                    .setGraph(this);
 
     this.minimap.initializeMinimap(this.svg, this.width, this.height)
   }
@@ -389,21 +394,30 @@ class Graph {
 
     this.force
       .gravity(.33)
-      .charge(-1 * Math.max(Math.pow(100*this.nodes.length/this.links.length, 2 + Math.log(Math.pow(this.nodes.length, 2)/(10*this.links.length))), 750))
-      .friction(this.nodes.length < 15 ? .75 : .65)      
+      .charge((d) => { return d.group ? -7500 : -20000})
+      .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
+      .friction(this.nodes.length < 15 ? .75 : .65)
       .alpha(.8)
       .nodes(this.nodes)
       .links(this.links);
 
     // Updates nodes and links according to current data
     this.update(null, null, false);
-
     this.force.on('tick', (e) => { this.ticked(e, this) });
     // Avoid initial chaos and skip the wait for graph to drift back onscreen
+
     for (let i = 300; i > 0; --i) this.force.tick();      
     
     this.minimap
       .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
+
+    for (let i = 150; i > 0; --i) this.force.tick(); 
+    this.reloadNeighbors();
+
+    // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
+    this.minimap
+      .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
+      .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); 
 
     //this.translateGraphAroundNode(centerd);
   }
@@ -416,14 +430,30 @@ class Graph {
 
   update(event=null, ticks=null, minimap=true) {
     var self = this;
+
     this.resetGraphOpacity();
+
+    this.force.stop();
     this.matrixToGraph();
+    this.reloadNeighbors(); 
 
     this.force
       .charge(-1 * Math.max(Math.pow(100*this.nodes.length/this.links.length, 2 + Math.log(Math.pow(this.nodes.length, 2)/(10*this.links.length))), 750))
       .nodes(this.nodes)
       .links(this.links);
 
+    // Update links
+    this.link = this.link.data(this.links, (d) => { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
+    this.link
+      .enter().append('line')
+      .attr('class', 'link')
+      .classed('same-as', (l) => { return l.type === 'possibly_same_as'; })
+      .classed('faded', (l) => { return this.hoveredNode && !(l.source == this.hoveredNode || l.target == this.hoveredNode); })
+      .on('mouseover', this.mouseoverLink)
+      .call(this.styleLink, false);
+    this.link.exit().remove();
+
+    // Update nodes
     this.node = this.node.data(this.nodes, (d) => { return d.id; });
     this.nodeEnter = this.node.enter().append('g')
       .attr('class', 'node')
@@ -434,7 +464,7 @@ class Graph {
       .on('mouseover', function (d) { self.mouseover(d, this); })
       .on('mouseout', function (d) { self.mouseout(d, this); })
       .classed('fixed', (d) => { return d.fixed; })
-      .classed('faded', (d) => { return this.hoveredNode && !this.areNeighbors(this.hoveredNode, d)})
+      .classed('faded', (d) => { return this.hoveredNode && !this.areNeighbors(this.hoveredNode, d); })
       .call(this.force.drag()
         .origin((d) => { return d; })
         .on('dragstart', function (d) { self.dragstart(d, this) })
@@ -450,7 +480,8 @@ class Graph {
     }
 
     this.nodeEnter.append('circle')
-      .attr('r', "20");
+      .attr('r', (d) => { return d.radius = (d.group ? constants.GROUP_NODE_RADIUS : constants.NODE_RADIUS); });
+
 
     this.nodeEnter.append('text')
       .attr('class', 'icon')
@@ -458,14 +489,14 @@ class Graph {
       .attr('dominant-baseline', 'central')
       .attr('font-family', 'FontAwesome')
       .attr('font-size', '20px')
-      .text((d) => { return (d.type && icons[d.type]) ? icons[d.type] : ''; })
+      .text((d) => { return (!d.group && d.type && icons[d.type]) ? icons[d.type] : ''; })
       .classed('unselectable', true);
 
     this.nodeEnter.append('text')
       .attr('class', 'node-name')
       .attr('text-anchor', 'middle')
       .attr('dy', '35px')
-      .text(function (d) { return utils.processNodeName(d.name, this.printFull); })
+      .text((d) => { return d.group ? '' : utils.processNodeName(d.name, this.printFull); })
       .call(this.textWrap, this.printFull)
       .on('click', function (d) { self.stopPropagation(); })
       .on('mouseover', function (d) { self.stopPropagation(); })
@@ -478,20 +509,8 @@ class Graph {
 
     this.node.exit().remove();
 
-    this.link = this.link.data(this.links, (d) => { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
-    this.link
-      .enter().append('line')
-      .attr('class', 'link')
-      .style('stroke-dasharray', (d) => { return d.type === 'possibly_same_as' ? ('3,3') : false; })
-      .classed('faded', (o) => { return this.hoveredNode && !(o.source == this.hoveredNode || o.target == this.hoveredNode); })
-      .style('stroke-opacity', 1)
-      .on('mouseover', this.mouseoverLink)
-      .call(this.styleLink, false)
-
-    this.link.exit().remove();
-
+    // Update hulls
     this.hull = this.hull.data(this.hulls);
-
     this.hull
       .enter().append('path')
       .attr('class', 'hull')
@@ -504,16 +523,18 @@ class Graph {
 
     this.hull.exit().remove();
 
-    this.force.start();
-    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }      
-
     this.node.attr("fixed", false);
     
     this.reloadNeighbors();
+
+    // Update minimap   
     if (minimap) { 
       this.toRenderMinimap = true;
       this.tickCount = 0;
     }
+
+    this.force.start();
+    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }   
   }
 
   // Occurs each tick of simulation
@@ -536,7 +557,7 @@ class Graph {
       .attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
 
     if (this.toRenderMinimap) { 
-      if (this.tickCount === MINIMAP_TICK) {
+      if (this.tickCount === constants.MINIMAP_TICK) {
         const translate = this.zoom.translate();
         const scale = this.zoom.scale();
         this.minimap.syncToSVG(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
@@ -552,24 +573,23 @@ class Graph {
     }
 
     this.link
-      .each(function(d) {
-        const x1 = d.source.x,
-              y1 = d.source.y,
-              x2 = d.target.x,
-              y2 = d.target.y;
-        if (!d.source.x) {debugger;}
+      .each(function(l) {
+        const x1 = l.source.x,
+              y1 = l.source.y,
+              x2 = l.target.x,
+              y2 = l.target.y;
         const dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
-        const sourcePadding = (d.bidirectional || false) ? 27 : 20,
-              targetPadding = 27;
-        d.sourceX = x1 + (x2-x1) * (dist-sourcePadding) / dist;
-        d.sourceY = y1 + (y2-y1) * (dist-sourcePadding) / dist;
-        d.targetX = x2 - (x2-x1) * (dist-targetPadding) / dist;
-        d.targetY = y2 - (y2-y1) * (dist-targetPadding) / dist;
+        const sourcePadding = l.target.radius + (l.bidirectional ? constants.MARKER_PADDING : 0),
+              targetPadding = l.source.radius + constants.MARKER_PADDING;
+        l.sourceX = x1 + (x2-x1) * (dist-sourcePadding) / dist;
+        l.sourceY = y1 + (y2-y1) * (dist-sourcePadding) / dist;
+        l.targetX = x2 - (x2-x1) * (dist-targetPadding) / dist;
+        l.targetY = y2 - (y2-y1) * (dist-targetPadding) / dist;
       })
-      .attr('x1', function (d) { return d.sourceX; })
-      .attr('y1', function (d) { return d.sourceY; })
-      .attr('x2', function (d) { return d.targetX; })
-      .attr('y2', function (d) { return d.targetY; });
+      .attr('x1', (l) => { return l.sourceX; })
+      .attr('y1', (l) => { return l.sourceY; })
+      .attr('x2', (l) => { return l.targetX; })
+      .attr('y2', (l) => { return l.targetY; });
 
     if (this.mousedownNode) {
       const x1 = this.mousedownNode.x * this.zoomScale + this.zoomTranslate[0],
@@ -579,8 +599,8 @@ class Graph {
             dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
 
       if (dist > 0) {
-        const targetX = x2 - (x2-x1) * (dist-20*this.zoomScale) / dist,
-              targetY = y2 - (y2-y1) * (dist-20*this.zoomScale) / dist;
+        const targetX = x2 - (x2-x1) * (dist-this.mousedownNode.radius*this.zoomScale) / dist,
+              targetY = y2 - (y2-y1) * (dist-this.mousedownNode.radius*this.zoomScale) / dist;
 
       this.dragLink
         .attr('x1', targetX)
@@ -794,6 +814,7 @@ Graph.prototype.stopPropagation = mouseClicks.stopPropagation;
 
 Graph.prototype.zoomstart = mouseClicks.zoomstart;
 Graph.prototype.zooming = mouseClicks.zooming;
+Graph.prototype.performZoom = mouseClicks.performZoom;
 Graph.prototype.zoomend = mouseClicks.zoomend;
 Graph.prototype.zoomButton = mouseClicks.zoomButton;
 Graph.prototype.translateGraphAroundNode = mouseClicks.translateGraphAroundNode;
