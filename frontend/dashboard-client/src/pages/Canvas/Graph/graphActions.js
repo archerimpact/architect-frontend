@@ -54,11 +54,30 @@ function makeDeepCopy(array) {
   return newArray;
 }
 
+
+export function addToGraphFromId(graph, id) {
+  return (dispatch, getState) => {
+    function setCurrentNode(d) {
+      dispatch(storeCurrentNodeDispatch(d.id));
+      // graph.translateGraphAroundNode(d)
+    }
+
+    server.getNode(id)
+      .then(data => {
+        var graphData = parseNeo4jData(data);
+        graph.bindDisplayFunctions({node: setCurrentNode});
+        graph.addToMatrix(graphData.centerid, makeDeepCopy(graphData.nodes), makeDeepCopy(graphData.links));
+        dispatch(updateGraphDispatch(graphData));
+      })
+      .catch(err => { console.log(err); });
+    }
+}
+
 export function fetchGraphFromId(graph, id) {
   return (dispatch, getState) => {
     function setCurrentNode(d) {
       dispatch(storeCurrentNodeDispatch(d.id));
-      graph.translateGraphAroundNode(d)
+      // graph.translateGraphAroundNode(d)
     }
 
     server.getGraph(id)
@@ -128,7 +147,7 @@ function parseNeo4jData(data) {
 
   links = data[0].map((edge) => {
     //target and source have to reference the index of the node
-    return { id: edge.metadata.id, type: edge.metadata.type, source: neo4jtoindex[getidfromurl(edge.start)], target: neo4jtoindex[getidfromurl(edge.end)] };
+    return { id: edge.metadata.id, type: edge.metadata.type, source: getidfromurl(edge.start), target: getidfromurl(edge.end) };
   });
 
   return { nodes: nodes, links: links, centerid: data[2].metadata.id };

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import Graph from './Graph';
-import ArcherGraph from './Graph/components/GraphPackage';
+import ArcherGraph from './Graph/components/GraphClass';
 import GraphSidebar from './GraphSidebar';
 
 import { connect } from 'react-redux';
@@ -47,8 +47,9 @@ class Canvas extends Component {
         this.props.actions.fetchSearchResults(nextSearch);
         this.setState({ showResults: true })
       }
+
       if (this.state.graphid !== nextGraphid && nextGraphid !== null) {
-        this.props.actions.fetchGraphFromId(this.graph, nextGraphid);
+        this.props.actions.addToGraphFromId(this.graph, nextGraphid);
       }
       // } else if (this.props.entityid != null && this.props.entityid !== nextEntityid) {
       //   this.props.graph.translateGraphAroundId(parseInt(nextEntityid, 10))

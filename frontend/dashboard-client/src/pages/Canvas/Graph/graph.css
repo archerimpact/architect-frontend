@@ -23,6 +23,7 @@ body {
 
 svg {
   border: 3px solid #fff;
+  z-index: -3;
 }
 
 
@@ -37,24 +38,55 @@ svg line {
   stroke-width: 1.5px; 
 }
 
+button {
+  font-size: 14px;
+  color: #000;
+  letter-spacing: 1px;
+  background-color: white;
+  border: 1px solid #0d77e2;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+button:hover {
+  color: white;
+  background-color: #0d77e2;
+  border: none;
+}
+
+button:focus {
+  outline: none;
+}
+
 .link {
   stroke: #545454;
   stroke-width: 3px;
+  opacity: 1;
+  transition-property: opacity;
+  transition-delay: 0ms;
   transition-duration: 50ms;
-  transition-property: stroke-opacity;
-  transition-delay: 75ms;
 }
 
 .link.selected {
   stroke: #0d77e2;
 }
 
+
+.link.dynamic {
+  pointer-events: none;
+}
+
+.link.hidden {
+  stroke-width: 0;
+}
+
 .node {
   fill: #ebebeb;
   stroke: #545454;
-  transition-duration: 50ms;
+  opacity: 1;
   transition-property: stroke-opacity, fill-opacity;
-  transition-delay: 75ms;
+  transition-delay: 0ms;
+  transition-duration: 50ms;
 }
 
 .node text {
@@ -107,9 +139,13 @@ svg line {
 
 .hull, path {
   fill: #0d77e2;
+  stroke-opacity: 1;
   fill-opacity: 0.2;
   stroke: #7cbdff;
   stroke-width: 2px;
+  transition-property: stroke-opacity, fill-opacity;
+  transition-delay: 0ms;
+  transition-duration: 50ms;
 }
 
 .button {
@@ -119,7 +155,7 @@ svg line {
 
 #node-tooltip {
   width: 240px;
-  background: rgba(255, 255, 255, .5);
+  background: rgba(255, 255, 255, .75);
   border: 1px solid #000;
   border-radius: 1px;
   position: absolute;
@@ -134,7 +170,7 @@ svg line {
 .tooltip-title {
   font-size: 20px;
   border-bottom: 1.5px solid #0d77e2;
-  background: rgba(13, 119, 226, .1);
+  background: rgba(13, 119, 226, .2);
   padding: 5px;
   color: #0d77e2;
   cursor: pointer;
@@ -174,4 +210,31 @@ i.fa-close {
   font-size: 14px;
   max-width: 165px;
   color: #545454;
+}
+
+#minimap-box-square {
+  fill: #b1b1b1;
+  opacity: 0.4;
+  border:3px solid #fff;
+}
+
+.faded {
+  transition-delay: 75ms;
+}
+
+.node.faded {
+  stroke-opacity: 0.1;
+  fill-opacity: 0.1;
+  transition-property: stroke-opacity, fill-opacity;
+}
+
+.link.faded {
+  opacity: 0.1;
+  transition-property: opacity;
+}
+
+.hull.faded {
+  stroke-opacity: 0.2;
+  fill-opacity: 0.05;
+  transition-property: stroke-opacity, fill-opacity;
 }

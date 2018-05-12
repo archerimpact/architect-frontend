@@ -34,7 +34,8 @@ class BackendSearch extends Component {
     let searchQuery = this.props.search ? 'search=' + this.props.search : '';
     let graphQuery = id ? '&graphid=' + id : '';
     this.props.history.push(path + '?' + searchQuery + graphQuery);
-    this.props.actions.fetchGraphFromId(this.props.graph, id);
+    // this.props.actions.fetchGraphFromId(this.props.graph, id);
+    // this.props.actions.addToGraphFromId(this.props.graph, id);
   }
 
   render() {

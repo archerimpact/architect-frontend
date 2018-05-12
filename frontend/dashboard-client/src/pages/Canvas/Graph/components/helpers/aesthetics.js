@@ -1,36 +1,73 @@
 import * as d3 from 'd3';
+import { isGroup, then } from './utils.js';
+import * as constants from './constants.js';
 
 // Link highlighting
 export function highlightLinksFromAllNodes() {
-  this.svg.selectAll('.link')
-    .classed('selected', (d, i) => {
-      return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index];
-    });
+  this.link.call(this.styleLink, false);
+  this.link.filter((d) => { return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index] })
+    .call(this.styleLink, true);
 }
 
 export function highlightLinksFromNode(node) {
   node = node[0].__data__.index;
-  this.svg.selectAll('.link')
-    .filter((d, i) => {
-      return d.source.index == node || d.target.index == node;
+  this.link.filter((d) => { return d.source.index == node || d.target.index == node; })
+    .call(this.styleLink, (d) => { return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index]; });
+}
+
+export function styleLink(selection, isSelected) {
+  selection
+    .classed('selected', isSelected)
+    .style('stroke-width', (l) => { return (l.source.group && l.target.group ? constants.GROUP_STROKE_WIDTH : constants.STROKE_WIDTH) + 'px'; })
+    .style('marker-start', (l) => { 
+      if (!l.bidirectional) { return ''; }
+      const size = l.target.group ? 'small' : 'big';
+      const color = (typeof isSelected === 'function' ? isSelected(l) : isSelected) ? 'blue' : 'gray';
+      return `url(#start-${size}-${color})`;
     })
-    .classed('selected', (d, i) => {
-      return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index];
+    .style('marker-end', (l) => { 
+      const size = l.source.group ? 'small' : 'big';
+      const color = (typeof isSelected === 'function' ? isSelected(l) : isSelected) ? 'blue' : 'gray';
+      return `url(#end-${size}-${color})`;
     });
+}
+
+// Directions: forward, reverse, both
+export function changeLinkDirectionality(selection, newDirection) {
+  selection.each((d) => {
+    if (d.bidirectional) {
+      // Implement after matrix adjacency done
+    }
+  });
 }
 
 // Fill group nodes blue
 export function fillGroupNodes() {
   this.svg.selectAll('.node')
-    .classed('grouped', function (d) { return d.id < 0; });
+    .classed('grouped', function (d) { return isGroup(d) || d.type === 'same_as_group'; });
+}
+
+export function fadeGraph(d) {
+  this.isEmphasized = true;
+  this.node
+    .filter((o) => { return !this.areNeighbors(d, o); })
+    .classed('faded', true);
+  this.link.classed('faded', o => { return !(o.source == d || o.target == d); });
+  this.hull.classed('faded', true);
 }
 
 // Reset all node/link opacities to 1
 export function resetGraphOpacity() {
   this.isEmphasized = false;
-  this.node.style('stroke-opacity', 1)
-    .style('fill-opacity', 1);
-  this.link.style('stroke-opacity', 1);
+  this.node.classed('faded', false);
+  this.link.classed('faded', false);
+  this.hull.classed('faded', false);
+}
+
+// Reset edit mode's dynamic drag link
+export function resetDragLink(self) {
+  self.mousedownNode = null;
+  self.dragLink.classed('hidden', true);
 }
 
 // Wrap text
@@ -49,7 +86,8 @@ export function textWrap(textSelection, printFull, width=100) {
       .attr('x', 0)
       .attr('y', 0)
       .attr('dy', dy)
-      .classed('text-shadow', true);
+      .classed('text-shadow', true)
+      .classed('unselectable', true);
 
     for (let i = 0; i < tokens.length; i++) {
       line.push(tokens[i]);
@@ -61,13 +99,15 @@ export function textWrap(textSelection, printFull, width=100) {
           .attr('x', 0)
           .attr('y', 0)
           .attr('dy', 15 * (lineNum++) + dy)
-          .text(line.join(' '));
+          .text(line.join(' '))
+          .classed('unselectable', true);
           
         tspan = text.append('tspan')
           .attr('x', 0)
           .attr('y', 0)
           .attr('dy', 15 * lineNum + dy)
-          .classed('text-shadow', true);
+          .classed('text-shadow', true)
+          .classed('unselectable', true);
 
         line = remainder ? [remainder] : [];
       }
@@ -82,6 +122,7 @@ export function textWrap(textSelection, printFull, width=100) {
           .attr('x', 0)
           .attr('y', 0)
           .attr('dy', 15 * (lineNum++) + dy)
-          .text(finalLine);
+          .text(finalLine)
+          .classed('unselectable', true);
   });
 }
