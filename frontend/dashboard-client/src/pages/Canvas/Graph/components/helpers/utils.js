@@ -114,6 +114,43 @@ export function createSVGImage(targetSVG, x1, x2, y1, y2, width=null, height=nul
   return url;
 }
 
+export function createSVGString(targetSVG, x1, x2, y1, y2, width=null, height=null){
+  var svgClone = targetSVG.cloneNode(true);
+  
+  if (!width) { width = x2 - x1; }
+  if (!height) { height = y2 - y1; }
+  svgClone.setAttribute('viewBox', `${x1} ${y1} ${width} ${height}`);
+
+  Array.from(svgClone.childNodes).map((e) => {
+    if (e.classList[0] !== "graphItems") { svgClone.removeChild(e); }
+    Array.from(e.childNodes).map((e) => {
+        if (e.classList[0] === "svggrid") { e.parentNode.removeChild(e); }
+    });
+  });
+
+  const sheets = document.styleSheets;
+  var styleStr = '';
+  Array.prototype.forEach.call(sheets, function(sheet) {
+    try { // we need a try-catch block for external stylesheets that could be there...
+      if (sheet.cssRules) {
+        styleStr += Array.prototype.reduce.call(sheet.cssRules, function(a, b){
+          return a + b.cssText; // just concatenate all our cssRules' text
+        }, "");       
+      }
+    }
+    catch(e) { console.log(e); }
+  });
+  // create our svg nodes that will hold all these rules
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+  style.innerHTML = styleStr;
+  defs.appendChild(style);
+  svgClone.insertBefore(defs, svgClone.firstElementChild);
+  
+  const svgString = new XMLSerializer().serializeToString(svgClone);
+  return svgString;
+}
+
 // =================
 // DEBUGGING METHODS
 // =================

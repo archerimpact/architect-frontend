@@ -23,11 +23,12 @@ export async function getProject(id) {
 }
 
 
-export async function updateProject(id, d3Data) {
-  d3Data = JSON.stringify(d3Data);
+export async function updateProject(data) {
+  data.d3Data = JSON.stringify(data.d3Data);
   const response = await api_inst.put('/projects/update', {
-    projectid: id,
-    data: d3Data
+    projectid: data.id,
+    data: data.d3Data,
+    img: data.image
   });
   return response.data;
 }

@@ -734,6 +734,10 @@ class Graph {
       });
   }
 
+  saveGraphAsSVGString() {
+    return utils.createSVGString(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
+  }
+
   toggleFixedNodes() {
     const self = this;
     this.isGraphFixed = !this.isGraphFixed;

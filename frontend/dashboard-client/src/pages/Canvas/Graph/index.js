@@ -24,6 +24,7 @@ class Graph extends Component {
   }
 
   componentWillReceiveNextProps(nextprops) {
+    debugger
     if (nextprops.project.graphData != this.props.project.graphData) {
       const graphData = { nodes: nextprops.currentProject.graphData.nodes, links: nextprops.currentProject.graphData.links };
       this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));
