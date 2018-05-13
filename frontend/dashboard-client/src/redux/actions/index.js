@@ -2,11 +2,12 @@ import {
   USER_LOGIN,
 	USER_LOGOUT, 
 	TOGGLE_SIDEBAR,
-	STORE_PROJECT
+	STORE_PROJECT,
   } from './actionTypes';
 
 import { logoutAccount } from "../../server/auth_routes";
 import * as server from '../../server';
+
 export function userLogIn() {
   return {
     type: USER_LOGIN,
@@ -53,5 +54,3 @@ function storeProject(project) {
 		payload: project
 	};
 }
-
-

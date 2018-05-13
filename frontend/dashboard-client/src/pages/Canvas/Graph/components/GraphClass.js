@@ -116,6 +116,9 @@ class Graph {
     this.populateNodeInfoBody = this.populateNodeInfoBody.bind(this);
     this.resetDragLink = this.resetDragLink.bind(this);
 
+    this.fetchData = this.fetchData.bind(this);
+    this.addData = this.addData.bind(this);
+
     this.bindDisplayFunctions({}); //no display functions yet
   }
 
@@ -373,6 +376,10 @@ class Graph {
     this.link = this.container.append('g').selectAll('.link');
     this.node = this.container.append('g').selectAll('.node');
 
+    this.setMatrix(this.nodes, this.links); // initialize matrix with empty values
+
+    this.force.on('tick', (e) => { this.ticked(e, this) });
+
     // this.minimap = new Minimap()
     //                 .setZoom(this.zoom)
     //                 .setTarget(this.container) // that's what you're trying to track/the images
@@ -389,33 +396,17 @@ class Graph {
     this.setMatrix(nodes, links);
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
 
-    this.nodes = nodes;
-    this.links = links;
-    this.hulls = [];
-
-    this.force
-      .gravity(.33)
-      .charge((d) => { return d.group ? -7500 : -1 * Math.max(Math.pow(100*this.nodes.length/this.links.length, 2 + Math.log(Math.pow(this.nodes.length, 2)/(10*this.links.length))), 750)})
-      .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
-      .friction(this.nodes.length < 15 ? .75 : .65)
-      .alpha(.8)
-      .nodes(this.nodes)
-      .links(this.links);
-
     // Updates nodes and links according to current data
     this.update(null, null, false);
-    this.force.on('tick', (e) => { this.ticked(e, this) });
     // Avoid initial chaos and skip the wait for graph to drift back onscreen
 
-    for (let i = 300; i > 0; --i) this.force.tick();      
+    // for (let i = 300; i > 0; --i) this.force.tick();      
     
     // this.minimap
     //   .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
 
     // for (let i = 150; i > 0; --i) this.force.tick(); 
-    this.reloadNeighbors();
 
-    // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
     // this.minimap
     //   .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
     //   .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); 
@@ -423,10 +414,19 @@ class Graph {
     //this.translateGraphAroundNode(centerd);
   }
 
+  addData(centerid, nodes, links) {
+    this.addToMatrix(centerid, nodes, links);
+    // this.update();
+  }
+
   bindDisplayFunctions(displayFunctions) {
     this.displayNodeInfo = displayFunctions.node ? displayFunctions.node : function(d) {};
     this.displayLinkInfo = displayFunctions.link ? displayFunctions.link : function(d) {};
     this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
+  }
+
+  fetchData() {
+    return { nodes: this.nodes, links: this.links };
   }
 
   update(event=null, ticks=null, minimap=true) {
@@ -437,9 +437,13 @@ class Graph {
     this.force.stop();
     this.matrixToGraph();
     this.reloadNeighbors(); 
-
+    
     this.force
-      .charge(-1 * Math.max(Math.pow(100*this.nodes.length/this.links.length, 2.25), 750))
+      .gravity(.33)
+      .charge((d) => { return d.group ? -7500 : -1 * Math.max(Math.pow(100*this.nodes.length/this.links.length, 2.25), 750)})
+      .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
+      .friction(this.nodes.length < 15 ? .75 : .65)
+      .alpha(.8)
       .nodes(this.nodes)
       .links(this.links);
 
@@ -535,7 +539,7 @@ class Graph {
     // }
 
     this.force.start();
-    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }   
+    if (ticks) { for (let i = ticks; i > 0; --i) debugger; this.force.tick(); }   
   }
 
   // Occurs each tick of simulation

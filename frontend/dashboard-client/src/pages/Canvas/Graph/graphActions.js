@@ -1,9 +1,11 @@
 import * as server from '../../../server';
+import * as actions from '../../../redux/actions';
 
 export const INITIALIZE_CANVAS = "INITIALIZE_CANVAS";
 export const UPDATE_GRAPH_DATA = "UPDATE_GRAPH_DATA";
 export const STORE_SEARCH_RESULTS = "STORE_SEARCH_RESULTS";
 export const STORE_CURRENT_NODE = "STORE_CURRENT_NODE";
+export const UPDATE_PROJECT_DATA = "UPDATE_PROJECT_DATA";
 
 export function initializeCanvas(graph, width, height) {
   return (dispatch, getState) => {
@@ -19,14 +21,33 @@ function initializeCanvasDispatch(graph) {
   };
 }
 
-export function updateGraph(data) {
+export function saveCurrentProjectData(graph) {
   return (dispatch, getState) => {
-    var graphData = parseNeo4jData(data);
-    let g = getState().canvas.graph;
-    g.setData(graphData.centerid, makeDeepCopy(graphData.nodes), makeDeepCopy(graphData.links));
-    dispatch(updateGraphDispatch(graphData))
+    let state = getState()
+    let projid = state.data.currentProject._id
+    let data = graph.fetchData();
+    server.updateProject(projid, data)
+      .then((response) => {
+        dispatch(updateProjectDispatch({id: projid, data: data}));
+      })
+      .catch((err) => { console.log(err)});
   }
 }
+
+function updateProjectDispatch(data) {
+  return {
+    type: UPDATE_PROJECT_DATA,
+    payload: data
+  };
+}
+
+// export function updateGraph(graph, graphData) {
+//   return (dispatch, getState) => {
+//     // var graphData = parseNeo4jData(data);
+//     graph.setData(graphData.centerid, makeDeepCopy(graphData.nodes), makeDeepCopy(graphData.links));
+//     dispatch(updateGraphDispatch(graphData))
+//   }
+// }
 
 function updateGraphDispatch(data) {
   return {
@@ -66,7 +87,7 @@ export function addToGraphFromId(graph, id) {
       .then(data => {
         var graphData = parseNeo4jData(data);
         graph.bindDisplayFunctions({node: setCurrentNode});
-        graph.addToMatrix(graphData.centerid, makeDeepCopy(graphData.nodes), makeDeepCopy(graphData.links));
+        graph.addData(graphData.centerid, makeDeepCopy(graphData.nodes), makeDeepCopy(graphData.links));
         dispatch(updateGraphDispatch(graphData));
       })
       .catch(err => { console.log(err); });
@@ -135,13 +156,13 @@ function parseNeo4jData(data) {
       id: parseInt(node.metadata.id, 10),
       type: node.metadata.labels[0],
       name: node.data.name,
-      resigned_on: node.data.resigned_on,
-      occupation: node.data.occupation,
-      address: node.data.address,
-      nationality: node.data.nationality,
-      country_of_residence: node.data.country_of_residence,
-      date_of_birth: node.data.date_of_birth,
-      appointed_on: node.data.appointed_on
+      // resigned_on: node.data.resigned_on,
+      // occupation: node.data.occupation,
+      // address: node.data.address,
+      // nationality: node.data.nationality,
+      // country_of_residence: node.data.country_of_residence,
+      // date_of_birth: node.data.date_of_birth,
+      // appointed_on: node.data.appointed_on
     };
   });
 

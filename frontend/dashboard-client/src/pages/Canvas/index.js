@@ -28,9 +28,9 @@ class Canvas extends Component {
     }
 
     // Set up graph and fetch if id given
-    if (this.state.graphid !== null) {
-      this.props.actions.fetchGraphFromId(this.graph, this.state.graphid);
-    }
+    // if (this.state.graphid !== null) {
+    //   this.props.actions.fetchGraphFromId(this.graph, this.state.graphid);
+    // }
 
     // If in build fetch current investigation
     if (this.props.match.params && this.props.match.params.investigationId) {
@@ -49,7 +49,7 @@ class Canvas extends Component {
       }
 
       if (this.state.graphid !== nextGraphid && nextGraphid !== null) {
-        this.props.actions.addToGraphFromId(this.graph, nextGraphid);
+        // this.props.actions.addToGraphFromId(this.graph, nextGraphid);
       }
       // } else if (this.props.entityid != null && this.props.entityid !== nextEntityid) {
       //   this.props.graph.translateGraphAroundId(parseInt(nextEntityid, 10))
@@ -77,7 +77,8 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, props) {
   return {
-    sidebarVisible: state.data.sidebarVisible
+    sidebarVisible: state.data.sidebarVisible,
+    currentProject: state.data.currentProject
   };
 }
 

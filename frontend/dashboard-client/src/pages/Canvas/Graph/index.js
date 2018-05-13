@@ -17,6 +17,25 @@ class Graph extends Component {
 
   componentDidMount() {
     this.props.actions.initializeCanvas(this.props.graph, this.props.width, this.props.height);
+    if (this.props.project.graphData) {
+      const graphData = { nodes: this.props.project.graphData.nodes, links: this.props.project.graphData.links };
+      this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));      
+    }
+  }
+
+  componentWillReceiveNextProps(nextprops) {
+    if (nextprops.project.graphData != this.props.project.graphData) {
+      const graphData = { nodes: nextprops.currentProject.graphData.nodes, links: nextprops.currentProject.graphData.links };
+      this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));
+    }
+  }
+
+  makeDeepCopy(array) {
+    var newArray = [];
+    array.map((object) => {
+      return newArray.push(Object.assign({}, object));
+    });
+    return newArray;
   }
 
   renderProjectToolbar() {

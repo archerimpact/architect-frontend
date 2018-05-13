@@ -31,8 +31,18 @@ export function setMatrix(nodes, links) {
   this.reloadIdToIndex();
   let source, target;
   for (var i = 0; i < links.length; i++) {
-    links[i].source = source = this.idToIndex[links[i].source];
-    links[i].target = target = this.idToIndex[links[i].target];
+    if (links[i].source.id) { // the links have already been mapped to the nodes by d3
+      links[i].source = source = this.idToIndex[links[i].source.id];
+    } else { // the links have not already been mapped to the nodes
+      links[i].source = source = this.idToIndex[links[i].source];
+    }
+
+    if (links[i].target.id) {
+      links[i].target = target = this.idToIndex[links[i].target.id];
+    } else {
+      links[i].target = target = this.idToIndex[links[i].target];
+    }
+
     this.adjacencyMatrix[source][target] = {state: DISPLAYED, data: links[i]};
   }
 }
@@ -64,10 +74,21 @@ export function addToMatrix(centerid, nodes, links) {
   var numLinks = links.length;
   let num = 0;
 
+  let sourceIndex, targetIndex
   // const alreadyLinked = {}
   for (var i = 0; i < numLinks; i++) {
-    var sourceIndex = this.idToIndex[links[i].source];
-    var targetIndex = this.idToIndex[links[i].target];
+    if (links[i].source.id) { // the links have already been mapped to the nodes by d3
+      links[i].source = sourceIndex = this.idToIndex[links[i].source.id];
+    } else { // the links have not already been mapped to the nodes
+      links[i].source = sourceIndex = this.idToIndex[links[i].source];
+    }
+
+    if (links[i].target.id) {
+      links[i].target = targetIndex = this.idToIndex[links[i].target.id];
+    } else {
+      links[i].target = targetIndex = this.idToIndex[links[i].target];
+    }
+
     if (this.adjacencyMatrix[sourceIndex][targetIndex].state === NONEXISTENT) {
       const source = this.adjacencyMatrix[sourceIndex][sourceIndex].data;
       const target = this.adjacencyMatrix[targetIndex][targetIndex].data;
@@ -99,7 +120,7 @@ export function addToMatrix(centerid, nodes, links) {
       this.adjacencyMatrix[sourceIndex][targetIndex] = {state: DISPLAYED, data: links[i]};
     }
   }
-  this.update(null, null, true);
+  this.update();
 }
 
 export function matrixToGraph() {

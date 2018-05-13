@@ -28,12 +28,14 @@ class EntityCard extends Component {
     this.setState({collapsed: !current});
   }
 
+
   render() {
     return (
       <div className="card result-card" key={this.props.neo4j_id}>
         <div className="card-header result-card-header flex-row d-flex">
-          <i className="entity-icon add-to-graph-icon material-icons" onClick={()=> this.props.addToGraph(this.state.neo4j_id)}>share</i>
+          <i className="entity-icon add-to-graph-icon material-icons" onClick={()=> this.props.addToGraph(this.state.neo4j_id)}>add</i>
           <i className="entity-icon detailed-view-icon material-icons" onClick={()=> {/* TODO */}}>format_list_bulleted</i>
+          <i className="entity-icon detailed-view-icon material-icons" onClick={()=> {this.props.saveProjectData()}}>save</i>          
           <span className="collapse-link" onClick={this.toggleCollapse}>
             { this.state.name }
           </span>
@@ -55,7 +57,6 @@ class EntityCard extends Component {
             </div>
         </div>
       </div>
-
     );
   }
 

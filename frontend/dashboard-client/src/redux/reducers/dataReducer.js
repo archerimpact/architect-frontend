@@ -2,13 +2,15 @@ import {
   USER_LOGIN,
 	USER_LOGOUT,
 	TOGGLE_SIDEBAR,
-    STORE_PROJECT
+  STORE_PROJECT,
+
   } from '../actions/actionTypes';
 import {
 	INITIALIZE_CANVAS,
 	UPDATE_GRAPH_DATA,
 	STORE_SEARCH_RESULTS,
-  STORE_CURRENT_NODE
+  STORE_CURRENT_NODE,
+  UPDATE_PROJECT_DATA
 } from '../../pages/Canvas/Graph/graphActions';
 
 import initialState from './initialState';
@@ -35,7 +37,8 @@ export default function (state = initialState, action) {
 					name: action.payload.name,
 					description: action.payload.description,
 					users: action.payload.users,
-					_id: action.payload._id
+					_id: action.payload._id,
+          graphData: JSON.parse(action.payload.data)
 				}
 			}
 		case UPDATE_GRAPH_DATA:
@@ -61,21 +64,29 @@ export default function (state = initialState, action) {
           id: action.payload
         }
       }
-	    case USER_LOGIN:
-	    	return {
-	    		...state,
-	    		user: {
-	    			isAuthenticated: true
-	    		}
-	    	};
-        case USER_LOGOUT:
-	    	// TODO: refuse to logout if do not receive success response
-	    	return {
-	    		...state,
-	    		user: {
-	    			isAuthenticated: false
-	    		}
-	    	};
+    case USER_LOGIN:
+    	return {
+    		...state,
+    		user: {
+    			isAuthenticated: true
+    		}
+    	};
+      case USER_LOGOUT:
+    	// TODO: refuse to logout if do not receive success response
+    	return {
+    		...state,
+    		user: {
+    			isAuthenticated: false
+    		}
+    	};
+    case UPDATE_PROJECT_DATA:
+      return {
+        ...state,
+        currentProject: {
+          ...state.currentProject,
+          graphData: action.payload.data
+        }
+      };        
 		default:
 			return state;
 	}
