@@ -95,7 +95,7 @@ exports.update = async function(req, res) {
     if (!req.body.projectid) { return error('Empty project ID', res) }
 
     const updates = {}
-    console.log("updated");
+
     const projName  = validate(req.body.name)
     const projDesc  = validate(req.body.description)
     const projImg   = req.body.img

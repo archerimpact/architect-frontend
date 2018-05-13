@@ -116,9 +116,6 @@ class Graph {
     this.populateNodeInfoBody = this.populateNodeInfoBody.bind(this);
     this.resetDragLink = this.resetDragLink.bind(this);
 
-    this.fetchData = this.fetchData.bind(this);
-    this.addData = this.addData.bind(this);
-
     this.bindDisplayFunctions({}); //no display functions yet
   }
 
@@ -397,7 +394,7 @@ class Graph {
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
 
     // Updates nodes and links according to current data
-    this.update(null, null, false);
+    this.update(null, 150);
     // Avoid initial chaos and skip the wait for graph to drift back onscreen
 
     // for (let i = 300; i > 0; --i) this.force.tick();      
@@ -416,7 +413,6 @@ class Graph {
 
   addData(centerid, nodes, links) {
     this.addToMatrix(centerid, nodes, links);
-    // this.update();
   }
 
   bindDisplayFunctions(displayFunctions) {
@@ -539,7 +535,7 @@ class Graph {
     // }
 
     this.force.start();
-    if (ticks) { for (let i = ticks; i > 0; --i) debugger; this.force.tick(); }   
+    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }   
   }
 
   // Occurs each tick of simulation
