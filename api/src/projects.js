@@ -54,6 +54,7 @@ exports.create = async function(req, res) {
     const projImg   = req.body.img || ''
     const projData  = req.body.data || ''
     const published = false
+    const timestamp = Date.now()
     const project   = {
         _id: projId,
         name: projName,
@@ -62,6 +63,8 @@ exports.create = async function(req, res) {
         data: projData,
         published: published,
         users: [req.user._id],
+        created_on: timestamp,
+        last_modified: timestamp,
       }
 
       const saved = await (new Project(project)).save()
@@ -112,6 +115,8 @@ exports.update = async function(req, res) {
         return error('No fields to update', res)
     }
 
+    updates.last_modified = Date.now()
+
     let dbResponse
     try {
         dbResponse = await Project
@@ -143,7 +148,7 @@ exports.list = async function(req, res) {
                 '$in': [req.user._id],
             }
         })
-        .select('_id name description')
+        // .select('_id name description')
         .exec()
 
     return success(projects, res)

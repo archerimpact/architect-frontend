@@ -26,6 +26,8 @@ const projectSchema = mongoose.Schema({
     data: String,
     published: Boolean,
     users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    created_on: Date,
+    last_modified: Date,
 })
 
 
