@@ -29,8 +29,6 @@ async function checkProjectAuth(req, res) {
             }
         })
 
-    console.log(projects);
-
     if (projects.length < 1) {
         error('Project not found', res)
         return false

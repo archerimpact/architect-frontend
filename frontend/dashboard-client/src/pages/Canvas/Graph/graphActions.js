@@ -26,8 +26,12 @@ export function saveCurrentProjectData(graph) {
     let state = getState()
     let projid = state.data.currentProject._id
     let data = graph.fetchData();
+    console.log("graphData: ", data)
+    data.nodes = data.nodes.map((d) => {
+      return {id: d.id, type: d.type, name: d.name}
+    })
     let imageString = graph.saveGraphAsSVGString();
-    server.updateProject({id: projid, d3Data: data, image: imageString})
+    server.updateProject({id: projid, d3Data: data, image: ''})
       .then((response) => {
         dispatch(updateProjectDispatch({id: projid, data: data}));
       })

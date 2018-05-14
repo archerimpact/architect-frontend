@@ -2,6 +2,16 @@ import * as d3 from 'd3';
 import { isGroup, then } from './utils.js';
 import * as constants from './constants.js';
 
+export function highlightExpandableNode(){
+  this.node.filter((d) => { 
+      console.log("weight: ", d.weight, " linksCount: ", d.linksCount);
+      if (!d.linksCount) { 
+        // debugger; 
+      }
+      if (parseInt(d.linksCount) > d.weight) { 
+        debugger; return d } })
+    .style('fill', 'red')
+}
 // Link highlighting
 export function highlightLinksFromAllNodes() {
   this.link.call(this.styleLink, false);
