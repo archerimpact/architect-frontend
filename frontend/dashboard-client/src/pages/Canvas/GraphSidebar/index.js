@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 
-// import Entity from '../Entity';
+import Entity from '../Entity';
 import SearchResults from '../SearchResults';
 import DatabaseSearchBar from '../../../components/SearchBar/databaseSearchBar';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { withRouter } from 'react-router-dom';
+import { withRouter , Link} from 'react-router-dom';
 import './style.css';
 import * as actions from '../../../redux/actions';
 
@@ -44,16 +44,29 @@ class GraphSidebar extends Component {
   }
 
   renderTabs() {
+    let baseUrl = '/build/'+ this.props.match.params.investigationId;
     return (
       <div className="tabs" key="tabs">
-        <div className="tab active-tab" onClick={() => {/* TODO */}}>
-          <i className="tab-icon material-icons">search</i>
+        <div className="tab active-tab">
+          <Link to={baseUrl + '/search'}>
+            <div>
+              <i className="tab-icon material-icons">search</i>
+            </div>
+          </Link>
         </div>
-        <div className="tab" onClick={() => {/* TODO */}}>
-          <i className="tab-icon material-icons">list</i>
+        <div className="tab">
+          <Link to={baseUrl + '/entity'}>
+            <div>
+              <i className="tab-icon material-icons">list</i>
+            </div>
+          </Link>
         </div>
-        <div className="tab" onClick={() => {/* TODO */}}>
-          <i className="tab-icon material-icons">settings</i>
+        <div className="tab">
+          <Link to={baseUrl + '/settings'}>
+            <div>
+              <i className="tab-icon material-icons">settings</i>
+            </div>
+          </Link>
         </div>
         <div className="tab" onClick={() => this.props.dispatch(actions.toggleSidebar())}>
           <i className="tab-icon material-icons">{this.props.sidebarVisible ? "chevron_right" : "chevron_left"}</i>
@@ -63,19 +76,24 @@ class GraphSidebar extends Component {
   }
 
   renderSidebarContainer() {
-    return (
-      <div className="sidebar-container" key="sidebar-container">
-        <div className="searchbar-container">
-          <DatabaseSearchBar graphid={this.props.graphid} search={this.props.search} showSettings={true}/>
-        </div>
+    switch(this.props.match.params.sidebarState) {
+      case "search":
+        return  (
+          <div className="top-sidebar-container">
+              <div className="searchbar-container">
+                <DatabaseSearchBar graphid={this.props.graphid} search={this.props.search} showSettings={true}/>
+              </div>
 
-        <div className="results-container">
-          <SearchResults graph={this.props.graph} search={this.props.search} entity />
-        </div>
-        {this.state.history.map((res, key) => (<div key={key}> {res.pathname + res.search} </div>))}
-        {/*this.state.renderEntity ? <Entity /> : null */}
-      </div>
-    );
+              <div className="results-container">
+                <SearchResults graph={this.props.graph} search={this.props.search} entity />
+              </div>
+          </div>
+         );
+      case "entity":
+          return <Entity />
+      default:
+        return <div> Sample text </div>
+    };
   }
 
   render() {
@@ -83,8 +101,11 @@ class GraphSidebar extends Component {
       <div className={"sidebar " + (this.props.sidebarVisible ? "slide-out" : "slide-in")}>
         <div className="flex-row d-flex full-height">
           {this.renderTabs()}
-          {this.renderSidebarContainer()}
+          <div className="sidebar-container" key="sidebar-container">
+            {this.renderSidebarContainer()}
+          </div>
         </div>
+        {this.state.history.map((res, key) => (<div key={key}> {res.pathname + res.search} </div>))}
       </div>
     );
   }

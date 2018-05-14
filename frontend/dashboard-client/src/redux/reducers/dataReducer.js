@@ -37,9 +37,8 @@ export default function (state = initialState, action) {
 					name: action.payload.name,
 					description: action.payload.description,
 					users: action.payload.users,
-					_id: action.payload._id,
-          graphData: JSON.parse(action.payload.data)
-				}
+					_id: action.payload._id
+			}
 			}
 		case UPDATE_GRAPH_DATA:
 			return {

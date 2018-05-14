@@ -2,19 +2,45 @@ import React, { Component } from 'react';
 
 import './style.css'
 
-// import EntityCard from '../../SearchResults/EntityCard';
-import ConnectionsTab from './components/ConnectionsTab/';
-
-import queryString from 'query-string';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../../redux/actions/';
-import * as server from '../../../server/';
 import { withRouter } from 'react-router-dom';
 
 const tab_style = {
   backgroundColor: '#FFFFFF',
   color: '#747474'
+};
+const json = {
+  "nodes": [{
+      "name": "Not Evil Organization",
+      "type": "organization",
+      "architectId": "gs://archer-source-data/usa/ofac/sdn.json/4697",
+      "registered_in": "Germany",
+      "organization_type": "Nonprofit",
+      "incorporation_date": "2017-04-20"
+  }, {
+      "name": "Evil Organization",
+      "type": "organization",
+      "architectId": "gs://archer-source-data/usa/ofac/sdn.json/4697/aka/EvilOrg"
+  }, {
+      "name": "DUDE, Some",
+      "type": "person",
+      "architectId": "gs://archer-source-data/usa/ofac/sdn.json/19388",
+      "birthdate": "1966-10-10",
+      "last_seen": "Somalia",
+      "gender": "Male",
+      "place_of_birth": "Russia"
+  }],
+  "relationships": [{
+      "type": "AKA",
+      "target": "gs://archer-source-data/usa/ofac/sdn.json/4697/aka/EvilOrg",
+      "source": "gs://archer-source-data/usa/ofac/sdn.json/4697"
+  }, {
+      "type": "OWNED_BY",
+      "target": "gs://archer-source-data/usa/ofac/sdn.json/4697/aka/EvilOrg",
+      "source": "gs://archer-source-data/usa/ofac/sdn.json/19388"
+  }]
 };
 
 class Entity extends Component {
@@ -25,70 +51,56 @@ class Entity extends Component {
       nodeData: null,
       relationshipData: null,
       graphData: null
-    }
-    this.loadData = this.loadData.bind(this);
+    };
+    this.renderPerson = this.renderPerson.bind(this);
+    this.renderOrganization = this.renderOrganization.bind(this);
   }
 
-  componentDidMount = () => {
-    let qs = queryString.parse(this.props.location.search);
-    this.loadData(qs.entityid);
+  renderPerson(node) {
+    return (
+      <div>
+        <p> {node.name} </p>
+        <p> {node.type} </p>
+        <p> {node.architectId} </p>
+        <p> {node.birthdate} </p>
+        <p> {node.last_seen} </p>
+        <p> {node.gender} </p>
+        <p> {node.place_of_birth} </p>
+      </div>
+    )
   }
 
-  componentWillReceiveProps = (nextprops) => {
-    let lastqs = queryString.parse(this.props.location.search);
-    let qs = queryString.parse(nextprops.location.search);
-    if (lastqs.entityid !== qs.entityid) {
-      this.setState({
-        nodeData: null,
-        relationshipData: null,
-      })
-      this.loadData(qs.entityid) //load data when you change the url props
-    }
+  renderOrganization(node) {
+    return (
+      <div>
+        <p> {node.name} </p>
+        <p> {node.type} </p>
+        <p> {node.architectId} </p>
+        <p> {node.registered_in} </p>
+        <p> {node.organization_type} </p>
+        <p> {node.incorporation_date} </p>
+      </div>
+    )
   }
-
-  loadData(neo4j_id) {
-    server.getBackendNode(neo4j_id)
-      .then(data => {
-        //returns items in the format: [neo4j_data]
-        this.setState({ nodeData: data[0] })
-      })
-      .catch(err => {
-        console.log(err)
-      })
-    server.getBackendRelationships(neo4j_id)
-      .then(data => {
-        /* neo4j returns items in this format: [connection, startNode, endNode] */
-
-        this.setState({ relationshipData: data })
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-
-
-
+  
   render() {
     if (this.state.nodeData == null || this.state.relationshipData == null) {
       return (
-        null
+        <div>
+          <div style={{flex: 1}}> Entity </div>
+         {this.type === "person" ? this.renderPerson(json.nodes[0]) 
+            :
+            this.renderOrganization(json.nodes[0]) 
+          }
+
+        </div>
       );
     } else {
       return (
         <div>
-          <div onClick={()=>this.props.history.goBack()}> Back to results </div>
           {/* <EntityCard nodeItem={this.state.nodeData[0]} /> */}
           {/* <hr></hr>
           <SummaryInfo nodeItem={this.state.nodeData[0]} nodeRelationships={this.state.relationshipData} /> */}
-          <div className="tabs" style={{ width: '100%' }}>
-            <div className="tab">
-              <div label={"Connections (" + this.state.relationshipData.length + ")"} type="default" style={tab_style}>
-                <div className="connections-tab">
-                  <ConnectionsTab nodeRelationships={this.state.relationshipData} />
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       );
     }

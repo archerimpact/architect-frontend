@@ -9,61 +9,73 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../redux/actions';
 import * as graphActions from './Graph/graphActions';
+import * as server from '../../server/';
 
 class Canvas extends Component {
 
   constructor(props) {
     super(props);
     this.graph = new ArcherGraph();
-    const params = new URLSearchParams(this.props.location.search);
-    this.state = {
-      search: params.get('search'),
-      graphid: params.get('graphid')
-    }
   }
 
   componentDidMount() {
-    if (this.state.search !== null) {
-      this.props.actions.fetchSearchResults(this.state.search);
-    }
-
-    // Set up graph and fetch if id given
-    // if (this.state.graphid !== null) {
-    //   this.props.actions.fetchGraphFromId(this.graph, this.state.graphid);
-    // }
-
-    // If in build fetch current investigation
     if (this.props.match.params && this.props.match.params.investigationId) {
       this.props.actions.fetchProject(this.props.match.params.investigationId);
+    }
+    if (this.props.match.params && this.props.match.params.sidebarState === 'search' && this.props.match.params.query !== null) {
+      this.props.actions.fetchSearchResults(this.props.match.params.query);
+    } else if (this.props.match.params && this.props.match.params.sidebarState === 'entity') {
+      this.props.actions.addToGraphFromId(this.graph, this.props.match.params.query);
+      let entity = this.props.match.params.query;
+      if (entity != null) {
+        // this.loadData(entity);
+      }
     }
   }
 
   componentWillReceiveProps(nextprops) {
-    if (this.props.location !== nextprops.location) {
-      const nextParams = new URLSearchParams(nextprops.location.search);
-      let nextSearch = nextParams.get('search');
-      let nextGraphid = nextParams.get('graphid');
-      if (nextSearch !== null && this.state.search !== nextSearch) {
-        this.props.actions.fetchSearchResults(nextSearch);
-        this.setState({ showResults: true })
+    if (this.props.location !== nextprops.location && nextprops.match.params) {
+      if (this.props.match.params.sidebarState === 'search') {
+        let nextSearch = nextprops.match.params.query;
+        if (nextSearch !== null && this.props.match.params.query !== nextSearch) {
+          this.props.actions.fetchSearchResults(nextSearch);
+        }
+      } else if (this.props.match.params.sidebarState === 'entity') {
+        this.props.actions.addToGraphFromId(this.graph, nextprops.match.params.query);
+        let entity = nextprops.match.params.query;
+        if (entity != null) {
+          // this.loadData(entity);
+        }
       }
-
-      if (this.state.graphid !== nextGraphid && nextGraphid !== null) {
-        // this.props.actions.addToGraphFromId(this.graph, nextGraphid);
-      }
-      
-      // } else if (this.props.entityid != null && this.props.entityid !== nextEntityid) {
-      //   this.props.graph.translateGraphAroundId(parseInt(nextEntityid, 10))
-      // }
-      this.setState({search: nextSearch, graphid: nextGraphid})
     }
   }
+
+  // loadData(neo4j_id) {
+  //   server.getBackendNode(neo4j_id)
+  //     .then(data => {
+  //       //returns items in the format: [neo4j_data]
+  //       this.setState({ nodeData: data[0] })
+  //     })
+  //     .catch(err => {
+  //       console.log(err)
+  //     })
+  //   server.getBackendRelationships(neo4j_id)
+  //     .then(data => {
+  //       /* neo4j returns items in this format: [connection, startNode, endNode] */
+
+  //       this.setState({ relationshipData: data })
+  //     })
+  //     .catch(err => {
+  //       console.log(err)
+  //     })
+  // }
+
 
   render() {
     return (
       <div className="canvas">
-        <Graph graph={this.graph} graphid={this.state.graphid}/>
-        <GraphSidebar graph={this.graph} search={this.state.search} graphid={this.state.graphid}/>
+        <Graph graph={this.graph}/>
+        <GraphSidebar graph={this.graph}/>
       </div>
     )
   }
