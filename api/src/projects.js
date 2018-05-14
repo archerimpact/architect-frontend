@@ -95,9 +95,8 @@ exports.get = async function(req, res) {
     if (!checkUserAuth(req, res)) { return }
     if (!req.query.projectid) { return error('Empty project ID', res) }
 
-    // let auth = await checkProjectAuth(req, res)
-    // if (!auth) { return }
-    // Instead of performing this check, we simply check the query below.
+    const auth = await checkProjectAuth(req, res)
+    if (!auth) { return }
 
     const projects = await Project
         .find({
@@ -110,10 +109,6 @@ exports.get = async function(req, res) {
 
     if (projects.length === 0) { return error('Project not found', res) }
 
-    if (!projects[0].users.includes(req.user._id)) {
-        return error('You are not authorized to access this project', res)
-    }
-
     return success(projects[0], res)
 }
 
@@ -122,7 +117,7 @@ exports.update = async function(req, res) {
     if (!checkUserAuth(req, res)) { return }
     if (!req.body.projectid) { return error('Empty project ID', res) }
 
-    let auth = await checkProjectAuth(req, res)
+    const auth = await checkProjectAuth(req, res)
     if (!auth) { return }
 
     const updates = {}
@@ -186,7 +181,7 @@ exports.list = async function(req, res) {
 exports.delete = async function(req, res) {
     if (!checkUserAuth(req, res)) { return }
 
-    let auth = await checkProjectAuth(req, res)
+    const auth = await checkProjectAuth(req, res)
     if (!auth) { return }
 
     const projects = await Project
