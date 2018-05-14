@@ -1,12 +1,14 @@
 import * as d3 from 'd3';
 import { isGroup, then } from './utils.js';
 import * as constants from './constants.js';
+import * as utils from './utils.js';
 
 export function highlightExpandableNode(){
   this.node.classed('expandable', false)
-  this.node.filter((d) => { if (parseInt(d.linksCount) > d.weight) { return d } })
+  this.node.filter((d) => { if (utils.isExpandable(d)) { return d } })
     .classed('expandable', true)
 }
+
 // Link highlighting
 export function highlightLinksFromAllNodes() {
   this.link.call(this.styleLink, false);
@@ -18,6 +20,21 @@ export function highlightLinksFromNode(node) {
   node = node[0].__data__.index;
   this.link.filter((d) => { return d.source.index == node || d.target.index == node; })
     .call(this.styleLink, (d) => { return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index]; });
+}
+
+export function styleNode(selection, isSelected) {
+  selection.select('circle')
+    .attr('r', (d) => { return d.radius = (d.group ? constants.GROUP_NODE_RADIUS : constants.NODE_RADIUS); })
+    .classed('hull-node', (d) => { return d.group; })
+    .style('stroke', (d) => { return d.group ? constants.HEX_WHITE : getNodeColor(d); })
+    .style('fill', (d) => { return d.group ? getNodeColor(d) : constants.HEX_LIGHT_GRAY; });
+
+  selection.select('.icon')
+    .style('fill', (d) => { return getNodeColor(d); });
+}
+
+export function getNodeColor(d) {
+  return constants.NODE_COLORS[d.type] || constants.HEX_DARK_GRAY;
 }
 
 export function styleLink(selection, isSelected) {

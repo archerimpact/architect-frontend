@@ -1,6 +1,4 @@
 'use strict';
-// FontAwesome icon unicode-to-node type dict
-// Use this to find codes for FA icons: https://fontawesome.com/cheatsheet
 
 import * as d3 from 'd3';
 import * as aesthetics from './helpers/aesthetics.js';
@@ -13,6 +11,8 @@ import Minimap from './MinimapClass.js'
 import * as constants from './helpers/constants.js';
 import { GROUP, HULL_GROUP } from './helpers/typeConstants.js';
 
+// FontAwesome icon unicode-to-node type dict
+// Use this to find codes for FA icons: https://fontawesome.com/cheatsheet
 const icons = {
   'person': '',
   'Individual': '',
@@ -41,6 +41,7 @@ class Graph {
     this.dragCallback = null; // Store reference to drag callback to restore after disabling node drag
     this.dragDistance = 0; // Keep track of drag distance starting on node to disable click during edit mode
     this.mousedownNode = null; // Store reference to current node on mousedown (aka currently edited node)
+    this.recentActions = []; // Stack storing most recent actions by user, each entry takes the form [actionName, data]
 
     this.isDragging = false; // Keep track of dragging to disallow node emphasis on drag
     this.draggedNode = null; // Store reference to currently dragged node, null otherwise
@@ -302,7 +303,7 @@ class Graph {
       .attr('y1', 0)
       .attr('x2', 0)
       .attr('y2', 0)
-      .attr('marker-end', function(d) { return d3.select(this).classed('selected') ? 'url(#end-arrow-blue)' : 'url(#end-arrow-gray)'});
+      .attr('marker-end', 'url(#end-big-gray)');
   }
 
   initializeZoomButtons() {
@@ -373,40 +374,31 @@ class Graph {
     this.link = this.container.append('g').selectAll('.link');
     this.node = this.container.append('g').selectAll('.node');
 
-    this.setMatrix(this.nodes, this.links); // initialize matrix with empty values
-
     this.force.on('tick', (e) => { this.ticked(e, this) });
 
-    // this.minimap = new Minimap()
-    //                 .setZoom(this.zoom)
-    //                 .setTarget(this.container) // that's what you're trying to track/the images
-    //                 .setMinimapPositionX(this.minimapPaddingX)
-    //                 .setMinimapPositionY(this.minimapPaddingY)
-    //                 .setGraph(this);
+    this.minimap = new Minimap()
+                    .setZoom(this.zoom)
+                    .setTarget(this.container) // that's what you're trying to track/the images
+                    .setMinimapPositionX(this.minimapPaddingX)
+                    .setMinimapPositionY(this.minimapPaddingY)
+                    .setGraph(this);
 
-    // this.minimap.initializeMinimap(this.svg, this.width, this.height)
+    this.minimap.initializeMinimap(this.svg, this.width, this.height)
   }
 
   // Completely rerenders the graph, assuming all new nodes and links
-  // centerid currently doesn't do anything
-  setData(centerid, nodes, links) {
-    this.setMatrix(nodes, links);
+  setData(centerid, nodes, links, byIndex) {
+    this.setMatrix(nodes, links, byIndex);
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
+    this.update();
+    for (let i = 150; i > 0; --i) this.force.tick();  
 
-    // Updates nodes and links according to current data
-    this.update(null, 150);
-    // Avoid initial chaos and skip the wait for graph to drift back onscreen
+    this.minimap
+      .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
 
-    // for (let i = 300; i > 0; --i) this.force.tick();      
-    
-    // this.minimap
-    //   .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
-
-    // for (let i = 150; i > 0; --i) this.force.tick(); 
-
-    // this.minimap
-    //   .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
-    //   .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); 
+    this.minimap
+      .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
+      .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); 
 
     //this.translateGraphAroundNode(centerd);
   }
@@ -415,16 +407,18 @@ class Graph {
     this.addToMatrix(centerid, nodes, links);
   }
 
-  bindDisplayFunctions(displayFunctions) {
-    this.displayNodeInfo = displayFunctions.node ? displayFunctions.node : function(d) {};
-    this.displayLinkInfo = displayFunctions.link ? displayFunctions.link : function(d) {};
-    this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
-  }
-
   fetchData() {
     return { nodes: this.nodes, links: this.links };
   }
 
+  bindDisplayFunctions(displayFunctions) {
+    this.displayNodeInfo = displayFunctions.node ? displayFunctions.node : function(d) {};
+    this.displayLinkInfo = displayFunctions.link ? displayFunctions.link : function(d) {};
+    this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
+    this.expandNodeFromData = displayFunctions.expand ? displayFunctions.expand : function(d) {};    
+  }
+
+  // Updates nodes and links according to current data
   update(event=null, ticks=null, minimap=true) {
     var self = this;
 
@@ -433,10 +427,10 @@ class Graph {
     this.force.stop();
     this.matrixToGraph();
     this.reloadNeighbors(); 
-    
+
     this.force
       .gravity(.33)
-      .charge((d) => { return d.group ? -7500 : -1 * 5000})
+      .charge((d) => { return d.group ? -7500 : -20000})
       .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
       .friction(this.nodes.length < 15 ? .75 : .65)
       .alpha(.8)
@@ -480,22 +474,22 @@ class Graph {
         .on('mouseup', function (d) { self.mouseup(d, this); });
     }
 
-    this.nodeEnter.append('circle')
-      .attr('r', (d) => { return d.radius = (d.group ? constants.GROUP_NODE_RADIUS : constants.NODE_RADIUS); })
+    this.nodeEnter.append('circle');
+
 
     this.nodeEnter.append('text')
       .attr('class', 'icon')
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'central')
       .attr('font-family', 'FontAwesome')
-      .attr('font-size', '20px')
+      .attr('font-size', '21px')
       .text((d) => { return (!d.group && d.type && icons[d.type]) ? icons[d.type] : ''; })
       .classed('unselectable', true);
 
     this.nodeEnter.append('text')
       .attr('class', 'node-name')
       .attr('text-anchor', 'middle')
-      .attr('dy', '35px')
+      .attr('dy', '40px')
       .text((d) => { return d.group ? '' : utils.processNodeName(d.name, this.printFull); })
       .call(this.textWrap, this.printFull)
       .on('click', function (d) { self.stopPropagation(); })
@@ -507,6 +501,7 @@ class Graph {
         .on('dragend', this.stopPropagation)
       );
 
+    this.node.call(this.styleNode, false)
     this.node.exit().remove();
 
     // Update hulls
@@ -523,25 +518,34 @@ class Graph {
 
     this.hull.exit().remove();
 
-    this.node.attr("fixed", false);
+
     
     this.reloadNeighbors();
+
     // Update minimap   
-    // if (minimap) { 
-    //   this.toRenderMinimap = true;
-    //   this.tickCount = 0;
-    // }
 
     this.force.start();
-    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }  
+    // Avoid initial chaos and skip the wait for graph to drift back onscreen
+    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }   
+
+    if (minimap) { 
+      this.toRenderMinimap = true;
+      this.tickCount = 0;
+    }
+    
+    this.node.each(function(d) {
+      if (d.fixedTransition) {
+        d.fixed = d.fixedTransition = false;
+      }
+    });
+
     this.highlightExpandableNode();
- 
   }
 
   // Occurs each tick of simulation
   ticked(e, self) {
     const classThis = this;
-    // this.force.resume();
+    this.force.resume();
     this.xbound = [this.width, 0];
     this.ybound = [this.height, 0];
     this.tickCount += 1;
@@ -557,15 +561,15 @@ class Graph {
       })
       .attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
 
-    // if (this.toRenderMinimap) { 
-    //   if (this.tickCount === constants.MINIMAP_TICK) {
-    //     const translate = this.zoom.translate();
-    //     const scale = this.zoom.scale();
-    //     this.minimap.syncToSVG(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
-    //     this.tickCount = 0;
-    //     this.toRenderMinimap = false;
-    //   }
-    // }
+    if (this.toRenderMinimap) { 
+      if (this.tickCount === constants.MINIMAP_TICK) {
+        const translate = this.zoom.translate();
+        const scale = this.zoom.scale();
+        this.minimap.syncToSVG(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
+        this.tickCount = 0;
+        this.toRenderMinimap = false;
+      }
+    }
 
     if (!this.hull.empty()) {
       this.calculateAllHulls();
@@ -725,17 +729,13 @@ class Graph {
 
           this.degreeExpanded += 1;
 
-          if (this.degreeExpanded <= 2) {
+          if (this.degreeExpanded <= 4) {
             d3.json(`/data/well_connected_${this.degreeExpanded}.json`, (json) => {
               this.addToMatrix(0, json.nodes, json.links);
             });
           }
         }
       });
-  }
-
-  saveGraphAsSVGString() {
-    return utils.createSVGString(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
   }
 
   toggleFixedNodes() {
@@ -782,18 +782,23 @@ class Graph {
       this.indexToId[i] = id;
     }
   }
+
+  saveGraphAsSVGString() {
+    return utils.createSVGString(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
+  }
 }
 
 //From aesthetics.js
+Graph.prototype.highlightExpandableNode = aesthetics.highlightExpandableNode;
 Graph.prototype.highlightLinksFromAllNodes = aesthetics.highlightLinksFromAllNodes;
 Graph.prototype.highlightLinksFromNode = aesthetics.highlightLinksFromNode;
+Graph.prototype.styleNode = aesthetics.styleNode;
 Graph.prototype.styleLink = aesthetics.styleLink;
 Graph.prototype.fillGroupNodes = aesthetics.fillGroupNodes;
 Graph.prototype.fadeGraph = aesthetics.fadeGraph;
 Graph.prototype.resetGraphOpacity = aesthetics.resetGraphOpacity;
 Graph.prototype.resetDragLink = aesthetics.resetDragLink;
 Graph.prototype.textWrap = aesthetics.textWrap;
-Graph.prototype.highlightExpandableNode = aesthetics.highlightExpandableNode;
 
 //From mouseClicks.js
 Graph.prototype.brushstart = mouseClicks.brushstart;

@@ -1,8 +1,7 @@
+import * as d3 from 'd3';
 import { MAX_SCALE, GRID_LENGTH } from './constants.js'
 import { getD3Event, findEntryById, processNodeName, isRightClick, then } from './utils.js';
 import { resetDragLink } from './aesthetics.js';
-
-import * as d3 from 'd3';
 import * as utils from './utils.js';
 
 // Click-drag node selection
@@ -57,6 +56,10 @@ export function rightclicked(node, d) {
 export function dblclicked(d) {
   if (utils.isGroup(d)) {
     this.toggleGroupView(d.id);
+  }
+
+  if (utils.isExpandable(d)) {
+    this.expandNodeFromData(d);
   }
 
   d3.event.stopPropagation();
