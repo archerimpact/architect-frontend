@@ -20,16 +20,22 @@ function checkUserAuth(req, res) {
     return true
 }
 
-async function checkProjectAuth(req, res) {
+
+async function checkProjectAuth(req, res, field) {
+    if (!field) {
+        error('Empty project ID', res)
+        return false
+    }
+
     const projects = await Project
         .find({
-            _id: mongoose.Types.ObjectId(req.query.projectid),
+            _id: mongoose.Types.ObjectId(field),
             users: {
                 '$in': [req.user._id],
             }
         })
 
-    console.log(projects);
+    console.log(projects)
 
     if (projects.length < 1) {
         error('Project not found', res)
@@ -95,9 +101,8 @@ exports.create = async function(req, res) {
 
 exports.get = async function(req, res) {
     if (!checkUserAuth(req, res)) { return }
-    if (!req.query.projectid) { return error('Empty project ID', res) }
 
-    const auth = await checkProjectAuth(req, res)
+    const auth = await checkProjectAuth(req, res, req.query.projectid)
     if (!auth) { return }
 
     const projects = await Project
@@ -117,9 +122,8 @@ exports.get = async function(req, res) {
 
 exports.update = async function(req, res) {
     if (!checkUserAuth(req, res)) { return }
-    if (!req.body.projectid) { return error('Empty project ID', res) }
 
-    const auth = await checkProjectAuth(req, res)
+    const auth = await checkProjectAuth(req, res, req.body.projectid)
     if (!auth) { return }
 
     const updates = {}
@@ -183,7 +187,7 @@ exports.list = async function(req, res) {
 exports.delete = async function(req, res) {
     if (!checkUserAuth(req, res)) { return }
 
-    const auth = await checkProjectAuth(req, res)
+    const auth = await checkProjectAuth(req, res, req.query.projectid)
     if (!auth) { return }
 
     const projects = await Project
