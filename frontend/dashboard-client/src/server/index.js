@@ -187,7 +187,7 @@ export function getBackendRelationships(neo4j_id){
 }
 
 export function getNode(neo4j_id){
-  var url = 'http://api.archer.cloud:2724/?id=' + neo4j_id + '&degrees=2';
+  var url = 'http://api.archer.cloud:2724/?id=' + neo4j_id + '&degrees=1';
 
   return new Promise(function(fulfill, reject) {
     axios.get(url)
