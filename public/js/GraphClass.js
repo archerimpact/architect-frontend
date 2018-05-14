@@ -60,8 +60,9 @@ class Graph {
     this.node = null;
     this.link = null;
     this.hull = null;
-    this.nodes = null;
-    this.links = null;
+    this.nodes = [];
+    this.links = [];
+    this.hulls = [];
     this.nodeEnter = null;
     this.zoom = null;
     this.brush = null;
@@ -372,54 +373,41 @@ class Graph {
     this.link = this.container.append('g').selectAll('.link');
     this.node = this.container.append('g').selectAll('.node');
 
-    this.minimap = new Minimap()
-                    .setZoom(this.zoom)
-                    .setTarget(this.container) // that's what you're trying to track/the images
-                    .setMinimapPositionX(this.minimapPaddingX)
-                    .setMinimapPositionY(this.minimapPaddingY)
-                    .setGraph(this);
+    this.force.on('tick', (e) => { this.ticked(e, this) });
 
-    this.minimap.initializeMinimap(this.svg, this.width, this.height)
+    // this.minimap = new Minimap()
+    //                 .setZoom(this.zoom)
+    //                 .setTarget(this.container) // that's what you're trying to track/the images
+    //                 .setMinimapPositionX(this.minimapPaddingX)
+    //                 .setMinimapPositionY(this.minimapPaddingY)
+    //                 .setGraph(this);
+
+    // this.minimap.initializeMinimap(this.svg, this.width, this.height)
   }
 
   // Completely rerenders the graph, assuming all new nodes and links
-  // centerid currently doesn't do anything
-  setData(centerid, nodes, links) {
-    this.setMatrix(nodes, links);
+  setData(centerid, nodes, links, byIndex) {
+    this.setMatrix(nodes, links, byIndex);
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
+    this.update();
+    for (let i = 150; i > 0; --i) this.force.tick();  
 
-    this.nodes = nodes;
-    this.links = links;
-    this.hulls = [];
+    // this.minimap
+    //   .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
 
-    this.force
-      .gravity(.33)
-      .charge((d) => { return d.group ? -7500 : -20000})
-      .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
-      .friction(this.nodes.length < 15 ? .75 : .65)
-      .alpha(.8)
-      .nodes(this.nodes)
-      .links(this.links);
-
-    // Updates nodes and links according to current data
-    this.update(null, null, false);
-    this.force.on('tick', (e) => { this.ticked(e, this) });
-    // Avoid initial chaos and skip the wait for graph to drift back onscreen
-
-    for (let i = 300; i > 0; --i) this.force.tick();      
-    
-    this.minimap
-      .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
-
-    for (let i = 150; i > 0; --i) this.force.tick(); 
-    this.reloadNeighbors();
-
-    // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
-    this.minimap
-      .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
-      .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); 
+    // this.minimap
+    //   .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
+    //   .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); 
 
     //this.translateGraphAroundNode(centerd);
+  }
+
+  addData(centerid, nodes, links) {
+    this.addToMatrix(centerid, nodes, links);
+  }
+
+  fetchData() {
+    return { nodes: this.nodes, links: this.links };
   }
 
   bindDisplayFunctions(displayFunctions) {
@@ -428,6 +416,7 @@ class Graph {
     this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
   }
 
+  // Updates nodes and links according to current data
   update(event=null, ticks=null, minimap=true) {
     var self = this;
 
@@ -438,7 +427,11 @@ class Graph {
     this.reloadNeighbors(); 
 
     this.force
-      .charge(-1 * Math.max(Math.pow(100*this.nodes.length/this.links.length, 2 + Math.log(Math.pow(this.nodes.length, 2)/(10*this.links.length))), 750))
+      .gravity(.33)
+      .charge((d) => { return d.group ? -7500 : -20000})
+      .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
+      .friction(this.nodes.length < 15 ? .75 : .65)
+      .alpha(.8)
       .nodes(this.nodes)
       .links(this.links);
 
@@ -523,24 +516,33 @@ class Graph {
 
     this.hull.exit().remove();
 
-    this.node.attr("fixed", false);
+
     
     this.reloadNeighbors();
 
     // Update minimap   
-    if (minimap) { 
-      this.toRenderMinimap = true;
-      this.tickCount = 0;
-    }
-
+    // if (minimap) { 
+    //   this.toRenderMinimap = true;
+    //   this.tickCount = 0;
+    // }
     this.force.start();
+    // Avoid initial chaos and skip the wait for graph to drift back onscreen
     if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }   
+
+    this.node.each(function(d) {
+      if (d.fixedTransition) {
+        d.fixed = d.fixedTransition = false;
+        d3.select(this).classed("fixed", false);
+      }
+    });
+
+    this.highlightExpandableNode();
   }
 
   // Occurs each tick of simulation
   ticked(e, self) {
     const classThis = this;
-    // this.force.resume();
+    this.force.resume();
     this.xbound = [this.width, 0];
     this.ybound = [this.height, 0];
     this.tickCount += 1;
@@ -556,15 +558,15 @@ class Graph {
       })
       .attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
 
-    if (this.toRenderMinimap) { 
-      if (this.tickCount === constants.MINIMAP_TICK) {
-        const translate = this.zoom.translate();
-        const scale = this.zoom.scale();
-        this.minimap.syncToSVG(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
-        this.tickCount = 0;
-        this.toRenderMinimap = false;
-      }
-    }
+    // if (this.toRenderMinimap) { 
+    //   if (this.tickCount === constants.MINIMAP_TICK) {
+    //     const translate = this.zoom.translate();
+    //     const scale = this.zoom.scale();
+    //     this.minimap.syncToSVG(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
+    //     this.tickCount = 0;
+    //     this.toRenderMinimap = false;
+    //   }
+    // }
 
     if (!this.hull.empty()) {
       this.calculateAllHulls();
@@ -724,7 +726,7 @@ class Graph {
 
           this.degreeExpanded += 1;
 
-          if (this.degreeExpanded <= 2) {
+          if (this.degreeExpanded <= 4) {
             d3.json(`/data/well_connected_${this.degreeExpanded}.json`, (json) => {
               this.addToMatrix(0, json.nodes, json.links);
             });
@@ -777,9 +779,14 @@ class Graph {
       this.indexToId[i] = id;
     }
   }
+
+  saveGraphAsSVGString() {
+    return utils.createSVGString(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
+  }
 }
 
 //From aesthetics.js
+Graph.prototype.highlightExpandableNode = aesthetics.highlightExpandableNode;
 Graph.prototype.highlightLinksFromAllNodes = aesthetics.highlightLinksFromAllNodes;
 Graph.prototype.highlightLinksFromNode = aesthetics.highlightLinksFromNode;
 Graph.prototype.styleLink = aesthetics.styleLink;

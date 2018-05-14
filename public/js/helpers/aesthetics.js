@@ -2,6 +2,12 @@ import * as d3 from 'd3';
 import { isGroup, then } from './utils.js';
 import * as constants from './constants.js';
 
+export function highlightExpandableNode(){
+  this.node.classed('expandable', false)
+  this.node.filter((d) => { if (parseInt(d.linksCount) > d.weight) { return d } })
+    .classed('expandable', true)
+}
+
 // Link highlighting
 export function highlightLinksFromAllNodes() {
   this.link.call(this.styleLink, false);
