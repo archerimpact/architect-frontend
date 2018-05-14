@@ -176,7 +176,7 @@ i.fa-close {
 
 .node circle {
   cursor: pointer;
-  stroke-width: 3px;
+  stroke-width: 2.6px;
 }
 
 .node circle.hull-node {

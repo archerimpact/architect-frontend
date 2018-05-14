@@ -476,14 +476,14 @@ class Graph {
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'central')
       .attr('font-family', 'FontAwesome')
-      .attr('font-size', '20px')
+      .attr('font-size', '21px')
       .text((d) => { return (!d.group && d.type && icons[d.type]) ? icons[d.type] : ''; })
       .classed('unselectable', true);
 
     this.nodeEnter.append('text')
       .attr('class', 'node-name')
       .attr('text-anchor', 'middle')
-      .attr('dy', '35px')
+      .attr('dy', '40px')
       .text((d) => { return d.group ? '' : utils.processNodeName(d.name, this.printFull); })
       .call(this.textWrap, this.printFull)
       .on('click', function (d) { self.stopPropagation(); })

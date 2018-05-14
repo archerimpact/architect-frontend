@@ -1,9 +1,9 @@
 export const MIN_SCALE = 0.1;
 export const MAX_SCALE = 9.0;
 export const GRID_LENGTH = 80;
-export const NODE_RADIUS = 20;
+export const NODE_RADIUS = 23;
 export const LINK_DISTANCE = 100;
-export const STROKE_WIDTH = 3;
+export const STROKE_WIDTH = 2.7;
 export const GROUP_NODE_RADIUS = 10;
 export const GROUP_LINK_DISTANCE = 40;
 export const GROUP_STROKE_WIDTH = 2.4;
