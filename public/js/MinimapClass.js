@@ -123,6 +123,16 @@ class Minimap {
     this.box.call(drag);
   }
 
+  hideMinimap() {
+    this.xbound = [0, 0];
+    this.ybound = [0, 0];
+  }
+
+  showMinimap() {
+    this.xbound = [x1, x2];
+    this.ybound = [y1, y2];
+  }
+
   dragstart() {
     d3.event.sourceEvent.stopPropagation();
 

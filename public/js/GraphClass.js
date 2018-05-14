@@ -9,6 +9,7 @@ import * as matrix from './helpers/matrix.js';
 import * as d3Data from './helpers/changeD3Data.js';
 import Minimap from './MinimapClass.js'
 import * as constants from './helpers/constants.js';
+import * as colors from './helpers/colorConstants.js';
 import { GROUP, HULL_GROUP } from './helpers/typeConstants.js';
 
 // FontAwesome icon unicode-to-node type dict
@@ -18,7 +19,13 @@ const icons = {
   'Document': '',
   'corporation': '',
   'group': '',
-  'same_as_group': ''
+  'same_as_group': '',
+  [constants.BUTTON_ZOOM_IN_ID]: '',
+  [constants.BUTTON_ZOOM_OUT_ID]: '',
+  [constants.BUTTON_FIX_NODE_ID]: '',
+  [constants.BUTTON_EDIT_MODE_ID]: '',
+  [constants.BUTTON_TOGGLE_MINIMAP_ID]: '',
+  [constants.BUTTON_SAVE_PROJECT_ID]: '' 
 };
 
 class Graph {
@@ -34,6 +41,7 @@ class Graph {
     this.ybound = [0, 0];
 
     this.editMode = false; // Keep track of edit mode (add/remove/modify nodes + links)
+    this.dragLink = null; // Dynamic link from selected node in edit mode
     this.dragCallback = null; // Store reference to drag callback to restore after disabling node drag
     this.dragDistance = 0; // Keep track of drag distance starting on node to disable click during edit mode
     this.mousedownNode = null; // Store reference to current node on mousedown (aka currently edited node)
@@ -74,8 +82,6 @@ class Graph {
     this.globalLinks = {};
     this.globalNodes = [];
 
-    this.dragLink = null; // Dynamic link from selected node in edit mode
-
     this.ticked = this.ticked.bind(this);
     this.brushstart = this.brushstart.bind(this);
     this.brushing = this.brushing.bind(this);
@@ -105,7 +111,10 @@ class Graph {
     this.initializeBrush = this.initializeBrush.bind(this);
     this.drawHull = this.drawHull.bind(this);
     this.zoomButton = this.zoomButton.bind(this);
+    this.initializeToolbarButtons = this.initializeToolbarButtons.bind(this);
+    this.getToolbarLabels = this.getToolbarLabels.bind(this);
     this.initializeZoomButtons = this.initializeZoomButtons.bind(this);
+    this.initializeButton = this.initializeButton.bind(this);
     this.textWrap = this.textWrap.bind(this);
     this.displayTooltip = this.displayTooltip.bind(this);
     this.displayDebugTooltip = this.displayDebugTooltip.bind(this);
@@ -275,9 +284,9 @@ class Graph {
       markerList.push({ id: markerId });
     }
 
-    const colors = {
-      'gray': '#545454',
-      'blue': '#0d77e2'
+    const colorNameToHex = {
+      'gray': colors.HEX_DARK_GRAY,
+      'blue': colors.HEX_BLUE
     };
 
     let marker, id, tokens;
@@ -285,7 +294,7 @@ class Graph {
       tokens = marker.id.split('-');
       marker.direction = (tokens[0] === 'end') ? 'auto' : 'auto-start-reverse';
       marker.size = (tokens[1] === 'big') ? constants.MARKER_SIZE_BIG : constants.MARKER_SIZE_SMALL;
-      marker.color = colors[tokens[2]];
+      marker.color = colorNameToHex[tokens[2]];
     }
 
     return markerList;
@@ -301,40 +310,73 @@ class Graph {
       .attr('marker-end', 'url(#end-big-gray)');
   }
 
+  initializeToolbarButtons() {
+    const buttonData = this.getToolbarLabels();
+
+    this.svg.append('rect')
+      .attr('y', constants.TOOLBAR_PADDING)
+      .attr({ x: constants.TOOLBAR_PADDING, width: constants.BUTTON_WIDTH, height: constants.BUTTON_WIDTH * buttonData.length })
+      .style('fill', colors.HEX_PRIMARY_ACCENT);
+
+    const button = this.svg.selectAll('.button')
+      .data(buttonData)
+      .enter().append('g')
+      .attr('pointer-events', 'all');
+
+    button.append('text')
+      .attr('class', 'button-icon')
+      .attr('x', constants.TOOLBAR_PADDING + constants.BUTTON_WIDTH / 2)
+      .attr('y', (d, i) => { return (constants.TOOLBAR_PADDING + constants.BUTTON_WIDTH / 2) + i * constants.BUTTON_WIDTH; })
+      .style({ 'text-anchor': 'middle', 'dominant-baseline': 'central', 'font-family': 'FontAwesome', 'font-size': constants.BUTTON_WIDTH * 0.4 + 'px' })
+      .style('fill', colors.HEX_WHITE)
+      .style('font-weight', 'lighter')
+      .text((d) => { return (d.label && icons[d.label]) ? icons[d.label] : ''; })
+      .classed('unselectable', true);
+
+    button.append('rect')
+      .attr('id', (d) => { return d.label; })
+      .attr('y', (d, i) => { return constants.TOOLBAR_PADDING + i * constants.BUTTON_WIDTH; })
+      .attr({ x: constants.TOOLBAR_PADDING, width: constants.BUTTON_WIDTH, height: constants.BUTTON_WIDTH, class: 'button' })
+      .on('click', this.stopPropagation)
+      .on('dblclick', this.stopPropagation)
+      .call(d3.behavior.drag()
+        .on('dragstart', this.stopPropagation)
+        .on('drag', this.stopPropagation)
+        .on('dragend', this.stopPropagation)
+      );
+  }
+
+  getToolbarLabels() {
+    const labels = [constants.BUTTON_ZOOM_IN_ID, constants.BUTTON_ZOOM_OUT_ID, constants.BUTTON_FIX_NODE_ID,
+                    constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_SAVE_PROJECT_ID];
+    const labelObjects = [];
+    for (let label of labels) {
+      labelObjects.push({ label: label });
+    }
+
+    return labelObjects;
+  }
+
+  // Control logic to zoom when buttons are pressed, keep zooming while they are pressed, stop zooming 
+  // when released or moved off of, not snap-pan when moving off buttons, and restore pan on mouseup.
   initializeZoomButtons() {
-    var self = this;
-    this.svg.selectAll('.button')
-      //.data(['zoom_in', 'zoom_out'])
-      .data([{ label: 'zoom_in' }, { label: 'zoom_out' }])
-      .enter()
-      //.append('text').text('hi')
-      .append('rect')
-      .attr('x', function (d, i) { return 10 + 50 * i })
-      .attr({ y: 10, width: 40, height: 20, class: 'button' })
-      .attr('id', function (d) { return d.label })
-      .style('fill', function (d, i) { return i ? 'red' : 'green' });
-    // .attr('text', function(d,i){ return i ? 'red' : 'green'})
-    // .attr('label', function(d,i){ return i ? 'red' : 'green'})
-
-    // svg.selectAll('.button').append('text').text('hi')
-
-    // Control logic to zoom when buttons are pressed, keep zooming while they are
-    // pressed, stop zooming when released or moved off of, not snap-pan when
-    // moving off buttons, and restore pan on mouseup.
-
+    const self = this;
     this.zoomPressed = false;
-    d3.selectAll('.button')
-      .on('mousedown', function () {
+    d3.selectAll(`#${constants.BUTTON_ZOOM_IN_ID}, #${constants.BUTTON_ZOOM_OUT_ID}`)
+      .on('mousedown', function() {
         self.zoomPressed = true;
         self.disableZoom();
-        self.zoomButton(this.id === 'zoom_in')
+        self.zoomButton(this.id === constants.BUTTON_ZOOM_IN_ID);
       })
-      .on('mouseup', function () { self.zoomPressed = false; })
-      .on('mouseout', function () { self.zoomPressed = false; })
-      .on('click', this.stopPropagation)
-      .on('dblclick', this.stopPropagation);
+      .on('mouseup', () => { this.zoomPressed = false; })
+      .on('mouseout', () => { this.zoomPressed = false; });
 
     this.svg.on('mouseup', () => { this.svg.call(this.zoom) });
+  }
+
+  initializeButton(id, onclick) {
+    d3.select('#' + id)
+      .on('click', onclick);
   }
 
   generateCanvas(width, height) {
@@ -359,8 +401,14 @@ class Graph {
     this.force = this.initializeForce();
     this.dragLink = this.initializeDragLink();
     this.initializeMarkers();
-    this.initializeZoomButtons();
     this.initializeTooltip();
+
+    this.initializeToolbarButtons();
+    this.initializeZoomButtons();
+    this.initializeButton(constants.BUTTON_FIX_NODE_ID, this.toggleFixedNodes);
+    this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => {}); // Placeholder method
+    this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => {}); // Placeholder method
+    this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => {}); // Placeholder method
 
     this.setupKeycodes();
 
@@ -376,7 +424,7 @@ class Graph {
                     .setMinimapPositionY(this.minimapPaddingY)
                     .setGraph(this);
 
-    this.minimap.initializeMinimap(this.svg, this.width, this.height)
+    this.minimap.initializeMinimap(this.svg, this.width, this.height);
   }
 
   // Completely rerenders the graph, assuming all new nodes and links
@@ -495,7 +543,7 @@ class Graph {
         .on('dragend', this.stopPropagation)
       );
 
-    this.node.call(this.styleNode, false)
+    this.node.call(this.styleNode)
     this.node.exit().remove();
 
     // Update hulls
@@ -618,11 +666,6 @@ class Graph {
           this.svg.selectAll('.node.selected')
             .each(function (d) { d.fixed = false; })
             .classed('fixed', false);
-        }
-
-        // f: Toggle stickiness of all the nodes
-        else if (d3.event.keyCode == 70) {
-          this.toggleFixedNodes();
         }
 
         // g: Group selected nodes
