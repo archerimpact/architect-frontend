@@ -79,19 +79,18 @@ function makeDeepCopy(array) {
   return newArray;
 }
 
+export function setCurrentNode(d) {
+  return (dispatch, getState) => {
+    dispatch(storeCurrentNodeDispatch(d.id));
+  }
+}
 
 export function addToGraphFromId(graph, id) {
   return (dispatch, getState) => {
-    function setCurrentNode(d) {
-      dispatch(storeCurrentNodeDispatch(d.id));
-      // graph.translateGraphAroundNode(d)
-    }
-
     server.getNode(id)
       .then(data => {
         // var graphData = parseNeo4jData(data);
         var graphData = data;
-        graph.bindDisplayFunctions({node: setCurrentNode});
         graph.addData(graphData.centerid, makeDeepCopy(graphData.nodes), makeDeepCopy(graphData.links));
         dispatch(updateGraphDispatch(graphData));
       })

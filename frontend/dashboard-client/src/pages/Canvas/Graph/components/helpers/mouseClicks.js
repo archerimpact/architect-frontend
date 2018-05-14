@@ -58,6 +58,10 @@ export function dblclicked(d) {
     this.toggleGroupView(d.id);
   }
 
+  if (utils.isExpandable(d)) {
+    this.expandNodeFromData(d);
+  }
+
   d3.event.stopPropagation();
 }
 

@@ -1,10 +1,11 @@
 import * as d3 from 'd3';
 import { isGroup, then } from './utils.js';
 import * as constants from './constants.js';
+import * as utils from './utils.js';
 
 export function highlightExpandableNode(){
   this.node.classed('expandable', false)
-  this.node.filter((d) => { if (parseInt(d.linksCount) > d.weight) { return d } })
+  this.node.filter((d) => { if (utils.isExpandable(d)) { return d } })
     .classed('expandable', true)
 }
 

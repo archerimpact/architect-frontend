@@ -415,6 +415,7 @@ class Graph {
     this.displayNodeInfo = displayFunctions.node ? displayFunctions.node : function(d) {};
     this.displayLinkInfo = displayFunctions.link ? displayFunctions.link : function(d) {};
     this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
+    this.expandNodeFromData = displayFunctions.expand ? displayFunctions.expand : function(d) {};    
   }
 
   // Updates nodes and links according to current data

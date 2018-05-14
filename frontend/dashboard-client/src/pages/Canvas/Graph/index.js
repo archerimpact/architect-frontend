@@ -13,11 +13,23 @@ class Graph extends Component {
   constructor(props) {
     super(props);
     this.renderProjectToolbar = this.renderProjectToolbar.bind(this);
+    this.expandNodeFromData = this.expandNodeFromData.bind(this);
+    this.setCurrentNode = this.setCurrentNode.bind(this);
+  }
+
+  setCurrentNode(d) {
+    this.props.actions.setCurrentNode(d);
+  }
+
+  expandNodeFromData(d) {
+    this.props.actions.addToGraphFromId(this.props.graph, d.id);
   }
 
   componentDidMount() {
     this.props.actions.initializeCanvas(this.props.graph, this.props.width, this.props.height);
     if (this.props.project.graphData) {
+      this.props.graph.bindDisplayFunctions({expand: this.expandNodeFromData, node: this.setCurrentNode});
+
       const graphData = { nodes: this.props.project.graphData.nodes, links: this.props.project.graphData.links };
       this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));      
     }
