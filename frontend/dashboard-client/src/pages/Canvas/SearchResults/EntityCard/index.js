@@ -12,6 +12,7 @@ class EntityCard extends Component {
     var entity = this.props.entity
     this.state = {
       collapsed: true,
+      id: entity._id,
       neo4j_id : entity._source !== null ? entity._source.neo4j_id : entity.metadata.id,
       name : entity._source !== null ? entity._source.name : entity.data.name,
       type : entity._source !== null ? entity._type : entity.metadata.labels[0],
@@ -33,7 +34,7 @@ class EntityCard extends Component {
     return (
       <div className="card result-card" key={this.props.neo4j_id}>
         <div className="card-header result-card-header flex-row d-flex">
-          <i className="entity-icon add-to-graph-icon material-icons" onClick={()=> this.props.addToGraph(this.state.neo4j_id)}>add</i>
+          <i className="entity-icon add-to-graph-icon material-icons" onClick={()=> this.props.addToGraph(this.state.id)}>add</i>
           <i className="entity-icon detailed-view-icon material-icons" onClick={()=> {/* TODO */}}>format_list_bulleted</i>
           <i className="entity-icon detailed-view-icon material-icons" onClick={()=> {this.props.saveProjectData()}}>save</i>          
           <span className="collapse-link" onClick={this.toggleCollapse}>

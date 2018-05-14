@@ -86,7 +86,8 @@ export function addToGraphFromId(graph, id) {
 
     server.getNode(id)
       .then(data => {
-        var graphData = parseNeo4jData(data);
+        // var graphData = parseNeo4jData(data);
+        var graphData = data;
         graph.bindDisplayFunctions({node: setCurrentNode});
         graph.addData(graphData.centerid, makeDeepCopy(graphData.nodes), makeDeepCopy(graphData.links));
         dispatch(updateGraphDispatch(graphData));
@@ -104,7 +105,8 @@ export function fetchGraphFromId(graph, id) {
 
     server.getGraph(id)
       .then(data => {
-        var graphData = parseNeo4jData(data);
+        // var graphData = parseNeo4jData(data);
+        var graphData = data;
         graph.bindDisplayFunctions({node: setCurrentNode});
         graph.setData(graphData.centerid, makeDeepCopy(graphData.nodes), makeDeepCopy(graphData.links));
         dispatch(updateGraphDispatch(graphData));
