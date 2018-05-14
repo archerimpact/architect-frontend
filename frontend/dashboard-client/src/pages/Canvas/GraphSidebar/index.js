@@ -53,7 +53,7 @@ class GraphSidebar extends Component {
         </Link>
         </div>
         <div className="tab" onClick={() => {/* TODO */}}>
-        <Link to={baseUrl + '/list'}>
+        <Link to={baseUrl + '/entity'}>
           <i className="tab-icon material-icons">list</i>
         </Link>
         </div>

@@ -26,6 +26,10 @@ class Canvas extends Component {
       this.props.actions.fetchSearchResults(this.props.match.params.query);
     } else if (this.props.match.params && this.props.match.params.sidebarState === 'entity') {
       this.props.actions.addToGraphFromId(this.graph, this.props.match.params.query);
+      let entity = this.props.match.params.query;
+      if (entity != null) {
+        // this.loadData(entity);
+      }
     }
   }
 
@@ -38,40 +42,33 @@ class Canvas extends Component {
         }
       } else if (this.props.match.params.sidebarState === 'entity') {
         this.props.actions.addToGraphFromId(this.graph, nextprops.match.params.query);
-        let entity = this.props.match.params.query;
+        let entity = nextprops.match.params.query;
         if (entity != null) {
           // this.loadData(entity);
-        }
-        if (this.props.match.params.query !== nextprops.match.params.query) {
-          this.setState({
-            nodeData: null,
-            relationshipData: null,
-          })
-          this.loadData(this.props.match.params.query) //load data when you change the url props
         }
       }
     }
   }
 
-  loadData(neo4j_id) {
-    server.getBackendNode(neo4j_id)
-      .then(data => {
-        //returns items in the format: [neo4j_data]
-        this.setState({ nodeData: data[0] })
-      })
-      .catch(err => {
-        console.log(err)
-      })
-    server.getBackendRelationships(neo4j_id)
-      .then(data => {
-        /* neo4j returns items in this format: [connection, startNode, endNode] */
+  // loadData(neo4j_id) {
+  //   server.getBackendNode(neo4j_id)
+  //     .then(data => {
+  //       //returns items in the format: [neo4j_data]
+  //       this.setState({ nodeData: data[0] })
+  //     })
+  //     .catch(err => {
+  //       console.log(err)
+  //     })
+  //   server.getBackendRelationships(neo4j_id)
+  //     .then(data => {
+  //       /* neo4j returns items in this format: [connection, startNode, endNode] */
 
-        this.setState({ relationshipData: data })
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
+  //       this.setState({ relationshipData: data })
+  //     })
+  //     .catch(err => {
+  //       console.log(err)
+  //     })
+  // }
 
 
   render() {
