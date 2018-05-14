@@ -40,17 +40,11 @@ svg line {
 
 .link {
   stroke: #545454;
-  stroke-width: 3px;
   opacity: 1;
   transition-property: opacity;
   transition-delay: 0ms;
   transition-duration: 50ms;
 }
-
-.link.selected {
-  stroke: #0d77e2;
-}
-
 
 .link.dynamic {
   pointer-events: none;
@@ -95,21 +89,7 @@ svg line {
   fill: #bbbbbb;
 }
 
-.node.active circle {
-  stroke: #000;
-  stroke-width: 3px;
-}
-
-.node.selected circle {
-  stroke: #0d77e2;
-  stroke-width: 3px;
-}
-
 .node.grouped circle {
-  fill: #7cbdff;
-}
-
-.node.grouped_same circle {
   fill: #7cbdff;
 }
 
@@ -192,10 +172,93 @@ i.fa-close {
   color: #545454;
 }
 
+#svg-image {
+  border: none;
+}
+
+#minimap-box {
+  fill: #fff;
+  opacity: 0.8;
+}
+
 #minimap-box-square {
   fill: #b1b1b1;
   opacity: 0.4;
   border:3px solid #fff;
+}
+
+.link {
+  stroke: #545454;
+  opacity: 1;
+  transition-property: opacity;
+  transition-delay: 0ms;
+  transition-duration: 50ms;
+}
+
+.link.dynamic {
+  pointer-events: none;
+}
+
+.link.hidden {
+  stroke-width: 0;
+}
+
+.node {
+  fill: #ebebeb;
+  stroke: #545454;
+  opacity: 1;
+  transition-property: stroke-opacity, fill-opacity;
+  transition-delay: 0ms;
+  transition-duration: 50ms;
+}
+
+.node text {
+  stroke: #545454;
+  fill: #545454;
+  cursor: pointer;
+  stroke-width: 1px; 
+}
+
+.node text.icon {
+  stroke: none;
+  fill: #545454;
+}
+
+.node circle {
+  cursor: pointer;
+  stroke-width: 2.6px;
+}
+
+.node circle.hull-node {
+  stroke-width: 2.4px;
+}
+
+.node tspan.text-shadow {
+  stroke-width: 4px;
+  stroke: #fff;
+}
+
+.node.fixed circle {
+  fill: #bbbbbb;
+}
+
+.node.grouped circle {
+  fill: #7cbdff;
+}
+
+.node.grouped.fixed circle {
+  fill: #0d77e2;
+}
+
+.hull, path {
+  fill: #0d77e2;
+  stroke-opacity: 1;
+  fill-opacity: 0.2;
+  stroke: #7cbdff;
+  stroke-width: 2px;
+  transition-property: stroke-opacity, fill-opacity;
+  transition-delay: 0ms;
+  transition-duration: 50ms;
 }
 
 .faded {
@@ -219,6 +282,28 @@ i.fa-close {
   transition-property: stroke-opacity, fill-opacity;
 }
 
-.node.expandable {
-  fill: #0d77e2;
+.link.same-as {
+  stroke-dasharray: 5,3;
+}
+
+.node.selected circle {
+  stroke: #0d77e2 !important;
+}
+
+.node.selected circle.hull-node {
+  stroke: #fff !important;;
+  fill: #0d77e2 !important;
+}
+
+.node.selected .icon {
+  fill: #0d77e2 !important;
+}
+
+.link.selected {
+  stroke: #0d77e2;
+}
+
+.node.expandable circle {
+  fill: #7cbdff !important;
+  fill-opacity: 0.5;
 }
