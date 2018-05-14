@@ -5,7 +5,6 @@ import './style.css'
 // import EntityCard from '../../SearchResults/EntityCard';
 import ConnectionsTab from './components/ConnectionsTab/';
 
-import queryString from 'query-string';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../../redux/actions/';
@@ -30,19 +29,19 @@ class Entity extends Component {
   }
 
   componentDidMount = () => {
-    let qs = queryString.parse(this.props.location.search);
-    this.loadData(qs.entityid);
+    let entity = this.props.march.params.query;
+    if (entity != null) {
+      this.loadData(entity);
+    }
   }
 
   componentWillReceiveProps = (nextprops) => {
-    let lastqs = queryString.parse(this.props.location.search);
-    let qs = queryString.parse(nextprops.location.search);
-    if (lastqs.entityid !== qs.entityid) {
+    if (this.props.march.params.query !== nextprops.march.params.query) {
       this.setState({
         nodeData: null,
         relationshipData: null,
       })
-      this.loadData(qs.entityid) //load data when you change the url props
+      this.loadData(this.props.march.params.query) //load data when you change the url props
     }
   }
 

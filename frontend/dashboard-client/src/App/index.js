@@ -64,7 +64,7 @@ class App extends Component {
           <Route path="/login" component={Login} />
           <Route path="/create_account" component={CreateAccount} />
           <PrivateRoute path="/explore/:sidebarState?" component={Canvas} />
-          <PrivateRoute path="/build/:investigationId" component={Canvas} />
+          <PrivateRoute path="/build/:investigationId/:sidebarState?/:query?" component={Canvas} />
           <PrivateRoute exact path="/build" component={Investigations} />
         </div>
       </div>

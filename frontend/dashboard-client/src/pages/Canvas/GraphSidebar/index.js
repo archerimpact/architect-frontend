@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-// import Entity from '../Entity';
+import Entity from '../Entity';
 import SearchResults from '../SearchResults';
 import DatabaseSearchBar from '../../../components/SearchBar/databaseSearchBar';
 import { connect } from 'react-redux';
@@ -63,19 +63,25 @@ class GraphSidebar extends Component {
   }
 
   renderSidebarContainer() {
-    return (
-      <div className="sidebar-container" key="sidebar-container">
-        <div className="searchbar-container">
-          <DatabaseSearchBar graphid={this.props.graphid} search={this.props.search} showSettings={true}/>
-        </div>
+    switch(this.props.match.params.sidebarState) {
+      case "Search":
+        return  (
+          <div>
+              <div className="searchbar-container">
+                <DatabaseSearchBar graphid={this.props.graphid} search={this.props.search} showSettings={true}/>
+              </div>
 
-        <div className="results-container">
-          <SearchResults graph={this.props.graph} search={this.props.search} entity />
-        </div>
-        {this.state.history.map((res, key) => (<div key={key}> {res.pathname + res.search} </div>))}
-        {/*this.state.renderEntity ? <Entity /> : null */}
-      </div>
-    );
+              <div className="results-container">
+                <SearchResults graph={this.props.graph} search={this.props.search} entity />
+              </div>
+              {this.state.history.map((res, key) => (<div key={key}> {res.pathname + res.search} </div>))}
+          </div>
+         );
+      case "Entity":
+          return <Entity />
+      default:
+        return <div></div>
+    };
   }
 
   render() {
@@ -83,7 +89,9 @@ class GraphSidebar extends Component {
       <div className={"sidebar " + (this.props.sidebarVisible ? "slide-out" : "slide-in")}>
         <div className="flex-row d-flex full-height">
           {this.renderTabs()}
-          {this.renderSidebarContainer()}
+          <div className="sidebar-container" key="sidebar-container">
+            {this.renderSidebarContainer()}
+          </div>
         </div>
       </div>
     );
