@@ -238,16 +238,16 @@ i.fa-close {
 
 .node.selected circle {
   stroke-width: 3px;
-  stroke: #0d77e2;
+  stroke: #0d77e2 !important;
 }
 
 .node.selected circle.hull-node {
-  stroke: #545454;
-  fill: #0d77e2;
+  stroke: #fff;
+  fill: #0d77e2 !important;
 }
 
 .node.selected .icon {
-  fill: #0d77e2;
+  fill: #0d77e2 !important;
 }
 
 .link.selected {

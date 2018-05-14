@@ -106,7 +106,6 @@ class Graph {
     this.drawHull = this.drawHull.bind(this);
     this.zoomButton = this.zoomButton.bind(this);
     this.initializeZoomButtons = this.initializeZoomButtons.bind(this);
-    this.getNodeColor = this.getNodeColor.bind(this);
     this.textWrap = this.textWrap.bind(this);
     this.displayTooltip = this.displayTooltip.bind(this);
     this.displayDebugTooltip = this.displayDebugTooltip.bind(this);
@@ -755,7 +754,6 @@ class Graph {
 Graph.prototype.highlightLinksFromAllNodes = aesthetics.highlightLinksFromAllNodes;
 Graph.prototype.highlightLinksFromNode = aesthetics.highlightLinksFromNode;
 Graph.prototype.styleNode = aesthetics.styleNode;
-Graph.prototype.getNodeColor = aesthetics.getNodeColor;
 Graph.prototype.styleLink = aesthetics.styleLink;
 Graph.prototype.fillGroupNodes = aesthetics.fillGroupNodes;
 Graph.prototype.fadeGraph = aesthetics.fadeGraph;
