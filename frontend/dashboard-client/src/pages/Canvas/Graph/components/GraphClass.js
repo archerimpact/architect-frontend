@@ -481,8 +481,7 @@ class Graph {
     }
 
     this.nodeEnter.append('circle')
-      .attr('r', (d) => { return d.radius = (d.group ? constants.GROUP_NODE_RADIUS : constants.NODE_RADIUS); });
-
+      .attr('r', (d) => { return d.radius = (d.group ? constants.GROUP_NODE_RADIUS : constants.NODE_RADIUS); })
 
     this.nodeEnter.append('text')
       .attr('class', 'icon')
@@ -527,7 +526,6 @@ class Graph {
     this.node.attr("fixed", false);
     
     this.reloadNeighbors();
-
     // Update minimap   
     // if (minimap) { 
     //   this.toRenderMinimap = true;
@@ -535,7 +533,9 @@ class Graph {
     // }
 
     this.force.start();
-    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }   
+    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }  
+    this.highlightExpandableNode();
+ 
   }
 
   // Occurs each tick of simulation
@@ -793,6 +793,7 @@ Graph.prototype.fadeGraph = aesthetics.fadeGraph;
 Graph.prototype.resetGraphOpacity = aesthetics.resetGraphOpacity;
 Graph.prototype.resetDragLink = aesthetics.resetDragLink;
 Graph.prototype.textWrap = aesthetics.textWrap;
+Graph.prototype.highlightExpandableNode = aesthetics.highlightExpandableNode;
 
 //From mouseClicks.js
 Graph.prototype.brushstart = mouseClicks.brushstart;
