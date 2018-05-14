@@ -1,6 +1,4 @@
 'use strict';
-// FontAwesome icon unicode-to-node type dict
-// Use this to find codes for FA icons: https://fontawesome.com/cheatsheet
 
 import * as d3 from 'd3';
 import * as aesthetics from './helpers/aesthetics.js';
@@ -13,6 +11,8 @@ import Minimap from './MinimapClass.js'
 import * as constants from './helpers/constants.js';
 import { GROUP, HULL_GROUP } from './helpers/typeConstants.js';
 
+// FontAwesome icon unicode-to-node type dict
+// Use this to find codes for FA icons: https://fontawesome.com/cheatsheet
 const icons = {
   'person': '',
   'Individual': '',
@@ -41,6 +41,7 @@ class Graph {
     this.dragCallback = null; // Store reference to drag callback to restore after disabling node drag
     this.dragDistance = 0; // Keep track of drag distance starting on node to disable click during edit mode
     this.mousedownNode = null; // Store reference to current node on mousedown (aka currently edited node)
+    this.recentActions = []; // Stack storing most recent actions by user, each entry takes the form [actionName, data]
 
     this.isDragging = false; // Keep track of dragging to disallow node emphasis on drag
     this.draggedNode = null; // Store reference to currently dragged node, null otherwise
@@ -302,7 +303,7 @@ class Graph {
       .attr('y1', 0)
       .attr('x2', 0)
       .attr('y2', 0)
-      .attr('marker-end', function(d) { return d3.select(this).classed('selected') ? 'url(#end-arrow-blue)' : 'url(#end-arrow-gray)'});
+      .attr('marker-end', 'url(#end-big-gray)');
   }
 
   initializeZoomButtons() {
@@ -472,8 +473,7 @@ class Graph {
         .on('mouseup', function (d) { self.mouseup(d, this); });
     }
 
-    this.nodeEnter.append('circle')
-      .attr('r', (d) => { return d.radius = (d.group ? constants.GROUP_NODE_RADIUS : constants.NODE_RADIUS); });
+    this.nodeEnter.append('circle');
 
 
     this.nodeEnter.append('text')
@@ -481,14 +481,14 @@ class Graph {
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'central')
       .attr('font-family', 'FontAwesome')
-      .attr('font-size', '20px')
+      .attr('font-size', '21px')
       .text((d) => { return (!d.group && d.type && icons[d.type]) ? icons[d.type] : ''; })
       .classed('unselectable', true);
 
     this.nodeEnter.append('text')
       .attr('class', 'node-name')
       .attr('text-anchor', 'middle')
-      .attr('dy', '35px')
+      .attr('dy', '40px')
       .text((d) => { return d.group ? '' : utils.processNodeName(d.name, this.printFull); })
       .call(this.textWrap, this.printFull)
       .on('click', function (d) { self.stopPropagation(); })
@@ -500,6 +500,7 @@ class Graph {
         .on('dragend', this.stopPropagation)
       );
 
+    this.node.call(this.styleNode, false)
     this.node.exit().remove();
 
     // Update hulls
@@ -789,6 +790,7 @@ class Graph {
 Graph.prototype.highlightExpandableNode = aesthetics.highlightExpandableNode;
 Graph.prototype.highlightLinksFromAllNodes = aesthetics.highlightLinksFromAllNodes;
 Graph.prototype.highlightLinksFromNode = aesthetics.highlightLinksFromNode;
+Graph.prototype.styleNode = aesthetics.styleNode;
 Graph.prototype.styleLink = aesthetics.styleLink;
 Graph.prototype.fillGroupNodes = aesthetics.fillGroupNodes;
 Graph.prototype.fadeGraph = aesthetics.fadeGraph;

@@ -8,10 +8,12 @@ import {
   DOCUMENT
 } from './typeConstants.js';
 
+export function getInverseAction(action) {
+  // Implement for undo
+}
 
 // Multi-node manipulation methods
 export function deleteSelectedNodes() {
-
   var select = this.svg.selectAll('.node.selected');
   select.each((d) => {
     for (var i = this.adjacencyMatrix.length-1; i >=0; i--) {
@@ -121,7 +123,7 @@ export function ungroupSelectedGroups() {
       for (var i = this.adjacencyMatrix.length-1; i >=0; i--) {
         if (this.adjacencyMatrix[i][i].data.id === d.id && utils.isGroup(d)) { this.ungroup(i); }
       }
-      
+
       if (d === this.hoveredNode) { this.deletingHoveredNode = true; }
     });
 

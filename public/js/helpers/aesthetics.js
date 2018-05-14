@@ -21,6 +21,21 @@ export function highlightLinksFromNode(node) {
     .call(this.styleLink, (d) => { return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index]; });
 }
 
+export function styleNode(selection, isSelected) {
+  selection.select('circle')
+    .attr('r', (d) => { return d.radius = (d.group ? constants.GROUP_NODE_RADIUS : constants.NODE_RADIUS); })
+    .classed('hull-node', (d) => { return d.group; })
+    .style('stroke', (d) => { return d.group ? constants.HEX_WHITE : getNodeColor(d); })
+    .style('fill', (d) => { return d.group ? getNodeColor(d) : constants.HEX_LIGHT_GRAY; });
+
+  selection.select('.icon')
+    .style('fill', (d) => { return getNodeColor(d); });
+}
+
+export function getNodeColor(d) {
+  return constants.NODE_COLORS[d.type] || constants.HEX_DARK_GRAY;
+}
+
 export function styleLink(selection, isSelected) {
   selection
     .classed('selected', isSelected)
