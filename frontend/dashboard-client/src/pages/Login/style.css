@@ -95,3 +95,7 @@
 	margin-left: auto;
 	margin-right: 20px;
 }
+
+#tagline-img {
+	max-height: 100%;
+}

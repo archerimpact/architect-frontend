@@ -20,6 +20,25 @@ function checkUserAuth(req, res) {
     return true
 }
 
+async function checkProjectAuth(req, res) {
+    const projects = await Project
+        .find({
+            _id: mongoose.Types.ObjectId(req.query.projectid),
+            users: {
+                '$in': [req.user._id],
+            }
+        })
+
+    console.log(projects);
+
+    if (projects.length < 1) {
+        error('Project not found', res)
+        return false
+    }
+
+    return true
+}
+
 
 function validate(str, res) {
     // TODO write real validation
@@ -54,6 +73,7 @@ exports.create = async function(req, res) {
     const projImg   = req.body.img || ''
     const projData  = req.body.data || ''
     const published = false
+    const timestamp = Date.now()
     const project   = {
         _id: projId,
         name: projName,
@@ -62,6 +82,8 @@ exports.create = async function(req, res) {
         data: projData,
         published: published,
         users: [req.user._id],
+        created_on: timestamp,
+        last_modified: timestamp,
       }
 
       const saved = await (new Project(project)).save()
@@ -75,6 +97,10 @@ exports.get = async function(req, res) {
     if (!checkUserAuth(req, res)) { return }
     if (!req.query.projectid) { return error('Empty project ID', res) }
 
+    // let auth = await checkProjectAuth(req, res)
+    // if (!auth) { return }
+    // Instead of performing this check, we simply check the query below.
+
     const projects = await Project
         .find({
             _id: mongoose.Types.ObjectId(req.query.projectid),
@@ -86,6 +112,10 @@ exports.get = async function(req, res) {
 
     if (projects.length === 0) { return error('Project not found', res) }
 
+    if (!projects[0].users.includes(req.user._id)) {
+        return error('You are not authorized to access this project', res)
+    }
+
     return success(projects[0], res)
 }
 
@@ -93,6 +123,9 @@ exports.get = async function(req, res) {
 exports.update = async function(req, res) {
     if (!checkUserAuth(req, res)) { return }
     if (!req.body.projectid) { return error('Empty project ID', res) }
+
+    let auth = await checkProjectAuth(req, res)
+    if (!auth) { return }
 
     const updates = {}
 
@@ -111,6 +144,8 @@ exports.update = async function(req, res) {
     if (Object.keys(updates).length === 0) {
         return error('No fields to update', res)
     }
+
+    updates.last_modified = Date.now()
 
     let dbResponse
     try {
@@ -143,7 +178,7 @@ exports.list = async function(req, res) {
                 '$in': [req.user._id],
             }
         })
-        .select('_id name description')
+        // .select('_id name description')
         .exec()
 
     return success(projects, res)
@@ -153,18 +188,19 @@ exports.list = async function(req, res) {
 exports.delete = async function(req, res) {
     if (!checkUserAuth(req, res)) { return }
 
+    let auth = await checkProjectAuth(req, res)
+    if (!auth) { return }
+
     const projects = await Project
-        .remove({
-            _id: mongoose.Types.ObjectId(req.query.projectid),
-            users: {
-                '$in': [req.user._id],
-            }
-        })
+        .update(
+            { _id: mongoose.Types.ObjectId(req.query.projectid) },
+            { $set: { users: [] } }
+        )
         .exec()
 
     if (!projects || projects.ok !== 1 || projects.n < 1) {
-        return error('Failed to delete', res)
+        return error(projects, res)
     }
 
-    return success('Project deleted', res)
+    return success(projects, res)
 }
