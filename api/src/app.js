@@ -19,8 +19,8 @@ const credentials = require('./credentials')
 const mongoURL = 'mongodb://arch2:' + credentials.mongoPassword + '@ds263639.mlab.com:63639/architect'
 mongoose.connect(mongoURL)
 
-app.use(bodyParser.urlencoded({extended: true}))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: true, limit: '100mb', parameterLimit: 50000}))
+app.use(bodyParser.json({limit: '100mb'}))
 
 //////////// Setting Headers (CORS) ////////////
 app.use(function (req, res, next) {
