@@ -64,15 +64,19 @@
   width: 100%;
 }
 
+.top-sidebar-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
 .searchbar-container {
-  position: sticky;
-  position: -webkit-sticky;
-  top: 0;
   background-color: #ffffff;
   z-index: 100;
   padding-top: 10px;
+  padding: 10px 12px 10px 12px;
   width: 100%;
-  padding: 8px;
   background-color: #ff5d4c;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2), 0 -1px 0px rgba(0,0,0,0.02);
   -webkit-box-shadow: 0 2px 4px rgba(0,0,0,0.2), 0 -1px 0px rgba(0,0,0,0.02);
