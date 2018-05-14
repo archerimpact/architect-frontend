@@ -42,7 +42,6 @@ export function fetchProject(id) {
 	return (dispatch) => {
 		server.getProject(id)
 			.then((data)=>{
-				debugger
 				dispatch(storeProject(data.message));
 			})
 			.catch((error) =>  console.log(error));

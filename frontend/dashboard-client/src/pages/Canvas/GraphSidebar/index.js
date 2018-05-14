@@ -5,7 +5,7 @@ import SearchResults from '../SearchResults';
 import DatabaseSearchBar from '../../../components/SearchBar/databaseSearchBar';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { withRouter } from 'react-router-dom';
+import { withRouter , Link} from 'react-router-dom';
 import './style.css';
 import * as actions from '../../../redux/actions';
 
@@ -24,7 +24,6 @@ class GraphSidebar extends Component {
   }
 
   componentDidMount() {
-    debugger
     let listener = this.props.history.listen((location, action) => {
       this.setState({ history: [...this.state.history, location] });
     })
@@ -45,16 +44,23 @@ class GraphSidebar extends Component {
   }
 
   renderTabs() {
+    let baseUrl = '/build/'+ this.props.match.params.investigationId;
     return (
       <div className="tabs" key="tabs">
         <div className="tab active-tab" onClick={() => {/* TODO */}}>
+        <Link to={baseUrl + '/search'}>
           <i className="tab-icon material-icons">search</i>
+        </Link>
         </div>
         <div className="tab" onClick={() => {/* TODO */}}>
+        <Link to={baseUrl + '/list'}>
           <i className="tab-icon material-icons">list</i>
+        </Link>
         </div>
         <div className="tab" onClick={() => {/* TODO */}}>
+        <Link to={baseUrl + '/settings'}>
           <i className="tab-icon material-icons">settings</i>
+        </Link>
         </div>
         <div className="tab" onClick={() => this.props.dispatch(actions.toggleSidebar())}>
           <i className="tab-icon material-icons">{this.props.sidebarVisible ? "chevron_right" : "chevron_left"}</i>
@@ -67,7 +73,7 @@ class GraphSidebar extends Component {
     switch(this.props.match.params.sidebarState) {
       case "search":
         return  (
-          <div>
+          <div style={{flex: 1}}>
               <div className="searchbar-container">
                 <DatabaseSearchBar graphid={this.props.graphid} search={this.props.search} showSettings={true}/>
               </div>
