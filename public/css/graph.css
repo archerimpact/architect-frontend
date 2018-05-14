@@ -237,12 +237,11 @@ i.fa-close {
 }
 
 .node.selected circle {
-  stroke-width: 3px;
   stroke: #0d77e2 !important;
 }
 
 .node.selected circle.hull-node {
-  stroke: #fff;
+  stroke: #fff !important;;
   fill: #0d77e2 !important;
 }
 
