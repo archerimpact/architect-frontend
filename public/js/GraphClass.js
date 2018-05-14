@@ -1,6 +1,4 @@
 'use strict';
-// FontAwesome icon unicode-to-node type dict
-// Use this to find codes for FA icons: https://fontawesome.com/cheatsheet
 
 import * as d3 from './d3.min.js';
 import * as aesthetics from './helpers/aesthetics.js';
@@ -13,6 +11,8 @@ import Minimap from './MinimapClass.js'
 import * as constants from './helpers/constants.js';
 import { GROUP, HULL_GROUP } from './helpers/typeConstants.js';
 
+// FontAwesome icon unicode-to-node type dict
+// Use this to find codes for FA icons: https://fontawesome.com/cheatsheet
 const icons = {
   'person': '',
   'Document': '',
@@ -37,6 +37,7 @@ class Graph {
     this.dragCallback = null; // Store reference to drag callback to restore after disabling node drag
     this.dragDistance = 0; // Keep track of drag distance starting on node to disable click during edit mode
     this.mousedownNode = null; // Store reference to current node on mousedown (aka currently edited node)
+    this.recentActions = []; // Stack storing most recent actions by user, each entry takes the form [actionName, data]
 
     this.isDragging = false; // Keep track of dragging to disallow node emphasis on drag
     this.draggedNode = null; // Store reference to currently dragged node, null otherwise
@@ -105,6 +106,7 @@ class Graph {
     this.drawHull = this.drawHull.bind(this);
     this.zoomButton = this.zoomButton.bind(this);
     this.initializeZoomButtons = this.initializeZoomButtons.bind(this);
+    this.getNodeColor = this.getNodeColor.bind(this);
     this.textWrap = this.textWrap.bind(this);
     this.displayTooltip = this.displayTooltip.bind(this);
     this.displayDebugTooltip = this.displayDebugTooltip.bind(this);
@@ -297,7 +299,7 @@ class Graph {
       .attr('y1', 0)
       .attr('x2', 0)
       .attr('y2', 0)
-      .attr('marker-end', function(d) { return d3.select(this).classed('selected') ? 'url(#end-arrow-blue)' : 'url(#end-arrow-gray)'});
+      .attr('marker-end', 'url(#end-big-gray)');
   }
 
   initializeZoomButtons() {
@@ -468,8 +470,7 @@ class Graph {
         .on('mouseup', function (d) { self.mouseup(d, this); });
     }
 
-    this.nodeEnter.append('circle')
-      .attr('r', (d) => { return d.radius = (d.group ? constants.GROUP_NODE_RADIUS : constants.NODE_RADIUS); });
+    this.nodeEnter.append('circle');
 
     this.nodeEnter.append('text')
       .attr('class', 'icon')
@@ -495,6 +496,7 @@ class Graph {
         .on('dragend', this.stopPropagation)
       );
 
+    this.node.call(this.styleNode, false)
     this.node.exit().remove();
 
     // Update hulls
@@ -752,6 +754,8 @@ class Graph {
 //From aesthetics.js
 Graph.prototype.highlightLinksFromAllNodes = aesthetics.highlightLinksFromAllNodes;
 Graph.prototype.highlightLinksFromNode = aesthetics.highlightLinksFromNode;
+Graph.prototype.styleNode = aesthetics.styleNode;
+Graph.prototype.getNodeColor = aesthetics.getNodeColor;
 Graph.prototype.styleLink = aesthetics.styleLink;
 Graph.prototype.fillGroupNodes = aesthetics.fillGroupNodes;
 Graph.prototype.fadeGraph = aesthetics.fadeGraph;
