@@ -376,14 +376,14 @@ class Graph {
 
     this.force.on('tick', (e) => { this.ticked(e, this) });
 
-    // this.minimap = new Minimap()
-    //                 .setZoom(this.zoom)
-    //                 .setTarget(this.container) // that's what you're trying to track/the images
-    //                 .setMinimapPositionX(this.minimapPaddingX)
-    //                 .setMinimapPositionY(this.minimapPaddingY)
-    //                 .setGraph(this);
+    this.minimap = new Minimap()
+                    .setZoom(this.zoom)
+                    .setTarget(this.container) // that's what you're trying to track/the images
+                    .setMinimapPositionX(this.minimapPaddingX)
+                    .setMinimapPositionY(this.minimapPaddingY)
+                    .setGraph(this);
 
-    // this.minimap.initializeMinimap(this.svg, this.width, this.height)
+    this.minimap.initializeMinimap(this.svg, this.width, this.height)
   }
 
   // Completely rerenders the graph, assuming all new nodes and links
@@ -393,12 +393,12 @@ class Graph {
     this.update();
     for (let i = 150; i > 0; --i) this.force.tick();  
 
-    // this.minimap
-    //   .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
+    this.minimap
+      .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
 
-    // this.minimap
-    //   .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
-    //   .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); 
+    this.minimap
+      .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
+      .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); 
 
     //this.translateGraphAroundNode(centerd);
   }
@@ -522,14 +522,16 @@ class Graph {
     this.reloadNeighbors();
 
     // Update minimap   
-    // if (minimap) { 
-    //   this.toRenderMinimap = true;
-    //   this.tickCount = 0;
-    // }
+
     this.force.start();
     // Avoid initial chaos and skip the wait for graph to drift back onscreen
     if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }   
 
+    if (minimap) { 
+      this.toRenderMinimap = true;
+      this.tickCount = 0;
+    }
+    
     this.node.each(function(d) {
       if (d.fixedTransition) {
         d.fixed = d.fixedTransition = false;
@@ -558,15 +560,15 @@ class Graph {
       })
       .attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
 
-    // if (this.toRenderMinimap) { 
-    //   if (this.tickCount === constants.MINIMAP_TICK) {
-    //     const translate = this.zoom.translate();
-    //     const scale = this.zoom.scale();
-    //     this.minimap.syncToSVG(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
-    //     this.tickCount = 0;
-    //     this.toRenderMinimap = false;
-    //   }
-    // }
+    if (this.toRenderMinimap) { 
+      if (this.tickCount === constants.MINIMAP_TICK) {
+        const translate = this.zoom.translate();
+        const scale = this.zoom.scale();
+        this.minimap.syncToSVG(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
+        this.tickCount = 0;
+        this.toRenderMinimap = false;
+      }
+    }
 
     if (!this.hull.empty()) {
       this.calculateAllHulls();
