@@ -394,7 +394,9 @@ class Graph {
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
 
     // Updates nodes and links according to current data
-    this.update(null, 150);
+    this.update();
+    for (let i = 150; i > 0; --i) this.force.tick();  
+
     // Avoid initial chaos and skip the wait for graph to drift back onscreen
 
     // for (let i = 300; i > 0; --i) this.force.tick();      
@@ -533,7 +535,6 @@ class Graph {
     // }
 
     this.force.start();
-    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }  
     this.highlightExpandableNode();
  
   }
