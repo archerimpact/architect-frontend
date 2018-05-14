@@ -47,20 +47,26 @@ class GraphSidebar extends Component {
     let baseUrl = '/build/'+ this.props.match.params.investigationId;
     return (
       <div className="tabs" key="tabs">
-        <div className="tab active-tab" onClick={() => {/* TODO */}}>
-        <Link to={baseUrl + '/search'}>
-          <i className="tab-icon material-icons">search</i>
-        </Link>
+        <div className="tab active-tab">
+          <Link to={baseUrl + '/search'}>
+            <div>
+              <i className="tab-icon material-icons">search</i>
+            </div>
+          </Link>
         </div>
-        <div className="tab" onClick={() => {/* TODO */}}>
-        <Link to={baseUrl + '/entity'}>
-          <i className="tab-icon material-icons">list</i>
-        </Link>
+        <div className="tab">
+          <Link to={baseUrl + '/entity'}>
+            <div>
+              <i className="tab-icon material-icons">list</i>
+            </div>
+          </Link>
         </div>
-        <div className="tab" onClick={() => {/* TODO */}}>
-        <Link to={baseUrl + '/settings'}>
-          <i className="tab-icon material-icons">settings</i>
-        </Link>
+        <div className="tab">
+          <Link to={baseUrl + '/settings'}>
+            <div>
+              <i className="tab-icon material-icons">settings</i>
+            </div>
+          </Link>
         </div>
         <div className="tab" onClick={() => this.props.dispatch(actions.toggleSidebar())}>
           <i className="tab-icon material-icons">{this.props.sidebarVisible ? "chevron_right" : "chevron_left"}</i>
