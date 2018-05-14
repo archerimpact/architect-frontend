@@ -22,8 +22,11 @@ const icons = {
   'same_as_group': '',
   [constants.BUTTON_ZOOM_IN_ID]: '',
   [constants.BUTTON_ZOOM_OUT_ID]: '',
-  [constants.BUTTON_FIX_NODE_ID]: '',
+  [constants.BUTTON_POINTER_TOOL_ID]: '',
+  [constants.BUTTON_SELECTION_TOOL_ID]: '',
   [constants.BUTTON_EDIT_MODE_ID]: '',
+  [constants.BUTTON_FIX_NODE_ID]: '',
+  [constants.BUTTON_SIMPLIFY_ID]: '',
   [constants.BUTTON_TOGGLE_MINIMAP_ID]: '',
   [constants.BUTTON_SAVE_PROJECT_ID]: '' 
 };
@@ -36,9 +39,6 @@ class Graph {
     this.brushX = null;
     this.brushY = null;
     this.numTicks = null;
-    this.tickCount = 0;
-    this.xbound = [0, 0];
-    this.ybound = [0, 0];
 
     this.editMode = false; // Keep track of edit mode (add/remove/modify nodes + links)
     this.dragLink = null; // Dynamic link from selected node in edit mode
@@ -46,6 +46,12 @@ class Graph {
     this.dragDistance = 0; // Keep track of drag distance starting on node to disable click during edit mode
     this.mousedownNode = null; // Store reference to current node on mousedown (aka currently edited node)
     this.recentActions = []; // Stack storing most recent actions by user, each entry takes the form [actionName, data]
+
+    this.minimap = null;
+    this.toRenderMinimap = false;
+    this.xbound = [0, 0];
+    this.ybound = [0, 0];
+    this.tickCount = 0;
 
     this.isDragging = false; // Keep track of dragging to disallow node emphasis on drag
     this.draggedNode = null; // Store reference to currently dragged node, null otherwise
@@ -76,7 +82,6 @@ class Graph {
     this.curve = null;
     this.svgGrid = null;
     this.force = null;
-    this.minimap = null;
 
     this.adjacencyMatrix = new Array();
     this.globalLinks = {};
@@ -89,9 +94,7 @@ class Graph {
     this.clicked = this.clicked.bind(this);
     this.rightclicked = this.rightclicked.bind(this);
     this.dblclicked = this.dblclicked.bind(this);
-
     this.isLeftClick = this.isLeftClick.bind(this);
-
     this.dragstart = this.dragstart.bind(this);
     this.dragging = this.dragging.bind(this);
     this.dragend = this.dragend.bind(this);
@@ -316,7 +319,8 @@ class Graph {
     this.svg.append('rect')
       .attr('y', constants.TOOLBAR_PADDING)
       .attr({ x: constants.TOOLBAR_PADDING, width: constants.BUTTON_WIDTH, height: constants.BUTTON_WIDTH * buttonData.length })
-      .style('fill', colors.HEX_PRIMARY_ACCENT);
+      .style('fill', colors.HEX_PRIMARY_ACCENT)
+      .style('box-shadow', '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)');
 
     const button = this.svg.selectAll('.button')
       .data(buttonData)
@@ -347,8 +351,9 @@ class Graph {
   }
 
   getToolbarLabels() {
-    const labels = [constants.BUTTON_ZOOM_IN_ID, constants.BUTTON_ZOOM_OUT_ID, constants.BUTTON_FIX_NODE_ID,
-                    constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_SAVE_PROJECT_ID];
+    const labels = [constants.BUTTON_ZOOM_IN_ID, constants.BUTTON_ZOOM_OUT_ID, constants.BUTTON_POINTER_TOOL_ID,
+                    constants.BUTTON_SELECTION_TOOL_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_FIX_NODE_ID, 
+                    constants.BUTTON_SIMPLIFY_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_SAVE_PROJECT_ID];
     const labelObjects = [];
     for (let label of labels) {
       labelObjects.push({ label: label });
@@ -405,9 +410,15 @@ class Graph {
 
     this.initializeToolbarButtons();
     this.initializeZoomButtons();
-    this.initializeButton(constants.BUTTON_FIX_NODE_ID, this.toggleFixedNodes);
+    this.initializeButton(constants.BUTTON_POINTER_TOOL_ID, () => {}); // Placeholder method
+    this.initializeButton(constants.BUTTON_SELECTION_TOOL_ID, () => {}); // Placeholder method
     this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => {}); // Placeholder method
-    this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => {}); // Placeholder method
+    this.initializeButton(constants.BUTTON_FIX_NODE_ID, this.toggleFixedNodes);
+    this.initializeButton(constants.BUTTON_SIMPLIFY_ID, () => {
+      this.hideDocumentNodes();
+      this.groupSame();
+    });
+    this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => { this.minimap.toggleMinimapVisibility(); }); // Wrap in unnamed function bc minimap has't been initialized yet
     this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => {}); // Placeholder method
 
     this.setupKeycodes();
