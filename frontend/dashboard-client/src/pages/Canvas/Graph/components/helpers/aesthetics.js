@@ -3,14 +3,9 @@ import { isGroup, then } from './utils.js';
 import * as constants from './constants.js';
 
 export function highlightExpandableNode(){
-  this.node.filter((d) => { 
-      console.log("weight: ", d.weight, " linksCount: ", d.linksCount);
-      if (!d.linksCount) { 
-        // debugger; 
-      }
-      if (parseInt(d.linksCount) > d.weight) { 
-        debugger; return d } })
-    .style('fill', 'red')
+  this.node.classed('expandable', false)
+  this.node.filter((d) => { if (parseInt(d.linksCount) > d.weight) { return d } })
+    .classed('expandable', true)
 }
 // Link highlighting
 export function highlightLinksFromAllNodes() {

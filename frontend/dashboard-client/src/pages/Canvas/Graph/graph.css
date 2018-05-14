@@ -218,3 +218,7 @@ i.fa-close {
   fill-opacity: 0.05;
   transition-property: stroke-opacity, fill-opacity;
 }
+
+.node.expandable {
+  fill: #0d77e2;
+}

@@ -25,8 +25,6 @@ export async function getProject(id) {
 
 export async function updateProject(data) {
   data.d3Data = JSON.stringify(data.d3Data);
-  console.log("data: ", data.d3Data.length)
-  debugger
   const response = await api_inst.put('/projects/update', {
     projectid: data.id,
     data: data.d3Data,
