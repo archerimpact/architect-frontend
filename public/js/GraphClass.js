@@ -1,6 +1,6 @@
 'use strict';
 
-import * as d3 from './d3.min.js';
+import * as d3 from 'd3';
 import * as aesthetics from './helpers/aesthetics.js';
 import * as utils from './helpers/utils.js';
 import * as mouseClicks from './helpers/mouseClicks.js';

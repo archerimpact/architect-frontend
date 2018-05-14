@@ -12,6 +12,7 @@ import {
   DOCUMENT
 } from './typeConstants.js';
 
+import * as d3 from 'd3';
 import * as utils from './utils.js';
 
 export function setMatrix(nodes, links) {

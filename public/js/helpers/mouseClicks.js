@@ -1,3 +1,4 @@
+import * as d3 from 'd3';
 import { MAX_SCALE, GRID_LENGTH } from './constants.js'
 import { getD3Event, findEntryById, processNodeName, isRightClick, then } from './utils.js';
 import { resetDragLink } from './aesthetics.js';
