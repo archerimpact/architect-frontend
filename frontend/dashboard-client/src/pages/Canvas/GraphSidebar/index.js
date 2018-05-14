@@ -24,6 +24,7 @@ class GraphSidebar extends Component {
   }
 
   componentDidMount() {
+    debugger
     let listener = this.props.history.listen((location, action) => {
       this.setState({ history: [...this.state.history, location] });
     })
@@ -64,7 +65,7 @@ class GraphSidebar extends Component {
 
   renderSidebarContainer() {
     switch(this.props.match.params.sidebarState) {
-      case "Search":
+      case "search":
         return  (
           <div>
               <div className="searchbar-container">
@@ -74,13 +75,12 @@ class GraphSidebar extends Component {
               <div className="results-container">
                 <SearchResults graph={this.props.graph} search={this.props.search} entity />
               </div>
-              {this.state.history.map((res, key) => (<div key={key}> {res.pathname + res.search} </div>))}
           </div>
          );
-      case "Entity":
+      case "entity":
           return <Entity />
       default:
-        return <div></div>
+        return <div> Sample text </div>
     };
   }
 
@@ -93,6 +93,7 @@ class GraphSidebar extends Component {
             {this.renderSidebarContainer()}
           </div>
         </div>
+        {this.state.history.map((res, key) => (<div key={key}> {res.pathname + res.search} </div>))}
       </div>
     );
   }

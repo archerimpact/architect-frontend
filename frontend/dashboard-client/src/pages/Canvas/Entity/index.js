@@ -29,19 +29,19 @@ class Entity extends Component {
   }
 
   componentDidMount = () => {
-    let entity = this.props.march.params.query;
+    let entity = this.props.match.params.query;
     if (entity != null) {
-      this.loadData(entity);
+      // this.loadData(entity);
     }
   }
 
   componentWillReceiveProps = (nextprops) => {
-    if (this.props.march.params.query !== nextprops.march.params.query) {
+    if (this.props.match.params.query !== nextprops.match.params.query) {
       this.setState({
         nodeData: null,
         relationshipData: null,
       })
-      this.loadData(this.props.march.params.query) //load data when you change the url props
+      this.loadData(this.props.match.params.query) //load data when you change the url props
     }
   }
 
@@ -50,6 +50,7 @@ class Entity extends Component {
       .then(data => {
         //returns items in the format: [neo4j_data]
         this.setState({ nodeData: data[0] })
+        debugger
       })
       .catch(err => {
         console.log(err)
@@ -68,9 +69,11 @@ class Entity extends Component {
 
 
   render() {
+    debugger
     if (this.state.nodeData == null || this.state.relationshipData == null) {
+      debugger
       return (
-        null
+        <div> Entity </div>
       );
     } else {
       return (
