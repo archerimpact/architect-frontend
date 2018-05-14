@@ -13,8 +13,6 @@ import {
   GROUP_HULL
 } from './typeConstants.js';
 
-import * as d3 from 'd3';
-
 export function isMorePreferredState(val1, val2) {
   if (val1 === GROUP_MEMBER) { return false; }
   else if (val2 === GROUP_MEMBER) { return false;}

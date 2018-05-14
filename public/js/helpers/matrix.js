@@ -94,12 +94,12 @@ export function addToMatrix(centerid, nodes, links) {
 
       num += 10;
 
-      links[i].source = this.adjacencyMatrix[sourceIndex][sourceIndex].data;
-      links[i].target = this.adjacencyMatrix[targetIndex][targetIndex].data;
+      links[i].source = source;
+      links[i].target = target;
       this.adjacencyMatrix[sourceIndex][targetIndex] = {state: DISPLAYED, data: links[i]};
     }
   }
-  this.update(null, null);
+  this.update(null, 50);
 }
 
 export function matrixToGraph() {

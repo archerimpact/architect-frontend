@@ -533,7 +533,6 @@ class Graph {
     this.node.each(function(d) {
       if (d.fixedTransition) {
         d.fixed = d.fixedTransition = false;
-        d3.select(this).classed("fixed", false);
       }
     });
 
