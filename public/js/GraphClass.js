@@ -415,6 +415,7 @@ class Graph {
     this.displayNodeInfo = displayFunctions.node ? displayFunctions.node : function(d) {};
     this.displayLinkInfo = displayFunctions.link ? displayFunctions.link : function(d) {};
     this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
+    this.expandNodeFromData = displayFunctions.expand ? displayFunctions.expand : function(d) {};
   }
 
   // Updates nodes and links according to current data
@@ -489,7 +490,7 @@ class Graph {
       .attr('class', 'node-name')
       .attr('text-anchor', 'middle')
       .attr('dy', '40px')
-      .text((d) => { return d.group ? '' : utils.processNodeName(d.name, this.printFull); })
+      .text((d) => { return d.group ? '' : utils.processNodeName(d.name ? d.name : d.number, this.printFull); })
       .call(this.textWrap, this.printFull)
       .on('click', function (d) { self.stopPropagation(); })
       .on('mouseover', function (d) { self.stopPropagation(); })

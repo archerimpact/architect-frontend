@@ -31,6 +31,10 @@ export function isGroup(d) {
   return (d.type === GROUP || d.type === GROUP_HULL);
 }
 
+export function isExpandable(d) {
+  return (d.linksCount > d.weight)
+}
+
 export function addRowColumn(matrix) {
   for(var i = 0 ; i < matrix.length ; i++) {
     matrix[i].push({state: NONEXISTENT, data: null});

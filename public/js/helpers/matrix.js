@@ -30,7 +30,7 @@ export function setMatrix(nodes, links, byIndex=false) {
   this.adjacencyMatrix = adjacencyMatrix;
   this.reloadIdToIndex();
   let source, target;
-
+  
   for (var i = 0; i < links.length; i++) {
     // byIndex is true when the link.source and link.target refer to the index of the node in nodes
     if (byIndex) { source = links[i].source; } 

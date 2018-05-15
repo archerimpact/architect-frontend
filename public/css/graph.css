@@ -303,6 +303,7 @@ i.fa-close {
   stroke: #0d77e2;
 }
 
-.node.expandable {
-  fill: #0d77e2;
+.node.expandable circle {
+  fill: #7cbdff !important;
+  fill-opacity: 0.5;
 }
