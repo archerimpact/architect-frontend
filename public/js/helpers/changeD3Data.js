@@ -19,10 +19,6 @@ export function deleteSelectedNodes() {
   select.each((d) => {
     for (var i = this.adjacencyMatrix.length-1; i >=0; i--) {
       if (this.adjacencyMatrix[i][i].data.id === d.id) { 
-        // const parent = this.getParent(i);
-        // if (parent) {
-        //   if (this.getGroupMembers(i).length <= 2) { debugger; this.ungroup(parent); }
-        // }
         this.deleteNode(i);
         if (d === this.hoveredNode) { this.deletingHoveredNode = true; }
       }
@@ -170,7 +166,6 @@ export function toggleGroupView(id) {
   this.update();
   this.fillGroupNodes();
 }
-
 
 export function groupSame() {
   /* Groups all the nodes that are connected to each other with possibly_same_as */

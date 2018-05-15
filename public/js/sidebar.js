@@ -1,3 +1,4 @@
+import * as d3 from 'd3';
 import * as utils from './helpers/utils.js';
 import { MAX_HEIGHT } from './helpers/constants.js';
 var $ = require("jquery");
@@ -23,6 +24,7 @@ function populateGraphUsageBody(graphUsageBody) {
   $(graphUsageBody).append(createGraphUsageEntry('toggle text length', 'P'));  
   $(graphUsageBody).append(createGraphUsageEntry('toggle if nodes are fixed', 'F'));  
   $(graphUsageBody).append(createGraphUsageEntry('groups all the possibly same as nodes', 'C'));  
+  $(graphUsageBody).append(createGraphUsageEntry('expand node by degree', 'T'));
   $(graphUsageBody).append(createGraphUsageEntry('save svg as .svg file', 'O'));  
 }
 

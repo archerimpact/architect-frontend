@@ -1,3 +1,4 @@
+import * as d3 from 'd3';
 import { 
   NONEXISTENT, 
   DISPLAYED, 
@@ -12,8 +13,6 @@ import {
   GROUP_HULL
 } from './typeConstants.js';
 
-import * as d3 from 'd3';
-
 export function isMorePreferredState(val1, val2) {
   if (val1 === GROUP_MEMBER) { return false; }
   else if (val2 === GROUP_MEMBER) { return false;}
@@ -22,7 +21,6 @@ export function isMorePreferredState(val1, val2) {
   else if (val1 === DISPLAYED) { return true; }
   else if (val2 === DISPLAYED) { return false; }
   else if (val1 === HIDDEN) { return true; }
-
 }
 
 export function isVisibleNode(val) {
@@ -68,14 +66,22 @@ export function getXYFromTranslate(translateString) {
   return [currentX, currentY];
 };
 
-export function getScaleFromZoom(translateString) {
-  var currentTransform = d3.transform(translateString);
+export function getScaleFromZoom(zoomString) {
+  var currentTransform = d3.transform(zoomString);
   var currentX = currentTransform.scale[0];
   var currentY = currentTransform.scale[1];
   return [currentX, currentY];
 };
 
-export function createSVGImage(targetSVG, x1, x2, y1, y2, width=null, height=null){
+export function createSVGImage(targetSVG, x1, x2, y1, y2, width=null, height=null) {  
+  const svgString = createSVGString(targetSVG, x1, x2, y1, y2, width, height);
+  const blob = new Blob([ svgString ], { type: 'image/svg+xml' });
+  const url = URL.createObjectURL(blob);
+
+  return url;
+}
+
+export function createSVGString(targetSVG, x1, x2, y1, y2, width=null, height=null){
   var svgClone = targetSVG.cloneNode(true);
   
   if (!width) { width = x2 - x1; }
@@ -109,10 +115,7 @@ export function createSVGImage(targetSVG, x1, x2, y1, y2, width=null, height=nul
   svgClone.insertBefore(defs, svgClone.firstElementChild);
   
   const svgString = new XMLSerializer().serializeToString(svgClone);
-  const blob = new Blob([ svgString ], { type: 'image/svg+xml' });
-  const url = URL.createObjectURL(blob);
-
-  return url;
+  return svgString;
 }
 
 // =================

@@ -16,8 +16,10 @@ import { GROUP, HULL_GROUP } from './helpers/typeConstants.js';
 // Use this to find codes for FA icons: https://fontawesome.com/cheatsheet
 const icons = {
   'person': '',
+  'Individual': '',
   'Document': '',
   'corporation': '',
+  'Entity': '',
   'group': '',
   'same_as_group': '',
   [constants.BUTTON_ZOOM_IN_ID]: '',
@@ -42,6 +44,9 @@ class Graph {
     this.brushY = null;
     this.numTicks = null;
 
+    this.degreeExpanded = 0;
+    this.expandingNode = null;
+
     this.editMode = false; // Keep track of edit mode (add/remove/modify nodes + links)
     this.dragLink = null; // Dynamic link from selected node in edit mode
     this.dragCallback = null; // Store reference to drag callback to restore after disabling node drag
@@ -50,10 +55,9 @@ class Graph {
     this.recentActions = []; // Stack storing most recent actions by user, each entry takes the form [actionName, data]
 
     this.minimap = null;
-    this.toRenderMinimap = false;
+    this.tickCount = 0;
     this.xbound = [0, 0];
     this.ybound = [0, 0];
-    this.tickCount = 0;
 
     this.isDragging = false; // Keep track of dragging to disallow node emphasis on drag
     this.draggedNode = null; // Store reference to currently dragged node, null otherwise
@@ -73,8 +77,9 @@ class Graph {
     this.node = null;
     this.link = null;
     this.hull = null;
-    this.nodes = null;
-    this.links = null;
+    this.nodes = [];
+    this.links = [];
+    this.hulls = [];
     this.nodeEnter = null;
     this.zoom = null;
     this.brush = null;
@@ -433,6 +438,8 @@ class Graph {
     this.link = this.container.append('g').selectAll('.link');
     this.node = this.container.append('g').selectAll('.node');
 
+    this.force.on('tick', (e) => { this.ticked(e, this) });
+
     this.minimap = new Minimap()
                     .setZoom(this.zoom)
                     .setTarget(this.container) // that's what you're trying to track/the images
@@ -444,14 +451,45 @@ class Graph {
   }
 
   // Completely rerenders the graph, assuming all new nodes and links
-  // centerid currently doesn't do anything
-  setData(centerid, nodes, links) {
-    this.setMatrix(nodes, links);
+  setData(centerid, nodes, links, byIndex) {
+    this.setMatrix(nodes, links, byIndex);
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
+    this.update();
+    for (let i = 150; i > 0; --i) this.force.tick();  
 
-    this.nodes = nodes;
-    this.links = links;
-    this.hulls = [];
+    this.minimap
+      .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
+
+    this.minimap
+      .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
+      .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); 
+
+    //this.translateGraphAroundNode(centerd);
+  }
+
+  addData(centerid, nodes, links) {
+    this.addToMatrix(centerid, nodes, links);
+  }
+
+  fetchData() {
+    return { nodes: this.nodes, links: this.links };
+  }
+
+  bindDisplayFunctions(displayFunctions) {
+    this.displayNodeInfo = displayFunctions.node ? displayFunctions.node : function(d) {};
+    this.displayLinkInfo = displayFunctions.link ? displayFunctions.link : function(d) {};
+    this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
+  }
+
+  // Updates nodes and links according to current data
+  update(event=null, ticks=null, minimap=true) {
+    var self = this;
+
+    this.resetGraphOpacity();
+
+    this.force.stop();
+    this.matrixToGraph();
+    this.reloadNeighbors(); 
 
     this.force
       .gravity(.33)
@@ -461,40 +499,6 @@ class Graph {
       .alpha(.8)
       .nodes(this.nodes)
       .links(this.links);
-
-    // Updates nodes and links according to current data
-    this.update(null, null, false);
-    this.force.on('tick', (e) => { this.ticked(e, this) });
-    // Avoid initial chaos and skip the wait for graph to drift back onscreen
-    for (let i = 150; i > 0; --i) this.force.tick(); 
-    this.reloadNeighbors();
-
-    // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
-    this.minimap
-      .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
-      .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); 
-
-    // var centerd;
-    // this.nodes.map((d)=> {
-    //   if (d.id === centerid) {
-    //     centerd = d;
-    //   }
-    // });
-
-    //this.translateGraphAroundNode(centerd);
-  }
-
-  bindDisplayFunctions(displayFunctions) {
-    this.displayNodeInfo = displayFunctions.node ? displayFunctions.node : function(d) {};
-    this.displayLinkInfo = displayFunctions.link ? displayFunctions.link : function(d) {};
-    this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
-  }
-
-  update(event=null, ticks=null, minimap=true) {
-    var self = this;
-    this.force.stop();
-    this.matrixToGraph();
-    this.reloadNeighbors(); 
 
     // Update links
     this.link = this.link.data(this.links, (d) => { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
@@ -534,6 +538,7 @@ class Graph {
     }
 
     this.nodeEnter.append('circle');
+
 
     this.nodeEnter.append('text')
       .attr('class', 'icon')
@@ -576,22 +581,36 @@ class Graph {
 
     this.hull.exit().remove();
 
+
+    
+    this.reloadNeighbors();
+
     // Update minimap   
+
+    this.force.start();
+    // Avoid initial chaos and skip the wait for graph to drift back onscreen
+    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }   
+
     if (minimap) { 
       this.toRenderMinimap = true;
       this.tickCount = 0;
     }
+    
+    this.node.each(function(d) {
+      if (d.fixedTransition) {
+        d.fixed = d.fixedTransition = false;
+      }
+    });
 
-    this.force.start();
-    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }   
+    this.highlightExpandableNode();
   }
 
   // Occurs each tick of simulation
   ticked(e, self) {
     const classThis = this;
     this.force.resume();
-    this.xbound = [0, 0];
-    this.ybound = [0, 0];
+    this.xbound = [this.width, 0];
+    this.ybound = [this.height, 0];
     this.tickCount += 1;
 
     this.node
@@ -599,9 +618,9 @@ class Graph {
       .each((d) => {
         d.px = d.x; d.py = d.y;
         if (d.x < this.xbound[0]) { this.xbound[0] = d.x; } 
-        else if (d.x > this.xbound[1]) { this.xbound[1] = d.x; }
+        if (d.x > this.xbound[1]) { this.xbound[1] = d.x; }
         if (d.y < this.ybound[0]) { this.ybound[0] = d.y; } 
-        else if (d.y > this.ybound[1]) { this.ybound[1] = d.y; }
+        if (d.y > this.ybound[1]) { this.ybound[1] = d.y; }
       })
       .attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
 
@@ -736,9 +755,23 @@ class Graph {
               .text((d) => { return utils.processNodeName(d.name, this.printFull); })
               .call(this.textWrap, this.printFull);
         }
+        
+        // t: expand by degree
+        else if (d3.event.keyCode == 84) {
+          if (this.degreeExpanded === 0 && this.nodes.length !== 1) { return; }
+          
+          if (this.degreeExpanded === 0 && this.nodes.length === 1) {
+            this.expandingNode = this.nodes[0];
+          }
 
+          this.degreeExpanded += 1;
 
-        this.force.resume();
+          if (this.degreeExpanded <= 4) {
+            d3.json(`/data/well_connected_${this.degreeExpanded}.json`, (json) => {
+              this.addToMatrix(0, json.nodes, json.links);
+            });
+          }
+        }
       });
   }
 
@@ -811,9 +844,14 @@ class Graph {
       this.indexToId[i] = id;
     }
   }
+
+  saveGraphAsSVGString() {
+    return utils.createSVGString(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
+  }
 }
 
 //From aesthetics.js
+Graph.prototype.highlightExpandableNode = aesthetics.highlightExpandableNode;
 Graph.prototype.highlightLinksFromAllNodes = aesthetics.highlightLinksFromAllNodes;
 Graph.prototype.highlightLinksFromNode = aesthetics.highlightLinksFromNode;
 Graph.prototype.styleNode = aesthetics.styleNode;

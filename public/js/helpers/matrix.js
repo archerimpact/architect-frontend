@@ -15,7 +15,7 @@ import {
 import * as d3 from 'd3';
 import * as utils from './utils.js';
 
-export function setMatrix(nodes, links) {
+export function setMatrix(nodes, links, byIndex=false) {
   var numNodes = nodes.length;
   var adjacencyMatrix = new Array(numNodes);
   for (var i = 0; i < numNodes; i++) {
@@ -27,39 +27,79 @@ export function setMatrix(nodes, links) {
     }
   }
 
-  for (var i = 0; i < links.length; i++) {
-    adjacencyMatrix[links[i].source][links[i].target] = {state: DISPLAYED, data: links[i]};
-  }
-
   this.adjacencyMatrix = adjacencyMatrix;
+  this.reloadIdToIndex();
+  let source, target;
+
+  for (var i = 0; i < links.length; i++) {
+    // byIndex is true when the link.source and link.target refer to the index of the node in nodes
+    if (byIndex) { source = links[i].source; } 
+    else if (links[i].source.id) { links[i].source = source = this.idToIndex[links[i].source.id] ; } // the links have already been mapped to the nodes by d3
+    else { links[i].source = source = this.idToIndex[links[i].source]; } // the links have not already been mapped to the nodes
+
+    if (byIndex) { target = links[i].target } 
+    else if (links[i].target.id) { links[i].target = target = this.idToIndex[links[i].target.id]; } 
+    else { links[i].target = target = this.idToIndex[links[i].target]; }
+
+    this.adjacencyMatrix[source][target] = {state: DISPLAYED, data: links[i]};
+  }
 }
 
 export function addToMatrix(centerid, nodes, links) {
-  var originalNodes = this.adjacencyMatrix.length;
   var numNodes = nodes.length;
   for (var i = 0; i < numNodes; i++) {
-    if (this.globalNodes.indexOf(nodes[i]) < 0) {
+    if (!this.idToIndex[nodes[i].id]) {
       utils.addRowColumn(this.adjacencyMatrix);
       this.adjacencyMatrix[this.adjacencyMatrix.length - 1][this.adjacencyMatrix.length - 1] = {
         state: DISPLAYED,
         data: nodes[i]
-      }
+      };
     }
   }
 
-  // CHECK FOR REPEATS
+  this.reloadIdToIndex();
+
   var numLinks = links.length;
+  let num = 0;
+
+  let sourceIndex, targetIndex
   for (var i = 0; i < numLinks; i++) {
-    var sourceIndex = links[i].source + originalNodes;
-    var targetIndex = links[i].target + originalNodes;
+    if (links[i].source.id) { links[i].source = sourceIndex = this.idToIndex[links[i].source.id]; } // the links have already been mapped to the nodes by d3
+    else { links[i].source = sourceIndex = this.idToIndex[links[i].source]; } // the links have not already been mapped to the nodes
+
+    if (links[i].target.id) { links[i].target = targetIndex = this.idToIndex[links[i].target.id]; } 
+    else { links[i].target = targetIndex = this.idToIndex[links[i].target]; }
+
     if (this.adjacencyMatrix[sourceIndex][targetIndex].state === NONEXISTENT) {
-      links[i].source = sourceIndex;
-      links[i].target = targetIndex;
+      const source = this.adjacencyMatrix[sourceIndex][sourceIndex].data;
+      const target = this.adjacencyMatrix[targetIndex][targetIndex].data;
+
+      let distance = 10 + num;
+      if (!source.px && target.px) { 
+        if (target.px >= this.width/2) { source.x = target.px + distance; } 
+        else { source.x = target.px - distance; }
+        
+        if (target.py >= this.height/2) { source.y = target.py + distance; } 
+        else { source.y = target.py - distance; }
+        target.fixedTransition = target.fixed = true;
+      }
+      else if (!target.px && source.px) {
+        if (source.px >= this.width/2) { target.x = source.px + distance; } 
+        else { target.x = source.px - distance; }  
+        
+        if (source.py >= this.height/2) { target.y = source.py + distance; } 
+        else { target.y = source.py - distance; }  
+        source.fixed = source.fixedTransition = true;
+      }
+
+      num += 10;
+
+      links[i].source = source;
+      links[i].target = target;
       this.adjacencyMatrix[sourceIndex][targetIndex] = {state: DISPLAYED, data: links[i]};
     }
   }
-
-  this.update(null, 150);
+  this.update(null, 50);
 }
 
 export function matrixToGraph() {
