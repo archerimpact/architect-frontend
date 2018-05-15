@@ -23,11 +23,13 @@ const icons = {
   [constants.BUTTON_ZOOM_IN_ID]: '',
   [constants.BUTTON_ZOOM_OUT_ID]: '',
   [constants.BUTTON_POINTER_TOOL_ID]: '',
-  [constants.BUTTON_SELECTION_TOOL_ID]: '',
+  [constants.BUTTON_SELECTION_TOOL_ID]: '',
   [constants.BUTTON_EDIT_MODE_ID]: '',
   [constants.BUTTON_FIX_NODE_ID]: '',
   [constants.BUTTON_SIMPLIFY_ID]: '',
   [constants.BUTTON_TOGGLE_MINIMAP_ID]: '',
+  [constants.BUTTON_UNDO_ACTION_ID]: '',
+  [constants.BUTTON_REDO_ACTION_ID]: '',
   [constants.BUTTON_SAVE_PROJECT_ID]: '' 
 };
 
@@ -318,7 +320,7 @@ class Graph {
 
     this.svg.append('rect')
       .attr('y', constants.TOOLBAR_PADDING)
-      .attr({ x: constants.TOOLBAR_PADDING, width: constants.BUTTON_WIDTH, height: constants.BUTTON_WIDTH * buttonData.length })
+      .attr({ x: constants.TOOLBAR_PADDING, width: constants.BUTTON_WIDTH, height: this.height - constants.TOOLBAR_PADDING * 2 })
       .style('fill', colors.HEX_PRIMARY_ACCENT)
       .style('box-shadow', '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)');
 
@@ -353,7 +355,8 @@ class Graph {
   getToolbarLabels() {
     const labels = [constants.BUTTON_ZOOM_IN_ID, constants.BUTTON_ZOOM_OUT_ID, constants.BUTTON_POINTER_TOOL_ID,
                     constants.BUTTON_SELECTION_TOOL_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_FIX_NODE_ID, 
-                    constants.BUTTON_SIMPLIFY_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_SAVE_PROJECT_ID];
+                    constants.BUTTON_SIMPLIFY_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_UNDO_ACTION_ID, 
+                    constants.BUTTON_REDO_ACTION_ID, constants.BUTTON_SAVE_PROJECT_ID];
     const labelObjects = [];
     for (let label of labels) {
       labelObjects.push({ label: label });
@@ -390,7 +393,7 @@ class Graph {
     this.center = [this.width / 2, this.height / 2];
     this.brushX = d3.scale.linear().range([0, width]),
     this.brushY = d3.scale.linear().range([0, height]);
-    this.minimapPaddingX = constants.MINIMAP_MARGIN;
+    this.minimapPaddingX = constants.MINIMAP_MARGIN + constants.BUTTON_WIDTH + constants.TOOLBAR_PADDING;
     this.minimapPaddingY = height - constants.DEFAULT_MINIMAP_SIZE - constants.MINIMAP_MARGIN;
     this.minimapScale = 0.25;
 
@@ -419,6 +422,8 @@ class Graph {
       this.groupSame();
     });
     this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => { this.minimap.toggleMinimapVisibility(); }); // Wrap in unnamed function bc minimap has't been initialized yet
+    this.initializeButton(constants.BUTTON_UNDO_ACTION_ID, () => {}); // Placeholder method
+    this.initializeButton(constants.BUTTON_REDO_ACTION_ID, () => {}); // Placeholder method
     this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => {}); // Placeholder method
 
     this.setupKeycodes();
@@ -696,28 +701,7 @@ class Graph {
 
         // e: Toggle edit mode
         else if (d3.event.keyCode == 69) {
-          const self = this;
-          this.editMode = !this.editMode;
-          if (this.editMode) {
-            this.dragCallback = this.node.property('__onmousedown.drag')['_'];
-            this.node
-              .on('mousedown.drag', null)
-              .on('mousedown', function (d) { self.mousedown(d, this); })
-              .on('mouseup', function (d) { self.mouseup(d, this); });
-
-            this.svg
-              .on('click', function () { self.clickedCanvas(this); })
-              .on('mousemove', function () { self.mousemoveCanvas(this); });
-          } else {
-            this.node
-              .on('mousedown', null)
-              .on('mouseup', null)
-              .on('mousedown.drag', this.dragCallback);
-
-            this.svg
-              .on('click', null)
-              .on('mousemove', null);
-          }
+          
         }
 
         // r/del: Remove selected nodes/links
@@ -766,6 +750,31 @@ class Graph {
         const currNode = d3.select(this);
         currNode.classed('fixed', d.fixed = self.isGraphFixed)
       });
+  }
+
+  toggleEditMode() {
+    const self = this;
+    this.editMode = !this.editMode;
+    if (this.editMode) {
+      this.dragCallback = this.node.property('__onmousedown.drag')['_'];
+      this.node
+        .on('mousedown.drag', null)
+        .on('mousedown', function (d) { self.mousedown(d, this); })
+        .on('mouseup', function (d) { self.mouseup(d, this); });
+
+      this.svg
+        .on('click', function () { self.clickedCanvas(this); })
+        .on('mousemove', function () { self.mousemoveCanvas(this); });
+    } else {
+      this.node
+        .on('mousedown', null)
+        .on('mouseup', null)
+        .on('mousedown.drag', this.dragCallback);
+
+      this.svg
+        .on('click', null)
+        .on('mousemove', null);
+    }
   }
 
   // =================

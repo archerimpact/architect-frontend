@@ -14,7 +14,7 @@ class Minimap {
     this.image = null; // contains the actual svg image
     this.isVisible = true;
 
-    // minimap settins
+    // minimap settings
     this.width = DEFAULT_MINIMAP_SIZE;
     this.height = DEFAULT_MINIMAP_SIZE;
     this.positionX = 0;

@@ -63,6 +63,14 @@ button:focus {
   cursor: pointer;
 }
 
+.button:hover {
+  fill: rgba(0, 0, 0, .1);
+}
+
+.button:active {
+  fill: rgba(0, 0, 0, .25);
+}
+
 #node-tooltip {
   width: 240px;
   background: rgba(255, 255, 255, .75);
