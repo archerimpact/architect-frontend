@@ -438,11 +438,12 @@ class Graph {
       .links(this.links);
 
     // Update links
-    this.link = this.link.data(this.links, (d) => { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
+    this.link = this.link.data(this.links, (d) => { console.log("type: ", d.type); return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
     this.link
       .enter().append('line')
       .attr('class', 'link')
-      .classed('same-as', (l) => { return l.type === 'possibly_same_as'; })
+      .classed('same-as', (l) => { 
+        return l.type.slice(0, 13).toLowerCase() === 'POSSIBLY_SAME'; })
       .classed('faded', (l) => { return this.hoveredNode && !(l.source == this.hoveredNode || l.target == this.hoveredNode); })
       .on('mouseover', this.mouseoverLink)
       .call(this.styleLink, false);

@@ -29,7 +29,6 @@ class Graph extends Component {
     this.props.actions.initializeCanvas(this.props.graph, this.props.width, this.props.height);
     if (this.props.project.graphData) {
       this.props.graph.bindDisplayFunctions({expand: this.expandNodeFromData, node: this.setCurrentNode});
-
       const graphData = { nodes: this.props.project.graphData.nodes, links: this.props.project.graphData.links };
       this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));      
     }
