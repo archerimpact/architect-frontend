@@ -398,8 +398,8 @@ class Graph {
     this.center = [this.width / 2, this.height / 2];
     this.brushX = d3.scale.linear().range([0, width]),
     this.brushY = d3.scale.linear().range([0, height]);
-    this.minimapPaddingX = constants.MINIMAP_MARGIN + constants.BUTTON_WIDTH + constants.TOOLBAR_PADDING;
-    this.minimapPaddingY = height - constants.DEFAULT_MINIMAP_SIZE - constants.MINIMAP_MARGIN;
+    this.minimapPaddingX = constants.MINIMAP_MARGIN + constants.BUTTON_WIDTH;
+    this.minimapPaddingY = height - constants.DEFAULT_MINIMAP_SIZE - constants.MINIMAP_MARGIN + 2;
     this.minimapScale = 0.25;
 
     this.numTicks = width / constants.GRID_LENGTH * (1 / constants.MIN_SCALE);
@@ -456,6 +456,7 @@ class Graph {
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
     this.update();
     for (let i = 150; i > 0; --i) this.force.tick();  
+    this.reloadNeighbors();
 
     this.minimap
       .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); // BANANA need to call it on a function, seems to be most similar to initailizeMinimap

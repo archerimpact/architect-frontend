@@ -15,7 +15,7 @@ export const MARKER_PADDING = 7;
 export const MARKER_SIZE_BIG = 5;
 export const MARKER_SIZE_SMALL = 4.1;
 
-export const TOOLBAR_PADDING = 12;
+export const TOOLBAR_PADDING = 0;
 export const BUTTON_WIDTH = 60;
 export const BUTTON_ZOOM_IN_ID = 'button-zoom-in';
 export const BUTTON_ZOOM_OUT_ID = 'button-zoom-out';
@@ -32,5 +32,5 @@ export const BUTTON_SAVE_PROJECT_ID = 'button-save-project';
 export const MINIMAP_SCALE = 0.15;
 export const MINIMAP_PADDING = 100;
 export const DEFAULT_MINIMAP_SIZE = 300;
-export const MINIMAP_MARGIN = 12;
+export const MINIMAP_MARGIN = 15;
 export const MINIMAP_TICK = 15;

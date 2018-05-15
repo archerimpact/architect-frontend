@@ -22,10 +22,8 @@ body {
 }
 
 svg {
-  border: 3px solid #fff;
   z-index: -3;
 }
-
 
 svg rect.extent {
   stroke: #ccc;
@@ -37,6 +35,7 @@ svg line {
   stroke: #ebebeb;
   stroke-width: 1.5px; 
 }
+
 .link {
   stroke: #545454;
   opacity: 1;
@@ -190,8 +189,9 @@ i.fa-close {
 
 #minimap-box-square {
   fill: #b1b1b1;
+  stroke: #545454;
+  stroke-width: 1.5px;
   opacity: 0.4;
-  border:3px solid #fff;
 }
 
 .link {
