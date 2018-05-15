@@ -348,7 +348,6 @@ class Graph {
       .attr('id', (d) => { return d.label; })
       .attr('y', (d, i) => { return constants.TOOLBAR_PADDING + i * constants.BUTTON_WIDTH; })
       .attr({ x: constants.TOOLBAR_PADDING, width: constants.BUTTON_WIDTH, height: constants.BUTTON_WIDTH, class: 'button' })
-      .on('click', this.stopPropagation)
       .on('dblclick', this.stopPropagation)
       .call(d3.behavior.drag()
         .on('dragstart', this.stopPropagation)
@@ -387,9 +386,13 @@ class Graph {
     this.svg.on('mouseup', () => { this.svg.call(this.zoom) });
   }
 
-  initializeButton(id, onclick) {
+  initializeButton(id, onclick, isSelected=false) {
     d3.select('#' + id)
-      .on('click', onclick);
+      .on('click', () => { 
+        onclick();
+        this.stopPropagation(); 
+      })
+      .classed('selected', isSelected);
   }
 
   generateCanvas(width, height) {
@@ -418,10 +421,16 @@ class Graph {
 
     this.initializeToolbarButtons();
     this.initializeZoomButtons();
-    this.initializeButton(constants.BUTTON_POINTER_TOOL_ID, () => {}); // Placeholder method
-    this.initializeButton(constants.BUTTON_SELECTION_TOOL_ID, () => {}); // Placeholder method
-    this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => {}); // Placeholder method
-    this.initializeButton(constants.BUTTON_FIX_NODE_ID, this.toggleFixedNodes);
+    this.initializeButton(constants.BUTTON_POINTER_TOOL_ID, () => {
+      d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', false);
+      d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', true);
+    }, true); // Placeholder method
+    this.initializeButton(constants.BUTTON_SELECTION_TOOL_ID, () => {
+      d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', false);
+      d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', true);
+    }); // Placeholder method
+    this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => { this.toggleEditMode() });
+    this.initializeButton(constants.BUTTON_FIX_NODE_ID, () => { this.toggleFixedNodes() });
     this.initializeButton(constants.BUTTON_SIMPLIFY_ID, () => {
       this.hideDocumentNodes();
       this.groupSame();
@@ -721,7 +730,7 @@ class Graph {
 
         // e: Toggle edit mode
         else if (d3.event.keyCode == 69) {
-          
+          this.toggleEditMode();
         }
 
         // r/del: Remove selected nodes/links
@@ -789,6 +798,8 @@ class Graph {
   toggleEditMode() {
     const self = this;
     this.editMode = !this.editMode;
+    const button = d3.select('#' + constants.BUTTON_EDIT_MODE_ID);
+    button.classed('selected', this.editMode);
     if (this.editMode) {
       this.dragCallback = this.node.property('__onmousedown.drag')['_'];
       this.node
