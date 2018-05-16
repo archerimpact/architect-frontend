@@ -27,17 +27,17 @@ class Graph extends Component {
 
   componentDidMount() {
     this.props.actions.initializeCanvas(this.props.graph, this.props.width, this.props.height);
-    if (this.props.project.graphData) {
+    if (this.props.graphData != null) {
       this.props.graph.bindDisplayFunctions({expand: this.expandNodeFromData, node: this.setCurrentNode});
-
-      const graphData = { nodes: this.props.project.graphData.nodes, links: this.props.project.graphData.links };
+      const graphData = { nodes: this.props.graphData.nodes, links: this.props.graphData.links };
       this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));      
     }
   }
 
-  componentWillReceiveNextProps(nextprops) {
-    if (nextprops.project.graphData != this.props.project.graphData) {
-      const graphData = { nodes: nextprops.currentProject.graphData.nodes, links: nextprops.currentProject.graphData.links };
+  componentWillReceiveProps(nextprops) {
+    if (nextprops.graphData != null && nextprops.graphData != this.props.graphData) {
+      this.props.graph.bindDisplayFunctions({expand: this.expandNodeFromData, node: this.setCurrentNode});
+      const graphData = { nodes: nextprops.graphData.nodes, links: nextprops.graphData.links };
       this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));
     }
   }
@@ -52,7 +52,10 @@ class Graph extends Component {
 
   renderProjectToolbar() {
     return (
-      <div className="back-button" onClick={() => this.props.history.push('/build')}>
+      <div className="back-button" onClick={() => {
+        this.props.dispatch(graphActions.resetProject())
+        this.props.history.push('/build')}
+      }>
         <i className="material-icons back-button-icon">home</i>
       </div>
     )
@@ -79,10 +82,16 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, props) {
   let sidebarSize = state.data.sidebarVisible ? 600 : 0;
+  let graphData = null
+  if (state.data.currentProject != null && state.data.currentProject.graphData != null) {
+    // TODO this is called a lot
+    graphData = state.data.currentProject.graphData
+  }
   return{
       height: window.innerHeight,
       width: Math.max(window.innerWidth - sidebarSize),
-      project: state.data.currentProject
+      project: state.data.currentProject,
+      graphData: graphData
   };
 }
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Graph));

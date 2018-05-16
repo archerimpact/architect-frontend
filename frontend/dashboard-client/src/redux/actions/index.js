@@ -3,6 +3,7 @@ import {
 	USER_LOGOUT, 
 	TOGGLE_SIDEBAR,
 	STORE_PROJECT,
+	RESET_PROJECT
   } from './actionTypes';
 
 import { logoutAccount } from "../../server/auth_routes";
@@ -42,7 +43,16 @@ export function fetchProject(id) {
 	return (dispatch) => {
 		server.getProject(id)
 			.then((data)=>{
-				dispatch(storeProject(data.message));
+				let graphData
+				try {
+					graphData = JSON.parse(data.message.data)
+				}
+				catch (err) {
+					graphData = null
+				}
+				let proj = {...data.message, data: graphData}
+
+				dispatch(storeProject(proj));
 			})
 			.catch((error) =>  console.log(error));
 	}
@@ -54,3 +64,5 @@ function storeProject(project) {
 		payload: project
 	};
 }
+
+

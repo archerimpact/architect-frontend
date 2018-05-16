@@ -6,6 +6,7 @@ export const UPDATE_GRAPH_DATA = "UPDATE_GRAPH_DATA";
 export const STORE_SEARCH_RESULTS = "STORE_SEARCH_RESULTS";
 export const STORE_CURRENT_NODE = "STORE_CURRENT_NODE";
 export const UPDATE_PROJECT_DATA = "UPDATE_PROJECT_DATA";
+export const RESET_PROJECT = "RESET_PROJECT";
 
 export function initializeCanvas(graph, width, height) {
   return (dispatch, getState) => {
@@ -32,7 +33,7 @@ export function saveCurrentProjectData(graph) {
     let imageString = graph.saveGraphAsSVGString();
     server.updateProject({id: projid, d3Data: data, image: ''})
       .then((response) => {
-        dispatch(updateProjectDispatch({id: projid, data: data}));
+        // TODO verify update was correct
       })
       .catch((err) => { console.log(err)});
   }
@@ -199,3 +200,10 @@ function parseNeo4jData(data) {
   //     })
   //     .catch(err => { console.log(err); });
   // }
+
+export function resetProject(project) {
+  return {
+    type: RESET_PROJECT,
+    payload: project
+  };
+}

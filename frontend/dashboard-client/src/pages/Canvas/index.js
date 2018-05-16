@@ -18,7 +18,7 @@ class Canvas extends Component {
     this.graph = new ArcherGraph();
   }
 
-  componentDidMount() {
+  componentWillMount() {
     if (this.props.match.params && this.props.match.params.investigationId) {
       this.props.actions.fetchProject(this.props.match.params.investigationId);
     }
@@ -26,15 +26,16 @@ class Canvas extends Component {
       this.props.actions.fetchSearchResults(this.props.match.params.query);
     } else if (this.props.match.params && this.props.match.params.sidebarState === 'entity') {
       this.props.actions.addToGraphFromId(this.graph, this.props.match.params.query);
-      let entity = this.props.match.params.query;
-      if (entity != null) {
-        // this.loadData(entity);
-      }
+      // let entity = this.props.match.params.query;
+      // if (entity != null) {
+      //   // this.loadData(entity);
+      // }
     }
   }
 
   componentWillReceiveProps(nextprops) {
     if (this.props.location !== nextprops.location && nextprops.match.params) {
+      this.props.actions.fetchProject(nextprops.match.params.investigationId);
       if (this.props.match.params.sidebarState === 'search') {
         let nextSearch = nextprops.match.params.query;
         if (nextSearch !== null && this.props.match.params.query !== nextSearch) {
@@ -42,11 +43,11 @@ class Canvas extends Component {
         }
       } else if (this.props.match.params.sidebarState === 'entity') {
         this.props.actions.addToGraphFromId(this.graph, nextprops.match.params.query);
-        let entity = nextprops.match.params.query;
-        if (entity != null) {
-          // this.loadData(entity);
-        }
-      }
+        // let entity = nextprops.match.params.query;
+        // if (entity != null) {
+        //   // this.loadData(entity);
+        // }
+      } 
     }
   }
 
