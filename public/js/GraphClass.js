@@ -474,13 +474,8 @@ class Graph {
     this.reloadNeighbors();
 
     this.minimap
-      .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
-
-    this.minimap
       .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
       .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); 
-
-    //this.translateGraphAroundNode(centerd);
   }
 
   addData(centerid, nodes, links) {
