@@ -105,7 +105,6 @@ export function fetchGraphFromId(graph, id) {
       dispatch(storeCurrentNodeDispatch(d.id));
       // graph.translateGraphAroundNode(d)
     }
-
     server.getGraph(id)
       .then(data => {
         // var graphData = parseNeo4jData(data);

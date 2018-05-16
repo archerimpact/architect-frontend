@@ -21,9 +21,9 @@ export default function (state = initialState, action) {
 			return {
 				...state,
 				canvas: {
-					// graph: action.payload,
 					graphData: null
-				}
+				}, 
+				currentNode: null
 			};
 		case TOGGLE_SIDEBAR:
 			return {

@@ -20,22 +20,11 @@ class BackendSearch extends Component {
     };
   }
 
-  componentWillReceiveProps(nextprops) {
-    if (this.props.search !== null && this.props.search !== nextprops.search) {
-      this.setState({ showResults: true });
-    }
-  }
-
   toggleSearchResults() {
     return this.setState({ showResults: !this.state.showResults });
   }
 
   addToGraph(id) {
-    let path =  this.props.location.pathname;
-    let searchQuery = this.props.search ? 'search=' + this.props.search : '';
-    let graphQuery = id ? '&graphid=' + id : '';
-    this.props.history.push(path + '?' + searchQuery + graphQuery);
-    // this.props.actions.fetchGraphFromId(this.props.graph, id);
     this.props.actions.addToGraphFromId(this.props.graph, id);
   }
 
@@ -55,7 +44,7 @@ class BackendSearch extends Component {
             null :
             this.props.searchData.map((entity) => {
               return (
-                <EntityCard entity={entity} key={entity._source.neo4j_id} addToGraph={this.addToGraph} saveProjectData={this.saveCurrentProjectData} newgraphid={true} />
+                <EntityCard entity={entity} key={entity._id} addToGraph={this.addToGraph} saveProjectData={this.saveCurrentProjectData} newgraphid={true} />
               );
             })
           }

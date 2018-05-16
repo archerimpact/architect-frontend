@@ -180,8 +180,6 @@ export function mouseover(d, self) {
         .call(this.textWrap, 2);
     }
   }
-
-  this.displayNodeInfo(d);
 }
 
 export function mouseout(d, self) {

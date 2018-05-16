@@ -36,10 +36,10 @@ class EntityCard extends Component {
     return (
       <div className="card result-card" key={this.props.entity._id}>
         <div className="card-header result-card-header flex-row d-flex">
+          <i className="entity-icon add-to-graph-icon material-icons" onClick={()=>{this.props.addToGraph(this.state.id)}}>add</i>
           <Link to={url}>
-          <i className="entity-icon add-to-graph-icon material-icons">add</i>
+            <i className="entity-icon detailed-view-icon material-icons">format_list_bulleted</i>
           </Link>
-          <i className="entity-icon detailed-view-icon material-icons" onClick={()=> {/* TODO */}}>format_list_bulleted</i>
           <i className="entity-icon detailed-view-icon material-icons" onClick={()=> {this.props.saveProjectData()}}>save</i>          
           <span className="collapse-link" onClick={this.toggleCollapse}>
             { this.state.name }
