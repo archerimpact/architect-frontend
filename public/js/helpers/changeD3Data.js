@@ -196,7 +196,7 @@ export function groupSame() {
   }
 
   for (var key in sameGroups) {
-    this.createGroup(sameGroups[key]);
+    this.createGroup(sameGroups[key], this.nodes[sameGroups[key][0]].name);
   }
 
   this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
