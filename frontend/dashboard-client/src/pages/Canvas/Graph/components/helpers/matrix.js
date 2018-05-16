@@ -51,7 +51,7 @@ export function addToMatrix(centerid, nodes, links) {
 
   console.log("id to index: ", this.idToIndex);
   for (var i = 0; i < numNodes; i++) {
-    if (this.idToIndex[nodes[i].id] !== null) {
+    if (this.idToIndex[nodes[i].id] == null) {
       console.log(nodes[i].id)
       utils.addRowColumn(this.adjacencyMatrix);
       this.adjacencyMatrix[this.adjacencyMatrix.length - 1][this.adjacencyMatrix.length - 1] = {
@@ -68,6 +68,7 @@ export function addToMatrix(centerid, nodes, links) {
 
   let sourceIndex, targetIndex
   for (var i = 0; i < numLinks; i++) {
+    console.log()
     if (links[i].source.id) { links[i].source = sourceIndex = this.idToIndex[links[i].source.id]; } // the links have already been mapped to the nodes by d3
     else { links[i].source = sourceIndex = this.idToIndex[links[i].source]; } // the links have not already been mapped to the nodes
 
@@ -80,7 +81,6 @@ export function addToMatrix(centerid, nodes, links) {
 
       let distance = 10 + num;
       if (!source.px && target.px) {
-        debugger 
         if (target.px >= this.width/2) { source.x = target.px + distance; } 
         else { source.x = target.px - distance; }
         
@@ -89,7 +89,6 @@ export function addToMatrix(centerid, nodes, links) {
         target.fixedTransition = target.fixed = true;
       }
       else if (!target.px && source.px) {
-        debugger
         if (source.px >= this.width/2) { target.x = source.px + distance; } 
         else { target.x = source.px - distance; }  
         
@@ -97,7 +96,6 @@ export function addToMatrix(centerid, nodes, links) {
         else { target.y = source.py - distance; }  
         source.fixed = source.fixedTransition = true;
       } else {
-        debugger
       }
 
       num += 10;
