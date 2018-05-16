@@ -96,6 +96,11 @@ class Minimap {
         .on('dragstart', stopPropagation)
         .on('drag', stopPropagation)
         .on('dragend', stopPropagation)
+      )
+      .call(d3.behavior.zoom()
+        .on('zoomstart', stopPropagation)
+        .on('zoom', stopPropagation)
+        .on('zoomend', stopPropagation)
       );
 
     // raster image snapshot of the SVG
@@ -116,7 +121,12 @@ class Minimap {
     this.box = this.container.append('g')
       .attr('class', 'minimap-box')
       .on('click', stopPropagation)
-      .on('dblclick', stopPropagation);
+      .on('dblclick', stopPropagation)
+      .call(d3.behavior.zoom()
+        .on('zoomstart', stopPropagation)
+        .on('zoom', stopPropagation)
+        .on('zoomend', stopPropagation)
+      );
 
     this.box.append('rect')
       .attr('id', 'minimap-box-square')
@@ -173,10 +183,10 @@ class Minimap {
 
       const targetTransform = utils.getXYFromTranslate(this.target.attr('transform'));
 
-      this.boxX += -targetTransform[0]/(this.scale*this.boxScale);
-      this.boxY += -targetTransform[1]/(this.scale*this.boxScale);
+      this.boxX += -targetTransform[0]/(this.scale);
+      this.boxY += -targetTransform[1]/(this.scale);
 
-      const translate = [-targetTransform[0]/(this.scale*this.boxScale), -targetTransform[1]/(this.scale*this.boxScale)];
+      const translate = [-targetTransform[0]/(this.scale), -targetTransform[1]/(this.scale)];
       
       this.box
         .attr('transform', 'translate(' + translate + ')scale(' + 1 + ')')
