@@ -27,12 +27,12 @@ export function isVisibleNode(val) {
   return (val === DISPLAYED);
 }
 
-export function isExpandable(d) {
-  return (d.linksCount > d.weight)
-}
-
 export function isGroup(d) {
   return (d.type === GROUP || d.type === GROUP_HULL);
+}
+
+export function isExpandable(d) {
+  return (d.linksCount > d.weight)
 }
 
 export function addRowColumn(matrix) {

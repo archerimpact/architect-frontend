@@ -9,6 +9,7 @@ import * as matrix from './helpers/matrix.js';
 import * as d3Data from './helpers/changeD3Data.js';
 import Minimap from './MinimapClass.js'
 import * as constants from './helpers/constants.js';
+import * as colors from './helpers/colorConstants.js';
 import { GROUP, HULL_GROUP } from './helpers/typeConstants.js';
 
 // FontAwesome icon unicode-to-node type dict
@@ -20,7 +21,18 @@ const icons = {
   'corporation': '',
   'Entity': '',
   'group': '',
-  'same_as_group': ''
+  'same_as_group': '',
+  [constants.BUTTON_ZOOM_IN_ID]: '',
+  [constants.BUTTON_ZOOM_OUT_ID]: '',
+  [constants.BUTTON_POINTER_TOOL_ID]: '',
+  [constants.BUTTON_SELECTION_TOOL_ID]: '',
+  [constants.BUTTON_EDIT_MODE_ID]: '',
+  [constants.BUTTON_FIX_NODE_ID]: '',
+  [constants.BUTTON_SIMPLIFY_ID]: '',
+  [constants.BUTTON_TOGGLE_MINIMAP_ID]: '',
+  [constants.BUTTON_UNDO_ACTION_ID]: '',
+  [constants.BUTTON_REDO_ACTION_ID]: '',
+  [constants.BUTTON_SAVE_PROJECT_ID]: '' 
 };
 
 class Graph {
@@ -31,17 +43,21 @@ class Graph {
     this.brushX = null;
     this.brushY = null;
     this.numTicks = null;
-    this.tickCount = 0;
-    this.xbound = [0, 0];
-    this.ybound = [0, 0];
+
     this.degreeExpanded = 0;
     this.expandingNode = null;
 
     this.editMode = false; // Keep track of edit mode (add/remove/modify nodes + links)
+    this.dragLink = null; // Dynamic link from selected node in edit mode
     this.dragCallback = null; // Store reference to drag callback to restore after disabling node drag
     this.dragDistance = 0; // Keep track of drag distance starting on node to disable click during edit mode
     this.mousedownNode = null; // Store reference to current node on mousedown (aka currently edited node)
     this.recentActions = []; // Stack storing most recent actions by user, each entry takes the form [actionName, data]
+
+    this.minimap = null;
+    this.tickCount = 0;
+    this.xbound = [0, 0];
+    this.ybound = [0, 0];
 
     this.isDragging = false; // Keep track of dragging to disallow node emphasis on drag
     this.draggedNode = null; // Store reference to currently dragged node, null otherwise
@@ -73,13 +89,10 @@ class Graph {
     this.curve = null;
     this.svgGrid = null;
     this.force = null;
-    this.minimap = null;
 
     this.adjacencyMatrix = new Array();
     this.globalLinks = {};
     this.globalNodes = [];
-
-    this.dragLink = null; // Dynamic link from selected node in edit mode
 
     this.ticked = this.ticked.bind(this);
     this.brushstart = this.brushstart.bind(this);
@@ -88,9 +101,7 @@ class Graph {
     this.clicked = this.clicked.bind(this);
     this.rightclicked = this.rightclicked.bind(this);
     this.dblclicked = this.dblclicked.bind(this);
-
     this.isLeftClick = this.isLeftClick.bind(this);
-
     this.dragstart = this.dragstart.bind(this);
     this.dragging = this.dragging.bind(this);
     this.dragend = this.dragend.bind(this);
@@ -110,7 +121,10 @@ class Graph {
     this.initializeBrush = this.initializeBrush.bind(this);
     this.drawHull = this.drawHull.bind(this);
     this.zoomButton = this.zoomButton.bind(this);
+    this.initializeToolbarButtons = this.initializeToolbarButtons.bind(this);
+    this.getToolbarLabels = this.getToolbarLabels.bind(this);
     this.initializeZoomButtons = this.initializeZoomButtons.bind(this);
+    this.initializeButton = this.initializeButton.bind(this);
     this.textWrap = this.textWrap.bind(this);
     this.displayTooltip = this.displayTooltip.bind(this);
     this.displayDebugTooltip = this.displayDebugTooltip.bind(this);
@@ -280,9 +294,9 @@ class Graph {
       markerList.push({ id: markerId });
     }
 
-    const colors = {
-      'gray': '#545454',
-      'blue': '#0d77e2'
+    const colorNameToHex = {
+      'gray': colors.HEX_DARK_GRAY,
+      'blue': colors.HEX_BLUE
     };
 
     let marker, id, tokens;
@@ -290,7 +304,7 @@ class Graph {
       tokens = marker.id.split('-');
       marker.direction = (tokens[0] === 'end') ? 'auto' : 'auto-start-reverse';
       marker.size = (tokens[1] === 'big') ? constants.MARKER_SIZE_BIG : constants.MARKER_SIZE_SMALL;
-      marker.color = colors[tokens[2]];
+      marker.color = colorNameToHex[tokens[2]];
     }
 
     return markerList;
@@ -306,40 +320,79 @@ class Graph {
       .attr('marker-end', 'url(#end-big-gray)');
   }
 
+  initializeToolbarButtons() {
+    const buttonData = this.getToolbarLabels();
+
+    this.svg.append('rect')
+      .attr('y', constants.TOOLBAR_PADDING)
+      .attr({ x: constants.TOOLBAR_PADDING, width: constants.BUTTON_WIDTH, height: this.height - constants.TOOLBAR_PADDING * 2 })
+      .style('fill', colors.HEX_PRIMARY_ACCENT)
+      .style('box-shadow', '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)');
+
+    const button = this.svg.selectAll('.button')
+      .data(buttonData)
+      .enter().append('g')
+      .attr('pointer-events', 'all');
+
+    button.append('text')
+      .attr('class', 'button-icon')
+      .attr('x', constants.TOOLBAR_PADDING + constants.BUTTON_WIDTH / 2)
+      .attr('y', (d, i) => { return (constants.TOOLBAR_PADDING + constants.BUTTON_WIDTH / 2) + i * constants.BUTTON_WIDTH; })
+      .style({ 'text-anchor': 'middle', 'dominant-baseline': 'central', 'font-family': 'FontAwesome', 'font-size': constants.BUTTON_WIDTH * 0.4 + 'px' })
+      .style('fill', colors.HEX_WHITE)
+      .style('font-weight', 'lighter')
+      .text((d) => { return (d.label && icons[d.label]) ? icons[d.label] : ''; })
+      .classed('unselectable', true);
+
+    button.append('rect')
+      .attr('id', (d) => { return d.label; })
+      .attr('y', (d, i) => { return constants.TOOLBAR_PADDING + i * constants.BUTTON_WIDTH; })
+      .attr({ x: constants.TOOLBAR_PADDING, width: constants.BUTTON_WIDTH, height: constants.BUTTON_WIDTH, class: 'button' })
+      .on('dblclick', this.stopPropagation)
+      .call(d3.behavior.drag()
+        .on('dragstart', this.stopPropagation)
+        .on('drag', this.stopPropagation)
+        .on('dragend', this.stopPropagation)
+      );
+  }
+
+  getToolbarLabels() {
+    const labels = [constants.BUTTON_ZOOM_IN_ID, constants.BUTTON_ZOOM_OUT_ID, constants.BUTTON_POINTER_TOOL_ID,
+                    constants.BUTTON_SELECTION_TOOL_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_FIX_NODE_ID, 
+                    constants.BUTTON_SIMPLIFY_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_UNDO_ACTION_ID, 
+                    constants.BUTTON_REDO_ACTION_ID, constants.BUTTON_SAVE_PROJECT_ID];
+    const labelObjects = [];
+    for (let label of labels) {
+      labelObjects.push({ label: label });
+    }
+
+    return labelObjects;
+  }
+
+  // Control logic to zoom when buttons are pressed, keep zooming while they are pressed, stop zooming 
+  // when released or moved off of, not snap-pan when moving off buttons, and restore pan on mouseup.
   initializeZoomButtons() {
-    var self = this;
-    this.svg.selectAll('.button')
-      //.data(['zoom_in', 'zoom_out'])
-      .data([{ label: 'zoom_in' }, { label: 'zoom_out' }])
-      .enter()
-      //.append('text').text('hi')
-      .append('rect')
-      .attr('x', function (d, i) { return 10 + 50 * i })
-      .attr({ y: 10, width: 40, height: 20, class: 'button' })
-      .attr('id', function (d) { return d.label })
-      .style('fill', function (d, i) { return i ? 'red' : 'green' });
-    // .attr('text', function(d,i){ return i ? 'red' : 'green'})
-    // .attr('label', function(d,i){ return i ? 'red' : 'green'})
-
-    // svg.selectAll('.button').append('text').text('hi')
-
-    // Control logic to zoom when buttons are pressed, keep zooming while they are
-    // pressed, stop zooming when released or moved off of, not snap-pan when
-    // moving off buttons, and restore pan on mouseup.
-
+    const self = this;
     this.zoomPressed = false;
-    d3.selectAll('.button')
-      .on('mousedown', function () {
+    d3.selectAll(`#${constants.BUTTON_ZOOM_IN_ID}, #${constants.BUTTON_ZOOM_OUT_ID}`)
+      .on('mousedown', function() {
         self.zoomPressed = true;
         self.disableZoom();
-        self.zoomButton(this.id === 'zoom_in')
+        self.zoomButton(this.id === constants.BUTTON_ZOOM_IN_ID);
       })
-      .on('mouseup', function () { self.zoomPressed = false; })
-      .on('mouseout', function () { self.zoomPressed = false; })
-      .on('click', this.stopPropagation)
-      .on('dblclick', this.stopPropagation);
+      .on('mouseup', () => { this.zoomPressed = false; })
+      .on('mouseout', () => { this.zoomPressed = false; });
 
     this.svg.on('mouseup', () => { this.svg.call(this.zoom) });
+  }
+
+  initializeButton(id, onclick, isSelected=false) {
+    d3.select('#' + id)
+      .on('click', () => { 
+        onclick();
+        this.stopPropagation(); 
+      })
+      .classed('selected', isSelected);
   }
 
   generateCanvas(width, height) {
@@ -348,8 +401,8 @@ class Graph {
     this.center = [this.width / 2, this.height / 2];
     this.brushX = d3.scale.linear().range([0, width]),
     this.brushY = d3.scale.linear().range([0, height]);
-    this.minimapPaddingX = constants.MINIMAP_MARGIN;
-    this.minimapPaddingY = height - constants.DEFAULT_MINIMAP_SIZE - constants.MINIMAP_MARGIN;
+    this.minimapPaddingX = constants.MINIMAP_MARGIN + constants.BUTTON_WIDTH;
+    this.minimapPaddingY = height - constants.DEFAULT_MINIMAP_SIZE - constants.MINIMAP_MARGIN + 2;
     this.minimapScale = 0.25;
 
     this.numTicks = width / constants.GRID_LENGTH * (1 / constants.MIN_SCALE);
@@ -364,8 +417,28 @@ class Graph {
     this.force = this.initializeForce();
     this.dragLink = this.initializeDragLink();
     this.initializeMarkers();
-    this.initializeZoomButtons();
     this.initializeTooltip();
+
+    this.initializeToolbarButtons();
+    this.initializeZoomButtons();
+    this.initializeButton(constants.BUTTON_POINTER_TOOL_ID, () => {
+      d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', false);
+      d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', true);
+    }, true); // Placeholder method
+    this.initializeButton(constants.BUTTON_SELECTION_TOOL_ID, () => {
+      d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', false);
+      d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', true);
+    }); // Placeholder method
+    this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => { this.toggleEditMode() });
+    this.initializeButton(constants.BUTTON_FIX_NODE_ID, () => { this.toggleFixedNodes() });
+    this.initializeButton(constants.BUTTON_SIMPLIFY_ID, () => {
+      this.hideDocumentNodes();
+      this.groupSame();
+    });
+    this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => { this.minimap.toggleMinimapVisibility(); }); // Wrap in unnamed function bc minimap has't been initialized yet
+    this.initializeButton(constants.BUTTON_UNDO_ACTION_ID, () => {}); // Placeholder method
+    this.initializeButton(constants.BUTTON_REDO_ACTION_ID, () => {}); // Placeholder method
+    this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => { this.saveAllData() }); // Placeholder method
 
     this.setupKeycodes();
 
@@ -383,7 +456,7 @@ class Graph {
                     .setMinimapPositionY(this.minimapPaddingY)
                     .setGraph(this);
 
-    this.minimap.initializeMinimap(this.svg, this.width, this.height)
+    this.minimap.initializeMinimap(this.svg, this.width, this.height);
   }
 
   // Completely rerenders the graph, assuming all new nodes and links
@@ -392,6 +465,7 @@ class Graph {
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
     this.update();
     for (let i = 150; i > 0; --i) this.force.tick();  
+    this.reloadNeighbors();
 
     this.minimap
       .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
@@ -415,7 +489,8 @@ class Graph {
     this.displayNodeInfo = displayFunctions.node ? displayFunctions.node : function(d) {};
     this.displayLinkInfo = displayFunctions.link ? displayFunctions.link : function(d) {};
     this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
-    this.expandNodeFromData = displayFunctions.expand ? displayFunctions.expand : function(d) {};    
+    this.expandNodeFromData = displayFunctions.expand ? displayFunctions.expand : function(d) {};
+    this.saveAllData = displayFunctions.save ? displayFunctions.save : function(d) {};
   }
 
   // Updates nodes and links according to current data
@@ -438,12 +513,11 @@ class Graph {
       .links(this.links);
 
     // Update links
-    this.link = this.link.data(this.links, (d) => { console.log("type: ", d.type); return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
+    this.link = this.link.data(this.links, (d) => { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
     this.link
       .enter().append('line')
       .attr('class', 'link')
-      .classed('same-as', (l) => { 
-        return l.type.slice(0, 13).toLowerCase() === 'POSSIBLY_SAME'; })
+      .classed('same-as', (l) => { return l.type === 'possibly_same_as'; })
       .classed('faded', (l) => { return this.hoveredNode && !(l.source == this.hoveredNode || l.target == this.hoveredNode); })
       .on('mouseover', this.mouseoverLink)
       .call(this.styleLink, false);
@@ -491,7 +565,7 @@ class Graph {
       .attr('class', 'node-name')
       .attr('text-anchor', 'middle')
       .attr('dy', '40px')
-      .text((d) => { return d.group ? '' : utils.processNodeName(d.name, this.printFull); })
+      .text((d) => { return d.group ? '' : utils.processNodeName(d.name ? d.name : d.number, this.printFull); })
       .call(this.textWrap, this.printFull)
       .on('click', function (d) { self.stopPropagation(); })
       .on('mouseover', function (d) { self.stopPropagation(); })
@@ -502,7 +576,7 @@ class Graph {
         .on('dragend', this.stopPropagation)
       );
 
-    this.node.call(this.styleNode, false)
+    this.node.call(this.styleNode)
     this.node.exit().remove();
 
     // Update hulls
@@ -641,11 +715,6 @@ class Graph {
             .classed('fixed', false);
         }
 
-        // f: Toggle stickiness of all the nodes
-        else if (d3.event.keyCode == 70) {
-          this.toggleFixedNodes();
-        }
-
         // g: Group selected nodes
         else if (d3.event.keyCode == 71) {
           this.groupSelectedNodes();
@@ -663,28 +732,7 @@ class Graph {
 
         // e: Toggle edit mode
         else if (d3.event.keyCode == 69) {
-          const self = this;
-          this.editMode = !this.editMode;
-          if (this.editMode) {
-            this.dragCallback = this.node.property('__onmousedown.drag')['_'];
-            this.node
-              .on('mousedown.drag', null)
-              .on('mousedown', function (d) { self.mousedown(d, this); })
-              .on('mouseup', function (d) { self.mouseup(d, this); });
-
-            this.svg
-              .on('click', function () { self.clickedCanvas(this); })
-              .on('mousemove', function () { self.mousemoveCanvas(this); });
-          } else {
-            this.node
-              .on('mousedown', null)
-              .on('mouseup', null)
-              .on('mousedown.drag', this.dragCallback);
-
-            this.svg
-              .on('click', null)
-              .on('mousemove', null);
-          }
+          this.toggleEditMode();
         }
 
         // r/del: Remove selected nodes/links
@@ -747,6 +795,33 @@ class Graph {
         const currNode = d3.select(this);
         currNode.classed('fixed', d.fixed = self.isGraphFixed)
       });
+  }
+
+  toggleEditMode() {
+    const self = this;
+    this.editMode = !this.editMode;
+    const button = d3.select('#' + constants.BUTTON_EDIT_MODE_ID);
+    button.classed('selected', this.editMode);
+    if (this.editMode) {
+      this.dragCallback = this.node.property('__onmousedown.drag')['_'];
+      this.node
+        .on('mousedown.drag', null)
+        .on('mousedown', function (d) { self.mousedown(d, this); })
+        .on('mouseup', function (d) { self.mouseup(d, this); });
+
+      this.svg
+        .on('click', function () { self.clickedCanvas(this); })
+        .on('mousemove', function () { self.mousemoveCanvas(this); });
+    } else {
+      this.node
+        .on('mousedown', null)
+        .on('mouseup', null)
+        .on('mousedown.drag', this.dragCallback);
+
+      this.svg
+        .on('click', null)
+        .on('mousemove', null);
+    }
   }
 
   // =================
@@ -851,9 +926,6 @@ Graph.prototype.calculateAllHulls = d3Data.calculateAllHulls;
 Graph.prototype.drawHull = d3Data.drawHull;
 Graph.prototype.addLink = d3Data.addLink;
 Graph.prototype.selectLink = d3Data.selectLink;
-
-Graph.prototype.createGroupFromNode = d3Data.createGroupFromNode;
-Graph.prototype.checkLinkAddGroup = d3Data.checkLinkAddGroup;
 
 //From tooltips
 Graph.prototype.initializeTooltip = tt.initializeTooltip;
