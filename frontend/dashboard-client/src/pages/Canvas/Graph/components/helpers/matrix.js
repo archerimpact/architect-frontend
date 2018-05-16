@@ -47,8 +47,12 @@ export function setMatrix(nodes, links, byIndex=false) {
 
 export function addToMatrix(centerid, nodes, links) {
   var numNodes = nodes.length;
+  this.reloadIdToIndex();
+
+  console.log("id to index: ", this.idToIndex);
   for (var i = 0; i < numNodes; i++) {
-    if (!this.idToIndex[nodes[i].id]) {
+    if (this.idToIndex[nodes[i].id] !== null) {
+      console.log(nodes[i].id)
       utils.addRowColumn(this.adjacencyMatrix);
       this.adjacencyMatrix[this.adjacencyMatrix.length - 1][this.adjacencyMatrix.length - 1] = {
         state: DISPLAYED,
@@ -75,7 +79,8 @@ export function addToMatrix(centerid, nodes, links) {
       const target = this.adjacencyMatrix[targetIndex][targetIndex].data;
 
       let distance = 10 + num;
-      if (!source.px && target.px) { 
+      if (!source.px && target.px) {
+        debugger 
         if (target.px >= this.width/2) { source.x = target.px + distance; } 
         else { source.x = target.px - distance; }
         
@@ -84,12 +89,15 @@ export function addToMatrix(centerid, nodes, links) {
         target.fixedTransition = target.fixed = true;
       }
       else if (!target.px && source.px) {
+        debugger
         if (source.px >= this.width/2) { target.x = source.px + distance; } 
         else { target.x = source.px - distance; }  
         
         if (source.py >= this.height/2) { target.y = source.py + distance; } 
         else { target.y = source.py - distance; }  
         source.fixed = source.fixedTransition = true;
+      } else {
+        debugger
       }
 
       num += 10;

@@ -25,7 +25,7 @@ class Canvas extends Component {
     if (this.props.match.params && this.props.match.params.sidebarState === 'search' && this.props.match.params.query !== null) {
       this.props.actions.fetchSearchResults(this.props.match.params.query);
     } else if (this.props.match.params && this.props.match.params.sidebarState === 'entity') {
-      this.props.actions.addToGraphFromId(this.graph, this.props.match.params.query);
+      // this.props.actions.addToGraphFromId(this.graph, this.props.match.params.query);
       // let entity = this.props.match.params.query;
       // if (entity != null) {
       //   // this.loadData(entity);
@@ -42,7 +42,7 @@ class Canvas extends Component {
           this.props.actions.fetchSearchResults(nextSearch);
         }
       } else if (this.props.match.params.sidebarState === 'entity') {
-        this.props.actions.addToGraphFromId(this.graph, nextprops.match.params.query);
+        // this.props.actions.addToGraphFromId(this.graph, nextprops.match.params.query);
         // let entity = nextprops.match.params.query;
         // if (entity != null) {
         //   // this.loadData(entity);

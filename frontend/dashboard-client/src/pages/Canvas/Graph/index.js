@@ -27,7 +27,6 @@ class Graph extends Component {
   }
 
   saveCurrentProjectData() {
-    debugger
     this.props.actions.saveCurrentProjectData(this.props.graph);
   }
 
