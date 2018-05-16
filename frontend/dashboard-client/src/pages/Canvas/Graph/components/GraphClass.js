@@ -15,11 +15,13 @@ import { GROUP, HULL_GROUP } from './helpers/constants.js';
 // FontAwesome icon unicode-to-node type dict
 // Use this to find codes for FA icons: https://fontawesome.com/cheatsheet
 const icons = {
-  'person': '',
+  [constants.PERSON]: '',
   'Individual': '',
   'Document': '',
-  'corporation': '',
-  'Entity': '',
+  [constants.IDENTIFYING_DOCUMENT] : '',
+  'corporation': '',
+  'Entity': '',
+  [constants.ORGANIZATION]: '',
   'group': '',
   'same_as_group': '',
   [constants.BUTTON_ZOOM_IN_ID]: '',

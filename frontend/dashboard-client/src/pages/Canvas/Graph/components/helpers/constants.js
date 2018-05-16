@@ -36,6 +36,10 @@ export const MINIMAP_MARGIN = 15;
 export const MINIMAP_TICK = 15;
 
 export const ENTITY = "Entity";
+export const INDIVIDUAL = "Individual";
+export const PERSON = "person";
 export const GROUP = "group";
 export const GROUP_HULL = "Group Hull";
 export const DOCUMENT = "Document";
+export const IDENTIFYING_DOCUMENT = "identifyingDocument";
+export const ORGANIZATION = "organization";
