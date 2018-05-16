@@ -11,7 +11,7 @@ import {
   ENTITY, 
   GROUP,
   GROUP_HULL
-} from './typeConstants.js';
+} from './constants.js';
 
 export function isMorePreferredState(val1, val2) {
   if (val1 === GROUP_MEMBER) { return false; }
@@ -32,7 +32,10 @@ export function isGroup(d) {
 }
 
 export function isExpandable(d) {  
-  return (d.totalLinks > d.weight)
+  let links = d.totalLinks;
+  links = d.linkTypes.AKA ? links - d.linkTypes.AKA : links;
+  links = d.linkTypes.HAS_ID_DOC ? links - d.linkTypes.HAS_ID_DOC : links;
+  return (links > d.weight)
 }
 
 export function addRowColumn(matrix) {

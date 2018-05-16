@@ -10,7 +10,7 @@ import * as d3Data from './helpers/changeD3Data.js';
 import Minimap from './MinimapClass.js'
 import * as constants from './helpers/constants.js';
 import * as colors from './helpers/colorConstants.js';
-import { GROUP, HULL_GROUP } from './helpers/typeConstants.js';
+import { GROUP, HULL_GROUP } from './helpers/constants.js';
 
 // FontAwesome icon unicode-to-node type dict
 // Use this to find codes for FA icons: https://fontawesome.com/cheatsheet

@@ -6,7 +6,7 @@ import {
   GROUP,
   GROUP_HULL,
   DOCUMENT
-} from './typeConstants.js';
+} from './constants.js';
 
 export function getInverseAction(action) {
   // Implement for undo
