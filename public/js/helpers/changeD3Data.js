@@ -169,70 +169,40 @@ export function toggleGroupView(id) {
 
 export function groupSame() {
   /* Groups all the nodes that are connected to each other with possibly_same_as */
-  this.force.stop();
-  var select = this.svg.selectAll('.node');
-  var grouped = {}; 
 
-  var createdGroup = {};
-  select
-    .each((d) => {
-      if (!grouped[d.id]) { //this node is already in a same-as group
-        grouped[d.id] = true;
-        
-        createdGroup[d.id] = { group: [this.idToIndex[d.id]] };
-        this.createGroupFromNode(d, createdGroup[d.id].group, grouped); // Makes a group with d in it
-
-        if (createdGroup[d.id].group.length <= 1) { delete createdGroup[d.id]; }
-        if (d === this.hoveredNode) { this.deletingHoveredNode = true; }
+  var sameGroups = {};
+  var alreadyGrouped = []
+  var group = 0;
+  for (var i = 0; i < this.links.length; i++) {
+    if (this.links[i].type === 'possibly_same_as') {
+      var newGroup = true;
+      for (var key in sameGroups) {
+        if (sameGroups[key].indexOf(this.idToIndex[this.links[i].source.id]) >= 0) {
+          newGroup = false;
+          if (sameGroups[key].indexOf(this.idToIndex[this.links[i].target.id]) < 0) {
+            sameGroups[key].push(this.idToIndex[this.links[i].target.id]);
+          }
+        }
+        else if (sameGroups[key].indexOf(this.idToIndex[this.links[i].target.id]) >= 0) {
+          newGroup = false;
+          sameGroups[key].push(this.idToIndex[this.links[i].source.id]);
+        }
       }
-    });
-
-  for (var key in createdGroup) {
-    // check if the property/key is defined in the object itself, not in parent
-    if (createdGroup.hasOwnProperty(key)) {  
-      const group = createdGroup[key]['group'];
-      this.createGroup(group)
+      if (newGroup) {
+        sameGroups[group] = [this.idToIndex[this.links[i].target.id], this.idToIndex[this.links[i].source.id]];
+        group += 1;
+      }
     }
+  }
+
+  for (var key in sameGroups) {
+    this.createGroup(sameGroups[key], this.nodes[sameGroups[key][0]].name);
   }
 
   this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
   this.update();
   this.fillGroupNodes();
   this.displayGroupInfo(this.groups);
-}
-
-
-export function createGroupFromNode(node, group, grouped) { 
-  /* Creates a group connected by possibly_same_as around node, adding it to group,
-  and marking it as true in grouped so it isn't revisited later */
-  this.links.map((link) => {
-    this.checkLinkAddGroup(link, group, grouped);
-  });
-}
-
-export function checkLinkAddGroup(link, group, grouped) {
-  /* takes in a list of nodes and the link to be removed
-      if the one of the nodes in the link target or source is attached to the link AND link is of type 'possibly_same_as',
-      remove the link and add whatever is connected to this link to the group if it isn't already */
-  const target = this.idToIndex[link.target.id];
-  const source = this.idToIndex[link.source.id];
-  //only remove a link if it's attached to a removed node
-  if (link.type === 'possibly_same_as' && (group.indexOf(source) > -1 || group.indexOf(target) > -1)) { //remove all links connected to a node in group and with correct type
-    // Make sure both sides of this link are in the group, and recursively add theirs to group as well
-    if (group.indexOf(source) <= -1) {
-      group.push(source);
-      this.createGroupFromNode(link.source, group, grouped);
-    }
-
-    else if (group.indexOf(target) <= -1) {
-      group.push(target);
-      this.createGroupFromNode(link.target, group, grouped);
-    }
-
-    // So that these nodes aren't checked again later to try and create a possibly same as
-    grouped[link.source.id] = true;
-    grouped[link.target.id] = true;
-  }
 }
 
 //Hull functions
