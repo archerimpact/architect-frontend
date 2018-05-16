@@ -31,8 +31,8 @@ export function isGroup(d) {
   return (d.type === GROUP || d.type === GROUP_HULL);
 }
 
-export function isExpandable(d) {
-  return (d.linksCount > d.weight)
+export function isExpandable(d) {  
+  return (d.totalLinks > d.weight)
 }
 
 export function addRowColumn(matrix) {
