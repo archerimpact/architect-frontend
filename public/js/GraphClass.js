@@ -326,13 +326,15 @@ class Graph {
     this.svg.append('rect')
       .attr('y', constants.TOOLBAR_PADDING)
       .attr({ x: constants.TOOLBAR_PADDING, width: constants.BUTTON_WIDTH, height: this.height - constants.TOOLBAR_PADDING * 2 })
-      .style('fill', colors.HEX_PRIMARY_ACCENT)
-      .style('box-shadow', '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)');
+      .style('fill', colors.HEX_PRIMARY_ACCENT);
 
     const button = this.svg.selectAll('.button')
       .data(buttonData)
       .enter().append('g')
       .attr('pointer-events', 'all');
+
+    button.append('title')
+      .text((d) => { return d.title; });
 
     button.append('text')
       .attr('class', 'button-icon')
@@ -361,9 +363,13 @@ class Graph {
                     constants.BUTTON_SELECTION_TOOL_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_FIX_NODE_ID, 
                     constants.BUTTON_SIMPLIFY_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_UNDO_ACTION_ID, 
                     constants.BUTTON_REDO_ACTION_ID, constants.BUTTON_SAVE_PROJECT_ID];
+    const titles = [constants.BUTTON_ZOOM_IN_TITLE, constants.BUTTON_ZOOM_OUT_TITLE, constants.BUTTON_POINTER_TOOL_TITLE,
+                    constants.BUTTON_SELECTION_TOOL_TITLE, constants.BUTTON_EDIT_MODE_TITLE, constants.BUTTON_FIX_NODE_TITLE, 
+                    constants.BUTTON_SIMPLIFY_TITLE, constants.BUTTON_TOGGLE_MINIMAP_TITLE, constants.BUTTON_UNDO_ACTION_TITLE, 
+                    constants.BUTTON_REDO_ACTION_TITLE, constants.BUTTON_SAVE_PROJECT_TITLE];
     const labelObjects = [];
-    for (let label of labels) {
-      labelObjects.push({ label: label });
+    for (let i = 0; i < labels.length; i++) {
+      labelObjects.push({ label: labels[i], title: titles[i] });
     }
 
     return labelObjects;
@@ -548,7 +554,6 @@ class Graph {
     }
 
     this.nodeEnter.append('circle');
-
 
     this.nodeEnter.append('text')
       .attr('class', 'icon')
@@ -802,23 +807,21 @@ class Graph {
     button.classed('selected', this.editMode);
     if (this.editMode) {
       this.dragCallback = this.node.property('__onmousedown.drag')['_'];
+      this.svg
+        .on('click', function () { self.clickedCanvas(this); })
+        .on('mousemove', function () { self.mousemoveCanvas(this); });
       this.node
         .on('mousedown.drag', null)
         .on('mousedown', function (d) { self.mousedown(d, this); })
         .on('mouseup', function (d) { self.mouseup(d, this); });
-
-      this.svg
-        .on('click', function () { self.clickedCanvas(this); })
-        .on('mousemove', function () { self.mousemoveCanvas(this); });
     } else {
+      this.svg
+        .on('click', null)
+        .on('mousemove', null);
       this.node
         .on('mousedown', null)
         .on('mouseup', null)
         .on('mousedown.drag', this.dragCallback);
-
-      this.svg
-        .on('click', null)
-        .on('mousemove', null);
     }
   }
 
