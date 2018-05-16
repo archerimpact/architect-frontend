@@ -40,7 +40,6 @@ class EntityCard extends Component {
           <Link to={url}>
             <i className="entity-icon detailed-view-icon material-icons">format_list_bulleted</i>
           </Link>
-          <i className="entity-icon detailed-view-icon material-icons" onClick={()=> {this.props.saveProjectData()}}>save</i>          
           <span className="collapse-link" onClick={this.toggleCollapse}>
             { this.state.name }
           </span>

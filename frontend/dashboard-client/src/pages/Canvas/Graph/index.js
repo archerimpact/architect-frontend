@@ -15,6 +15,7 @@ class Graph extends Component {
     this.renderProjectToolbar = this.renderProjectToolbar.bind(this);
     this.expandNodeFromData = this.expandNodeFromData.bind(this);
     this.setCurrentNode = this.setCurrentNode.bind(this);
+    this.saveCurrentProjectData = this.saveCurrentProjectData.bind(this);
   }
 
   setCurrentNode(d) {
@@ -25,10 +26,15 @@ class Graph extends Component {
     this.props.actions.addToGraphFromId(this.props.graph, d.id);
   }
 
+  saveCurrentProjectData() {
+    debugger
+    this.props.actions.saveCurrentProjectData(this.props.graph);
+  }
+
   componentDidMount() {
     this.props.actions.initializeCanvas(this.props.graph, this.props.width, this.props.height);
     if (this.props.graphData != null) {
-      this.props.graph.bindDisplayFunctions({expand: this.expandNodeFromData, node: this.setCurrentNode});
+      this.props.graph.bindDisplayFunctions({expand: this.expandNodeFromData, node: this.setCurrentNode, save: this.saveCurrentProjectData });
       const graphData = { nodes: this.props.graphData.nodes, links: this.props.graphData.links };
       this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));      
     }
@@ -36,7 +42,7 @@ class Graph extends Component {
 
   componentWillReceiveProps(nextprops) {
     if (nextprops.graphData != null && nextprops.graphData != this.props.graphData) {
-      this.props.graph.bindDisplayFunctions({expand: this.expandNodeFromData, node: this.setCurrentNode});
+      this.props.graph.bindDisplayFunctions({expand: this.expandNodeFromData, node: this.setCurrentNode, save: this.saveCurrentProjectData });
       const graphData = { nodes: nextprops.graphData.nodes, links: nextprops.graphData.links };
       this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));
     }
