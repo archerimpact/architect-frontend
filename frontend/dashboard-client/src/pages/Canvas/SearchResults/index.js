@@ -28,6 +28,10 @@ class BackendSearch extends Component {
     this.props.actions.addToGraphFromId(this.props.graph, id);
   }
 
+  saveCurrentProjectData() {
+    this.props.actions.saveCurrentProjectData(this.props.graph);
+  }
+
   render() {
     if (this.props.searchData === null) {
       return (
