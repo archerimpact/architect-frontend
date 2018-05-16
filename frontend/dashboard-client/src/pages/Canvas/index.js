@@ -34,7 +34,7 @@ class Canvas extends Component {
   }
 
   componentWillReceiveProps(nextprops) {
-    if (this.props.location !== nextprops.location && nextprops.match.params) {
+    if (this.props.location.pathname !== nextprops.location.pathname && nextprops.match.params) {
       this.props.actions.fetchProject(nextprops.match.params.investigationId);
       if (this.props.match.params.sidebarState === 'search') {
         let nextSearch = nextprops.match.params.query;
