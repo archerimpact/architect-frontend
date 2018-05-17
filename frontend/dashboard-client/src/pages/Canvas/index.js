@@ -23,7 +23,7 @@ class Canvas extends Component {
     if (this.props.match.params && this.props.match.params.investigationId) {
       this.props.actions.fetchProject(this.props.match.params.investigationId);
     }
-    if (this.props.currentNode !== null) {
+    if (this.props.currentNode != null) {
       this.props.history.push(this.baseUrl+'/entity/'+this.props.currentNode.id)
     }
     if (this.props.match.params && this.props.match.params.sidebarState === 'search' && this.props.match.params.query != null) {
