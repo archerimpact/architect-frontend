@@ -10,7 +10,7 @@ import * as d3Data from './helpers/changeD3Data.js';
 import Minimap from './MinimapClass.js'
 import * as constants from './helpers/constants.js';
 import * as colors from './helpers/colorConstants.js';
-import { GROUP, HULL_GROUP } from './helpers/typeConstants.js';
+import { GROUP, HULL_GROUP, DOCUMENT, PERSON, CORPORATION } from './helpers/typeConstants.js';
 
 // FontAwesome icon unicode-to-node type dict
 // Use this to find codes for FA icons: https://fontawesome.com/cheatsheet
@@ -63,7 +63,7 @@ class Graph {
     this.draggedNode = null; // Store reference to currently dragged node, null otherwise
     this.isBrushing = false;
     this.isEmphasized = false; // Keep track of node emphasis to end node emphasis on drag
-    this.documentsShown = true;
+    this.typesShown = { 'Document' : true, 'person' : true, 'corporation' : true };
     this.hoveredNode = null; // Store reference to currently hovered/emphasized node, null otherwise
     this.deletingHoveredNode = false; // Store whether you are deleting a hovered node, if so you reset graph opacity
     this.printFull = 0; // Allow user to toggle node text length
@@ -432,7 +432,7 @@ class Graph {
     this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => { this.toggleEditMode() });
     this.initializeButton(constants.BUTTON_FIX_NODE_ID, () => { this.toggleFixedNodes() });
     this.initializeButton(constants.BUTTON_SIMPLIFY_ID, () => {
-      this.hideDocumentNodes();
+      this.hideTypeNodes(DOCUMENT);
       this.groupSame();
     });
     this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => { this.minimap.toggleMinimapVisibility(); }); // Wrap in unnamed function bc minimap has't been initialized yet
@@ -755,7 +755,7 @@ class Graph {
 
         // d: Hide document nodes
         else if (d3.event.keyCode == 68) {
-          this.toggleDocumentView();
+          this.toggleTypeView(DOCUMENT);
         }
 
         // p: Toggle btwn full/abbrev text
@@ -911,9 +911,9 @@ Graph.prototype.manualZoom = mouseClicks.manualZoom;
 Graph.prototype.deleteSelectedNodes = d3Data.deleteSelectedNodes;
 Graph.prototype.deleteSelectedLinks = d3Data.deleteSelectedLinks;
 Graph.prototype.addNodeToSelected = d3Data.addNodeToSelected;
-Graph.prototype.toggleDocumentView = d3Data.toggleDocumentView;
-Graph.prototype.hideDocumentNodes = d3Data.hideDocumentNodes;
-Graph.prototype.showHiddenDocuments = d3Data.showHiddenDocuments;
+Graph.prototype.toggleTypeView = d3Data.toggleTypeView;
+Graph.prototype.hideTypeNodes = d3Data.hideTypeNodes;
+Graph.prototype.showHiddenType = d3Data.showHiddenType;
 Graph.prototype.groupSame = d3Data.groupSame;
 Graph.prototype.groupSelectedNodes = d3Data.groupSelectedNodes;
 Graph.prototype.ungroupSelectedGroups = d3Data.ungroupSelectedGroups;
