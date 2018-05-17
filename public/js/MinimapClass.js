@@ -37,7 +37,7 @@ class Minimap {
     this.dragging = this.dragging.bind(this);
     this.dragend = this.dragend.bind(this);
     this.zooming = this.zooming.bind(this);
-    this.buttonZoom = this.buttonZoom.bind(this);
+    this.zoomMinimap = this.zoomMinimap.bind(this);
   }
 
   setBounds(targetSVG, x1, x2, y1, y2) {
@@ -170,8 +170,8 @@ class Minimap {
     e.sourceEvent.stopPropagation();
 
     // move box to fit the drag
-    this.boxX = this.getBoundingPositionX(this.boxX + e.dx);
-    this.boxY = this.getBoundingPositionY(this.boxY + e.dy);
+    this.boxX = this.getBoundingPositionX(this.boxX/this.scale + e.dx);
+    this.boxY = this.getBoundingPositionY(this.boxY/this.scale + e.dy);
 
     this.box.attr('transform', 'translate(' + this.boxX + ',' + this.boxY + ')scale(' + 1 + ')');
 
@@ -187,58 +187,28 @@ class Minimap {
   zooming() {
     if (d3.event) {
       if (!utils.isRightClick()) {
-        console.log(d3.event)
-        this.scale = d3.event.scale ? d3.event.scale : utils.getScaleFromZoom(this.target.attr('transform'))[0];
-
-        const targetTransform = utils.getXYFromTranslate(this.target.attr('transform'));
-
-        this.boxX += -targetTransform[0]/(this.scale * this.boxScale);
-        this.boxY += -targetTransform[1]/(this.scale * this.boxScale);
-
-        const translate = [-targetTransform[0]/(this.scale*this.boxScale), -targetTransform[1]/(this.scale*this.boxScale)];
-
-        // console.log()
-        this.box
-          .attr('transform', 'translate(' + translate + ')scale(' + 1 + ')')
-          .select('#minimap-box-square')
-          .attr('width', this.boxWidth/this.scale)
-          .attr('height', this.boxHeight/this.scale);      
+        this.scale = d3.event.scale;
+        this.zoomMinimap(this.scale)     
       }      
     } else {
       this.scale = utils.getScaleFromZoom(this.target.attr('transform'))[0];
-
-      const targetTransform = utils.getXYFromTranslate(this.target.attr('transform'));
-
-      this.boxX += -targetTransform[0]/(this.scale * this.boxScale);
-      this.boxY += -targetTransform[1]/(this.scale * this.boxScale);
-
-      const translate = [-targetTransform[0]/(this.scale*this.boxScale), -targetTransform[1]/(this.scale*this.boxScale)];
-
-      // console.log()
-      this.box
-        .attr('transform', 'translate(' + translate + ')scale(' + 1 + ')')
-        .select('#minimap-box-square')
-        .attr('width', this.boxWidth/this.scale)
-        .attr('height', this.boxHeight/this.scale);       
+      this.zoomMinimap(this.scale); 
     }
-
   }
 
-  buttonZoom() {
-    this.scale = this.graph.zoomScale;
-      const targetTransform = utils.getXYFromTranslate(this.target.attr('transform'));
+  zoomMinimap(scale) {
+    const targetTransform = utils.getXYFromTranslate(this.target.attr('transform'));
 
-      this.boxX += -targetTransform[0]/(this.scale * this.boxScale);
-      this.boxY += -targetTransform[1]/(this.scale * this.boxScale);
+    this.boxX += -targetTransform[0]/(this.scale * this.boxScale);
+    this.boxY += -targetTransform[1]/(this.scale * this.boxScale);
 
-      const translate = [-targetTransform[0]/(this.scale*this.boxScale), -targetTransform[1]/(this.scale*this.boxScale)];
+    const translate = [-targetTransform[0]/(this.scale*this.boxScale), -targetTransform[1]/(this.scale*this.boxScale)];
 
-      // console.log()
-      this.box
-        .attr('transform', 'translate(' + translate + ')scale(' + 1 + ')')
-        .select('#minimap-box-square')
-        .attr('width', this.boxWidth/this.scale)
-        .attr('height', this.boxHeight/this.scale);    
+    this.box
+      .attr('transform', 'translate(' + translate + ')scale(' + 1 + ')')
+      .select('#minimap-box-square')
+      .attr('width', this.boxWidth/this.scale)
+      .attr('height', this.boxHeight/this.scale);       
   }
 
   /** RENDER **/
@@ -318,7 +288,6 @@ class Minimap {
 
   getBoundingPositionX(position) {
     const offset = (this.width-(this.boxWidth/this.scale))/2;
-    console.log('offset: ', offset);
     return Math.max(-offset, Math.min(offset, position));
   }
 

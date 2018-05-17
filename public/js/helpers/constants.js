@@ -55,3 +55,4 @@ export const GROUP_HULL = "Group Hull";
 export const DOCUMENT = "Document";
 export const IDENTIFYING_DOCUMENT = "identifyingDocument";
 export const ORGANIZATION = "organization";
+export const CORPORATION = "corporation";
