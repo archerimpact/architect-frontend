@@ -45,7 +45,7 @@ class BackendSearch extends Component {
             this.props.searchData.map((entity) => {
               return (
                 // <EntityCard data={entity} addToGraph={this.addToGraph} />
-                <EntityCard data={entity}/>
+                <EntityCard id={entity._id} data={entity._source}/>
               );
             })
           }

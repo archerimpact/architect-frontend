@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { Link, withRouter} from 'react-router-dom';
 // import queryString from 'query-string';
 import * as server from '../../../server'; 
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as actions from '../../../redux/actions/';
+
 import './style.css';
 
 class EntityCard extends Component {
@@ -11,6 +15,7 @@ class EntityCard extends Component {
     this.toggleCollapse = this.toggleCollapse.bind(this);
     this.state = {
       collapsed: true,
+      id: props.data.id,
       data: props.shouldFetch ? null : props.data
       // id: entity._id,
       // neo4j_id : entity._source !== null ? entity._source.neo4j_id : entity.metadata.id,
@@ -45,15 +50,33 @@ class EntityCard extends Component {
     this.setState({collapsed: !current});
   }
 
+  renderButtons() {
+    debugger
+    let action;
+    const url = '/build/' + this.props.match.params.investigationId +'/entity/' + this.props.id;
+    if (this.props.currentProject && this.props.currentProject.graphData && this.props.currentProject.graphData.contains(this.props.id)) {
+      action = "link"
+    } else {
+      action = "add"
+    }
+    return (
+      <div>
+        <i className="entity-icon add-to-graph-icon material-icons" onClick={()=>{this.props.addToGraph(this.props.id)}}>{action}</i>
+        <Link to={url}>
+          <i className="entity-icon detailed-view-icon material-icons">description</i>
+        </Link>
+      </div>
+    )
+    
+  }
 
   render() {
     // TODO centralize
-    const url = '/build/' + this.props.match.params.investigationId +'/entity/' + this.props.data.id;
     if (this.state.data == null) {
       return <div> Loading ... </div>
     }
     return (
-      <div className="card result-card" key={this.props.data.id}>
+      <div className="card result-card" key={this.props.id}>
         <div className="card-header result-card-header flex-row d-flex">
           {this.renderButtons()}
           <span className="collapse-link" onClick={this.toggleCollapse}>
@@ -81,4 +104,18 @@ class EntityCard extends Component {
   }
 
 }
-export default withRouter(EntityCard);
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actions, dispatch),
+    dispatch: dispatch,
+  };
+}
+
+function mapStateToProps(state, props) {
+  return {
+    currentProject: state.currentProject
+  };
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EntityCard));
