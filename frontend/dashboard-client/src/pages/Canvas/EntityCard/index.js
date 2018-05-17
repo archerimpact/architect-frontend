@@ -79,27 +79,27 @@ class EntityCard extends Component {
       return <div key={this.props.id}> Loading ... </div>
     }
     return (
-      <div className="card result-card" key={this.props.id}>
+      <div className="card result-card" key={this.props.data.id}>
         <div className="card-header result-card-header flex-row d-flex">
           {this.renderButtons()}
           <span className="collapse-link" onClick={this.toggleCollapse}>
-            { this.state.name }
+            { this.props.data.name }
           </span>
           <small className="card-sdn-type">
               
           </small>
 
           <div className="ml-auto card-program">
-              { this.state.type }
+              { this.props.data.type }
           </div>
 
         </div>
         <div className={ this.state.collapsed ? 'collapse' : null}>
             <div className="card-body result-card-body">
-              <p>{ this.state.jurisdiction }</p>
-              <p>{ this.state.date_of_creation }</p>
-              <p>{ this.state.company_status }</p>
-              <p>{ this.state.nationality }</p>
+              <p>{ this.props.data.jurisdiction }</p>
+              <p>{ this.props.data.date_of_creation }</p>
+              <p>{ this.props.data.company_status }</p>
+              <p>{ this.props.data.nationality }</p>
             </div>
         </div>
       </div>
