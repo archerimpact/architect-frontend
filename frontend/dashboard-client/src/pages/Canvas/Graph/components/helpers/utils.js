@@ -36,6 +36,7 @@ export function isExpandable(d) {
   if (d.totalLinks && d.linkTypes) {
     links = d.linkTypes.AKA ? links - d.linkTypes.AKA : links;
     links = d.linkTypes.HAS_ID_DOC ? links - d.linkTypes.HAS_ID_DOC : links;
+    links = d.linkTypes.SANCTIONED_ON ? links - d.linkTypes.SANCTIONED_ON : links;
   }
   return (links > d.weight);
 }

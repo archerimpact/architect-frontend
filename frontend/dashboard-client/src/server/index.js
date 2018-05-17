@@ -1,6 +1,7 @@
 import 'whatwg-fetch';
 import { configData } from '../config.js';
 import axios from 'axios';
+import * as constants from './settingsConstants.js';
 
 let api_inst = axios.create({
     baseURL: configData.backend_url,
@@ -187,7 +188,13 @@ export function getBackendRelationships(neo4j_id){
 }
 
 export function getNode(neo4j_id){
-  var url = 'http://api.archer.cloud:2724/?id=' + neo4j_id + '&degrees=1' + '&expandby=*' + '&exclude=AKA,HAS_ID_DOC';
+  let exclude = '';
+  constants.EXPANSION_DEFAULT.exclude.map((type) => {
+    exclude += type + ','
+  })
+  exclude = exclude.substring(0, exclude.length-1);
+  console.log("exclude: ", exclude)
+  var url = 'http://api.archer.cloud:2724/?id=' + neo4j_id + '&degrees=1' + '&expandby=*' + '&exclude=' + exclude;
 
   return new Promise(function(fulfill, reject) {
     axios.get(url)
