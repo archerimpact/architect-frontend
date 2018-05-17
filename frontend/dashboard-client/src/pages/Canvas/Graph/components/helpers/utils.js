@@ -33,9 +33,11 @@ export function isGroup(d) {
 
 export function isExpandable(d) {  
   let links = d.totalLinks;
-  links = d.linkTypes.AKA ? links - d.linkTypes.AKA : links;
-  links = d.linkTypes.HAS_ID_DOC ? links - d.linkTypes.HAS_ID_DOC : links;
-  return (links > d.weight)
+  if (d.totalLinks && d.linkTypes) {
+    links = d.linkTypes.AKA ? links - d.linkTypes.AKA : links;
+    links = d.linkTypes.HAS_ID_DOC ? links - d.linkTypes.HAS_ID_DOC : links;
+  }
+  return (links > d.weight);
 }
 
 export function addRowColumn(matrix) {

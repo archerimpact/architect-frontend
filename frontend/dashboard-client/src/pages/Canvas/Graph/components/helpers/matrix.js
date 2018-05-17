@@ -47,12 +47,9 @@ export function setMatrix(nodes, links, byIndex=false) {
 
 export function addToMatrix(centerid, nodes, links) {
   var numNodes = nodes.length;
-  this.reloadIdToIndex();
 
-  console.log("id to index: ", this.idToIndex);
   for (var i = 0; i < numNodes; i++) {
     if (this.idToIndex[nodes[i].id] == null) {
-      console.log(nodes[i].id)
       utils.addRowColumn(this.adjacencyMatrix);
       this.adjacencyMatrix[this.adjacencyMatrix.length - 1][this.adjacencyMatrix.length - 1] = {
         state: DISPLAYED,
@@ -105,7 +102,7 @@ export function addToMatrix(centerid, nodes, links) {
       this.adjacencyMatrix[sourceIndex][targetIndex] = {state: DISPLAYED, data: links[i]};
     }
   }
-  this.update(null, 50);
+  this.update(null, 10);
 }
 
 export function matrixToGraph() {

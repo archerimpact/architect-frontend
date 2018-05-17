@@ -519,7 +519,7 @@ class Graph {
     this.link
       .enter().append('line')
       .attr('class', 'link')
-      .classed('same-as', (l) => { return l.type === 'possibly_same_as'; })
+      .classed('same-as', (l) => { return l.type.substring(0, 8).toLowerCase() === 'possibly'; })
       .classed('faded', (l) => { return this.hoveredNode && !(l.source == this.hoveredNode || l.target == this.hoveredNode); })
       .on('mouseover', this.mouseoverLink)
       .call(this.styleLink, false);
