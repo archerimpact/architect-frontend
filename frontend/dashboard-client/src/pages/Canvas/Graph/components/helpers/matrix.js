@@ -58,7 +58,6 @@ export function addToMatrix(centerid, nodes, links) {
     }
   }
 
-  debugger
   this.reloadIdToIndex();
 
   var numLinks = links.length;

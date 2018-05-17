@@ -24,6 +24,7 @@ const icons = {
   [constants.ORGANIZATION]: '',
   'group': '',
   'same_as_group': '',
+  [constants.LOCATION]: '',
   [constants.BUTTON_ZOOM_IN_ID]: '',
   [constants.BUTTON_ZOOM_OUT_ID]: '',
   [constants.BUTTON_POINTER_TOOL_ID]: '',
@@ -519,7 +520,7 @@ class Graph {
     this.link
       .enter().append('line')
       .attr('class', 'link')
-      .classed('same-as', (l) => { return l.type.substring(0, 8).toLowerCase() === 'possibly'; })
+      .classed('same-as', (l) => { return l.type.substring(0, 8).toLowerCase() === 'possibly' || l.type === 'HAS_KNOWN_LOCATION'; })
       .classed('faded', (l) => { return this.hoveredNode && !(l.source == this.hoveredNode || l.target == this.hoveredNode); })
       .on('mouseover', this.mouseoverLink)
       .call(this.styleLink, false);
@@ -567,7 +568,7 @@ class Graph {
       .attr('class', 'node-name')
       .attr('text-anchor', 'middle')
       .attr('dy', '40px')
-      .text((d) => { return d.group ? '' : utils.processNodeName(d.name ? d.name : d.number, this.printFull); })
+      .text((d) => { return d.group ? '' : utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.combined), this.printFull); })
       .call(this.textWrap, this.printFull)
       .on('click', function (d) { self.stopPropagation(); })
       .on('mouseover', function (d) { self.stopPropagation(); })

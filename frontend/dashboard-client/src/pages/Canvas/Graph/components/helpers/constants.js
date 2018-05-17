@@ -43,3 +43,6 @@ export const GROUP_HULL = "Group Hull";
 export const DOCUMENT = "Document";
 export const IDENTIFYING_DOCUMENT = "identifyingDocument";
 export const ORGANIZATION = "organization";
+export const LOCATION = "address";
+
+export const DEFAULT_EXCLUDE_TYPES = [ "AKA", IDENTIFYING_DOCUMENT, "SanctionedOn"]
