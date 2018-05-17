@@ -21,7 +21,7 @@ class ProjectData extends Component {
         <div className="searchResults">
           { !this.props.currentProject.graphData || !this.props.currentProject.graphData.nodes ? 
             null :
-            this.props.currentProject.graphData.nodes.map(node => <EntityCard shouldFetch data={node} />)
+            this.props.currentProject.graphData.nodes.map(node => <EntityCard  data={node} id={node.id} shouldFetchgraph={this.props.graph}/>)
           }
         </div>
       );

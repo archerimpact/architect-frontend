@@ -4,7 +4,7 @@ import { Link, withRouter} from 'react-router-dom';
 import * as server from '../../../server'; 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../../../redux/actions/';
+import * as actions from '../../Canvas/Graph/graphActions';
 
 import './style.css';
 
@@ -13,6 +13,7 @@ class EntityCard extends Component {
   constructor(props) {
     super(props);
     this.toggleCollapse = this.toggleCollapse.bind(this);
+    this.renderButtons = this.renderButtons.bind(this);
     this.state = {
       collapsed: true,
       id: props.data.id,
@@ -44,24 +45,30 @@ class EntityCard extends Component {
         });
       }
     }
-
+  
   toggleCollapse() {
     const current = this.state.collapsed;
     this.setState({collapsed: !current});
   }
 
   renderButtons() {
-    debugger
-    let action;
+    let action, actionFunc;
     const url = '/build/' + this.props.match.params.investigationId +'/entity/' + this.props.id;
-    if (this.props.currentProject && this.props.currentProject.graphData && this.props.currentProject.graphData.contains(this.props.id)) {
-      action = "link"
+    debugger
+    if (this.props.currentProject && this.props.currentProject.graphData && this.props.currentProject.graphData.nodes) {
+      debugger
+      if (this.props.currentProject.graphData.nodes.some(e => e.id === this.props.id)) {
+        debugger
+        action = "link";
+        actionFunc = ()=>this.props.graph.translateGraphAroundId(this.props.id);
+      }
     } else {
-      action = "add"
+      action = "add";
+      actionFunc = ()=>this.props.actions.addToGraphFromId(this.props.graph, this.props.id);
     }
     return (
       <div>
-        <i className="entity-icon add-to-graph-icon material-icons" onClick={()=>{this.props.addToGraph(this.props.id)}}>{action}</i>
+        <i className="entity-icon add-to-graph-icon material-icons" onClick={actionFunc}>{action}</i>
         <Link to={url}>
           <i className="entity-icon detailed-view-icon material-icons">description</i>
         </Link>
@@ -73,7 +80,7 @@ class EntityCard extends Component {
   render() {
     // TODO centralize
     if (this.state.data == null) {
-      return <div> Loading ... </div>
+      return <div key={this.props.id}> Loading ... </div>
     }
     return (
       <div className="card result-card" key={this.props.id}>
