@@ -26,6 +26,21 @@ class Entity extends Component {
   }
 
   renderEntity(node, nodes, links, keys) {
+    const nodeMap = {};
+
+    nodes.map(n => nodeMap[n.id] = n.name)
+    const aliases = links.filter(link => link.type === 'AKA' && (node.id === link.source || node.id === link.target));
+    const documents = links.filter(link => link.type === 'HAS_ID_DOC' && node.id === link.source);
+    const maybe_sames = links.filter(link => link.type === 'POSSIBLY_SAME_AS' && node.id === link.source);
+    const definitely_sames = links.filter(link => link.type.startsWith('HAS_'));
+
+    const otherLinks = {
+      'SIGNIFICANT_PART_OF': 'Significant part of',
+      'PROVIDING_SUPPORT_TO': 'Providing support to',
+      'OWNED_BY': 'Owned by',
+      'ACTING_FOR': 'Acting for'
+    };
+    const others = links.filter(link => Object.keys(otherLinks).includes(link.type) && node.id === link.source);
     return (
       <div>
         <div className="entity-header-wrapper">
@@ -38,67 +53,36 @@ class Entity extends Component {
         <hr />
         <div className="entity-body">
           <h5 className="">Attributes</h5>
-          { keys.map(k => {
-              const val = node[k[0]];
-              if (node[k[0]]) {
-                return (
-                  <div className="info-row" key={k}>
-                    <p className="info-key">{k[1]}:</p>
-                    { (!(val instanceof Array))
-                      ? <p className="info-value">{val}</p>
-                      : <p>list</p>
-                    }
-                  </div>
-                )
-              }
-          }) }
-          {
-            (() => {
-              const nodeMap = {};
-
-              nodes.map(n => nodeMap[n.id] = n.name)
-              let a = node.id
-              let b = links[0]
-              const aliases          = links.filter(link => link.type === 'AKA' && (node.id === link.source || node.id === link.target));
-              const documents        = links.filter(link => link.type === 'HAS_ID_DOC' && node.id === link.source);
-              const maybe_sames      = links.filter(link => link.type === 'POSSIBLY_SAME_AS' && node.id === link.source);
-              const definitely_sames = links.filter(link => link.type.startsWith('HAS_'));
-
-              const otherLinks = {
-                'SIGNIFICANT_PART_OF': 'Significant part of',
-                'PROVIDING_SUPPORT_TO': 'Providing support to',
-                'OWNED_BY': 'Owned by',
-                'ACTING_FOR': 'Acting for'
-              };
-              const others = links.filter(link => Object.keys(otherLinks).includes(link.type) && node.id === link.source);
-
+          {keys.map(k => {
+            const val = node[k[0]];
+            if (node[k[0]]) {
               return (
-                <div>
-                  {/*
-                    Component that accepts a node and an id.  It will choose the source/target appropriately,
-                    render an in- or out-going arrow.
-                  */}
-                  {aliases.length ? <h5>Aliases</h5> : null}
-                  {aliases.map(a => <p key={a.id}>{nodeMap[a.target] + ': ' + JSON.stringify(a)}</p>)}
-
-                  {documents.length ? <h5>Documents</h5> : null}
-                  {documents.map(a => <p key={a.id}>{JSON.stringify(a)}</p>)}
-
-                  {maybe_sames.length ? <h5>Possibly Same As</h5> : null}
-                  {maybe_sames.map(a => <p key={a.id}>{JSON.stringify(a)}</p>)}
-
-                  {others.length ? <h5>Associations</h5> : null}
-                  {others.map(a => <p key={a.id}>{JSON.stringify(a)}</p>)}
+                <div className="info-row" key={k}>
+                  <p className="info-key">{k[1]}:</p>
+                  {(!(val instanceof Array))
+                    ? <p className="info-value">{val}</p>
+                    : <p>list</p>
+                  }
                 </div>
               )
-              
-            })()
-          }
+            }
+          })}
+          {aliases.length ? <h5>Aliases</h5> : null}
+          {aliases.map(a => <p key={a.id}>{nodeMap[a.target] + ': ' + JSON.stringify(a)}</p>)}
+
+          {documents.length ? <h5>Documents</h5> : null}
+          {documents.map(a => <p key={a.id}>{JSON.stringify(a)}</p>)}
+
+          {maybe_sames.length ? <h5>Possibly Same As</h5> : null}
+          {maybe_sames.map(a => <p key={a.id}>{JSON.stringify(a)}</p>)}
+
+          {others.length ? <h5>Associations</h5> : null}
+          {others.map(a => <p key={a.id}>{JSON.stringify(a)}</p>)}
         </div>
       </div>
     )
   }
-  
+
   render() {
     const keys = [
       ['registered_in', 'Registered In'],
@@ -108,7 +92,7 @@ class Entity extends Component {
       ['last_seen', 'Last Seen'],
       ['incorporation_date', 'Incorporation Date']
     ];
-
+    debugger
     if (this.state.nodeData == null || this.state.relationshipData == null) {
       return (
         <div className="entity-container">

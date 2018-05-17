@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import './style.css'
-import EntityCard from './EntityCard';
+import EntityCard from '../EntityCard';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';

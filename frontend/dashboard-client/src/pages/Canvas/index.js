@@ -27,6 +27,7 @@ class Canvas extends Component {
       this.props.history.push(this.baseUrl+'/entity/'+this.props.currentNode.id)
     }
     if (this.props.match.params && this.props.match.params.sidebarState === 'search' && this.props.match.params.query != null) {
+      debugger
       this.props.actions.fetchSearchResults(this.props.match.params.query);
 
     } else if (this.props.match.params && this.props.match.params.sidebarState === 'entity') {
