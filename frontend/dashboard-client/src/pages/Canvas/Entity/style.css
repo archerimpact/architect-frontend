@@ -9,6 +9,7 @@
 .entity-container {
   width: calc(100%);
   padding: 20px 20px 0 20px;
+  overflow-y: scroll;
 }
 
 .entity-header-wrapper {
