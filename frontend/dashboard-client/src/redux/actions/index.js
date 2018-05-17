@@ -3,7 +3,7 @@ import {
 	USER_LOGOUT, 
 	TOGGLE_SIDEBAR,
 	STORE_PROJECT,
-	RESET_PROJECT
+	STORE_ENTITY,
   } from './actionTypes';
 
 import { logoutAccount } from "../../server/auth_routes";
@@ -63,6 +63,24 @@ function storeProject(project) {
 		type: STORE_PROJECT,
 		payload: project
 	};
+}
+
+export function fetchEntity(id) {
+	return (dispatch) => {
+		server.getNode(id)
+		.then(data => {
+			debugger
+			dispatch(storeEntity(data))
+		})
+		.catch(err => console.log(err))
+	}
+}
+
+function storeEntity(entity) {
+	return {
+		type:	STORE_ENTITY,
+		payload: entity
+	}
 }
 
 

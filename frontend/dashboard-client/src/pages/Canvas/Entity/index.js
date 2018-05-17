@@ -118,7 +118,9 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, props) {
   return {
-    currentNode: state.currentNode
+    currentNode: state.data.currentNode,
+    currentEntity: state.data.currentEntity
+
   };
 }
 

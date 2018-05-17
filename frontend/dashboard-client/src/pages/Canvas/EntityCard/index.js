@@ -54,9 +54,7 @@ class EntityCard extends Component {
   renderButtons() {
     let action, actionFunc;
     const url = '/build/' + this.props.match.params.investigationId +'/entity/' + this.props.id;
-    debugger
     if (this.props.currentProject && this.props.currentProject.graphData && this.props.currentProject.graphData.nodes) {
-      debugger
       if (this.props.currentProject.graphData.nodes.some(e => e.id === this.props.id)) {
         debugger
         action = "link";
@@ -79,7 +77,7 @@ class EntityCard extends Component {
 
   render() {
     // TODO centralize
-    if (this.state.data == null) {
+    if (this.state.data == null ) {
       return <div key={this.props.id}> Loading ... </div>
     }
     return (
@@ -121,7 +119,7 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, props) {
   return {
-    currentProject: state.currentProject
+    currentProject: state.data.currentProject,
   };
 }
 
