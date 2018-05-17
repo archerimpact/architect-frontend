@@ -163,8 +163,8 @@ class Minimap {
     e.sourceEvent.stopPropagation();
 
     // move box to fit the drag
-    this.boxX = Math.max(-(this.width-this.boxWidth)/2, Math.min((this.width-this.boxWidth)/2, this.boxX + e.dx));
-    this.boxY = Math.max(-(this.height-this.boxHeight)/2, Math.min((this.height-this.boxHeight)/2, this.boxY + e.dy))
+    this.boxX = Math.max(-(this.width-this.boxWidth)*this.scale/2, Math.min((this.width-this.boxWidth)*this.scale/2, this.boxX + e.dx));
+    this.boxY = Math.max(-(this.height-this.boxHeight)*this.scale/2, Math.min((this.height-this.boxHeight)*this.scale/2, this.boxY + e.dy))
 
     this.box.attr('transform', 'translate(' + this.boxX + ',' + this.boxY + ')scale(' + 1 + ')');
 
@@ -191,8 +191,8 @@ class Minimap {
       this.box
         .attr('transform', 'translate(' + translate + ')scale(' + 1 + ')')
         .select('#minimap-box-square')
-        .attr('width', this.boxWidth = this.boxWidth/this.scale)
-        .attr('height', this.boxHeight = this.boxHeight/this.scale);      
+        .attr('width', this.boxWidth/this.scale)
+        .attr('height', this.boxHeight/this.scale);      
     }
   }
 
