@@ -110,7 +110,7 @@ export function mousedown(d, self) {
   }
 
   if (isLeftClick()) { this.link.call(this.styleLink, false); }
-  if (!this.mousedownNode) { this.mousedownNode = d; };
+  if (this.editMode && !this.mousedownNode) { this.mousedownNode = d; };
   this.dragDistance = 0;
   if (this.editMode) {
     this.dragLink
@@ -122,8 +122,9 @@ export function mousedown(d, self) {
 }
 
 export function mouseup(d, self) {
+  d3.event.stopPropagation();
   // Reduce size of drag link focused node
-  if (this.mousedownNode && d != this.mousedownNode) {
+  if (this.editMode && this.mousedownNode && d != this.mousedownNode) {
     const currNode = d3.select(self);
     currNode.select('circle')
       .attr('transform', '');
@@ -148,17 +149,18 @@ export function mouseup(d, self) {
     }
   }
 
+  this.mousedownNode = null;
   resetDragLink(this);
 }
 
 export function mouseover(d, self) {
   // Drag link node emphasis
-  if (this.mousedownNode && d != this.mousedownNode) {
+  if (this.editMode && this.mousedownNode && d != this.mousedownNode) {
     d3.select(self).select('circle')
       .attr('transform', 'scale(1.1)');
   }
 
-  if (!this.isDragging && !this.isBrushing && !this.mousedownNode) {
+  if (!this.isDragging && !this.isBrushing && !this.editMode) {
     // Hovered node emphasis
     this.hoveredNode = d;
     this.fadeGraph(d);
@@ -184,13 +186,13 @@ export function mouseout(d, self) {
   this.resetGraphOpacity();
 
   // Reduce size of focused node
-  if (this.mousedownNode && d != this.mousedownNode) {
+  if (this.editMode && this.mousedownNode && d != this.mousedownNode) {
     d3.select(self).select('circle')
       .attr('transform', '');
   }
 
   // Show drag link
-  if (this.mousedownNode) { this.dragLink.style('visibility', 'visible'); }
+  if (this.editMode && this.mousedownNode) { this.dragLink.style('visibility', 'visible'); }
 
   // Text truncation
   if (this.printFull != 1) {
@@ -198,7 +200,7 @@ export function mouseout(d, self) {
       .select('.node-name')
       .text((d) => { return d.group ? '' : processNodeName(d.name, this.printFull); })
       .call(this.textWrap, this.printFull);
-  }
+  } 
 
   // Restore node drag functionality for future left clicks
   if (!this.editMode && !isLeftClick() && this.dragCallback) {
@@ -227,13 +229,17 @@ export function mousemoveCanvas(self) {
   const classThis = this;
   const e = d3.event;
   this.displayDebugTooltip(self);
-  if (this.mousedownNode) {
+  if (this.editMode && this.mousedownNode) {
     const currNode = this.node.filter(function(o) { return classThis.mousedownNode.id === o.id; });
     this.dragDistance++;
     this.dragLink
       .attr('tx2', e.x)
       .attr('ty2', e.y);
   }
+}
+
+export function mouseupCanvas(self) {
+  this.mousedownNode = null;
 }
 
 // Link mouse handlers
@@ -253,6 +259,7 @@ export function zoomstart(d, self) {
     this.zoomTranslate = this.zoom.translate();
     this.zoomScale = this.zoom.scale();
   }
+
   this.isZooming = true;
   this.zoomTranslate = this.zoom.translate();
   this.zoomScale = this.zoom.scale();

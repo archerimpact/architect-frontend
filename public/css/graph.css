@@ -48,10 +48,6 @@ svg line {
   pointer-events: none;
 }
 
-.link.hidden {
-  stroke-width: 0;
-}
-
 .node {
   fill: #ebebeb;
   stroke: #545454;

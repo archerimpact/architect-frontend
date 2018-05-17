@@ -114,6 +114,7 @@ class Graph {
     this.mouseout = this.mouseout.bind(this);
     this.clickedCanvas = this.clickedCanvas.bind(this);
     this.dragstartCanvas = this.dragstartCanvas.bind(this);
+    this.mouseupCanvas = this.mouseupCanvas.bind(this);
     this.mousemoveCanvas = this.mousemoveCanvas.bind(this);
     this.mouseoverLink = this.mouseoverLink.bind(this);
     this.zoomstart = this.zoomstart.bind(this);
@@ -175,6 +176,7 @@ class Graph {
       .attr('id', 'canvas')
       .attr('pointer-events', 'all')
       .classed('svg-content', true)
+      .on('mouseup', function () { self.mouseupCanvas(this); })
       .call(d3.behavior.drag()
         .on('dragstart', function (d) { self.dragstartCanvas(d, this) })
       )
@@ -662,7 +664,7 @@ class Graph {
       .enter().append('path')
       .attr('class', 'hull')
       .attr('d', this.drawHull)
-      .classed('faded', this.mousedownNode)
+      .classed('faded', this.hoveredNode)
       .on('dblclick', function (d) {
         self.toggleGroupView(d.groupId);
         d3.event.stopPropagation();
@@ -740,7 +742,7 @@ class Graph {
       .attr('x2', (l) => { return l.targetX; })
       .attr('y2', (l) => { return l.targetY; });
 
-    if (this.mousedownNode) {
+    if (this.editMode && this.mousedownNode) {
       const x1 = this.mousedownNode.x * this.zoomScale + this.zoomTranslate[0],
             y1 = this.mousedownNode.y * this.zoomScale + this.zoomTranslate[1],
             x2 = this.dragLink.attr('tx2'),
@@ -960,6 +962,7 @@ Graph.prototype.mouseover = mouseClicks.mouseover;
 Graph.prototype.mouseout = mouseClicks.mouseout;
 Graph.prototype.clickedCanvas = mouseClicks.clickedCanvas;
 Graph.prototype.dragstartCanvas = mouseClicks.dragstartCanvas;
+Graph.prototype.mouseupCanvas = mouseClicks.mouseupCanvas;
 Graph.prototype.mousemoveCanvas = mouseClicks.mousemoveCanvas;
 Graph.prototype.mouseoverLink = mouseClicks.mouseoverLink;
 Graph.prototype.stopPropagation = mouseClicks.stopPropagation;
