@@ -111,11 +111,9 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, props) {
-  debugger
   return {
     currentNode: state.data.currentNode,
     currentEntity: state.data.currentEntity
-
   };
 }
 

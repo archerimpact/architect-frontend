@@ -14,10 +14,12 @@ class EntityCard extends Component {
     super(props);
     this.toggleCollapse = this.toggleCollapse.bind(this);
     this.renderButtons = this.renderButtons.bind(this);
+    let isDataReady = !props.shouldFetch || !isNaN(parseInt(this.props.id));
     this.state = {
       collapsed: true,
       id: props.data.id,
-      data: props.shouldFetch ? null : props.data
+      data: isDataReady ? props.data : null,
+      isDataReady: isDataReady
       // id: entity._id,
       // neo4j_id : entity._source !== null ? entity._source.neo4j_id : entity.metadata.id,
       // name : entity._source !== null ? entity._source.name : entity.data.name,
@@ -34,15 +36,12 @@ class EntityCard extends Component {
   //Entity details:
     //aliases, 
     componentWillMount() {
-      if (this.props.shouldFetch) {
+      if (!this.state.isDataReady) {
         server.getNode(this.props.data.id)
         .then(data => {
-          debugger
-          this.setState({data: data})
+          this.setState({isDataReady: true, data: data, nodes: data.nodes, links: data.links})
         })
-        .catch(err => {
-          debugger; console.log(err)
-        });
+        .catch(err => console.log(err));
       }
     }
   
@@ -56,7 +55,6 @@ class EntityCard extends Component {
     const url = '/build/' + this.props.match.params.investigationId +'/entity/' + this.props.id;
     if (this.props.currentProject && this.props.currentProject.graphData && this.props.currentProject.graphData.nodes) {
       if (this.props.currentProject.graphData.nodes.some(e => e.id === this.props.id)) {
-        debugger
         action = "link";
         actionFunc = ()=>this.props.graph.translateGraphAroundId(this.props.id);
       }
@@ -77,7 +75,7 @@ class EntityCard extends Component {
 
   render() {
     // TODO centralize
-    if (this.state.data == null ) {
+    if (!this.state.isDataReady) {
       return <div key={this.props.id}> Loading ... </div>
     }
     return (

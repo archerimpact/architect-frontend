@@ -69,7 +69,6 @@ export function fetchEntity(id) {
 	return (dispatch) => {
 		server.getNode(id)
 		.then(data => {
-			debugger
 			dispatch(storeEntity(data))
 		})
 		.catch(err => console.log(err))
