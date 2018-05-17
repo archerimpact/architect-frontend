@@ -40,7 +40,7 @@ class Entity extends Component {
       'ACTING_FOR': 'Acting for'
     };
     const others = links.filter(link => Object.keys(otherLinks).includes(link.type) && node.id === link.source);
-    
+    debugger
     return (
       <div>
         <div className="entity-header-wrapper">
@@ -97,7 +97,7 @@ class Entity extends Component {
     }
     return (
       <div className="entity-container">
-        {this.renderEntity(this.props.currentEntity.nodes.filter(n => n.id === "gs://archer-source-data/usa/ofac/sdn.json/16452")[0], this.props.currentEntity.nodes, this.props.currentEntity.links, keys)}
+        {this.renderEntity(this.props.currentEntity.nodes[0], this.props.currentEntity.nodes, this.props.currentEntity.links, keys)}
       </div>
     );
   }
