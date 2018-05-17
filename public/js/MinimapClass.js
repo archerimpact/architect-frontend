@@ -4,6 +4,7 @@ import * as d3 from 'd3';
 import * as utils from './helpers/utils.js'
 import { stopPropagation } from './helpers/mouseClicks.js'; 
 import { GRID_LENGTH, MINIMAP_PADDING, DEFAULT_MINIMAP_SIZE } from './helpers/constants.js';
+import * as constants from './helpers/constants.js';
 
 class Minimap {
   constructor(svg) {
@@ -36,6 +37,7 @@ class Minimap {
     this.dragging = this.dragging.bind(this);
     this.dragend = this.dragend.bind(this);
     this.zooming = this.zooming.bind(this);
+    this.buttonZoom = this.buttonZoom.bind(this);
   }
 
   setBounds(targetSVG, x1, x2, y1, y2) {
@@ -81,7 +83,12 @@ class Minimap {
     this.svg = svg;
 
     this.zoom
-      .on('zoom.minimap', this.zooming);
+      .on('zoom.minimap', this.zooming)
+
+ d3.selectAll(`#${constants.BUTTON_ZOOM_IN_ID}, #${constants.BUTTON_ZOOM_OUT_ID}`)
+      .on('mouseup', this.zooming)
+      .on('mouseup', () => { this.graph.zoomPressed = false; })
+      .on('mouseout', () => { this.graph.zoomPressed = false; });
 
     this.container = this.svg.append('g') 
       .attr('class', 'minimap')
@@ -163,8 +170,8 @@ class Minimap {
     e.sourceEvent.stopPropagation();
 
     // move box to fit the drag
-    this.boxX = Math.max(-(this.width-this.boxWidth)*this.scale/2, Math.min((this.width-this.boxWidth)*this.scale/2, this.boxX + e.dx));
-    this.boxY = Math.max(-(this.height-this.boxHeight)*this.scale/2, Math.min((this.height-this.boxHeight)*this.scale/2, this.boxY + e.dy))
+    this.boxX = this.getBoundingPositionX(this.boxX + e.dx);
+    this.boxY = this.getBoundingPositionY(this.boxY + e.dy);
 
     this.box.attr('transform', 'translate(' + this.boxX + ',' + this.boxY + ')scale(' + 1 + ')');
 
@@ -178,22 +185,60 @@ class Minimap {
   }
 
   zooming() {
-    if (!utils.isRightClick()) {
-      this.scale = d3.event.scale;
+    if (d3.event) {
+      if (!utils.isRightClick()) {
+        console.log(d3.event)
+        this.scale = d3.event.scale ? d3.event.scale : utils.getScaleFromZoom(this.target.attr('transform'))[0];
+
+        const targetTransform = utils.getXYFromTranslate(this.target.attr('transform'));
+
+        this.boxX += -targetTransform[0]/(this.scale * this.boxScale);
+        this.boxY += -targetTransform[1]/(this.scale * this.boxScale);
+
+        const translate = [-targetTransform[0]/(this.scale*this.boxScale), -targetTransform[1]/(this.scale*this.boxScale)];
+
+        // console.log()
+        this.box
+          .attr('transform', 'translate(' + translate + ')scale(' + 1 + ')')
+          .select('#minimap-box-square')
+          .attr('width', this.boxWidth/this.scale)
+          .attr('height', this.boxHeight/this.scale);      
+      }      
+    } else {
+      this.scale = utils.getScaleFromZoom(this.target.attr('transform'))[0];
 
       const targetTransform = utils.getXYFromTranslate(this.target.attr('transform'));
 
-      this.boxX += -targetTransform[0]/(this.scale);
-      this.boxY += -targetTransform[1]/(this.scale);
+      this.boxX += -targetTransform[0]/(this.scale * this.boxScale);
+      this.boxY += -targetTransform[1]/(this.scale * this.boxScale);
 
-      const translate = [-targetTransform[0]/(this.scale), -targetTransform[1]/(this.scale)];
-      
+      const translate = [-targetTransform[0]/(this.scale*this.boxScale), -targetTransform[1]/(this.scale*this.boxScale)];
+
+      // console.log()
       this.box
         .attr('transform', 'translate(' + translate + ')scale(' + 1 + ')')
         .select('#minimap-box-square')
         .attr('width', this.boxWidth/this.scale)
-        .attr('height', this.boxHeight/this.scale);      
+        .attr('height', this.boxHeight/this.scale);       
     }
+
+  }
+
+  buttonZoom() {
+    this.scale = this.graph.zoomScale;
+      const targetTransform = utils.getXYFromTranslate(this.target.attr('transform'));
+
+      this.boxX += -targetTransform[0]/(this.scale * this.boxScale);
+      this.boxY += -targetTransform[1]/(this.scale * this.boxScale);
+
+      const translate = [-targetTransform[0]/(this.scale*this.boxScale), -targetTransform[1]/(this.scale*this.boxScale)];
+
+      // console.log()
+      this.box
+        .attr('transform', 'translate(' + translate + ')scale(' + 1 + ')')
+        .select('#minimap-box-square')
+        .attr('width', this.boxWidth/this.scale)
+        .attr('height', this.boxHeight/this.scale);    
   }
 
   /** RENDER **/
@@ -269,6 +314,17 @@ class Minimap {
 
     const image_url = utils.createSVGImage(targetSVG, x1, x2, y1, y2, svgWidth, svgHeight);
     this.image.select('image').attr('xlink:href', image_url);
+  }
+
+  getBoundingPositionX(position) {
+    const offset = (this.width-(this.boxWidth/this.scale))/2;
+    console.log('offset: ', offset);
+    return Math.max(-offset, Math.min(offset, position));
+  }
+
+  getBoundingPositionY(position) {
+    const offset = (this.height-(this.boxHeight/this.scale))/2;
+    return Math.max(-offset, Math.min(offset, position));
   }
 }
 
