@@ -87,7 +87,6 @@ class GraphSidebar extends Component {
   }
 
   renderSettings() {
-    debugger
     return (
       <div> Sample text </div>
     )
