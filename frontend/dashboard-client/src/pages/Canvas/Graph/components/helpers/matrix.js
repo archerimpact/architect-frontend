@@ -47,6 +47,7 @@ export function setMatrix(nodes, links, byIndex=false) {
 
 export function addToMatrix(centerid, nodes, links) {
   var numNodes = nodes.length;
+  this.reloadIdToIndex();
 
   for (var i = 0; i < numNodes; i++) {
     if (this.idToIndex[nodes[i].id] == null) {
