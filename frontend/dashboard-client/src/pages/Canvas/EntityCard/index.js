@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Link, withRouter} from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 // import queryString from 'query-string';
-import * as server from '../../../server'; 
+import * as server from '../../../server';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../Canvas/Graph/graphActions';
@@ -34,33 +34,31 @@ class EntityCard extends Component {
 
   //search results: all data
   //Entity details:
-    //aliases, 
-    componentWillMount() {
-      if (!this.state.isDataReady) {
-        server.getNode(this.props.data.id)
+  //aliases, 
+  componentWillMount() {
+    if (!this.state.isDataReady) {
+      server.getNode(this.props.data.id)
         .then(data => {
-          this.setState({isDataReady: true, data: data, nodes: data.nodes, links: data.links})
+          this.setState({ isDataReady: true, data: data, nodes: data.nodes, links: data.links })
         })
         .catch(err => console.log(err));
-      }
     }
-  
+  }
+
   toggleCollapse() {
     const current = this.state.collapsed;
-    this.setState({collapsed: !current});
+    this.setState({ collapsed: !current });
   }
 
   renderButtons() {
     let action, actionFunc;
-    const url = '/build/' + this.props.match.params.investigationId +'/entity/' + encodeURIComponent(this.props.id);
-    if (this.props.currentProject && this.props.currentProject.graphData && this.props.currentProject.graphData.nodes) {
-      if (this.props.currentProject.graphData.nodes.some(e => e.id === this.props.id)) {
-        action = "link";
-        actionFunc = ()=>this.props.graph.translateGraphAroundId(this.props.id);
-      }
+    const url = '/build/' + this.props.match.params.investigationId + '/entity/' + encodeURIComponent(this.props.id);
+    if (this.props.currentProject && this.props.currentProject.graphData && this.props.currentProject.graphData.nodes && this.props.currentProject.graphData.nodes.some(e => e.id === this.props.id)) {
+      action = "link";
+      actionFunc = () => this.props.graph.translateGraphAroundId(this.props.id);
     } else {
       action = "add";
-      actionFunc = ()=>this.props.actions.addToGraphFromId(this.props.graph, this.props.id);
+      actionFunc = () => this.props.actions.addToGraphFromId(this.props.graph, this.props.id);
     }
     return (
       <div>
@@ -70,7 +68,7 @@ class EntityCard extends Component {
         </Link>
       </div>
     )
-    
+
   }
 
   render() {
@@ -83,24 +81,24 @@ class EntityCard extends Component {
         <div className="card-header result-card-header flex-row d-flex">
           {this.renderButtons()}
           <span className="collapse-link" onClick={this.toggleCollapse}>
-            { this.props.data.name }
+            {this.props.data.name}
           </span>
           <small className="card-sdn-type">
-              
+
           </small>
 
           <div className="ml-auto card-program">
-              { this.props.data.type }
+            {this.props.data.type}
           </div>
 
         </div>
-        <div className={ this.state.collapsed ? 'collapse' : null}>
-            <div className="card-body result-card-body">
-              <p>{ this.props.data.jurisdiction }</p>
-              <p>{ this.props.data.date_of_creation }</p>
-              <p>{ this.props.data.company_status }</p>
-              <p>{ this.props.data.nationality }</p>
-            </div>
+        <div className={this.state.collapsed ? 'collapse' : null}>
+          <div className="card-body result-card-body">
+            <p>{this.props.data.jurisdiction}</p>
+            <p>{this.props.data.date_of_creation}</p>
+            <p>{this.props.data.company_status}</p>
+            <p>{this.props.data.nationality}</p>
+          </div>
         </div>
       </div>
     );
