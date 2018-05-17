@@ -27,9 +27,9 @@ export function saveCurrentProjectData(graph) {
     let state = getState()
     let projid = state.data.currentProject._id
     let data = graph.fetchData();
-    data.nodes = data.nodes.map((d) => {
-      return {id: d.id, type: d.type, name: d.name, totalLinks: d.totalLinks, linkTypes: d.linkTypes}
-    })
+    // data.nodes = data.nodes.map((d) => {
+    //   return {id: d.id, type: d.type, name: d.name, totalLinks: d.totalLinks, linkTypes: d.linkTypes}
+    // })
     let imageString = graph.saveGraphAsSVGString();
     server.updateProject({id: projid, d3Data: data, image: ''})
       .then((response) => {

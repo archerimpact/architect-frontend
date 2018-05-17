@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Entity from '../Entity';
 import SearchResults from '../SearchResults';
+import ProjectData from '../ProjectData';
 import DatabaseSearchBar from '../../../components/SearchBar/databaseSearchBar';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -62,6 +63,13 @@ class GraphSidebar extends Component {
           </Link>
         </div>
         <div className="tab">
+          <Link to={baseUrl + '/list'}>
+            <div>
+              <i className="tab-icon material-icons">list</i>
+            </div>
+          </Link>
+        </div>
+        <div className="tab">
           <Link to={baseUrl + '/settings'}>
             <div>
               <i className="tab-icon material-icons">settings</i>
@@ -91,6 +99,8 @@ class GraphSidebar extends Component {
          );
       case "entity":
           return <Entity />
+      case "list":
+         return <ProjectData />
       default:
         return <div> Sample text </div>
     };
