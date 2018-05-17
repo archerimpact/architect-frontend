@@ -6,27 +6,50 @@
   font-style: normal;
 }
 
-
-.entity-side-container {
-  /* height: calc(100% - 12px) ; */
-  max-height: 250px ;
-  /* max-height: 480px ; */
-	position: absolute;
-  right: 0px;
-  margin: 8px 8px 0px 0px;
-  bottom: 70px;
-  z-index: 10;
-  transition: left 0.5s;
-  -webkit-transform: translateX(0px);
-  transform: translateX(0px);
-  transition-property: -webkit-transform,transform,visibility,opacity;
-  transition-duration: 200ms;
-  transition-timing-function: cubic-bezier(0.0,0.0,0.2,1);
-  overflow-y: scroll;
- 	overflow-x: hidden;
-  width: 500px;
-  border: 1px;
-  background-color: #FFFFFF;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+.entity-container {
+  width: calc(100%);
+  padding: 20px 20px 0 20px;
 }
 
+.entity-header-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.entity-header {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  margin: 0 auto;
+}
+
+.entity-name {
+  font-size: 18px;
+  font-weight: bolder;
+}
+
+.entity-type {
+  margin-left: 5px;
+}
+
+.entity-source {
+  margin: 0 auto;
+}
+
+.entity-body {
+  padding: 0 10px;
+}
+
+.info-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.info-key {
+
+}
+
+.info-value {
+  margin-left: 5px;
+}
