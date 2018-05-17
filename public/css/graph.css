@@ -180,6 +180,7 @@ i.fa-close {
 
 #svg-image {
   border: none;
+  cursor: default;
 }
 
 #minimap-box {
@@ -192,6 +193,7 @@ i.fa-close {
   stroke: #545454;
   stroke-width: 1.5px;
   opacity: 0.4;
+  cursor: move;
 }
 
 .link {
