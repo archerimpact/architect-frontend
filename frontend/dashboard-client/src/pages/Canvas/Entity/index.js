@@ -41,6 +41,7 @@ class Entity extends Component {
       'ACTING_FOR': 'Acting for'
     };
     const others = links.filter(link => Object.keys(otherLinks).includes(link.type) && node.id === link.source);
+    
     return (
       <div>
         <div className="entity-header-wrapper">
@@ -102,8 +103,6 @@ class Entity extends Component {
       return (
         <div>
           {/* <EntityCard nodeItem={this.state.nodeData[0]} /> */}
-          {/* <hr></hr>
-          <SummaryInfo nodeItem={this.state.nodeData[0]} nodeRelationships={this.state.relationshipData} /> */}
         </div>
       );
     }
