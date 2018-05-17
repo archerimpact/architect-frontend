@@ -25,12 +25,13 @@
 }
 
 .entity-name {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bolder;
 }
 
 .entity-type {
   margin-left: 5px;
+  color: #646464;
 }
 
 .entity-source {
