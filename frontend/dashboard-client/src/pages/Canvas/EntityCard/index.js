@@ -9,20 +9,25 @@ class EntityCard extends Component {
   constructor(props) {
     super(props);
     this.toggleCollapse = this.toggleCollapse.bind(this);
-    var entity = this.props.entity
+    var entity = this.props.data
+    debugger
     this.state = {
       collapsed: true,
-      id: entity._id,
-      neo4j_id : entity._source !== null ? entity._source.neo4j_id : entity.metadata.id,
-      name : entity._source !== null ? entity._source.name : entity.data.name,
-      type : entity._source !== null ? entity._type : entity.metadata.labels[0],
-      jurisdiction : entity._source !== null ? entity._source.jurisdiction : entity.data.jurisdiction,
-      date_of_creation : entity._source !== null ? entity._source.date_of_creation :entity.data.date_of_creation,
-      source : entity._source !== null ? entity._source.self : entity.self,
-      company_status : entity._source !== null ? entity._source.company_status : entity.data.company_status,
-      nationality : entity._source !== null ? entity._source.nationality : entity.data.nationality,
+      // id: entity._id,
+      // neo4j_id : entity._source !== null ? entity._source.neo4j_id : entity.metadata.id,
+      // name : entity._source !== null ? entity._source.name : entity.data.name,
+      // type : entity._source !== null ? entity._type : entity.metadata.labels[0],
+      // jurisdiction : entity._source !== null ? entity._source.jurisdiction : entity.data.jurisdiction,
+      // date_of_creation : entity._source !== null ? entity._source.date_of_creation :entity.data.date_of_creation,
+      // source : entity._source !== null ? entity._source.self : entity.self,
+      // company_status : entity._source !== null ? entity._source.company_status : entity.data.company_status,
+      // nationality : entity._source !== null ? entity._source.nationality : entity.data.nationality,
     }
   }
+
+  //search results: all data
+  //Entity details:
+    //aliases, 
 
   toggleCollapse() {
     const current = this.state.collapsed;

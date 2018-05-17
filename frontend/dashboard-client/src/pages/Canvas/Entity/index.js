@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../../redux/actions/';
 import { withRouter } from 'react-router-dom';
-
+import EntityCard from '../EntityCard';
 const tab_style = {
   backgroundColor: '#FFFFFF',
   color: '#747474'
@@ -68,16 +68,16 @@ class Entity extends Component {
             }
           })}
           {aliases.length ? <h5>Aliases</h5> : null}
-          {aliases.map(a => <p key={a.id}>{nodeMap[a.target] + ': ' + JSON.stringify(a)}</p>)}
+          {aliases.map(a => <EntityCard data={a} key={a.id} needsFetch/> )}
 
           {documents.length ? <h5>Documents</h5> : null}
-          {documents.map(a => <p key={a.id}>{JSON.stringify(a)}</p>)}
+          {documents.map(a => <EntityCard data={a} key={a.id} needsFetch/> )}
 
           {maybe_sames.length ? <h5>Possibly Same As</h5> : null}
-          {maybe_sames.map(a => <p key={a.id}>{JSON.stringify(a)}</p>)}
+          {maybe_sames.map(a => <EntityCard data={a} key={a.id} needsFetch/> )}
 
           {others.length ? <h5>Associations</h5> : null}
-          {others.map(a => <p key={a.id}>{JSON.stringify(a)}</p>)}
+          {others.map(a => <EntityCard data={a} key={a.id} needsFetch/>)}
         </div>
       </div>
     )
@@ -92,7 +92,6 @@ class Entity extends Component {
       ['last_seen', 'Last Seen'],
       ['incorporation_date', 'Incorporation Date']
     ];
-    debugger
     if (this.state.nodeData == null || this.state.relationshipData == null) {
       return (
         <div className="entity-container">
