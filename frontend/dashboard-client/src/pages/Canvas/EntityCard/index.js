@@ -9,9 +9,9 @@ class EntityCard extends Component {
   constructor(props) {
     super(props);
     this.toggleCollapse = this.toggleCollapse.bind(this);
-    debugger
     this.state = {
       collapsed: true,
+      data: props.shouldFetch ? null : props.data
       // id: entity._id,
       // neo4j_id : entity._source !== null ? entity._source.neo4j_id : entity.metadata.id,
       // name : entity._source !== null ? entity._source.name : entity.data.name,
@@ -34,7 +34,9 @@ class EntityCard extends Component {
           debugger
           this.setState({data: data})
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          debugger; console.log(err)
+        });
       }
     }
 
@@ -51,12 +53,9 @@ class EntityCard extends Component {
       return <div> Loading ... </div>
     }
     return (
-      <div className="card result-card" key={this.props.entity._id}>
+      <div className="card result-card" key={this.props.data.id}>
         <div className="card-header result-card-header flex-row d-flex">
-          <i className="entity-icon add-to-graph-icon material-icons" onClick={()=>{this.props.addToGraph(this.state.id)}}>add</i>
-          <Link to={url}>
-            <i className="entity-icon detailed-view-icon material-icons">format_list_bulleted</i>
-          </Link>
+          {this.renderButtons()}
           <span className="collapse-link" onClick={this.toggleCollapse}>
             { this.state.name }
           </span>
