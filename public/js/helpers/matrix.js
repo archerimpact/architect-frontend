@@ -10,7 +10,7 @@ import {
   ENTITY, 
   GROUP,
   DOCUMENT
-} from './typeConstants.js';
+} from './constants.js';
 
 import * as d3 from 'd3';
 import * as utils from './utils.js';
@@ -48,7 +48,7 @@ export function setMatrix(nodes, links, byIndex=false) {
 export function addToMatrix(centerid, nodes, links) {
   var numNodes = nodes.length;
   for (var i = 0; i < numNodes; i++) {
-    if (!this.idToIndex[nodes[i].id]) {
+    if (this.idToIndex[nodes[i].id] == null) {
       utils.addRowColumn(this.adjacencyMatrix);
       this.adjacencyMatrix[this.adjacencyMatrix.length - 1][this.adjacencyMatrix.length - 1] = {
         state: DISPLAYED,
@@ -99,7 +99,7 @@ export function addToMatrix(centerid, nodes, links) {
       this.adjacencyMatrix[sourceIndex][targetIndex] = {state: DISPLAYED, data: links[i]};
     }
   }
-  this.update(null, 50);
+  this.update(null, 20);
 }
 
 export function matrixToGraph() {
@@ -131,16 +131,22 @@ export function displayNode(i) {
   }
 }
 
-export function createNode(type, event=null) {
+export function createNode(type, name, event=null) {
   utils.addRowColumn(this.adjacencyMatrix);
   let id = this.globalnodeid--;
   let newNode;
+  let id_name;
+  if (!name) {
+    id_name = `Node ${-1 * id}`;
+  } else {
+    id_name = name;
+  }
   if (event) {
     const xPos = (event.x - this.zoomTranslate[0]) / this.zoomScale;
     const yPos = (event.y - this.zoomTranslate[1]) / this.zoomScale;
-    newNode = { id: id, name: `Node ${-1 * id}`, type: type, x: xPos, y: yPos, fixed: true};
+    newNode = { id: id, name: id_name, type: type, x: xPos, y: yPos, fixed: true};
   } else {
-    newNode = { id: id, name: `Node ${-1 * id}`, type: type };
+    newNode = { id: id, name: id_name, type: type };
   }
 
   this.adjacencyMatrix[this.adjacencyMatrix.length-1][this.adjacencyMatrix.length-1] = {
@@ -209,8 +215,8 @@ export function getGroupMembers(i) {
   return group;
 }
 
-export function createGroup(group) {
-  this.createNode(GROUP);
+export function createGroup(group, name=null) {
+  this.createNode(GROUP, name);
   let i = this.adjacencyMatrix.length-1;
   this.setGroupMembers(i, group);
   for (var a = 0; a < group.length; a++) {

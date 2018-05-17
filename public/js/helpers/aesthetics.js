@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 import { isGroup, then } from './utils.js';
 import * as constants from './constants.js';
+import * as colors from './colorConstants.js';
 
 export function highlightExpandableNode(){
   this.node.classed('expandable', false)
@@ -21,19 +22,19 @@ export function highlightLinksFromNode(node) {
     .call(this.styleLink, (d) => { return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index]; });
 }
 
-export function styleNode(selection, isSelected) {
+export function styleNode(selection) {
   selection.select('circle')
     .attr('r', (d) => { return d.radius = (d.group ? constants.GROUP_NODE_RADIUS : constants.NODE_RADIUS); })
     .classed('hull-node', (d) => { return d.group; })
-    .style('stroke', (d) => { return d.group ? constants.HEX_WHITE : getNodeColor(d); })
-    .style('fill', (d) => { return d.group ? getNodeColor(d) : constants.HEX_LIGHT_GRAY; });
+    .style('stroke', (d) => { return d.group ? colors.HEX_WHITE : getNodeColor(d); })
+    .style('fill', (d) => { return d.group ? getNodeColor(d) : colors.HEX_LIGHT_GRAY; });
 
   selection.select('.icon')
     .style('fill', (d) => { return getNodeColor(d); });
 }
 
 export function getNodeColor(d) {
-  return constants.NODE_COLORS[d.type] || constants.HEX_DARK_GRAY;
+  return colors.NODE_COLORS[d.type] || colors.HEX_DARK_GRAY;
 }
 
 export function styleLink(selection, isSelected) {

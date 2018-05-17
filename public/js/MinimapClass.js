@@ -12,8 +12,9 @@ class Minimap {
     this.container = null; // container for entire minimap
     this.box = null; // gray box for snippet into the graph
     this.image = null; // contains the actual svg image
+    this.isVisible = true;
 
-    // minimap settins
+    // minimap settings
     this.width = DEFAULT_MINIMAP_SIZE;
     this.height = DEFAULT_MINIMAP_SIZE;
     this.positionX = 0;
@@ -121,6 +122,12 @@ class Minimap {
       .on("dragend", this.dragend);
 
     this.box.call(drag);
+  }
+
+  toggleMinimapVisibility() {
+    this.container
+      .style('visibility', this.isVisible ? 'hidden' : 'visible');
+    this.isVisible = !this.isVisible;
   }
 
   dragstart() {
