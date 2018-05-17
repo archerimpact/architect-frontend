@@ -92,19 +92,14 @@ class Entity extends Component {
       ['last_seen', 'Last Seen'],
       ['incorporation_date', 'Incorporation Date']
     ];
-    if (this.state.nodeData == null || this.state.relationshipData == null) {
-      return (
-        <div className="entity-container">
-          {this.renderEntity(json.nodes.filter(n => n.id === "gs://archer-source-data/usa/ofac/sdn.json/16452")[0], json.nodes, json.links, keys)}
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          {/* <EntityCard nodeItem={this.state.nodeData[0]} /> */}
-        </div>
-      );
+    if (this.props.currentEntity == null) {
+      return null
     }
+    return (
+      <div className="entity-container">
+        {this.renderEntity(this.props.currentEntity.nodes.filter(n => n.id === "gs://archer-source-data/usa/ofac/sdn.json/16452")[0], this.props.currentEntity.nodes, this.props.currentEntity.links, keys)}
+      </div>
+    );
   }
 }
 
@@ -116,6 +111,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, props) {
+  debugger
   return {
     currentNode: state.data.currentNode,
     currentEntity: state.data.currentEntity
