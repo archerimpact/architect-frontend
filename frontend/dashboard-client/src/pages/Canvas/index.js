@@ -24,24 +24,19 @@ class Canvas extends Component {
       this.props.actions.fetchProject(this.props.match.params.investigationId);
     }
     if (this.props.currentNode != null) {
-      this.props.history.push(this.baseUrl+'/entity/'+this.props.currentNode.id)
+      this.props.history.push(this.baseUrl+'/entity/'+encodeURIComponent(this.props.currentNode.id))
     }
     if (this.props.match.params && this.props.match.params.sidebarState === 'search' && this.props.match.params.query != null) {
       this.props.actions.fetchSearchResults(this.props.match.params.query);
 
     } else if (this.props.match.params && this.props.match.params.sidebarState === 'entity') {
-      this.props.actions.fetchEntity(this.props.match.params.query);
-      // this.props.actions.addToGraphFromId(this.graph, this.props.match.params.query);
-      // let entity = this.props.match.params.query;
-      // if (entity != null) {
-      //   // this.loadData(entity);
-      // }
+      this.props.actions.fetchEntity(decodeURIComponent(this.props.match.params.query));
     }
   }
 
   componentWillReceiveProps(nextprops) {
     if (nextprops.currentNode !== null && this.props.currentNode !== nextprops.currentNode) {
-      this.props.history.push(this.baseUrl+'/entity/'+nextprops.currentNode.id)
+      this.props.history.push(this.baseUrl+'/entity/'+encodeURIComponent(nextprops.currentNode.id))
     }
     if (this.props.location.pathname !== nextprops.location.pathname && nextprops.match.params) {
       // this.props.actions.fetchProject(nextprops.match.params.investigationId);
@@ -52,33 +47,11 @@ class Canvas extends Component {
         }
       } else if (nextprops.match.params.sidebarState === 'entity') {
         if (nextQuery != null && this.props.match.params.query !== nextQuery) {
-          // this.props.actions.addToGraphFromId(this.graph, nextQuery);
-          this.props.actions.fetchEntity(this.props.match.params.query);
+          this.props.actions.fetchEntity(decodeURIComponent(nextprops.match.params.query));
         }
       }
     }
   }
-
-  // loadData(neo4j_id) {
-  //   server.getBackendNode(neo4j_id)
-  //     .then(data => {
-  //       //returns items in the format: [neo4j_data]
-  //       this.setState({ nodeData: data[0] })
-  //     })
-  //     .catch(err => {
-  //       console.log(err)
-  //     })
-  //   server.getBackendRelationships(neo4j_id)
-  //     .then(data => {
-  //       /* neo4j returns items in this format: [connection, startNode, endNode] */
-
-  //       this.setState({ relationshipData: data })
-  //     })
-  //     .catch(err => {
-  //       console.log(err)
-  //     })
-  // }
-
 
   render() {
     return (

@@ -52,7 +52,7 @@ class EntityCard extends Component {
 
   renderButtons() {
     let action, actionFunc;
-    const url = '/build/' + this.props.match.params.investigationId +'/entity/' + this.props.id;
+    const url = '/build/' + this.props.match.params.investigationId +'/entity/' + encodeURIComponent(this.props.id);
     if (this.props.currentProject && this.props.currentProject.graphData && this.props.currentProject.graphData.nodes) {
       if (this.props.currentProject.graphData.nodes.some(e => e.id === this.props.id)) {
         action = "link";
