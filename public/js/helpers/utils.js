@@ -54,6 +54,11 @@ export function removeColumn(matrix, index) {
 // D3 UTILS
 // =================
 
+export function isLeftClick() {
+  return (d3.event && d3.event.which == 1)
+    || (d3.event.sourceEvent && d3.event.sourceEvent.which == 1);
+}
+
 export function isRightClick() {
   return (d3.event && (d3.event.which == 3 || d3.event.button == 2))
     || (d3.event.sourceEvent && (d3.event.sourceEvent.which == 3 || d3.event.sourceEvent.button == 2));
