@@ -78,6 +78,7 @@ class EntityCard extends Component {
     if (!this.state.isDataReady) {
       return <div key={this.props.id}> Loading ... </div>
     }
+
     return (
       <div className="card result-card" key={this.props.data.id}>
         <div className="card-header result-card-header flex-row d-flex">
@@ -86,7 +87,7 @@ class EntityCard extends Component {
             { this.props.data.name }
           </span>
           <small className="card-sdn-type">
-              
+
           </small>
 
           <div className="ml-auto card-program">
@@ -96,10 +97,12 @@ class EntityCard extends Component {
         </div>
         <div className={ this.state.collapsed ? 'collapse' : null}>
             <div className="card-body result-card-body">
-              <p>{ this.props.data.jurisdiction }</p>
-              <p>{ this.props.data.date_of_creation }</p>
-              <p>{ this.props.data.company_status }</p>
-              <p>{ this.props.data.nationality }</p>
+              {
+                Object.keys(this.props.data).map(d => {
+                  const val = this.props.data[d];
+                  return <p>{d}</p>
+                })
+              }
             </div>
         </div>
       </div>

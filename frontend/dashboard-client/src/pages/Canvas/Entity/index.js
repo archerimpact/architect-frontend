@@ -7,6 +7,8 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../../../redux/actions/';
 import { withRouter } from 'react-router-dom';
 import EntityCard from '../EntityCard';
+import EntityAttributes from '../EntityAttributes';
+
 const tab_style = {
   backgroundColor: '#FFFFFF',
   color: '#747474'
@@ -53,20 +55,8 @@ class Entity extends Component {
         <hr />
         <div className="entity-body">
           <h5 className="">Attributes</h5>
-          {keys.map(k => {
-            const val = node[k[0]];
-            if (node[k[0]]) {
-              return (
-                <div className="info-row" key={k}>
-                  <p className="info-key">{k[1]}:</p>
-                  {(!(val instanceof Array))
-                    ? <p className="info-value">{val}</p>
-                    : <p>list</p>
-                  }
-                </div>
-              )
-            }
-          })}
+          <EntityAttributes node={node} />
+
           {aliases.length ? <h5>Aliases</h5> : null}
           {aliases.map(a => <EntityCard data={a} id={a.id} shouldFetch graph={this.props.graph}/> )}
 
