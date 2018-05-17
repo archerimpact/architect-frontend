@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, withRouter} from 'react-router-dom';
 // import queryString from 'query-string';
-
+import * as server from '../../../server'; 
 import './style.css';
 
 class EntityCard extends Component {
@@ -9,7 +9,6 @@ class EntityCard extends Component {
   constructor(props) {
     super(props);
     this.toggleCollapse = this.toggleCollapse.bind(this);
-    var entity = this.props.data
     debugger
     this.state = {
       collapsed: true,
@@ -28,6 +27,16 @@ class EntityCard extends Component {
   //search results: all data
   //Entity details:
     //aliases, 
+    componentWillMount() {
+      if (this.props.shouldFetch) {
+        server.getNode(this.props.data.id)
+        .then(data => {
+          debugger
+          this.setState({data: data})
+        })
+        .catch(err => console.log(err))
+      }
+    }
 
   toggleCollapse() {
     const current = this.state.collapsed;
@@ -37,7 +46,10 @@ class EntityCard extends Component {
 
   render() {
     // TODO centralize
-    const url = '/build/' + this.props.match.params.investigationId +'/entity/' + this.props.entity._id;
+    const url = '/build/' + this.props.match.params.investigationId +'/entity/' + this.props.data.id;
+    if (this.state.data == null) {
+      return <div> Loading ... </div>
+    }
     return (
       <div className="card result-card" key={this.props.entity._id}>
         <div className="card-header result-card-header flex-row d-flex">

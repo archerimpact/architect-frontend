@@ -68,16 +68,16 @@ class Entity extends Component {
             }
           })}
           {aliases.length ? <h5>Aliases</h5> : null}
-          {aliases.map(a => <EntityCard data={a} key={a.id} needsFetch/> )}
+          {aliases.map(a => <EntityCard data={a} key={a.id} shouldFetch/> )}
 
           {documents.length ? <h5>Documents</h5> : null}
-          {documents.map(a => <EntityCard data={a} key={a.id} needsFetch/> )}
+          {documents.map(a => <EntityCard data={a} key={a.id} shouldFetch/> )}
 
           {maybe_sames.length ? <h5>Possibly Same As</h5> : null}
-          {maybe_sames.map(a => <EntityCard data={a} key={a.id} needsFetch/> )}
+          {maybe_sames.map(a => <EntityCard data={a} key={a.id} shouldFetch/> )}
 
           {others.length ? <h5>Associations</h5> : null}
-          {others.map(a => <EntityCard data={a} key={a.id} needsFetch/>)}
+          {others.map(a => <EntityCard data={a} key={a.id} shouldFetch/>)}
         </div>
       </div>
     )
