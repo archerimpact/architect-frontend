@@ -107,9 +107,9 @@ class GraphSidebar extends Component {
           </div>
          );
       case "entity":
-          return <Entity />
+          return <Entity graph={this.props.graph} id={this.props.match.params.query}/>
       case "list":
-         return <ProjectData />
+         return <ProjectData graph={this.props.graph}/>
       case "settings":
         return this.renderSettings();
     };

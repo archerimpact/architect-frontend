@@ -18,7 +18,7 @@ const icons = {
   [constants.PERSON]: '',
   'Individual': '',
   'Document': '',
-  [constants.IDENTIFYING_DOCUMENT] : '',
+  [constants.IDENTIFYING_DOCUMENT]: '',
   'corporation': '',
   'Entity': '',
   [constants.ORGANIZATION]: '',
@@ -35,7 +35,7 @@ const icons = {
   [constants.BUTTON_TOGGLE_MINIMAP_ID]: '',
   [constants.BUTTON_UNDO_ACTION_ID]: '',
   [constants.BUTTON_REDO_ACTION_ID]: '',
-  [constants.BUTTON_SAVE_PROJECT_ID]: '' 
+  [constants.BUTTON_SAVE_PROJECT_ID]: ''
 };
 
 class Graph {
@@ -260,17 +260,17 @@ class Graph {
     for (let marker of markerList) {
       this.svg.append('defs')
         .append('marker')
-          .attr('id', marker.id)
-          .attr('viewBox', '5 -5 10 10')
-          .attr('refX', 10)
-          .attr('markerWidth', marker.size)
-          .attr('markerHeight', marker.size)
-          .attr('orient', marker.direction)
+        .attr('id', marker.id)
+        .attr('viewBox', '5 -5 10 10')
+        .attr('refX', 10)
+        .attr('markerWidth', marker.size)
+        .attr('markerHeight', marker.size)
+        .attr('orient', marker.direction)
         .append('path')
-          .attr('d', 'M 0,-5 L 10,0 L 0,5')
-          .style('stroke', marker.color)
-          .style('fill', marker.color)
-          .style('fill-opacity', 1);
+        .attr('d', 'M 0,-5 L 10,0 L 0,5')
+        .style('stroke', marker.color)
+        .style('fill', marker.color)
+        .style('fill-opacity', 1);
     }
   }
 
@@ -361,9 +361,9 @@ class Graph {
 
   getToolbarLabels() {
     const labels = [constants.BUTTON_ZOOM_IN_ID, constants.BUTTON_ZOOM_OUT_ID, constants.BUTTON_POINTER_TOOL_ID,
-                    constants.BUTTON_SELECTION_TOOL_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_FIX_NODE_ID, 
-                    constants.BUTTON_SIMPLIFY_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_UNDO_ACTION_ID, 
-                    constants.BUTTON_REDO_ACTION_ID, constants.BUTTON_SAVE_PROJECT_ID];
+    constants.BUTTON_SELECTION_TOOL_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_FIX_NODE_ID,
+    constants.BUTTON_SIMPLIFY_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_UNDO_ACTION_ID,
+    constants.BUTTON_REDO_ACTION_ID, constants.BUTTON_SAVE_PROJECT_ID];
     const labelObjects = [];
     for (let label of labels) {
       labelObjects.push({ label: label });
@@ -378,7 +378,7 @@ class Graph {
     const self = this;
     this.zoomPressed = false;
     d3.selectAll(`#${constants.BUTTON_ZOOM_IN_ID}, #${constants.BUTTON_ZOOM_OUT_ID}`)
-      .on('mousedown', function() {
+      .on('mousedown', function () {
         self.zoomPressed = true;
         self.disableZoom();
         self.zoomButton(this.id === constants.BUTTON_ZOOM_IN_ID);
@@ -389,11 +389,11 @@ class Graph {
     this.svg.on('mouseup', () => { this.svg.call(this.zoom) });
   }
 
-  initializeButton(id, onclick, isSelected=false) {
+  initializeButton(id, onclick, isSelected = false) {
     d3.select('#' + id)
-      .on('click', () => { 
+      .on('click', () => {
         onclick();
-        this.stopPropagation(); 
+        this.stopPropagation();
       })
       .classed('selected', isSelected);
   }
@@ -403,7 +403,7 @@ class Graph {
     this.height = height;
     this.center = [this.width / 2, this.height / 2];
     this.brushX = d3.scale.linear().range([0, width]),
-    this.brushY = d3.scale.linear().range([0, height]);
+      this.brushY = d3.scale.linear().range([0, height]);
     this.minimapPaddingX = constants.MINIMAP_MARGIN + constants.BUTTON_WIDTH;
     this.minimapPaddingY = height - constants.DEFAULT_MINIMAP_SIZE - constants.MINIMAP_MARGIN + 2;
     this.minimapScale = 0.25;
@@ -439,8 +439,8 @@ class Graph {
       this.groupSame();
     });
     this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => { this.minimap.toggleMinimapVisibility(); }); // Wrap in unnamed function bc minimap has't been initialized yet
-    this.initializeButton(constants.BUTTON_UNDO_ACTION_ID, () => {}); // Placeholder method
-    this.initializeButton(constants.BUTTON_REDO_ACTION_ID, () => {}); // Placeholder method
+    this.initializeButton(constants.BUTTON_UNDO_ACTION_ID, () => { }); // Placeholder method
+    this.initializeButton(constants.BUTTON_REDO_ACTION_ID, () => { }); // Placeholder method
     this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => { this.saveAllData() }); // Placeholder method
 
     this.setupKeycodes();
@@ -453,11 +453,11 @@ class Graph {
     this.force.on('tick', (e) => { this.ticked(e, this) });
 
     this.minimap = new Minimap()
-                    .setZoom(this.zoom)
-                    .setTarget(this.container) // that's what you're trying to track/the images
-                    .setMinimapPositionX(this.minimapPaddingX)
-                    .setMinimapPositionY(this.minimapPaddingY)
-                    .setGraph(this);
+      .setZoom(this.zoom)
+      .setTarget(this.container) // that's what you're trying to track/the images
+      .setMinimapPositionX(this.minimapPaddingX)
+      .setMinimapPositionY(this.minimapPaddingY)
+      .setGraph(this);
 
     this.minimap.initializeMinimap(this.svg, this.width, this.height);
   }
@@ -467,7 +467,7 @@ class Graph {
     this.setMatrix(nodes, links, byIndex);
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
     this.update();
-    for (let i = 150; i > 0; --i) this.force.tick();  
+    for (let i = 150; i > 0; --i) this.force.tick();
     this.reloadNeighbors();
 
     this.minimap
@@ -475,7 +475,7 @@ class Graph {
 
     this.minimap
       .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
-      .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); 
+      .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
 
     //this.translateGraphAroundNode(centerd);
   }
@@ -489,26 +489,26 @@ class Graph {
   }
 
   bindDisplayFunctions(displayFunctions) {
-    this.displayNodeInfo = displayFunctions.node ? displayFunctions.node : function(d) {};
-    this.displayLinkInfo = displayFunctions.link ? displayFunctions.link : function(d) {};
-    this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
-    this.expandNodeFromData = displayFunctions.expand ? displayFunctions.expand : function(d) {};
-    this.saveAllData = displayFunctions.save ? displayFunctions.save : function(d) {};
+    this.displayNodeInfo = displayFunctions.node ? displayFunctions.node : function (d) { };
+    this.displayLinkInfo = displayFunctions.link ? displayFunctions.link : function (d) { };
+    this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function (d) { };
+    this.expandNodeFromData = displayFunctions.expand ? displayFunctions.expand : function (d) { };
+    this.saveAllData = displayFunctions.save ? displayFunctions.save : function (d) { };
   }
 
   // Updates nodes and links according to current data
-  update(event=null, ticks=null, minimap=true) {
+  update(event = null, ticks = null, minimap = true) {
     var self = this;
 
     this.resetGraphOpacity();
 
     this.force.stop();
     this.matrixToGraph();
-    this.reloadNeighbors(); 
+    this.reloadNeighbors();
 
     this.force
       .gravity(.33)
-      .charge((d) => { return d.group ? -7500 : -20000})
+      .charge((d) => { return d.group ? -7500 : -20000 })
       .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
       .friction(this.nodes.length < 15 ? .75 : .65)
       .alpha(.8)
@@ -597,21 +597,21 @@ class Graph {
     this.hull.exit().remove();
 
 
-    
+
     this.reloadNeighbors();
 
     // Update minimap   
 
     this.force.start();
     // Avoid initial chaos and skip the wait for graph to drift back onscreen
-    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }   
+    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }
 
-    if (minimap) { 
+    if (minimap) {
       this.toRenderMinimap = true;
       this.tickCount = 0;
     }
-    
-    this.node.each(function(d) {
+
+    this.node.each(function (d) {
       if (d.fixedTransition) {
         d.fixed = d.fixedTransition = false;
       }
@@ -632,14 +632,14 @@ class Graph {
       .each(this.groupNodesForce(.3))
       .each((d) => {
         d.px = d.x; d.py = d.y;
-        if (d.x < this.xbound[0]) { this.xbound[0] = d.x; } 
+        if (d.x < this.xbound[0]) { this.xbound[0] = d.x; }
         if (d.x > this.xbound[1]) { this.xbound[1] = d.x; }
-        if (d.y < this.ybound[0]) { this.ybound[0] = d.y; } 
+        if (d.y < this.ybound[0]) { this.ybound[0] = d.y; }
         if (d.y > this.ybound[1]) { this.ybound[1] = d.y; }
       })
       .attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
 
-    if (this.toRenderMinimap) { 
+    if (this.toRenderMinimap) {
       if (this.tickCount === constants.MINIMAP_TICK) {
         const translate = this.zoom.translate();
         const scale = this.zoom.scale();
@@ -656,18 +656,18 @@ class Graph {
     }
 
     this.link
-      .each(function(l) {
+      .each(function (l) {
         const x1 = l.source.x,
-              y1 = l.source.y,
-              x2 = l.target.x,
-              y2 = l.target.y;
-        const dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+          y1 = l.source.y,
+          x2 = l.target.x,
+          y2 = l.target.y;
+        const dist = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
         const sourcePadding = l.target.radius + (l.bidirectional ? constants.MARKER_PADDING : 0),
-              targetPadding = l.source.radius + constants.MARKER_PADDING;
-        l.sourceX = x1 + (x2-x1) * (dist-sourcePadding) / dist;
-        l.sourceY = y1 + (y2-y1) * (dist-sourcePadding) / dist;
-        l.targetX = x2 - (x2-x1) * (dist-targetPadding) / dist;
-        l.targetY = y2 - (y2-y1) * (dist-targetPadding) / dist;
+          targetPadding = l.source.radius + constants.MARKER_PADDING;
+        l.sourceX = x1 + (x2 - x1) * (dist - sourcePadding) / dist;
+        l.sourceY = y1 + (y2 - y1) * (dist - sourcePadding) / dist;
+        l.targetX = x2 - (x2 - x1) * (dist - targetPadding) / dist;
+        l.targetY = y2 - (y2 - y1) * (dist - targetPadding) / dist;
       })
       .attr('x1', (l) => { return l.sourceX; })
       .attr('y1', (l) => { return l.sourceY; })
@@ -676,20 +676,20 @@ class Graph {
 
     if (this.mousedownNode) {
       const x1 = this.mousedownNode.x * this.zoomScale + this.zoomTranslate[0],
-            y1 = this.mousedownNode.y * this.zoomScale + this.zoomTranslate[1],
-            x2 = this.dragLink.attr('tx2'),
-            y2 = this.dragLink.attr('ty2'),
-            dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+        y1 = this.mousedownNode.y * this.zoomScale + this.zoomTranslate[1],
+        x2 = this.dragLink.attr('tx2'),
+        y2 = this.dragLink.attr('ty2'),
+        dist = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 
       if (dist > 0) {
-        const targetX = x2 - (x2-x1) * (dist-this.mousedownNode.radius*this.zoomScale) / dist,
-              targetY = y2 - (y2-y1) * (dist-this.mousedownNode.radius*this.zoomScale) / dist;
+        const targetX = x2 - (x2 - x1) * (dist - this.mousedownNode.radius * this.zoomScale) / dist,
+          targetY = y2 - (y2 - y1) * (dist - this.mousedownNode.radius * this.zoomScale) / dist;
 
-      this.dragLink
-        .attr('x1', targetX)
-        .attr('y1', targetY)
-        .attr('x2', x2)
-        .attr('y2', y2);
+        this.dragLink
+          .attr('x1', targetX)
+          .attr('y1', targetY)
+          .attr('x2', x2)
+          .attr('y2', y2);
       }
     }
   }
@@ -710,6 +710,10 @@ class Graph {
   setupKeycodes() {
     d3.select('body')
       .on('keydown', () => {
+
+        if (d3.event.target.nodeName === 'INPUT') {
+          return this.force.resume();
+        }
 
         // u: Unpin selected nodes
         if (d3.event.keyCode == 85) {
@@ -767,14 +771,14 @@ class Graph {
         else if (d3.event.keyCode == 80) {
           this.printFull = (this.printFull + 1) % 3;
           this.selectAllNodeNames()
-              .text((d) => { return utils.processNodeName(d.name, this.printFull); })
-              .call(this.textWrap, this.printFull);
+            .text((d) => { return utils.processNodeName(d.name, this.printFull); })
+            .call(this.textWrap, this.printFull);
         }
-        
+
         // t: expand by degree
         else if (d3.event.keyCode == 84) {
           if (this.degreeExpanded === 0 && this.nodes.length !== 1) { return; }
-          
+
           if (this.degreeExpanded === 0 && this.nodes.length === 1) {
             this.expandingNode = this.nodes[0];
           }

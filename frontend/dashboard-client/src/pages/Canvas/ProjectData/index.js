@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../Graph/graphActions';
-
+import EntityCard from '../EntityCard';
 class ProjectData extends Component {
 
   constructor(props) {
@@ -21,14 +21,7 @@ class ProjectData extends Component {
         <div className="searchResults">
           { !this.props.currentProject.graphData || !this.props.currentProject.graphData.nodes ? 
             null :
-            this.props.currentProject.graphData.nodes.map(entity => {
-              return (
-                <div key={entity.id}>
-                  <div> {entity.id} </div>
-                  <div> {entity.name} </div>
-                </div>
-              );
-            })
+            this.props.currentProject.graphData.nodes.map(node => <EntityCard  data={node} id={node.id} shouldFetch graph={this.props.graph}/>)
           }
         </div>
       );
