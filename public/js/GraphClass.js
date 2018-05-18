@@ -46,6 +46,9 @@ class Graph {
     this.brushY = null;
     this.numTicks = null;
 
+    this.menuActions = [];
+    this.contextMenu = null;
+
     this.degreeExpanded = 0;
     this.expandingNode = null;
 
@@ -91,6 +94,7 @@ class Graph {
     this.curve = null;
     this.svgGrid = null;
     this.force = null;
+    this.drag = null;
 
     this.adjacencyMatrix = new Array();
     this.globalLinks = {};
@@ -103,7 +107,6 @@ class Graph {
     this.clicked = this.clicked.bind(this);
     this.rightclicked = this.rightclicked.bind(this);
     this.dblclicked = this.dblclicked.bind(this);
-    this.isLeftClick = this.isLeftClick.bind(this);
     this.dragstart = this.dragstart.bind(this);
     this.dragging = this.dragging.bind(this);
     this.dragend = this.dragend.bind(this);
@@ -113,6 +116,7 @@ class Graph {
     this.mouseout = this.mouseout.bind(this);
     this.clickedCanvas = this.clickedCanvas.bind(this);
     this.dragstartCanvas = this.dragstartCanvas.bind(this);
+    this.mouseupCanvas = this.mouseupCanvas.bind(this);
     this.mousemoveCanvas = this.mousemoveCanvas.bind(this);
     this.mouseoverLink = this.mouseoverLink.bind(this);
     this.zoomstart = this.zoomstart.bind(this);
@@ -148,7 +152,7 @@ class Graph {
   }
 
   initializeZoom() {
-    var self = this;
+    const self = this;
     const zoom = d3.behavior.zoom()
       .scaleExtent([constants.MIN_SCALE, constants.MAX_SCALE])
       .on('zoomstart', function (d) { self.zoomstart(d, this) })
@@ -174,6 +178,7 @@ class Graph {
       .attr('id', 'canvas')
       .attr('pointer-events', 'all')
       .classed('svg-content', true)
+      .on('mouseup', function () { self.mouseupCanvas(this); })
       .call(d3.behavior.drag()
         .on('dragstart', function (d) { self.dragstartCanvas(d, this) })
       )
@@ -249,12 +254,84 @@ class Graph {
       .size([this.width, this.height]);
   }
 
+  intitializeDrag() {
+    const self = this;
+    const drag = this.force.drag()
+      .origin((d) => { return d; })
+      .on('dragstart', function (d) { self.dragstart(d, this) })
+      .on('drag', function (d) { self.dragging(d, this) })
+      .on('dragend', function (d) { self.dragend(d, this) });
+
+    return drag;
+  }
+
+  initializeMenuActions() {
+    this.menuActions = [
+      {
+        title: 'Group selected nodes',
+        action: (elm, d, i) => { this.groupSelectedNodes(); }
+      },
+      {
+        title: 'Ungroup selected nodes',
+        action: (elm, d, i) => { this.ungroupSelectedGroups(); }
+      },
+      {
+        title: 'Expand 1st degree connections...',
+        action: (elm, d, i) => {  }
+      }
+
+    ]
+  }
+
+  initializeContextMenu() {
+    // LICENSING INFO: https://github.com/patorjk/d3-context-menu
+    this.contextMenu = function (menu, openCallback) {
+      // create the div element that will hold the context menu
+      d3.selectAll('.context-menu')
+        .data([1]).enter()
+        .append('div')
+        .attr('class', 'context-menu');
+
+      // Close context menu 
+      d3.select('body').on('click', () => { d3.select('.context-menu').style('display', 'none'); });
+
+      // this gets executed when a contextmenu event occurs
+      return function(data, index) {  
+        const self = this;
+        d3.selectAll('.context-menu').html('');
+        var list = d3.selectAll('.context-menu').append('ul');
+        list.selectAll('li')
+          .data(menu).enter()
+          .append('li')
+          .html((d) => { return d.title; })
+          .classed('unselectable', true)
+          .on('click', function(d, i) {
+            d.action(self, data, index);
+            d3.select('.context-menu').style('display', 'none');
+          });
+
+        // the openCallback allows an action to fire before the menu is displayed
+        // an example usage would be closing a tooltip
+        if (openCallback) openCallback(d, i);
+
+        // display context menu
+        d3.select('.context-menu')
+          .style('left', (d3.event.pageX - 2) + 'px')
+          .style('top', (d3.event.pageY - 2) + 'px')
+          .style('display', 'block');
+
+        d3.event.preventDefault();
+      };
+    };
+  }
+
   // direction-size-color
   initializeMarkers() {
     const possibleAttrs = [
       ['start', 'end'],
       ['big', 'small'],
-      ['gray', 'blue']];
+      ['gray', 'blue']
+    ];
     const markerList = this.deriveMarkerData(this.getMarkerIdPermutations(possibleAttrs));
     for (let marker of markerList) {
       this.svg.append('defs')
@@ -314,12 +391,13 @@ class Graph {
 
   initializeDragLink() {
     return this.svg.append('line')
-      .attr('class', 'link dynamic hidden')
+      .attr('class', 'link dynamic')
       .attr('x1', 0)
       .attr('y1', 0)
       .attr('x2', 0)
       .attr('y2', 0)
-      .attr('marker-end', 'url(#end-big-gray)');
+      .attr('marker-end', 'url(#end-big-gray)')
+      .style('visibility', 'hidden');
   }
 
   initializeToolbarButtons() {
@@ -328,7 +406,8 @@ class Graph {
     this.svg.append('rect')
       .attr('y', constants.TOOLBAR_PADDING)
       .attr({ x: constants.TOOLBAR_PADDING, width: constants.BUTTON_WIDTH, height: this.height - constants.TOOLBAR_PADDING * 2 })
-      .style('fill', colors.HEX_PRIMARY_ACCENT);
+      .style('fill', colors.HEX_PRIMARY_ACCENT)
+      .on('click', () => { d3.select('.context-menu').style('display', 'none'); });
 
     const button = this.svg.selectAll('.button')
       .data(buttonData)
@@ -387,6 +466,7 @@ class Graph {
         self.zoomPressed = true;
         self.disableZoom();
         self.zoomButton(this.id === constants.BUTTON_ZOOM_IN_ID);
+        d3.select('.context-menu').style('display', 'none');
       })
       .on('mouseup', () => { this.zoomPressed = false; })
       .on('mouseout', () => { this.zoomPressed = false; });
@@ -398,6 +478,7 @@ class Graph {
     d3.select('#' + id)
       .on('click', () => { 
         onclick();
+        d3.select('.context-menu').style('display', 'none');
         this.stopPropagation(); 
       })
       .classed('selected', isSelected);
@@ -423,14 +504,16 @@ class Graph {
     this.curve = this.initializeCurve();
     this.svgGrid = this.initializeSVGgrid();
     this.force = this.initializeForce();
+    this.drag = this.intitializeDrag();
     this.dragLink = this.initializeDragLink();
+    this.initializeMenuActions();
+    this.initializeContextMenu();
     this.initializeMarkers();
-    this.initializeTooltip();
 
     this.initializeToolbarButtons();
     this.initializeZoomButtons();
     this.initializeButton(constants.BUTTON_POINTER_TOOL_ID, () => {
-      d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', false);
+      d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', false); 
       d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', true);
     }, true); // Placeholder method
     this.initializeButton(constants.BUTTON_SELECTION_TOOL_ID, () => {
@@ -544,16 +627,13 @@ class Graph {
       .attr('dragselect', false)
       .on('click', function (d) { self.clicked(d, this); })
       .on('dblclick', function (d) { self.dblclicked(d, this); })
+      .on('mousedown', function (d) { self.mousedown(d, this); })
       .on('mouseover', function (d) { self.mouseover(d, this); })
       .on('mouseout', function (d) { self.mouseout(d, this); })
+      .on('contextmenu', this.contextMenu(this.menuActions))
       .classed('fixed', (d) => { return d.fixed; })
       .classed('faded', (d) => { return this.hoveredNode && !this.areNeighbors(this.hoveredNode, d); })
-      .call(this.force.drag()
-        .origin((d) => { return d; })
-        .on('dragstart', function (d) { self.dragstart(d, this) })
-        .on('drag', function (d) { self.dragging(d, this) })
-        .on('dragend', function (d) { self.dragend(d, this) })
-      );
+      .call(this.drag);
 
     if (this.editMode) {
       this.nodeEnter
@@ -597,20 +677,14 @@ class Graph {
       .enter().append('path')
       .attr('class', 'hull')
       .attr('d', this.drawHull)
-      .classed('faded', this.mousedownNode)
+      .classed('faded', this.hoveredNode)
       .on('dblclick', function (d) {
         self.toggleGroupView(d.groupId);
         d3.event.stopPropagation();
       });
 
     this.hull.exit().remove();
-
-
-    
-    this.reloadNeighbors();
-
-    // Update minimap   
-
+ 
     this.force.start();
     // Avoid initial chaos and skip the wait for graph to drift back onscreen
     if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }   
@@ -650,8 +724,6 @@ class Graph {
 
     if (this.toRenderMinimap) { 
       if (this.tickCount === constants.MINIMAP_TICK) {
-        const translate = this.zoom.translate();
-        const scale = this.zoom.scale();
         this.minimap.syncToSVG(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
         this.tickCount = 0;
         this.toRenderMinimap = false;
@@ -683,7 +755,7 @@ class Graph {
       .attr('x2', (l) => { return l.targetX; })
       .attr('y2', (l) => { return l.targetY; });
 
-    if (this.mousedownNode) {
+    if (this.editMode && this.mousedownNode) {
       const x1 = this.mousedownNode.x * this.zoomScale + this.zoomTranslate[0],
             y1 = this.mousedownNode.y * this.zoomScale + this.zoomTranslate[1],
             x2 = this.dragLink.attr('tx2'),
@@ -819,22 +891,23 @@ class Graph {
     const button = d3.select('#' + constants.BUTTON_EDIT_MODE_ID);
     button.classed('selected', this.editMode);
     if (this.editMode) {
-      this.dragCallback = this.node.property('__onmousedown.drag')['_'];
+      if (!this.dragCallback) { this.dragCallback = this.node.property('__onmousedown.drag')['_'] };
       this.svg
         .on('click', function () { self.clickedCanvas(this); })
         .on('mousemove', function () { self.mousemoveCanvas(this); });
       this.node
         .on('mousedown.drag', null)
-        .on('mousedown', function (d) { self.mousedown(d, this); })
         .on('mouseup', function (d) { self.mouseup(d, this); });
+      this.dragLink.style('visibility', 'visible');
     } else {
       this.svg
         .on('click', null)
         .on('mousemove', null);
       this.node
-        .on('mousedown', null)
         .on('mouseup', null)
         .on('mousedown.drag', this.dragCallback);
+      this.dragCallback = null;
+      this.dragLink.style('visibility', 'hidden');
     }
   }
 
@@ -897,9 +970,6 @@ Graph.prototype.brushend = mouseClicks.brushend;
 Graph.prototype.clicked = mouseClicks.clicked;
 Graph.prototype.rightclicked = mouseClicks.rightclicked;
 Graph.prototype.dblclicked = mouseClicks.dblclicked;
-
-Graph.prototype.isLeftClick = mouseClicks.isLeftClick;
-
 Graph.prototype.dragstart = mouseClicks.dragstart;
 Graph.prototype.dragging = mouseClicks.dragging;
 Graph.prototype.dragend = mouseClicks.dragend;
@@ -909,6 +979,7 @@ Graph.prototype.mouseover = mouseClicks.mouseover;
 Graph.prototype.mouseout = mouseClicks.mouseout;
 Graph.prototype.clickedCanvas = mouseClicks.clickedCanvas;
 Graph.prototype.dragstartCanvas = mouseClicks.dragstartCanvas;
+Graph.prototype.mouseupCanvas = mouseClicks.mouseupCanvas;
 Graph.prototype.mousemoveCanvas = mouseClicks.mousemoveCanvas;
 Graph.prototype.mouseoverLink = mouseClicks.mouseoverLink;
 Graph.prototype.stopPropagation = mouseClicks.stopPropagation;
