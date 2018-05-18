@@ -465,21 +465,15 @@ class Graph {
   // Completely rerenders the graph, assuming all new nodes and links
   setData(centerid, nodes, links, byIndex) {
 
-    var self = this;
     this.setMatrix(nodes, links, byIndex);
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
     // debugger
     nodes.map((node) => {
-      if (node.id < 0) {
-        console.log(node.id)
-        self.globalnodeid = Math.min(self.globalnodeid, parseInt(node.id));
-      }
+      if (node.id < 0) { this.globalnodeid = Math.min(this.globalnodeid, node.id); }
     });
 
     links.map((link) => {
-      if (link.id < 0) {
-        self.globallinkid = Math.min(self.globallinkid, parseInt(link.id));
-      }
+      if (link.id < 0) { this.globallinkid = Math.min(this.globallinkid, link.id); }
     });
 
     this.update();
