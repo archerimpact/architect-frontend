@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import './style.css'
-import EntityCard from '../EntityCard';
+import SearchCard from '../SearchCard';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -45,7 +45,7 @@ class BackendSearch extends Component {
             this.props.searchData.map((entity) => {
               return (
                 // <EntityCard data={entity} addToGraph={this.addToGraph} />
-                <EntityCard id={entity._id} data={entity._source} graph={this.props.graph}/>
+                <SearchCard id={entity._id} data={entity} graph={this.props.graph}/>
               );
             })
           }

@@ -10,7 +10,7 @@ import EntityAttributes from '../EntityAttributes';
 
 import './style.css';
 
-class EntityCard extends Component {
+class SearchCard extends Component {
 
   constructor(props) {
     super(props);
@@ -68,26 +68,25 @@ class EntityCard extends Component {
     if (!this.state.isDataReady) {
       return <div key={this.props.id}> Loading ... </div>
     }
-
     return (
       <div className="card result-card" key={this.props.id}>
         <div className="card-header result-card-header flex-row d-flex">
           {this.renderButtons()}
           <span className="collapse-link" onClick={this.toggleCollapse}>
-            {this.state.data.name || this.state.data.combined || this.state.data.number}
+            {this.state.data._source.name || this.state.data._source.combined || this.state.data._source.number}
           </span>
-          <small className="card-sdn-type">
-
-          </small>
+          
 
           <div className="ml-auto card-program">
-            {this.state.data.type}
+            {this.props.data._type} <small className="card-sdn-type">
+            {this.props.data._source.dataset}
+          </small>
           </div>
 
         </div>
         <div className={this.state.collapsed ? 'collapse' : null}>
           <div className="card-body result-card-body">
-            <EntityAttributes node={this.state.data} />
+            <EntityAttributes node={this.state.data._source} />
           </div>
         </div>
       </div>
@@ -109,4 +108,4 @@ function mapStateToProps(state, props) {
   };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EntityCard));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SearchCard));
