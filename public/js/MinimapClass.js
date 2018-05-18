@@ -90,7 +90,10 @@ class Minimap {
     // image container
     this.image = this.container.append('g')
       .attr('id', 'svg-image')
-      .on('click', stopPropagation)
+      .on('click', () => { 
+        d3.select('.context-menu').style('display', 'none'); 
+        stopPropagation(); 
+      })
       .on('dblclick', stopPropagation)
       .call(d3.behavior.drag()
         .on('dragstart', stopPropagation)
@@ -149,6 +152,7 @@ class Minimap {
 
   dragstart() {
     d3.event.sourceEvent.stopPropagation();
+    d3.select('.context-menu').style('display', 'none');
 
     // Get the starting translate
     const boxTranslate = utils.getXYFromTranslate(this.box.attr('transform'));
