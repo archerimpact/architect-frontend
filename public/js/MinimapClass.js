@@ -85,7 +85,7 @@ class Minimap {
     this.zoom
       .on('zoom.minimap', this.zooming)
 
- d3.selectAll(`#${constants.BUTTON_ZOOM_IN_ID}, #${constants.BUTTON_ZOOM_OUT_ID}`)
+    d3.selectAll(`#${constants.BUTTON_ZOOM_IN_ID}, #${constants.BUTTON_ZOOM_OUT_ID}`)
       .on('mouseup', this.zooming)
       .on('mouseup', () => { this.graph.zoomPressed = false; })
       .on('mouseout', () => { this.graph.zoomPressed = false; });
@@ -146,6 +146,9 @@ class Minimap {
       .on('dragend', this.dragend);
 
     this.box.call(drag);
+
+    this.container.attr('transform', 'translate(' + this.positionX + ',' + this.positionY+ ')scale(' + 1 + ')');
+
   }
 
   toggleMinimapVisibility() {
@@ -213,7 +216,6 @@ class Minimap {
 
   /** RENDER **/
   syncToSVG(targetSVG, x1, x2, y1, y2) {
-    this.container.attr('transform', 'translate(' + this.positionX + ',' + this.positionY+ ')scale(' + 1 + ')');
 
     const translate = utils.getXYFromTranslate(this.target.attr('transform'));
     const scale = this.scale;
@@ -237,7 +239,6 @@ class Minimap {
   }
 
   initializeBoxToCenter(targetSVG, x1, x2, y1, y2) {
-    this.container.attr('transform', 'translate(' + this.positionX + ',' + this.positionY+ ')scale(' + 1 + ')');
     
     const translate = utils.getXYFromTranslate(this.target.attr('transform'));
     const scale = this.scale;
