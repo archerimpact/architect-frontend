@@ -10,7 +10,7 @@ import * as d3Data from './helpers/changeD3Data.js';
 import Minimap from './MinimapClass.js'
 import * as constants from './helpers/constants.js';
 import * as colors from './helpers/colorConstants.js';
-import { GROUP, HULL_GROUP } from './helpers/constants.js';
+import { GROUP, HULL_GROUP, DOCUMENT, PERSON, CORPORATION } from './helpers/constants.js';
 
 // FontAwesome icon unicode-to-node type dict
 // Use this to find codes for FA icons: https://fontawesome.com/cheatsheet
@@ -18,13 +18,12 @@ const icons = {
   [constants.PERSON]: '',
   'Individual': '',
   'Document': '',
-  [constants.IDENTIFYING_DOCUMENT]: '',
+  [constants.IDENTIFYING_DOCUMENT] : '',
   'corporation': '',
   'Entity': '',
   [constants.ORGANIZATION]: '',
   'group': '',
   'same_as_group': '',
-  [constants.LOCATION]: '',
   [constants.BUTTON_ZOOM_IN_ID]: '',
   [constants.BUTTON_ZOOM_OUT_ID]: '',
   [constants.BUTTON_POINTER_TOOL_ID]: '',
@@ -35,7 +34,7 @@ const icons = {
   [constants.BUTTON_TOGGLE_MINIMAP_ID]: '',
   [constants.BUTTON_UNDO_ACTION_ID]: '',
   [constants.BUTTON_REDO_ACTION_ID]: '',
-  [constants.BUTTON_SAVE_PROJECT_ID]: ''
+  [constants.BUTTON_SAVE_PROJECT_ID]: '' 
 };
 
 class Graph {
@@ -46,6 +45,9 @@ class Graph {
     this.brushX = null;
     this.brushY = null;
     this.numTicks = null;
+
+    this.menuActions = [];
+    this.contextMenu = null;
 
     this.degreeExpanded = 0;
     this.expandingNode = null;
@@ -66,7 +68,7 @@ class Graph {
     this.draggedNode = null; // Store reference to currently dragged node, null otherwise
     this.isBrushing = false;
     this.isEmphasized = false; // Keep track of node emphasis to end node emphasis on drag
-    this.documentsShown = true;
+    this.typesShown = { 'Document' : true, 'person' : true, 'corporation' : true };
     this.hoveredNode = null; // Store reference to currently hovered/emphasized node, null otherwise
     this.deletingHoveredNode = false; // Store whether you are deleting a hovered node, if so you reset graph opacity
     this.printFull = 0; // Allow user to toggle node text length
@@ -92,6 +94,7 @@ class Graph {
     this.curve = null;
     this.svgGrid = null;
     this.force = null;
+    this.drag = null;
 
     this.adjacencyMatrix = new Array();
     this.globalLinks = {};
@@ -104,7 +107,6 @@ class Graph {
     this.clicked = this.clicked.bind(this);
     this.rightclicked = this.rightclicked.bind(this);
     this.dblclicked = this.dblclicked.bind(this);
-    this.isLeftClick = this.isLeftClick.bind(this);
     this.dragstart = this.dragstart.bind(this);
     this.dragging = this.dragging.bind(this);
     this.dragend = this.dragend.bind(this);
@@ -114,6 +116,7 @@ class Graph {
     this.mouseout = this.mouseout.bind(this);
     this.clickedCanvas = this.clickedCanvas.bind(this);
     this.dragstartCanvas = this.dragstartCanvas.bind(this);
+    this.mouseupCanvas = this.mouseupCanvas.bind(this);
     this.mousemoveCanvas = this.mousemoveCanvas.bind(this);
     this.mouseoverLink = this.mouseoverLink.bind(this);
     this.zoomstart = this.zoomstart.bind(this);
@@ -149,7 +152,7 @@ class Graph {
   }
 
   initializeZoom() {
-    var self = this;
+    const self = this;
     const zoom = d3.behavior.zoom()
       .scaleExtent([constants.MIN_SCALE, constants.MAX_SCALE])
       .on('zoomstart', function (d) { self.zoomstart(d, this) })
@@ -175,6 +178,7 @@ class Graph {
       .attr('id', 'canvas')
       .attr('pointer-events', 'all')
       .classed('svg-content', true)
+      .on('mouseup', function () { self.mouseupCanvas(this); })
       .call(d3.behavior.drag()
         .on('dragstart', function (d) { self.dragstartCanvas(d, this) })
       )
@@ -250,27 +254,99 @@ class Graph {
       .size([this.width, this.height]);
   }
 
+  intitializeDrag() {
+    const self = this;
+    const drag = this.force.drag()
+      .origin((d) => { return d; })
+      .on('dragstart', function (d) { self.dragstart(d, this) })
+      .on('drag', function (d) { self.dragging(d, this) })
+      .on('dragend', function (d) { self.dragend(d, this) });
+
+    return drag;
+  }
+
+  initializeMenuActions() {
+    this.menuActions = [
+      {
+        title: 'Group selected nodes',
+        action: (elm, d, i) => { this.groupSelectedNodes(); }
+      },
+      {
+        title: 'Ungroup selected nodes',
+        action: (elm, d, i) => { this.ungroupSelectedGroups(); }
+      },
+      {
+        title: 'Expand 1st degree connections...',
+        action: (elm, d, i) => {  }
+      }
+
+    ]
+  }
+
+  initializeContextMenu() {
+    // LICENSING INFO: https://github.com/patorjk/d3-context-menu
+    this.contextMenu = function (menu, openCallback) {
+      // create the div element that will hold the context menu
+      d3.selectAll('.context-menu')
+        .data([1]).enter()
+        .append('div')
+        .attr('class', 'context-menu');
+
+      // Close context menu 
+      d3.select('body').on('click', () => { d3.select('.context-menu').style('display', 'none'); });
+
+      // this gets executed when a contextmenu event occurs
+      return function(data, index) {  
+        const self = this;
+        d3.selectAll('.context-menu').html('');
+        var list = d3.selectAll('.context-menu').append('ul');
+        list.selectAll('li')
+          .data(menu).enter()
+          .append('li')
+          .html((d) => { return d.title; })
+          .classed('unselectable', true)
+          .on('click', function(d, i) {
+            d.action(self, data, index);
+            d3.select('.context-menu').style('display', 'none');
+          });
+
+        // the openCallback allows an action to fire before the menu is displayed
+        // an example usage would be closing a tooltip
+        if (openCallback) openCallback(data, index);
+
+        // display context menu
+        d3.select('.context-menu')
+          .style('left', (d3.event.pageX - 2) + 'px')
+          .style('top', (d3.event.pageY - 2) + 'px')
+          .style('display', 'block');
+
+        d3.event.preventDefault();
+      };
+    };
+  }
+
   // direction-size-color
   initializeMarkers() {
     const possibleAttrs = [
       ['start', 'end'],
       ['big', 'small'],
-      ['gray', 'blue']];
+      ['gray', 'blue']
+    ];
     const markerList = this.deriveMarkerData(this.getMarkerIdPermutations(possibleAttrs));
     for (let marker of markerList) {
       this.svg.append('defs')
         .append('marker')
-        .attr('id', marker.id)
-        .attr('viewBox', '5 -5 10 10')
-        .attr('refX', 10)
-        .attr('markerWidth', marker.size)
-        .attr('markerHeight', marker.size)
-        .attr('orient', marker.direction)
+          .attr('id', marker.id)
+          .attr('viewBox', '5 -5 10 10')
+          .attr('refX', 10)
+          .attr('markerWidth', marker.size)
+          .attr('markerHeight', marker.size)
+          .attr('orient', marker.direction)
         .append('path')
-        .attr('d', 'M 0,-5 L 10,0 L 0,5')
-        .style('stroke', marker.color)
-        .style('fill', marker.color)
-        .style('fill-opacity', 1);
+          .attr('d', 'M 0,-5 L 10,0 L 0,5')
+          .style('stroke', marker.color)
+          .style('fill', marker.color)
+          .style('fill-opacity', 1);
     }
   }
 
@@ -315,12 +391,13 @@ class Graph {
 
   initializeDragLink() {
     return this.svg.append('line')
-      .attr('class', 'link dynamic hidden')
+      .attr('class', 'link dynamic')
       .attr('x1', 0)
       .attr('y1', 0)
       .attr('x2', 0)
       .attr('y2', 0)
-      .attr('marker-end', 'url(#end-big-gray)');
+      .attr('marker-end', 'url(#end-big-gray)')
+      .style('visibility', 'hidden');
   }
 
   initializeToolbarButtons() {
@@ -330,12 +407,15 @@ class Graph {
       .attr('y', constants.TOOLBAR_PADDING)
       .attr({ x: constants.TOOLBAR_PADDING, width: constants.BUTTON_WIDTH, height: this.height - constants.TOOLBAR_PADDING * 2 })
       .style('fill', colors.HEX_PRIMARY_ACCENT)
-      .style('box-shadow', '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)');
+      .on('click', () => { d3.select('.context-menu').style('display', 'none'); });
 
     const button = this.svg.selectAll('.button')
       .data(buttonData)
       .enter().append('g')
       .attr('pointer-events', 'all');
+
+    button.append('title')
+      .text((d) => { return d.title; });
 
     button.append('text')
       .attr('class', 'button-icon')
@@ -361,12 +441,16 @@ class Graph {
 
   getToolbarLabels() {
     const labels = [constants.BUTTON_ZOOM_IN_ID, constants.BUTTON_ZOOM_OUT_ID, constants.BUTTON_POINTER_TOOL_ID,
-    constants.BUTTON_SELECTION_TOOL_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_FIX_NODE_ID,
-    constants.BUTTON_SIMPLIFY_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_UNDO_ACTION_ID,
-    constants.BUTTON_REDO_ACTION_ID, constants.BUTTON_SAVE_PROJECT_ID];
+                    constants.BUTTON_SELECTION_TOOL_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_FIX_NODE_ID, 
+                    constants.BUTTON_SIMPLIFY_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_UNDO_ACTION_ID, 
+                    constants.BUTTON_REDO_ACTION_ID, constants.BUTTON_SAVE_PROJECT_ID];
+    const titles = [constants.BUTTON_ZOOM_IN_TITLE, constants.BUTTON_ZOOM_OUT_TITLE, constants.BUTTON_POINTER_TOOL_TITLE,
+                    constants.BUTTON_SELECTION_TOOL_TITLE, constants.BUTTON_EDIT_MODE_TITLE, constants.BUTTON_FIX_NODE_TITLE, 
+                    constants.BUTTON_SIMPLIFY_TITLE, constants.BUTTON_TOGGLE_MINIMAP_TITLE, constants.BUTTON_UNDO_ACTION_TITLE, 
+                    constants.BUTTON_REDO_ACTION_TITLE, constants.BUTTON_SAVE_PROJECT_TITLE];
     const labelObjects = [];
-    for (let label of labels) {
-      labelObjects.push({ label: label });
+    for (let i = 0; i < labels.length; i++) {
+      labelObjects.push({ label: labels[i], title: titles[i] });
     }
 
     return labelObjects;
@@ -378,10 +462,11 @@ class Graph {
     const self = this;
     this.zoomPressed = false;
     d3.selectAll(`#${constants.BUTTON_ZOOM_IN_ID}, #${constants.BUTTON_ZOOM_OUT_ID}`)
-      .on('mousedown', function () {
+      .on('mousedown', function() {
         self.zoomPressed = true;
         self.disableZoom();
         self.zoomButton(this.id === constants.BUTTON_ZOOM_IN_ID);
+        d3.select('.context-menu').style('display', 'none');
       })
       .on('mouseup', () => { this.zoomPressed = false; })
       .on('mouseout', () => { this.zoomPressed = false; });
@@ -389,11 +474,12 @@ class Graph {
     this.svg.on('mouseup', () => { this.svg.call(this.zoom) });
   }
 
-  initializeButton(id, onclick, isSelected = false) {
+  initializeButton(id, onclick, isSelected=false) {
     d3.select('#' + id)
-      .on('click', () => {
+      .on('click', () => { 
         onclick();
-        this.stopPropagation();
+        d3.select('.context-menu').style('display', 'none');
+        this.stopPropagation(); 
       })
       .classed('selected', isSelected);
   }
@@ -403,7 +489,7 @@ class Graph {
     this.height = height;
     this.center = [this.width / 2, this.height / 2];
     this.brushX = d3.scale.linear().range([0, width]),
-      this.brushY = d3.scale.linear().range([0, height]);
+    this.brushY = d3.scale.linear().range([0, height]);
     this.minimapPaddingX = constants.MINIMAP_MARGIN + constants.BUTTON_WIDTH;
     this.minimapPaddingY = height - constants.DEFAULT_MINIMAP_SIZE - constants.MINIMAP_MARGIN + 2;
     this.minimapScale = 0.25;
@@ -418,14 +504,16 @@ class Graph {
     this.curve = this.initializeCurve();
     this.svgGrid = this.initializeSVGgrid();
     this.force = this.initializeForce();
+    this.drag = this.intitializeDrag();
     this.dragLink = this.initializeDragLink();
+    this.initializeMenuActions();
+    this.initializeContextMenu();
     this.initializeMarkers();
-    this.initializeTooltip();
 
     this.initializeToolbarButtons();
     this.initializeZoomButtons();
     this.initializeButton(constants.BUTTON_POINTER_TOOL_ID, () => {
-      d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', false);
+      d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', false); 
       d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', true);
     }, true); // Placeholder method
     this.initializeButton(constants.BUTTON_SELECTION_TOOL_ID, () => {
@@ -435,12 +523,12 @@ class Graph {
     this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => { this.toggleEditMode() });
     this.initializeButton(constants.BUTTON_FIX_NODE_ID, () => { this.toggleFixedNodes() });
     this.initializeButton(constants.BUTTON_SIMPLIFY_ID, () => {
-      this.hideDocumentNodes();
+      this.hideTypeNodes(DOCUMENT);
       this.groupSame();
     });
     this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => { this.minimap.toggleMinimapVisibility(); }); // Wrap in unnamed function bc minimap has't been initialized yet
-    this.initializeButton(constants.BUTTON_UNDO_ACTION_ID, () => { }); // Placeholder method
-    this.initializeButton(constants.BUTTON_REDO_ACTION_ID, () => { }); // Placeholder method
+    this.initializeButton(constants.BUTTON_UNDO_ACTION_ID, () => {}); // Placeholder method
+    this.initializeButton(constants.BUTTON_REDO_ACTION_ID, () => {}); // Placeholder method
     this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => { this.saveAllData() }); // Placeholder method
 
     this.setupKeycodes();
@@ -453,20 +541,22 @@ class Graph {
     this.force.on('tick', (e) => { this.ticked(e, this) });
 
     this.minimap = new Minimap()
-      .setZoom(this.zoom)
-      .setTarget(this.container) // that's what you're trying to track/the images
-      .setMinimapPositionX(this.minimapPaddingX)
-      .setMinimapPositionY(this.minimapPaddingY)
-      .setGraph(this);
+                    .setZoom(this.zoom)
+                    .setTarget(this.container) // that's what you're trying to track/the images
+                    .setMinimapPositionX(this.minimapPaddingX)
+                    .setMinimapPositionY(this.minimapPaddingY)
+                    .setGraph(this);
 
     this.minimap.initializeMinimap(this.svg, this.width, this.height);
   }
 
   // Completely rerenders the graph, assuming all new nodes and links
   setData(centerid, nodes, links, byIndex) {
-
     this.setMatrix(nodes, links, byIndex);
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
+    this.update();
+
+    // set global node id to match the nodes getting passed in
     nodes.map((node) => {
       if (node.id < 0) { this.globalnodeid = Math.min(this.globalnodeid, node.id); }
     });
@@ -475,18 +565,12 @@ class Graph {
       if (link.id < 0) { this.globallinkid = Math.min(this.globallinkid, link.id); }
     });
 
-    this.update();
-    for (let i = 150; i > 0; --i) this.force.tick();
+    for (let i = 150; i > 0; --i) this.force.tick();  
     this.reloadNeighbors();
 
     this.minimap
-      .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); // BANANA need to call it on a function, seems to be most similar to initailizeMinimap
-
-    this.minimap
       .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
-      .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
-
-    //this.translateGraphAroundNode(centerd);
+      .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); 
   }
 
   addData(centerid, nodes, links) {
@@ -498,26 +582,26 @@ class Graph {
   }
 
   bindDisplayFunctions(displayFunctions) {
-    this.displayNodeInfo = displayFunctions.node ? displayFunctions.node : function (d) { };
-    this.displayLinkInfo = displayFunctions.link ? displayFunctions.link : function (d) { };
-    this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function (d) { };
-    this.expandNodeFromData = displayFunctions.expand ? displayFunctions.expand : function (d) { };
-    this.saveAllData = displayFunctions.save ? displayFunctions.save : function (d) { };
+    this.displayNodeInfo = displayFunctions.node ? displayFunctions.node : function(d) {};
+    this.displayLinkInfo = displayFunctions.link ? displayFunctions.link : function(d) {};
+    this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
+    this.expandNodeFromData = displayFunctions.expand ? displayFunctions.expand : function(d) {};
+    this.saveAllData = displayFunctions.save ? displayFunctions.save : function(d) {};
   }
 
   // Updates nodes and links according to current data
-  update(event = null, ticks = null, minimap = true) {
+  update(event=null, ticks=null, minimap=true) {
     var self = this;
 
     this.resetGraphOpacity();
 
     this.force.stop();
     this.matrixToGraph();
-    this.reloadNeighbors();
+    this.reloadNeighbors(); 
 
     this.force
       .gravity(.33)
-      .charge((d) => { return d.group ? -7500 : -20000 })
+      .charge((d) => { return d.group ? -7500 : -20000})
       .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
       .friction(this.nodes.length < 15 ? .75 : .65)
       .alpha(.8)
@@ -529,7 +613,7 @@ class Graph {
     this.link
       .enter().append('line')
       .attr('class', 'link')
-      .classed('same-as', (l) => { return l.type.substring(0, 8).toLowerCase() === 'possibly' || l.type === 'HAS_KNOWN_LOCATION'; })
+      .classed('same-as', (l) => { return l.type.substring(0, 8).toLowerCase() === 'possibly'; })
       .classed('faded', (l) => { return this.hoveredNode && !(l.source == this.hoveredNode || l.target == this.hoveredNode); })
       .on('mouseover', this.mouseoverLink)
       .call(this.styleLink, false);
@@ -543,16 +627,13 @@ class Graph {
       .attr('dragselect', false)
       .on('click', function (d) { self.clicked(d, this); })
       .on('dblclick', function (d) { self.dblclicked(d, this); })
+      .on('mousedown', function (d) { self.mousedown(d, this); })
       .on('mouseover', function (d) { self.mouseover(d, this); })
       .on('mouseout', function (d) { self.mouseout(d, this); })
+      .on('contextmenu', this.contextMenu(this.menuActions))
       .classed('fixed', (d) => { return d.fixed; })
       .classed('faded', (d) => { return this.hoveredNode && !this.areNeighbors(this.hoveredNode, d); })
-      .call(this.force.drag()
-        .origin((d) => { return d; })
-        .on('dragstart', function (d) { self.dragstart(d, this) })
-        .on('drag', function (d) { self.dragging(d, this) })
-        .on('dragend', function (d) { self.dragend(d, this) })
-      );
+      .call(this.drag);
 
     if (this.editMode) {
       this.nodeEnter
@@ -562,7 +643,6 @@ class Graph {
     }
 
     this.nodeEnter.append('circle');
-
 
     this.nodeEnter.append('text')
       .attr('class', 'icon')
@@ -577,7 +657,7 @@ class Graph {
       .attr('class', 'node-name')
       .attr('text-anchor', 'middle')
       .attr('dy', '40px')
-      .text((d) => { return d.group ? '' : utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.combined), this.printFull); })
+      .text((d) => { return d.group ? '' : utils.processNodeName(utils.getName(d), this.printFull); })
       .call(this.textWrap, this.printFull)
       .on('click', function (d) { self.stopPropagation(); })
       .on('mouseover', function (d) { self.stopPropagation(); })
@@ -597,30 +677,24 @@ class Graph {
       .enter().append('path')
       .attr('class', 'hull')
       .attr('d', this.drawHull)
-      .classed('faded', this.mousedownNode)
+      .classed('faded', this.hoveredNode)
       .on('dblclick', function (d) {
         self.toggleGroupView(d.groupId);
         d3.event.stopPropagation();
       });
 
     this.hull.exit().remove();
-
-
-
-    this.reloadNeighbors();
-
-    // Update minimap   
-
+ 
     this.force.start();
     // Avoid initial chaos and skip the wait for graph to drift back onscreen
-    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }
+    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }   
 
-    if (minimap) {
+    if (minimap) { 
       this.toRenderMinimap = true;
       this.tickCount = 0;
     }
-
-    this.node.each(function (d) {
+    
+    this.node.each(function(d) {
       if (d.fixedTransition) {
         d.fixed = d.fixedTransition = false;
       }
@@ -641,17 +715,15 @@ class Graph {
       .each(this.groupNodesForce(.3))
       .each((d) => {
         d.px = d.x; d.py = d.y;
-        if (d.x < this.xbound[0]) { this.xbound[0] = d.x; }
+        if (d.x < this.xbound[0]) { this.xbound[0] = d.x; } 
         if (d.x > this.xbound[1]) { this.xbound[1] = d.x; }
-        if (d.y < this.ybound[0]) { this.ybound[0] = d.y; }
+        if (d.y < this.ybound[0]) { this.ybound[0] = d.y; } 
         if (d.y > this.ybound[1]) { this.ybound[1] = d.y; }
       })
       .attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
 
-    if (this.toRenderMinimap) {
+    if (this.toRenderMinimap) { 
       if (this.tickCount === constants.MINIMAP_TICK) {
-        const translate = this.zoom.translate();
-        const scale = this.zoom.scale();
         this.minimap.syncToSVG(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
         this.tickCount = 0;
         this.toRenderMinimap = false;
@@ -665,40 +737,40 @@ class Graph {
     }
 
     this.link
-      .each(function (l) {
+      .each(function(l) {
         const x1 = l.source.x,
-          y1 = l.source.y,
-          x2 = l.target.x,
-          y2 = l.target.y;
-        const dist = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+              y1 = l.source.y,
+              x2 = l.target.x,
+              y2 = l.target.y;
+        const dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
         const sourcePadding = l.target.radius + (l.bidirectional ? constants.MARKER_PADDING : 0),
-          targetPadding = l.source.radius + constants.MARKER_PADDING;
-        l.sourceX = x1 + (x2 - x1) * (dist - sourcePadding) / dist;
-        l.sourceY = y1 + (y2 - y1) * (dist - sourcePadding) / dist;
-        l.targetX = x2 - (x2 - x1) * (dist - targetPadding) / dist;
-        l.targetY = y2 - (y2 - y1) * (dist - targetPadding) / dist;
+              targetPadding = l.source.radius + constants.MARKER_PADDING;
+        l.sourceX = x1 + (x2-x1) * (dist-sourcePadding) / dist;
+        l.sourceY = y1 + (y2-y1) * (dist-sourcePadding) / dist;
+        l.targetX = x2 - (x2-x1) * (dist-targetPadding) / dist;
+        l.targetY = y2 - (y2-y1) * (dist-targetPadding) / dist;
       })
       .attr('x1', (l) => { return l.sourceX; })
       .attr('y1', (l) => { return l.sourceY; })
       .attr('x2', (l) => { return l.targetX; })
       .attr('y2', (l) => { return l.targetY; });
 
-    if (this.mousedownNode) {
+    if (this.editMode && this.mousedownNode) {
       const x1 = this.mousedownNode.x * this.zoomScale + this.zoomTranslate[0],
-        y1 = this.mousedownNode.y * this.zoomScale + this.zoomTranslate[1],
-        x2 = this.dragLink.attr('tx2'),
-        y2 = this.dragLink.attr('ty2'),
-        dist = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+            y1 = this.mousedownNode.y * this.zoomScale + this.zoomTranslate[1],
+            x2 = this.dragLink.attr('tx2'),
+            y2 = this.dragLink.attr('ty2'),
+            dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
 
       if (dist > 0) {
-        const targetX = x2 - (x2 - x1) * (dist - this.mousedownNode.radius * this.zoomScale) / dist,
-          targetY = y2 - (y2 - y1) * (dist - this.mousedownNode.radius * this.zoomScale) / dist;
+        const targetX = x2 - (x2-x1) * (dist-this.mousedownNode.radius*this.zoomScale) / dist,
+              targetY = y2 - (y2-y1) * (dist-this.mousedownNode.radius*this.zoomScale) / dist;
 
-        this.dragLink
-          .attr('x1', targetX)
-          .attr('y1', targetY)
-          .attr('x2', x2)
-          .attr('y2', y2);
+      this.dragLink
+        .attr('x1', targetX)
+        .attr('y1', targetY)
+        .attr('x2', x2)
+        .attr('y2', y2);
       }
     }
   }
@@ -773,21 +845,21 @@ class Graph {
 
         // d: Hide document nodes
         else if (d3.event.keyCode == 68) {
-          this.toggleDocumentView();
+          this.toggleTypeView(DOCUMENT);
         }
 
         // p: Toggle btwn full/abbrev text
         else if (d3.event.keyCode == 80) {
           this.printFull = (this.printFull + 1) % 3;
           this.selectAllNodeNames()
-            .text((d) => { return utils.processNodeName(d.name, this.printFull); })
-            .call(this.textWrap, this.printFull);
+              .text((d) => { return utils.processNodeName(utils.getName(d), this.printFull); })
+              .call(this.textWrap, this.printFull);
         }
-
+        
         // t: expand by degree
         else if (d3.event.keyCode == 84) {
           if (this.degreeExpanded === 0 && this.nodes.length !== 1) { return; }
-
+          
           if (this.degreeExpanded === 0 && this.nodes.length === 1) {
             this.expandingNode = this.nodes[0];
           }
@@ -819,24 +891,23 @@ class Graph {
     const button = d3.select('#' + constants.BUTTON_EDIT_MODE_ID);
     button.classed('selected', this.editMode);
     if (this.editMode) {
-      this.dragCallback = this.node.property('__onmousedown.drag')['_'];
-      this.node
-        .on('mousedown.drag', null)
-        .on('mousedown', function (d) { self.mousedown(d, this); })
-        .on('mouseup', function (d) { self.mouseup(d, this); });
-
+      if (!this.dragCallback) { this.dragCallback = this.node.property('__onmousedown.drag')['_'] };
       this.svg
         .on('click', function () { self.clickedCanvas(this); })
         .on('mousemove', function () { self.mousemoveCanvas(this); });
-    } else {
       this.node
-        .on('mousedown', null)
-        .on('mouseup', null)
-        .on('mousedown.drag', this.dragCallback);
-
+        .on('mousedown.drag', null)
+        .on('mouseup', function (d) { self.mouseup(d, this); });
+      this.dragLink.style('visibility', 'visible');
+    } else {
       this.svg
         .on('click', null)
         .on('mousemove', null);
+      this.node
+        .on('mouseup', null)
+        .on('mousedown.drag', this.dragCallback);
+      this.dragCallback = null;
+      this.dragLink.style('visibility', 'hidden');
     }
   }
 
@@ -899,9 +970,6 @@ Graph.prototype.brushend = mouseClicks.brushend;
 Graph.prototype.clicked = mouseClicks.clicked;
 Graph.prototype.rightclicked = mouseClicks.rightclicked;
 Graph.prototype.dblclicked = mouseClicks.dblclicked;
-
-Graph.prototype.isLeftClick = mouseClicks.isLeftClick;
-
 Graph.prototype.dragstart = mouseClicks.dragstart;
 Graph.prototype.dragging = mouseClicks.dragging;
 Graph.prototype.dragend = mouseClicks.dragend;
@@ -911,6 +979,7 @@ Graph.prototype.mouseover = mouseClicks.mouseover;
 Graph.prototype.mouseout = mouseClicks.mouseout;
 Graph.prototype.clickedCanvas = mouseClicks.clickedCanvas;
 Graph.prototype.dragstartCanvas = mouseClicks.dragstartCanvas;
+Graph.prototype.mouseupCanvas = mouseClicks.mouseupCanvas;
 Graph.prototype.mousemoveCanvas = mouseClicks.mousemoveCanvas;
 Graph.prototype.mouseoverLink = mouseClicks.mouseoverLink;
 Graph.prototype.stopPropagation = mouseClicks.stopPropagation;
@@ -929,9 +998,9 @@ Graph.prototype.manualZoom = mouseClicks.manualZoom;
 Graph.prototype.deleteSelectedNodes = d3Data.deleteSelectedNodes;
 Graph.prototype.deleteSelectedLinks = d3Data.deleteSelectedLinks;
 Graph.prototype.addNodeToSelected = d3Data.addNodeToSelected;
-Graph.prototype.toggleDocumentView = d3Data.toggleDocumentView;
-Graph.prototype.hideDocumentNodes = d3Data.hideDocumentNodes;
-Graph.prototype.showHiddenDocuments = d3Data.showHiddenDocuments;
+Graph.prototype.toggleTypeView = d3Data.toggleTypeView;
+Graph.prototype.hideTypeNodes = d3Data.hideTypeNodes;
+Graph.prototype.showHiddenType = d3Data.showHiddenType;
 Graph.prototype.groupSame = d3Data.groupSame;
 Graph.prototype.groupSelectedNodes = d3Data.groupSelectedNodes;
 Graph.prototype.ungroupSelectedGroups = d3Data.ungroupSelectedGroups;

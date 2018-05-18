@@ -46,11 +46,9 @@ export function setMatrix(nodes, links, byIndex=false) {
 }
 
 export function addToMatrix(centerid, nodes, links) {
+  this.reloadIdToIndex();
+
   var numNodes = nodes.length;
-  this.reloadIdToIndex();
-
-  this.reloadIdToIndex();
-
   for (var i = 0; i < numNodes; i++) {
     if (this.idToIndex[nodes[i].id] == null) {
       utils.addRowColumn(this.adjacencyMatrix);
@@ -79,7 +77,7 @@ export function addToMatrix(centerid, nodes, links) {
       const target = this.adjacencyMatrix[targetIndex][targetIndex].data;
 
       let distance = 10 + num;
-      if (!source.px && target.px) {
+      if (!source.px && target.px) { 
         if (target.px >= this.width/2) { source.x = target.px + distance; } 
         else { source.x = target.px - distance; }
         
@@ -94,7 +92,6 @@ export function addToMatrix(centerid, nodes, links) {
         if (source.py >= this.height/2) { target.y = source.py + distance; } 
         else { target.y = source.py - distance; }  
         source.fixed = source.fixedTransition = true;
-      } else {
       }
 
       num += 10;
@@ -104,7 +101,7 @@ export function addToMatrix(centerid, nodes, links) {
       this.adjacencyMatrix[sourceIndex][targetIndex] = {state: DISPLAYED, data: links[i]};
     }
   }
-  this.update(null, 10);
+  this.update(null, 20);
 }
 
 export function matrixToGraph() {

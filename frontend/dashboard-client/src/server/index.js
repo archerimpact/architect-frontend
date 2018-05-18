@@ -194,7 +194,7 @@ export function getNode(neo4j_id){
   })
   exclude = exclude.substring(0, exclude.length-1);
   console.log("exclude: ", exclude)
-  var url = 'http://api.archer.cloud:2724/?id=' + neo4j_id + '&degrees=1' + '&expandby=*' + '&exclude=' + exclude + '&attr=*' + '&attrVal=*';
+  var url = 'http://api.archer.cloud:2724/?id=' + neo4j_id + '&degrees=1' + '&expandby=*' + '&exclude=AKA,SANCTIONED_ON' + '&attr=*' + '&attrVal=*';
 
   return new Promise(function(fulfill, reject) {
     axios.get(url)

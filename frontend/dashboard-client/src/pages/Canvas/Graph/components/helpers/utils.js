@@ -23,6 +23,18 @@ export function isMorePreferredState(val1, val2) {
   else if (val1 === HIDDEN) { return true; }
 }
 
+export function getName(d) {
+  if (d.name) {
+    return d.name;
+  } else if (d.number) {
+    return d.number;
+  } else if (d.combined) {
+    return d.combined;
+  } else if (d.dataset) {
+    return d.dataset;
+  }
+}
+
 export function isVisibleNode(val) {
   return (val === DISPLAYED);
 }
@@ -35,10 +47,10 @@ export function isExpandable(d) {
   let links = d.totalLinks;
   if (d.totalLinks && d.linkTypes) {
     links = d.linkTypes.AKA ? links - d.linkTypes.AKA : links;
-    links = d.linkTypes.HAS_ID_DOC ? links - d.linkTypes.HAS_ID_DOC : links;
     links = d.linkTypes.SANCTIONED_ON ? links - d.linkTypes.SANCTIONED_ON : links;
+    // links = d.linkTypes.HAS_ID_DOC ? links - d.linkTypes.HAS_ID_DOC : links;
   }
-  return (links > d.weight);
+  return (parseInt(links) > d.weight);
 }
 
 export function addRowColumn(matrix) {
@@ -63,6 +75,11 @@ export function removeColumn(matrix, index) {
 // =================
 // D3 UTILS
 // =================
+
+export function isLeftClick() {
+  return (d3.event && d3.event.which == 1)
+    || (d3.event.sourceEvent && d3.event.sourceEvent.which == 1);
+}
 
 export function isRightClick() {
   return (d3.event && (d3.event.which == 3 || d3.event.button == 2))
@@ -115,7 +132,7 @@ export function createSVGString(targetSVG, x1, x2, y1, y2, width=null, height=nu
         }, "");       
       }
     }
-    catch(e) {  }
+    catch(e) { console.log(e); }
   });
   // create our svg nodes that will hold all these rules
   const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');

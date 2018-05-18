@@ -1,8 +1,8 @@
 import * as d3 from 'd3';
+import * as utils from './utils.js';
 import { isGroup, then } from './utils.js';
 import * as constants from './constants.js';
 import * as colors from './colorConstants.js';
-import * as utils from './utils.js';
 
 export function highlightExpandableNode(){
   this.node.classed('expandable', false)
@@ -90,7 +90,7 @@ export function resetGraphOpacity() {
 // Reset edit mode's dynamic drag link
 export function resetDragLink(self) {
   self.mousedownNode = null;
-  self.dragLink.classed('hidden', true);
+  self.dragLink.style('visibility', 'hidden');
 }
 
 // Wrap text

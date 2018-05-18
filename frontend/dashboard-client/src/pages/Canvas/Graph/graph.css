@@ -48,10 +48,6 @@ svg line {
   pointer-events: none;
 }
 
-.link.hidden {
-  stroke-width: 0;
-}
-
 .node {
   fill: #ebebeb;
   stroke: #545454;
@@ -180,6 +176,7 @@ i.fa-close {
 
 #svg-image {
   border: none;
+  cursor: default;
 }
 
 #minimap-box {
@@ -192,6 +189,7 @@ i.fa-close {
   stroke: #545454;
   stroke-width: 1.5px;
   opacity: 0.4;
+  cursor: move;
 }
 
 .link {
@@ -302,7 +300,42 @@ i.fa-close {
   stroke: #0d77e2;
 }
 
+.node.expandable {
+  fill: #0d77e2;
+}
+
 .node.expandable circle {
   fill: #7cbdff !important;
   fill-opacity: 0.5;
+
+}
+
+.context-menu {
+  position: absolute;
+  display: none;
+  background-color: #f2f2f2;
+  border-radius: 0px;
+
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  min-width: 150px;
+  border: 1px solid #d4d4d4;
+
+  z-index: 1200;
+}
+
+.context-menu ul {
+  list-style-type: none;
+  /*margin: 4px 0px;*/
+  padding: 0px;
+  cursor: default;
+}
+
+.context-menu ul li {
+  padding: 9px 12px;
+}
+
+.context-menu ul li:hover {
+  background-color: #ff5d4c;
+  color: #fefefe;
 }
