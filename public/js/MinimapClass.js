@@ -207,8 +207,8 @@ class Minimap {
     this.box
       .attr('transform', 'translate(' + translate + ')scale(' + 1 + ')')
       .select('#minimap-box-square')
-      .attr('width', this.boxWidth/this.scale)
-      .attr('height', this.boxHeight/this.scale);       
+      .attr('width', this.boxWidth/this.scale > this.width ? this.width : this.boxWidth/this.scale)
+      .attr('height', this.boxHeight/this.scale > this.height ? this.height : this.boxHeight/this.scale);       
   }
 
   /** RENDER **/

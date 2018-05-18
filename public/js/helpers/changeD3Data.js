@@ -60,7 +60,7 @@ export function selectLink(source, target) {
 }
 
 export function addNodeToSelected(selection, event=null) {
-  let node = this.createNode(ENTITY, event)
+  let node = this.createNode(ENTITY, null, event);
   // For each node selected, create a link attaching the new node to the selected node
   selection
     .each((d) => {
