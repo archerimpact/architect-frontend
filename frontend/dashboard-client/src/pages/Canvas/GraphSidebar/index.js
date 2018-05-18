@@ -22,6 +22,7 @@ class GraphSidebar extends Component {
     };
     this.renderTabs = this.renderTabs.bind(this);
     this.renderSidebarContainer = this.renderSidebarContainer.bind(this);
+    this.renderSettings = this.renderSettings.bind(this);
   }
 
   componentDidMount() {
@@ -46,30 +47,32 @@ class GraphSidebar extends Component {
 
   renderTabs() {
     let baseUrl = '/build/'+ this.props.match.params.investigationId;
+    const activeState = this.props.match.params.sidebarState;
+
     return (
       <div className="tabs" key="tabs">
-        <div className="tab active-tab">
+        <div className={"tab " + (activeState === 'search' ? 'active-tab' : '')}>
           <Link to={baseUrl + '/search'}>
             <div>
               <i className="tab-icon material-icons">search</i>
             </div>
           </Link>
         </div>
-        <div className="tab">
+        <div className={"tab " + (activeState === 'entity' ? 'active-tab' : '')}>
           <Link to={baseUrl + '/entity'}>
             <div>
-              <i className="tab-icon material-icons">list</i>
+              <i className="tab-icon material-icons">description</i>
             </div>
           </Link>
         </div>
-        <div className="tab">
+        <div className={"tab " + (activeState === 'list' ? 'active-tab' : '')}>
           <Link to={baseUrl + '/list'}>
             <div>
               <i className="tab-icon material-icons">list</i>
             </div>
           </Link>
         </div>
-        <div className="tab">
+        <div className={"tab " + (activeState === 'settings' ? 'active-tab' : '')}>
           <Link to={baseUrl + '/settings'}>
             <div>
               <i className="tab-icon material-icons">settings</i>
@@ -80,6 +83,12 @@ class GraphSidebar extends Component {
           <i className="tab-icon material-icons">{this.props.sidebarVisible ? "chevron_right" : "chevron_left"}</i>
         </div>
       </div>
+    )
+  }
+
+  renderSettings() {
+    return (
+      <div> Sample text </div>
     )
   }
 
@@ -98,11 +107,11 @@ class GraphSidebar extends Component {
           </div>
          );
       case "entity":
-          return <Entity />
+          return <Entity graph={this.props.graph} id={this.props.match.params.query}/>
       case "list":
-         return <ProjectData />
-      default:
-        return <div> Sample text </div>
+         return <ProjectData graph={this.props.graph}/>
+      case "settings":
+        return this.renderSettings();
     };
   }
 

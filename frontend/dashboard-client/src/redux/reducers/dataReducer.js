@@ -2,7 +2,8 @@ import {
   USER_LOGIN,
 	USER_LOGOUT,
 	TOGGLE_SIDEBAR,
-  	STORE_PROJECT,
+		STORE_PROJECT,
+		STORE_ENTITY
   } from '../actions/actionTypes';
 import {
 	INITIALIZE_CANVAS,
@@ -45,6 +46,11 @@ export default function (state = initialState, action) {
 			return {
 				...state,
 				currentProject: null
+			}
+		case STORE_ENTITY:
+			return {
+				...state,
+				currentEntity: action.payload
 			}
 		case UPDATE_GRAPH_DATA:
 			return {
