@@ -30,8 +30,10 @@ class EntityCard extends Component {
   componentWillMount() {
     if (!this.state.isDataReady) {
       server.getNode(this.props.id, false)
-        .then(data => {
-          this.setState({ isDataReady: true, data: data.nodes.filter(n => n.id === this.props.id) })
+        .then(d => {
+          let temp = d.nodes.filter(n => n.id === this.props.id)[0];
+          this.setState({ isDataReady: true, data: temp })
+          debugger;
         })
         .catch(err => console.log(err));
     }
@@ -68,7 +70,7 @@ class EntityCard extends Component {
     if (!this.state.isDataReady) {
       return <div key={this.props.id}> Loading ... </div>
     }
-
+    debugger
     return (
       <div className="card result-card" key={this.props.id}>
         <div className="card-header result-card-header flex-row d-flex">
