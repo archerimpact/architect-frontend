@@ -4,6 +4,7 @@ import * as d3 from 'd3';
 import * as utils from './helpers/utils.js'
 import { stopPropagation } from './helpers/mouseClicks.js'; 
 import { GRID_LENGTH, MINIMAP_PADDING, DEFAULT_MINIMAP_SIZE } from './helpers/constants.js';
+import * as constants from './helpers/constants.js';
 
 class Minimap {
   constructor(svg) {
@@ -28,6 +29,8 @@ class Minimap {
     this.boxY = 0;
     this.boxScale = 1;
     this.initialBoxTranslate = null;
+    this.widthOffset = 0; // Both for zoom on minimap
+    this.heightOffset = 0;
 
     this.initializeMinimap = this.initializeMinimap.bind(this);
     this.syncToSVG = this.syncToSVG.bind(this);
@@ -36,6 +39,7 @@ class Minimap {
     this.dragging = this.dragging.bind(this);
     this.dragend = this.dragend.bind(this);
     this.zooming = this.zooming.bind(this);
+    this.zoomMinimap = this.zoomMinimap.bind(this);
   }
 
   setBounds(targetSVG, x1, x2, y1, y2) {
@@ -81,7 +85,12 @@ class Minimap {
     this.svg = svg;
 
     this.zoom
-      .on('zoom.minimap', this.zooming);
+      .on('zoom.minimap', this.zooming)
+
+ d3.selectAll(`#${constants.BUTTON_ZOOM_IN_ID}, #${constants.BUTTON_ZOOM_OUT_ID}`)
+      .on('mouseup', this.zooming)
+      .on('mouseup', () => { this.graph.zoomPressed = false; })
+      .on('mouseout', () => { this.graph.zoomPressed = false; });
 
     this.container = this.svg.append('g') 
       .attr('class', 'minimap')
@@ -165,7 +174,6 @@ class Minimap {
   dragging() {
     const e = d3.event;
     e.sourceEvent.stopPropagation();
-
     // move box to fit the drag
     this.boxX = this.getBoundingPositionX(this.boxX + e.dx);
     this.boxY = this.getBoundingPositionY(this.boxY + e.dy);
@@ -182,22 +190,30 @@ class Minimap {
   }
 
   zooming() {
-    if (!utils.isRightClick()) {
-      this.scale = d3.event.scale;
-
-      const targetTransform = utils.getXYFromTranslate(this.target.attr('transform'));
-
-      this.boxX += -targetTransform[0]/(this.scale);
-      this.boxY += -targetTransform[1]/(this.scale);
-
-      const translate = [-targetTransform[0]/(this.scale), -targetTransform[1]/(this.scale)];
-      
-      this.box
-        .attr('transform', 'translate(' + translate + ')scale(' + 1 + ')')
-        .select('#minimap-box-square')
-        .attr('width', this.boxWidth = this.boxWidth/this.scale)
-        .attr('height', this.boxHeight = this.boxHeight/this.scale);      
+    if (d3.event) {
+      if (!utils.isRightClick()) {
+        this.scale = d3.event.scale;
+        this.zoomMinimap(this.scale)     
+      }      
+    } else {
+      this.scale = utils.getScaleFromZoom(this.target.attr('transform'))[0];
+      this.zoomMinimap(this.scale); 
     }
+  }
+
+  zoomMinimap(scale) {
+    const targetTransform = utils.getXYFromTranslate(this.target.attr('transform'));
+
+    this.boxX += -targetTransform[0]/(this.scale * this.boxScale);
+    this.boxY += -targetTransform[1]/(this.scale * this.boxScale);
+
+    const translate = [-targetTransform[0]/(this.scale*this.boxScale), -targetTransform[1]/(this.scale*this.boxScale)];
+
+    this.box
+      .attr('transform', 'translate(' + translate + ')scale(' + 1 + ')')
+      .select('#minimap-box-square')
+      .attr('width', this.boxWidth/this.scale)
+      .attr('height', this.boxHeight/this.scale);       
   }
 
   /** RENDER **/
@@ -264,25 +280,30 @@ class Minimap {
 
     this.boxScale = Math.sqrt((this.viewportWidth * this.viewportHeight) / (this.boxWidth * this.boxHeight));
 
+    const initialTranslate = [Math.max(0, Math.min(DEFAULT_MINIMAP_SIZE-this.boxWidth, this.boxX)), Math.max(0, Math.min(DEFAULT_MINIMAP_SIZE-this.boxHeight, this.boxY))]
     this.box
       .select('#minimap-box-square')
-      .attr('x', () => { return Math.max(0, Math.min(DEFAULT_MINIMAP_SIZE-this.boxWidth, this.boxX)); })
-      .attr('y', () => { return Math.max(0, Math.min(DEFAULT_MINIMAP_SIZE-this.boxHeight, this.boxY)); })
+      .attr('transform', 'translate(' + initialTranslate + ')scale(' + 1 + ')')
       .attr('width', this.boxWidth)
       .attr('height', this.boxHeight);
 
     const image_url = utils.createSVGImage(targetSVG, x1, x2, y1, y2, svgWidth, svgHeight);
     this.image.select('image').attr('xlink:href', image_url);
+
+    this.widthOffset = (this.width-(this.boxWidth/this.scale)) / 2;
+    this.heightOffset = (this.height-(this.boxHeight/this.scale)) / 2;
   }
 
   getBoundingPositionX(position) {
-    const offset = (this.width-this.boxWidth)/2;
-    return Math.max(-offset, Math.min(offset, position));
+    const leftOffset = -this.widthOffset;
+    const rightOffset = (this.width-(this.boxWidth/this.scale)) + leftOffset;
+    return Math.max(Math.min(rightOffset, position), leftOffset);
   }
 
   getBoundingPositionY(position) {
-    const offset = (this.height-this.boxHeight)/2;
-    return Math.max(-offset, Math.min(offset, position));
+    const topOffset = -this.heightOffset;
+    const bottomOffset = (this.height-(this.boxHeight/this.scale)) + topOffset;
+    return Math.max(Math.min(bottomOffset, position), topOffset);
   }
 }
 

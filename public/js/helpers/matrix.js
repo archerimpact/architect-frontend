@@ -10,7 +10,7 @@ import {
   ENTITY, 
   GROUP,
   DOCUMENT
-} from './typeConstants.js';
+} from './constants.js';
 
 import * as d3 from 'd3';
 import * as utils from './utils.js';
@@ -30,7 +30,7 @@ export function setMatrix(nodes, links, byIndex=false) {
   this.adjacencyMatrix = adjacencyMatrix;
   this.reloadIdToIndex();
   let source, target;
-
+  
   for (var i = 0; i < links.length; i++) {
     // byIndex is true when the link.source and link.target refer to the index of the node in nodes
     if (byIndex) { source = links[i].source; } 
@@ -48,7 +48,7 @@ export function setMatrix(nodes, links, byIndex=false) {
 export function addToMatrix(centerid, nodes, links) {
   var numNodes = nodes.length;
   for (var i = 0; i < numNodes; i++) {
-    if (!this.idToIndex[nodes[i].id]) {
+    if (this.idToIndex[nodes[i].id] == null) {
       utils.addRowColumn(this.adjacencyMatrix);
       this.adjacencyMatrix[this.adjacencyMatrix.length - 1][this.adjacencyMatrix.length - 1] = {
         state: DISPLAYED,
@@ -99,7 +99,7 @@ export function addToMatrix(centerid, nodes, links) {
       this.adjacencyMatrix[sourceIndex][targetIndex] = {state: DISPLAYED, data: links[i]};
     }
   }
-  this.update(null, 50);
+  this.update(null, 20);
 }
 
 export function matrixToGraph() {

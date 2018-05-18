@@ -10,16 +10,18 @@ import * as d3Data from './helpers/changeD3Data.js';
 import Minimap from './MinimapClass.js'
 import * as constants from './helpers/constants.js';
 import * as colors from './helpers/colorConstants.js';
-import { GROUP, HULL_GROUP } from './helpers/typeConstants.js';
+import { GROUP, HULL_GROUP, DOCUMENT, PERSON, CORPORATION } from './helpers/constants.js';
 
 // FontAwesome icon unicode-to-node type dict
 // Use this to find codes for FA icons: https://fontawesome.com/cheatsheet
 const icons = {
-  'person': '',
+  [constants.PERSON]: '',
   'Individual': '',
   'Document': '',
-  'corporation': '',
-  'Entity': '',
+  [constants.IDENTIFYING_DOCUMENT] : '',
+  'corporation': '',
+  'Entity': '',
+  [constants.ORGANIZATION]: '',
   'group': '',
   'same_as_group': '',
   [constants.BUTTON_ZOOM_IN_ID]: '',
@@ -66,7 +68,7 @@ class Graph {
     this.draggedNode = null; // Store reference to currently dragged node, null otherwise
     this.isBrushing = false;
     this.isEmphasized = false; // Keep track of node emphasis to end node emphasis on drag
-    this.documentsShown = true;
+    this.typesShown = { 'Document' : true, 'person' : true, 'corporation' : true };
     this.hoveredNode = null; // Store reference to currently hovered/emphasized node, null otherwise
     this.deletingHoveredNode = false; // Store whether you are deleting a hovered node, if so you reset graph opacity
     this.printFull = 0; // Allow user to toggle node text length
@@ -521,13 +523,13 @@ class Graph {
     this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => { this.toggleEditMode() });
     this.initializeButton(constants.BUTTON_FIX_NODE_ID, () => { this.toggleFixedNodes() });
     this.initializeButton(constants.BUTTON_SIMPLIFY_ID, () => {
-      this.hideDocumentNodes();
+      this.hideTypeNodes(DOCUMENT);
       this.groupSame();
     });
     this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => { this.minimap.toggleMinimapVisibility(); }); // Wrap in unnamed function bc minimap has't been initialized yet
     this.initializeButton(constants.BUTTON_UNDO_ACTION_ID, () => {}); // Placeholder method
     this.initializeButton(constants.BUTTON_REDO_ACTION_ID, () => {}); // Placeholder method
-    this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => {}); // Placeholder method
+    this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => { this.saveAllData() }); // Placeholder method
 
     this.setupKeycodes();
 
@@ -573,6 +575,8 @@ class Graph {
     this.displayNodeInfo = displayFunctions.node ? displayFunctions.node : function(d) {};
     this.displayLinkInfo = displayFunctions.link ? displayFunctions.link : function(d) {};
     this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
+    this.expandNodeFromData = displayFunctions.expand ? displayFunctions.expand : function(d) {};
+    this.saveAllData = displayFunctions.save ? displayFunctions.save : function(d) {};
   }
 
   // Updates nodes and links according to current data
@@ -599,7 +603,7 @@ class Graph {
     this.link
       .enter().append('line')
       .attr('class', 'link')
-      .classed('same-as', (l) => { return l.type === 'possibly_same_as'; })
+      .classed('same-as', (l) => { return l.type.substring(0, 8).toLowerCase() === 'possibly'; })
       .classed('faded', (l) => { return this.hoveredNode && !(l.source == this.hoveredNode || l.target == this.hoveredNode); })
       .on('mouseover', this.mouseoverLink)
       .call(this.styleLink, false);
@@ -643,7 +647,7 @@ class Graph {
       .attr('class', 'node-name')
       .attr('text-anchor', 'middle')
       .attr('dy', '40px')
-      .text((d) => { return d.group ? '' : utils.processNodeName(d.name, this.printFull); })
+      .text((d) => { return d.group ? '' : utils.processNodeName(d.name ? d.name : d.number, this.printFull); })
       .call(this.textWrap, this.printFull)
       .on('click', function (d) { self.stopPropagation(); })
       .on('mouseover', function (d) { self.stopPropagation(); })
@@ -827,7 +831,7 @@ class Graph {
 
         // d: Hide document nodes
         else if (d3.event.keyCode == 68) {
-          this.toggleDocumentView();
+          this.toggleTypeView(DOCUMENT);
         }
 
         // p: Toggle btwn full/abbrev text
@@ -980,9 +984,9 @@ Graph.prototype.manualZoom = mouseClicks.manualZoom;
 Graph.prototype.deleteSelectedNodes = d3Data.deleteSelectedNodes;
 Graph.prototype.deleteSelectedLinks = d3Data.deleteSelectedLinks;
 Graph.prototype.addNodeToSelected = d3Data.addNodeToSelected;
-Graph.prototype.toggleDocumentView = d3Data.toggleDocumentView;
-Graph.prototype.hideDocumentNodes = d3Data.hideDocumentNodes;
-Graph.prototype.showHiddenDocuments = d3Data.showHiddenDocuments;
+Graph.prototype.toggleTypeView = d3Data.toggleTypeView;
+Graph.prototype.hideTypeNodes = d3Data.hideTypeNodes;
+Graph.prototype.showHiddenType = d3Data.showHiddenType;
 Graph.prototype.groupSame = d3Data.groupSame;
 Graph.prototype.groupSelectedNodes = d3Data.groupSelectedNodes;
 Graph.prototype.ungroupSelectedGroups = d3Data.ungroupSelectedGroups;
@@ -993,9 +997,6 @@ Graph.prototype.calculateAllHulls = d3Data.calculateAllHulls;
 Graph.prototype.drawHull = d3Data.drawHull;
 Graph.prototype.addLink = d3Data.addLink;
 Graph.prototype.selectLink = d3Data.selectLink;
-
-Graph.prototype.createGroupFromNode = d3Data.createGroupFromNode;
-Graph.prototype.checkLinkAddGroup = d3Data.checkLinkAddGroup;
 
 //From tooltips
 Graph.prototype.initializeTooltip = tt.initializeTooltip;

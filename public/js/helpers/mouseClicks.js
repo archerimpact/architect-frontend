@@ -57,6 +57,10 @@ export function dblclicked(d) {
     this.toggleGroupView(d.id);
   }
 
+  if (utils.isExpandable(d)) {
+    this.expandNodeFromData(d);
+  }
+
   d3.event.stopPropagation();
 }
 
@@ -334,7 +338,12 @@ export function zoomButton(zoom_in) {
   }).each("end", () => {
     if (this.zoomPressed) this.zoomButton(zoom_in); 
     else this.isZooming = false;
+    if (this.minimap) {
+      this.minimap.zooming();
+    }
   });
+
+
 }
 
 export function translateGraphAroundNode(d) {
