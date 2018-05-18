@@ -88,7 +88,10 @@ class Entity extends Component {
       return null
     }
     let id = decodeURIComponent(this.props.match.params.query);
+<<<<<<< HEAD
 
+=======
+>>>>>>> d021822af4dc08e0c5f83face02b57e7c9a13776
     return (
       <div className="sidebar-content-container">
         {this.renderEntity(this.props.currentEntity.nodes.filter(n => n.id === id)[0], this.props.currentEntity.nodes, this.props.currentEntity.links, keys)}

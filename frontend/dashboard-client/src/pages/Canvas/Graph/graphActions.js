@@ -11,7 +11,8 @@ export const RESET_PROJECT = "RESET_PROJECT";
 export function initializeCanvas(graph, width, height) {
   return (dispatch, getState) => {
     graph.generateCanvas(width, height);
-    dispatch(initializeCanvasDispatch(graph))
+    graph.setData(0, [], []);
+    dispatch(initializeCanvasDispatch(graph));
   };
 }
 
