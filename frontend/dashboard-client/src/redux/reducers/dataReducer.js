@@ -24,7 +24,9 @@ export default function (state = initialState, action) {
 				canvas: {
 					graphData: null
 				}, 
-				currentNode: null
+				currentNode: null,
+				currentEntity: null,
+				currentProject: null
 			};
 		case TOGGLE_SIDEBAR:
 			return {

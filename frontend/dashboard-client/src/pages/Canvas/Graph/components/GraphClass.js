@@ -467,7 +467,6 @@ class Graph {
 
     this.setMatrix(nodes, links, byIndex);
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
-    // debugger
     nodes.map((node) => {
       if (node.id < 0) { this.globalnodeid = Math.min(this.globalnodeid, node.id); }
     });

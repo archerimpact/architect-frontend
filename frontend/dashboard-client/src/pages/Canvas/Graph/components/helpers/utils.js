@@ -115,7 +115,7 @@ export function createSVGString(targetSVG, x1, x2, y1, y2, width=null, height=nu
         }, "");       
       }
     }
-    catch(e) { console.log(e); }
+    catch(e) {  }
   });
   // create our svg nodes that will hold all these rules
   const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');

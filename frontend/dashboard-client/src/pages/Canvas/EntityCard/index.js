@@ -15,29 +15,19 @@ class EntityCard extends Component {
     this.toggleCollapse = this.toggleCollapse.bind(this);
     this.renderButtons = this.renderButtons.bind(this);
     let isDataReady = !props.shouldFetch || !isNaN(parseInt(this.props.id));
+    let urlId = decodeURIComponent(this.props.id).split("/");
+    let urlName = urlId[urlId.length - 1];
     this.state = {
       collapsed: true,
-      id: props.data.id,
       data: isDataReady ? props.data : null,
-      isDataReady: isDataReady
-      // id: entity._id,
-      // neo4j_id : entity._source !== null ? entity._source.neo4j_id : entity.metadata.id,
-      // name : entity._source !== null ? entity._source.name : entity.data.name,
-      // type : entity._source !== null ? entity._type : entity.metadata.labels[0],
-      // jurisdiction : entity._source !== null ? entity._source.jurisdiction : entity.data.jurisdiction,
-      // date_of_creation : entity._source !== null ? entity._source.date_of_creation :entity.data.date_of_creation,
-      // source : entity._source !== null ? entity._source.self : entity.self,
-      // company_status : entity._source !== null ? entity._source.company_status : entity.data.company_status,
-      // nationality : entity._source !== null ? entity._source.nationality : entity.data.nationality,
+      isDataReady: isDataReady,
+      name: props.data.name ? props.data.name : urlName
     }
   }
 
-  //search results: all data
-  //Entity details:
-  //aliases, 
   componentWillMount() {
     if (!this.state.isDataReady) {
-      server.getNode(this.props.data.id)
+      server.getNode(this.props.id)
         .then(data => {
           this.setState({ isDataReady: true, data: data, nodes: data.nodes, links: data.links })
         })
@@ -82,7 +72,7 @@ class EntityCard extends Component {
         <div className="card-header result-card-header flex-row d-flex">
           {this.renderButtons()}
           <span className="collapse-link" onClick={this.toggleCollapse}>
-            {this.props.data.name}
+            {this.state.name}
           </span>
           <small className="card-sdn-type">
 

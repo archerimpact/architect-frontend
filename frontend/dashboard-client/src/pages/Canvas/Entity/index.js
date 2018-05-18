@@ -44,7 +44,6 @@ class Entity extends Component {
       'ACTING_FOR': 'Acting for'
     };
     const others = links.filter(link => Object.keys(otherLinks).includes(link.type) && node.id === link.source);
-
     return (
       <div className="full-width">
         <div className="entity-header-wrapper">
@@ -60,16 +59,16 @@ class Entity extends Component {
           <EntityAttributes node={node} />
 
           {aliases.length ? <h5>Aliases</h5> : null}
-          {aliases.map(a => <EntityCard data={a} id={a.id} shouldFetch graph={this.props.graph}/> )}
+          {aliases.map(a => <EntityCard data={a} id={a.target} shouldFetch graph={this.props.graph}/> )}
 
           {documents.length ? <h5>Documents</h5> : null}
-          {documents.map(a => <EntityCard data={a} id={a.id} shouldFetch graph={this.props.graph}/> )}
+          {documents.map(a => <EntityCard data={a} id={a.target} shouldFetch graph={this.props.graph}/> )}
 
           {maybe_sames.length ? <h5>Possibly Same As</h5> : null}
-          {maybe_sames.map(a => <EntityCard data={a} id={a.id} shouldFetch graph={this.props.graph}/> )}
+          {maybe_sames.map(a => <EntityCard data={a} id={a.target} shouldFetch graph={this.props.graph}/> )}
 
           {others.length ? <h5>Associations</h5> : null}
-          {others.map(a => <EntityCard data={a} id={a.id} shouldFetch graph={this.props.graph}/>)}
+          {others.map(a => <EntityCard data={a} id={a.target} shouldFetch graph={this.props.graph}/>)}
         </div>
       </div>
     )
@@ -85,7 +84,7 @@ class Entity extends Component {
       ['incorporation_date', 'Incorporation Date']
     ];
     if (this.props.currentEntity == null) {
-      return null
+      return <div className="sidebar-content-container"> Click a node to view information about it </div>
     }
     let id = decodeURIComponent(this.props.match.params.query);
 
