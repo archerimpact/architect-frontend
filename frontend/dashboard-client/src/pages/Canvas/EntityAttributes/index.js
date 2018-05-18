@@ -10,18 +10,19 @@ const keys = [
 	['incorporation_date', 'Incorporation Date']
 ];
 
-export default (node) => {
+export default (args) => {
 	return (
 		<div>
 			{ keys.map(k => {
-		        const val = node[k[0]];
-		        if (node[k[0]]) {
+				let n = args.node;
+		        const val = n[k[0]];
+		        if (val) {
 		          return (
 		            <div className="info-row" key={k}>
 		              <p className="info-key">{k[1]}:</p>
-		              {(!(val instanceof Array))
-		                ? <p className="info-value">{val}</p>
-		                : <p>list</p>
+		              { (!(val instanceof Array))
+		                  ? <p className="info-value">{val}</p>
+		                  : <p className="info-value info-value-list">{JSON.stringify(val)}</p>
 		              }
 		            </div>
 		          )

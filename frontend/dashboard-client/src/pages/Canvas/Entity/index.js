@@ -51,12 +51,12 @@ class Entity extends Component {
             <div className="entity-name">{node.name}</div>
             <div className="entity-type">({node.type})</div>
           </div>
-          <div className="entity-source">OFAC Sanctions Data</div>
+          <div className="entity-source">{node.dataset}</div>
         </div>
         <hr />
         <div className="entity-body">
           <h5 className="">Attributes</h5>
-          <EntityAttributes node={node} />
+          <EntityAttributes node={node} poo="hi"/>
 
           {aliases.length ? <h5>Aliases</h5> : null}
           {aliases.map(a => <EntityCard data={a} id={a.target} shouldFetch graph={this.props.graph}/> )}
