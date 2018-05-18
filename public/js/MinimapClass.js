@@ -143,7 +143,7 @@ class Minimap {
 
   toggleMinimapVisibility() {
     this.container
-      .style('visibility', this.isVisible ? 'hidden' : 'visible');
+      .style('display', this.isVisible ? 'none' : '');
     this.isVisible = !this.isVisible;
   }
 

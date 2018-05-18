@@ -64,6 +64,7 @@ export function dblclicked(d) {
 export function dragstart(d, self) {
   d3.event.sourceEvent.preventDefault();
   d3.event.sourceEvent.stopPropagation();
+  d3.select('.context-menu').style('display', 'none');
   if (this.isEmphasized) this.resetGraphOpacity();
 
   this.isDragging = true;
@@ -222,6 +223,7 @@ export function clickedCanvas() {
 }
 
 export function dragstartCanvas() {
+  d3.select('.context-menu').style('display', 'none');
   if (this.editMode) d3.event.sourceEvent.preventDefault();
 }
 
