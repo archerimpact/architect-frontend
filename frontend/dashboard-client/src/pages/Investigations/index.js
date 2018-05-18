@@ -29,7 +29,7 @@ class Investigations extends Component {
 	render() {
 		return (
 			<div className="container y-scrollable">
-				<h1 className="investigations-page-header">My Investigations</h1>
+				<h2 className="investigations-page-header">My Investigations</h2>
 				{/*<p>{"All projects as JSON: " + JSON.stringify(this.state.projects)}</p>*/}
 				<div className="row investigations-grid">
 				{this.state.projects.map((proj) => {
@@ -46,7 +46,6 @@ class Investigations extends Component {
 						<div key={proj._id} className='col-md-3'>
 							<div className="card investigation-card">
 								{/* <img className="card-img-top" src={image_blob} alt={"investigation-" + proj.name1}></img>*/}
-								<InlineSVG src={image_blob} />
 									
 								<div className="card-body investigation-card-body">
 									<h5 className="card-title investigation-card-title text-center">{proj.name}</h5>
