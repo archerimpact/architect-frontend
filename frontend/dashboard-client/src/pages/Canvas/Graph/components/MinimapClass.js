@@ -197,8 +197,21 @@ class Minimap {
     x2 += MINIMAP_PADDING;
     y1 -= MINIMAP_PADDING;
     y2 += MINIMAP_PADDING;
-    const svgWidth = x2 - x1;
-    const svgHeight = y2 - y1;
+
+    let svgWidth = x2 > x1 ? x2 - x1 : 0;
+    let svgHeight = y2 > y1 ? y2 - y1 : 0;
+
+    if (this.viewportWidth > svgWidth) {
+      x1 = 0;
+      x2 = this.viewportWidth;
+      svgWidth = this.viewportWidth;
+    } 
+
+    if (this.viewportHeight > svgHeight) {
+      y1 = 0;
+      y2 = this.viewportHeight;
+      svgHeight = this.viewportHeight;
+    }
 
     const image_url = utils.createSVGImage(targetSVG, x1, x2, y1, y2, svgWidth, svgHeight);
     this.image.select("image").attr("xlink:href", image_url); 
@@ -218,8 +231,8 @@ class Minimap {
     y1 -= MINIMAP_PADDING;
     y2 += MINIMAP_PADDING;
 
-    let svgWidth = x2 - x1;
-    let svgHeight = y2 - y1;
+    let svgWidth = x2 > x1 ? x2 - x1 : 0;
+    let svgHeight = y2 > y1 ? y2 - y1 : 0;
 
     if (this.viewportWidth > svgWidth) {
       x1 = 0;
