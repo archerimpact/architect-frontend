@@ -70,7 +70,7 @@ class EntityCard extends Component {
     if (!this.state.isDataReady) {
       return <div key={this.props.id}> Loading ... </div>
     }
-    debugger
+
     return (
       <div className="card result-card" key={this.props.id}>
         <div className="card-header result-card-header flex-row d-flex">
