@@ -2,8 +2,9 @@ import React from 'react';
 
 const keys = [
 	['registered_in', 'Registered In'],
-	['birthdate', 'Date of Birth'],
+	['dateOfBirth', 'Date of Birth'],
 	['gender', 'Gender'],
+	['titles', 'Title'],
 	['place_of_birth', 'Place of Birth'],
 	['last_seen', 'Last Seen'],
 	['incorporation_date', 'Incorporation Date']

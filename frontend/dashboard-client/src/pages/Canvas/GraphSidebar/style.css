@@ -102,6 +102,15 @@
   background-color: #FFFFFF;
 }
 
+.sidebar-content-container {
+  width: 100%;
+  padding: 20px 20px 0 20px;
+}
+
+.full-width {
+  width: 100%;
+}
+
 .slide-in {
   transform: translate(600px);
   transition: transform 400ms ease-in-out;
