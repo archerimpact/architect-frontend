@@ -122,6 +122,8 @@ class Minimap {
       .on("dragend", this.dragend);
 
     this.box.call(drag);
+    this.container.attr('transform', 'translate(' + this.positionX + ',' + this.positionY+ ')scale(' + 1 + ')');
+
   }
 
   toggleMinimapVisibility() {
@@ -181,8 +183,6 @@ class Minimap {
 
   /** RENDER **/
   syncToSVG(targetSVG, x1, x2, y1, y2) {
-    this.container.attr("transform", "translate(" + this.positionX + "," + this.positionY+ ")scale(" + 1 + ")");
-
     var translate = utils.getXYFromTranslate(this.target.attr("transform"));
     var scale = this.scale;
 
@@ -204,9 +204,7 @@ class Minimap {
     this.image.select("image").attr("xlink:href", image_url); 
   }
 
-  initializeBoxToCenter(targetSVG, x1, x2, y1, y2) {
-    this.container.attr("transform", "translate(" + this.positionX + "," + this.positionY+ ")scale(" + 1 + ")");
-    
+  initializeBoxToCenter(targetSVG, x1, x2, y1, y2) {    
     var translate = utils.getXYFromTranslate(this.target.attr("transform"));
     var scale = this.scale;
 
