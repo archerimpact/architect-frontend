@@ -48,6 +48,8 @@ export function setMatrix(nodes, links, byIndex=false) {
 export function addToMatrix(centerid, nodes, links) {
   var numNodes = nodes.length;
 
+  this.reloadIdToIndex();
+
   for (var i = 0; i < numNodes; i++) {
     if (this.idToIndex[nodes[i].id] == null) {
       utils.addRowColumn(this.adjacencyMatrix);
@@ -65,7 +67,6 @@ export function addToMatrix(centerid, nodes, links) {
 
   let sourceIndex, targetIndex
   for (var i = 0; i < numLinks; i++) {
-    console.log()
     if (links[i].source.id) { links[i].source = sourceIndex = this.idToIndex[links[i].source.id]; } // the links have already been mapped to the nodes by d3
     else { links[i].source = sourceIndex = this.idToIndex[links[i].source]; } // the links have not already been mapped to the nodes
 
