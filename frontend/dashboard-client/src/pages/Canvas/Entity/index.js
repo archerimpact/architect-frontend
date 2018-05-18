@@ -28,7 +28,9 @@ class Entity extends Component {
 
   renderEntity(node, nodes, links, keys) {
     const nodeMap = {};
-
+    if (node == null) {
+      return null
+    }
     nodes.map(n => nodeMap[n.id] = n.name)
     const aliases = links.filter(link => link.type === 'AKA' && (node.id === link.source || node.id === link.target));
     const documents = links.filter(link => link.type === 'HAS_ID_DOC' && node.id === link.source);
@@ -85,9 +87,11 @@ class Entity extends Component {
     if (this.props.currentEntity == null) {
       return null
     }
+    let id = decodeURIComponent(this.props.match.params.query);
+    debugger
     return (
       <div className="entity-container">
-        {this.renderEntity(this.props.currentEntity.nodes[0], this.props.currentEntity.nodes, this.props.currentEntity.links, keys)}
+        {this.renderEntity(this.props.currentEntity.nodes.filter(n => n.id === id)[0], this.props.currentEntity.nodes, this.props.currentEntity.links, keys)}
       </div>
     );
   }
