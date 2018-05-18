@@ -31,9 +31,7 @@ class SearchCard extends Component {
     if (!this.state.isDataReady) {
       server.getNode(this.props.id, false)
         .then(d => {
-          let temp = d.nodes.filter(n => n.id === this.props.id)[0];
-          this.setState({ isDataReady: true, data: temp })
-          debugger;
+          this.setState({ isDataReady: true, data: d.nodes.filter(n => n.id === this.props.id)[0] })
         })
         .catch(err => console.log(err));
     }
@@ -70,7 +68,6 @@ class SearchCard extends Component {
     if (!this.state.isDataReady) {
       return <div key={this.props.id}> Loading ... </div>
     }
-    debugger
     return (
       <div className="card result-card" key={this.props.id}>
         <div className="card-header result-card-header flex-row d-flex">
@@ -78,12 +75,12 @@ class SearchCard extends Component {
           <span className="collapse-link" onClick={this.toggleCollapse}>
             {this.state.data._source.name || this.state.data._source.combined || this.state.data._source.number}
           </span>
-          <small className="card-sdn-type">
-
-          </small>
+          
 
           <div className="ml-auto card-program">
-            {this.props.data._type}
+            {this.props.data._type} <small className="card-sdn-type">
+            {this.props.data._source.dataset}
+          </small>
           </div>
 
         </div>

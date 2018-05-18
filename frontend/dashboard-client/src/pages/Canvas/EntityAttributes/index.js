@@ -22,7 +22,7 @@ export default (args) => {
 		              <p className="info-key">{k[1]}:</p>
 		              { (!(val instanceof Array))
 		                  ? <p className="info-value">{val}</p>
-		                  : <p className="info-value info-value-list">{JSON.stringify(val)}</p>
+		                  : <ul> {(val.map(v => <li className="info-value info-value-list">{v}</li> ))} </ul>
 		              }
 		            </div>
 		          )

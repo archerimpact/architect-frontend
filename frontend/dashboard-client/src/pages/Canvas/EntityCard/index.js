@@ -31,9 +31,7 @@ class EntityCard extends Component {
     if (!this.state.isDataReady) {
       server.getNode(this.props.id, false)
         .then(d => {
-          let temp = d.nodes.filter(n => n.id === this.props.id)[0];
-          this.setState({ isDataReady: true, data: temp })
-          debugger;
+          this.setState({ isDataReady: true, data: d.nodes.filter(n => n.id === this.props.id)[0] })
         })
         .catch(err => console.log(err));
     }
