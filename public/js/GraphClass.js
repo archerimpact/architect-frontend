@@ -555,6 +555,16 @@ class Graph {
     this.setMatrix(nodes, links, byIndex);
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
     this.update();
+
+    // set global node id to match the nodes getting passed in
+    nodes.map((node) => {
+      if (node.id < 0) { this.globalnodeid = Math.min(this.globalnodeid, node.id); }
+    });
+
+    links.map((link) => {
+      if (link.id < 0) { this.globallinkid = Math.min(this.globallinkid, link.id); }
+    });
+
     for (let i = 150; i > 0; --i) this.force.tick();  
     this.reloadNeighbors();
 
@@ -781,6 +791,10 @@ class Graph {
   setupKeycodes() {
     d3.select('body')
       .on('keydown', () => {
+
+        if (d3.event.target.nodeName === 'INPUT') {
+          return this.force.resume();
+        }
 
         // u: Unpin selected nodes
         if (d3.event.keyCode == 85) {

@@ -87,7 +87,7 @@ class Minimap {
     this.zoom
       .on('zoom.minimap', this.zooming)
 
- d3.selectAll(`#${constants.BUTTON_ZOOM_IN_ID}, #${constants.BUTTON_ZOOM_OUT_ID}`)
+    d3.selectAll(`#${constants.BUTTON_ZOOM_IN_ID}, #${constants.BUTTON_ZOOM_OUT_ID}`)
       .on('mouseup', this.zooming)
       .on('mouseup', () => { this.graph.zoomPressed = false; })
       .on('mouseout', () => { this.graph.zoomPressed = false; });
@@ -151,6 +151,9 @@ class Minimap {
       .on('dragend', this.dragend);
 
     this.box.call(drag);
+
+    this.container.attr('transform', 'translate(' + this.positionX + ',' + this.positionY+ ')scale(' + 1 + ')');
+
   }
 
   toggleMinimapVisibility() {
@@ -212,13 +215,12 @@ class Minimap {
     this.box
       .attr('transform', 'translate(' + translate + ')scale(' + 1 + ')')
       .select('#minimap-box-square')
-      .attr('width', this.boxWidth/this.scale)
-      .attr('height', this.boxHeight/this.scale);       
+      .attr('width', this.boxWidth/this.scale > this.width ? this.width : this.boxWidth/this.scale)
+      .attr('height', this.boxHeight/this.scale > this.height ? this.height : this.boxHeight/this.scale);       
   }
 
   /** RENDER **/
   syncToSVG(targetSVG, x1, x2, y1, y2) {
-    this.container.attr('transform', 'translate(' + this.positionX + ',' + this.positionY+ ')scale(' + 1 + ')');
 
     const translate = utils.getXYFromTranslate(this.target.attr('transform'));
     const scale = this.scale;
@@ -234,15 +236,15 @@ class Minimap {
     x2 += MINIMAP_PADDING;
     y1 -= MINIMAP_PADDING;
     y2 += MINIMAP_PADDING;
-    const svgWidth = x2 - x1;
-    const svgHeight = y2 - y1;
+
+    let svgWidth = x2 > x1 ? x2 - x1 : 0;
+    let svgHeight = y2 > y1 ? y2 - y1 : 0;
 
     const image_url = utils.createSVGImage(targetSVG, x1, x2, y1, y2, svgWidth, svgHeight);
     this.image.select('image').attr('xlink:href', image_url); 
   }
 
   initializeBoxToCenter(targetSVG, x1, x2, y1, y2) {
-    this.container.attr('transform', 'translate(' + this.positionX + ',' + this.positionY+ ')scale(' + 1 + ')');
     
     const translate = utils.getXYFromTranslate(this.target.attr('transform'));
     const scale = this.scale;
@@ -257,8 +259,8 @@ class Minimap {
     y1 -= MINIMAP_PADDING;
     y2 += MINIMAP_PADDING;
 
-    let svgWidth = x2 - x1;
-    let svgHeight = y2 - y1;
+    let svgWidth = x2 > x1 ? x2 - x1 : 0;
+    let svgHeight = y2 > y1 ? y2 - y1 : 0;
 
     if (this.viewportWidth > svgWidth) {
       x1 = 0;

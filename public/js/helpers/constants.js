@@ -45,7 +45,7 @@ export const MINIMAP_SCALE = 0.15;
 export const MINIMAP_PADDING = 100;
 export const DEFAULT_MINIMAP_SIZE = 300;
 export const MINIMAP_MARGIN = 15;
-export const MINIMAP_TICK = 15;
+export const MINIMAP_TICK = 50;
 
 export const ENTITY = "Entity";
 export const INDIVIDUAL = "Individual";
