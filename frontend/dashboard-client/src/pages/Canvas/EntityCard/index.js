@@ -31,6 +31,7 @@ class EntityCard extends Component {
     if (!this.state.isDataReady) {
       server.getNode(this.props.id, false)
         .then(d => {
+          debugger
           this.setState({ isDataReady: true, data: d.nodes.filter(n => n.id === this.props.id)[0] })
         })
         .catch(err => console.log(err));
@@ -74,7 +75,7 @@ class EntityCard extends Component {
         <div className="card-header result-card-header flex-row d-flex">
           {this.renderButtons()}
           <span className="collapse-link" onClick={this.toggleCollapse}>
-            {this.state.data.name || this.state.data.combined || this.state.data.number}
+            {this.state.data.name || this.state.data.combined || this.state.data.number || this.state.data.description}
           </span>
           <small className="card-sdn-type">
 
