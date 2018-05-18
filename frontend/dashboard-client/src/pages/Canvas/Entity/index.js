@@ -44,8 +44,9 @@ class Entity extends Component {
       'ACTING_FOR': 'Acting for'
     };
     const others = links.filter(link => Object.keys(otherLinks).includes(link.type) && node.id === link.source);
+
     return (
-      <div>
+      <div className="full-width">
         <div className="entity-header-wrapper">
           <div className="entity-header">
             <div className="entity-name">{node.name}</div>
@@ -87,8 +88,9 @@ class Entity extends Component {
       return null
     }
     let id = decodeURIComponent(this.props.match.params.query);
+
     return (
-      <div className="entity-container">
+      <div className="sidebar-content-container">
         {this.renderEntity(this.props.currentEntity.nodes.filter(n => n.id === id)[0], this.props.currentEntity.nodes, this.props.currentEntity.links, keys)}
       </div>
     );

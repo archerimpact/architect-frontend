@@ -5,6 +5,9 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../Graph/graphActions';
 import EntityCard from '../EntityCard';
+
+import './style.css';
+
 class ProjectData extends Component {
 
   constructor(props) {
@@ -18,11 +21,14 @@ class ProjectData extends Component {
       );
     } else {
       return (
-        <div className="searchResults">
-          { !this.props.currentProject.graphData || !this.props.currentProject.graphData.nodes ? 
-            null :
-            this.props.currentProject.graphData.nodes.map(node => <EntityCard  data={node} id={node.id} shouldFetch graph={this.props.graph}/>)
-          }
+        <div className="sidebar-content-container">
+          <h5 className="text-center">{this.props.currentProject.name}: Entities</h5>
+          <div className="searchResults">
+            { !this.props.currentProject.graphData || !this.props.currentProject.graphData.nodes ? 
+              null :
+              this.props.currentProject.graphData.nodes.map(node => <EntityCard  data={node} id={node.id} shouldFetch graph={this.props.graph}/>)
+            }
+          </div>
         </div>
       );
     }
