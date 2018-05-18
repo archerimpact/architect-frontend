@@ -74,7 +74,7 @@ class EntityCard extends Component {
         <div className="card-header result-card-header flex-row d-flex">
           {this.renderButtons()}
           <span className="collapse-link" onClick={this.toggleCollapse}>
-            {this.state.data.name || this.state.data.combined || this.state.data.number}
+            {this.state.data.name || this.state.data.combined || this.state.data.number || this.state.data.description}
           </span>
           <small className="card-sdn-type">
 

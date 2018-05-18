@@ -8,6 +8,8 @@ import * as actions from '../../../redux/actions/';
 import { withRouter } from 'react-router-dom';
 import EntityCard from '../EntityCard';
 import EntityAttributes from '../EntityAttributes';
+import * as server from '../../../server';
+
 
 const tab_style = {
   backgroundColor: '#FFFFFF',
@@ -19,12 +21,19 @@ class Entity extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      nodeData: null,
-      relationshipData: null,
-      graphData: null,
+      currentEntity: null,
     };
     this.renderEntity = this.renderEntity.bind(this);
   }
+
+  componentWillMount() {
+    server.getNode(decodeURIComponent(this.props.id), false)
+      .then(d => {
+        this.setState({ currentEntity: d })
+      })
+      .catch(err => console.log(err));
+  }
+
 
   renderEntity(node, nodes, links, keys) {
     const nodeMap = {};
@@ -42,7 +51,6 @@ class Entity extends Component {
     const prov = links.filter(link => link.type === 'PROVIDING_SUPPORT_TO' && (node.id === link.source || node.id === link.target));
     const owned = links.filter(link => link.type === 'OWNED_BY' && (node.id === link.source || node.id === link.target));
     const act = links.filter(link => link.type === 'ACTING_FOR' && (node.id === link.source || node.id === link.target));
-
     // const others = links.filter(link => Object.keys(otherLinks).includes(link.type) && node.id === link.source);
 
 
@@ -100,14 +108,13 @@ class Entity extends Component {
       ['last_seen', 'Last Seen'],
       ['incorporation_date', 'Incorporation Date']
     ];
-    if (this.props.currentEntity == null) {
+    if (this.state.currentEntity == null) {
       return <div className="sidebar-content-container"> Click a node to view information about it </div>
     }
     let id = decodeURIComponent(this.props.match.params.query);
-
     return (
       <div className="sidebar-content-container">
-        {this.renderEntity(this.props.currentEntity.nodes.filter(n => n.id === id)[0], this.props.currentEntity.nodes, this.props.currentEntity.links, keys)}
+        {this.renderEntity(this.state.currentEntity.nodes.filter(n => n.id === id)[0], this.state.currentEntity.nodes, this.state.currentEntity.links, keys)}
       </div>
     );
   }

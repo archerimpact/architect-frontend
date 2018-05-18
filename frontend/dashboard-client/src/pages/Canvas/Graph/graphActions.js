@@ -69,10 +69,6 @@ export function storeCurrentNodeDispatch(d) {
   }
 }
 
-export function initializeDisplayFunctions(graph, displayFunctions) {
-  graph.bindDisplayFunctions(displayFunctions)
-}
-
 function makeDeepCopy(array) {
   var newArray = [];
   array.map((object) => {
@@ -110,7 +106,6 @@ export function fetchGraphFromId(graph, id) {
       .then(data => {
         // var graphData = parseNeo4jData(data);
         var graphData = data;
-        graph.bindDisplayFunctions({node: setCurrentNode});
         graph.setData(graphData.centerid, makeDeepCopy(graphData.nodes), makeDeepCopy(graphData.links));
         dispatch(updateGraphDispatch(graphData));
       })

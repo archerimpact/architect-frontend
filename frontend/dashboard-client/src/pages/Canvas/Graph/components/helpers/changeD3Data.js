@@ -60,7 +60,7 @@ export function selectLink(source, target) {
 }
 
 export function addNodeToSelected(selection, event=null) {
-  let node = this.createNode(ENTITY, null, event)
+  let node = this.createNode(ENTITY, null, event);
   // For each node selected, create a link attaching the new node to the selected node
   selection
     .each((d) => {
@@ -77,26 +77,26 @@ export function addNodeToSelected(selection, event=null) {
   this.fillGroupNodes();
 }
 
-export function toggleDocumentView() {
-  this.documentsShown ? this.hideDocumentNodes() : this.showHiddenDocuments();
+export function toggleTypeView(type) {
+  this.typesShown[type] ? this.hideTypeNodes(type) : this.showHiddenType(type);
   this.update();
 }
 
-export function hideDocumentNodes() {
+export function hideTypeNodes(type) {
   var select = this.svg.selectAll('.node')
     .filter((d) => {
-      if (d.type === DOCUMENT) { this.hideNode(this.idToIndex[d.id]); }
+      if (d.type === type) { this.hideNode(this.idToIndex[d.id]); }
     });
 
-  this.documentsShown = false;
+  this.typesShown[type] = false;
 }
 
-export function showHiddenDocuments() {
+export function showHiddenType(type) {
   for (var i = 0; i < this.adjacencyMatrix.length; i++) {
-    if (this.adjacencyMatrix[i][i].data.type === DOCUMENT) { this.displayNode(i); }
+    if (this.adjacencyMatrix[i][i].data.type === type) { this.displayNode(i); }
   }
 
-  this.documentsShown = true;
+  this.typesShown[type] = true;
 }
 
 export function groupSelectedNodes() {

@@ -73,7 +73,7 @@ class SearchCard extends Component {
         <div className="card-header result-card-header flex-row d-flex">
           {this.renderButtons()}
           <span className="collapse-link" onClick={this.toggleCollapse}>
-            {this.state.data._source.name || this.state.data._source.combined || this.state.data._source.number}
+            {this.state.data._source.name || this.state.data._source.combined || this.state.data._source.number || this.state.data.description}
           </span>
           
 
