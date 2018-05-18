@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../Canvas/Graph/graphActions';
 
+import EntityAttributes from '../EntityAttributes';
+
 import './style.css';
 
 class EntityCard extends Component {
@@ -29,7 +31,7 @@ class EntityCard extends Component {
     if (!this.state.isDataReady) {
       server.getNode(this.props.id, false)
         .then(data => {
-          this.setState({ isDataReady: true, data: data, nodes: data.nodes, links: data.links })
+          this.setState({ isDataReady: true, data: data.nodes.filter(n => n.id === this.props.id) })
         })
         .catch(err => console.log(err));
     }
@@ -68,27 +70,24 @@ class EntityCard extends Component {
     }
 
     return (
-      <div className="card result-card" key={this.props.data.id}>
+      <div className="card result-card" key={this.props.id}>
         <div className="card-header result-card-header flex-row d-flex">
           {this.renderButtons()}
           <span className="collapse-link" onClick={this.toggleCollapse}>
-            {this.state.name}
+            {this.state.data.name || this.state.data.combined || this.state.data.number}
           </span>
           <small className="card-sdn-type">
 
           </small>
 
           <div className="ml-auto card-program">
-            {this.props.data.type}
+            {this.state.data.type}
           </div>
 
         </div>
         <div className={this.state.collapsed ? 'collapse' : null}>
           <div className="card-body result-card-body">
-            <p>{this.props.data.jurisdiction}</p>
-            <p>{this.props.data.date_of_creation}</p>
-            <p>{this.props.data.company_status}</p>
-            <p>{this.props.data.nationality}</p>
+            <EntityAttributes node={this.state.data} />
           </div>
         </div>
       </div>

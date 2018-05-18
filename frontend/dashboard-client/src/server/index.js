@@ -187,14 +187,14 @@ export function getBackendRelationships(neo4j_id){
   }); 
 }
 
-export function getNode(neo4j_id, exclude=true){
+export function getNode(neo4j_id, useExclude=true){
   let exclude = '';
   constants.EXPANSION_DEFAULT.exclude.map((type) => {
     exclude += type + ','
   })
   exclude = exclude.substring(0, exclude.length-1);
 
-  if (!exclude) {
+  if (!useExclude) {
     exclude = '*';
   }
 
