@@ -290,11 +290,8 @@ class Graph {
         .append('div')
         .attr('class', 'context-menu');
 
-      // close menu
-      d3.select('body').on('click.context-menu', function() {
-        d3.select('.context-menu')
-          .style('display', 'none');
-      });
+      // Close context menu 
+      d3.select('body').on('click', () => { d3.select('.context-menu').style('display', 'none'); });
 
       // this gets executed when a contextmenu event occurs
       return function(data, index) {  
@@ -407,7 +404,8 @@ class Graph {
     this.svg.append('rect')
       .attr('y', constants.TOOLBAR_PADDING)
       .attr({ x: constants.TOOLBAR_PADDING, width: constants.BUTTON_WIDTH, height: this.height - constants.TOOLBAR_PADDING * 2 })
-      .style('fill', colors.HEX_PRIMARY_ACCENT);
+      .style('fill', colors.HEX_PRIMARY_ACCENT)
+      .on('click', () => { d3.select('.context-menu').style('display', 'none'); });
 
     const button = this.svg.selectAll('.button')
       .data(buttonData)
@@ -466,6 +464,7 @@ class Graph {
         self.zoomPressed = true;
         self.disableZoom();
         self.zoomButton(this.id === constants.BUTTON_ZOOM_IN_ID);
+        d3.select('.context-menu').style('display', 'none');
       })
       .on('mouseup', () => { this.zoomPressed = false; })
       .on('mouseout', () => { this.zoomPressed = false; });
@@ -477,6 +476,7 @@ class Graph {
     d3.select('#' + id)
       .on('click', () => { 
         onclick();
+        d3.select('.context-menu').style('display', 'none');
         this.stopPropagation(); 
       })
       .classed('selected', isSelected);
@@ -507,12 +507,11 @@ class Graph {
     this.initializeMenuActions();
     this.initializeContextMenu();
     this.initializeMarkers();
-    this.initializeTooltip();
 
     this.initializeToolbarButtons();
     this.initializeZoomButtons();
     this.initializeButton(constants.BUTTON_POINTER_TOOL_ID, () => {
-      d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', false);
+      d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', false); 
       d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', true);
     }, true); // Placeholder method
     this.initializeButton(constants.BUTTON_SELECTION_TOOL_ID, () => {

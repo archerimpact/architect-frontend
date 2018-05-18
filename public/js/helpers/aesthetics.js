@@ -89,7 +89,7 @@ export function resetGraphOpacity() {
 // Reset edit mode's dynamic drag link
 export function resetDragLink(self) {
   self.mousedownNode = null;
-  self.dragLink.classed('hidden', true);
+  self.dragLink.style('visibility', 'hidden');
 }
 
 // Wrap text

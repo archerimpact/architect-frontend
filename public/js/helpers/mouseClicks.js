@@ -110,7 +110,7 @@ export function mousedown(d, self) {
   }
 
   if (isLeftClick()) { this.link.call(this.styleLink, false); }
-  if (this.editMode && !this.mousedownNode) { this.mousedownNode = d; };
+  if (this.editMode) { this.mousedownNode = d; };
   this.dragDistance = 0;
   if (this.editMode) {
     this.dragLink
@@ -149,24 +149,24 @@ export function mouseup(d, self) {
     }
   }
 
-  this.mousedownNode = null;
   resetDragLink(this);
 }
 
 export function mouseover(d, self) {
   // Drag link node emphasis
-  if (this.editMode && this.mousedownNode && d != this.mousedownNode) {
-    d3.select(self).select('circle')
-      .attr('transform', 'scale(1.1)');
+  if (this.editMode && this.mousedownNode) {
+    if (d != this.mousedownNode) {
+      d3.select(self).select('circle')
+        .attr('transform', 'scale(1.1)');
+    } else {
+      this.dragLink.style('visibility', 'hidden');
+    }
   }
 
   if (!this.isDragging && !this.isBrushing && !this.editMode) {
     // Hovered node emphasis
     this.hoveredNode = d;
     this.fadeGraph(d);
-
-    // Hide drag link
-    if (this.mousedownNode && d == this.mousedownNode) { this.dragLink.style('visibility', 'hidden'); }
 
     // Text elongation
     if (this.printFull == 0) {
@@ -233,6 +233,7 @@ export function mousemoveCanvas(self) {
     const currNode = this.node.filter(function(o) { return classThis.mousedownNode.id === o.id; });
     this.dragDistance++;
     this.dragLink
+      .style('visibility', 'visible')
       .attr('tx2', e.x)
       .attr('ty2', e.y);
   }
