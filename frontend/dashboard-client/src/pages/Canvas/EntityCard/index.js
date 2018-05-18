@@ -27,7 +27,7 @@ class EntityCard extends Component {
 
   componentWillMount() {
     if (!this.state.isDataReady) {
-      server.getNode(this.props.id)
+      server.getNode(this.props.id, false)
         .then(data => {
           this.setState({ isDataReady: true, data: data, nodes: data.nodes, links: data.links })
         })
