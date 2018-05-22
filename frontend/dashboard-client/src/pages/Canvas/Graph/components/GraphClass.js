@@ -558,7 +558,8 @@ class Graph {
 
     // set global node id to match the nodes getting passed in
     nodes.map((node) => {
-      if (node.id < 0) { this.globalnodeid = Math.min(this.globalnodeid, node.id); }
+      if (node.id < 0) { 
+        this.globalnodeid = Math.min(this.globalnodeid, node.id); }
     });
 
     links.map((link) => {
@@ -609,7 +610,9 @@ class Graph {
       .links(this.links);
 
     // Update links
-    this.link = this.link.data(this.links, (d) => { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
+    this.link = this.link.data(this.links, (d) => { 
+      console.log(d.type)
+      return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
     this.link
       .enter().append('line')
       .attr('class', 'link')
@@ -620,7 +623,9 @@ class Graph {
     this.link.exit().remove();
 
     // Update nodes
-    this.node = this.node.data(this.nodes, (d) => { return d.id; });
+    this.node = this.node.data(this.nodes, (d) => { 
+      console.log(d.type)
+      return d.id; });
     this.nodeEnter = this.node.enter().append('g')
       .attr('class', 'node')
       .attr('dragfix', false)
