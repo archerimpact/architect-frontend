@@ -296,7 +296,7 @@ class Graph {
       d3.select('body').on('click', () => { d3.select('.context-menu').style('display', 'none'); });
 
       // this gets executed when a contextmenu event occurs
-      return function(data, index) {  
+      return function(data, index) {
         const self = this;
         d3.selectAll('.context-menu').html('');
         var list = d3.selectAll('.context-menu').append('ul');
@@ -312,12 +312,12 @@ class Graph {
 
         // the openCallback allows an action to fire before the menu is displayed
         // an example usage would be closing a tooltip
-        if (openCallback) openCallback(d, i);
+        if (openCallback) openCallback(data, index);
 
         // display context menu
         d3.select('.context-menu')
-          .style('left', (d3.event.pageX - 2) + 'px')
-          .style('top', (d3.event.pageY - 2) + 'px')
+          .style('left', (d3.event.x - 2) + 'px')
+          .style('top', (d3.event.y - 2) + 'px')
           .style('display', 'block');
 
         d3.event.preventDefault();
