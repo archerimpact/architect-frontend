@@ -179,12 +179,12 @@ export function mouseover(d, self) {
     if (this.printFull == 0) {
       d3.select(self)
         .select('.node-name')
-        .text(processNodeName(d.name, 2))
+        .text(utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull), 2)
         .call(this.textWrap, 2);
     }
   }
 
-  this.displayNodeInfo(d);
+  // this.displayNodeInfo(d);
 }
 
 export function mouseout(d, self) {
@@ -205,7 +205,7 @@ export function mouseout(d, self) {
   if (this.printFull != 1) {
     d3.select(self)
       .select('.node-name')
-      .text((d) => { return d.group ? '' : processNodeName(d.name, this.printFull); })
+      .text((d) => { return d.group ? '' : utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
       .call(this.textWrap, this.printFull);
   } 
 
