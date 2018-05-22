@@ -57,8 +57,8 @@ export default function (state = initialState, action) {
 		case UPDATE_GRAPH_DATA:
 			return {
 				...state,
-				canvas: {
-					...state.canvas,
+				currentProject: {
+					...state.currentProject,
 					graphData: action.payload
 				}
 			};
