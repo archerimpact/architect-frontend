@@ -48,6 +48,7 @@ export function isExpandable(d) {
   if (d.totalLinks && d.linkTypes) {
     links = d.linkTypes.AKA ? links - d.linkTypes.AKA : links;
     links = d.linkTypes.SANCTIONED_ON ? links - d.linkTypes.SANCTIONED_ON : links;
+    links = d.linkTypes.HAS_KNOWN_LOCATION ? links - d.linkTypes.HAS_KNOWN_LOCATION : links;
     // links = d.linkTypes.HAS_ID_DOC ? links - d.linkTypes.HAS_ID_DOC : links;
   }
   return (parseInt(links) > d.weight);
