@@ -39,7 +39,7 @@ class BackendSearch extends Component {
       );
     } else {
       return (
-        <div className="searchResults">
+        <div className="search-results">
           { !this.props.searchData ? 
             null :
             this.props.searchData.map((entity) => {

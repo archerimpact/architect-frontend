@@ -100,10 +100,7 @@ class GraphSidebar extends Component {
               <div className="searchbar-container">
                 <DatabaseSearchBar graphid={this.props.graphid} search={(this.props.match.params ? this.props.match.params.query : null)} showSettings={true}/>
               </div>
-
-              <div className="results-container">
-                <SearchResults graph={this.props.graph} entity />
-              </div>
+              <SearchResults graph={this.props.graph} entity />
           </div>
          );
       case "entity":
