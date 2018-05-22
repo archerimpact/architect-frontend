@@ -32,16 +32,18 @@ class Graph extends Component {
 
   componentDidMount() {
     this.props.actions.initializeCanvas(this.props.graph, this.props.width, this.props.height);
+    this.props.graph.bindDisplayFunctions({ expand: this.expandNodeFromData, node: this.setCurrentNode, save: this.saveCurrentProjectData });
+    
     if (this.props.graphData != null) {
-      this.props.graph.bindDisplayFunctions({ expand: this.expandNodeFromData, node: this.setCurrentNode, save: this.saveCurrentProjectData });
       const graphData = { nodes: this.props.graphData.nodes, links: this.props.graphData.links };
       this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));      
     }
   }
 
   componentWillReceiveProps(nextprops) {
+    this.props.graph.bindDisplayFunctions({ expand: this.expandNodeFromData, node: this.setCurrentNode, save: this.saveCurrentProjectData });
+
     if (nextprops.graphData != null && nextprops.project && nextprops.project._id != this.props.project._id) {
-      this.props.graph.bindDisplayFunctions({ expand: this.expandNodeFromData, node: this.setCurrentNode, save: this.saveCurrentProjectData });
       const graphData = { nodes: nextprops.graphData.nodes, links: nextprops.graphData.links };
       this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));
     }
