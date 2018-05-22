@@ -43,7 +43,7 @@ class Graph extends Component {
   componentWillReceiveProps(nextprops) {
     this.props.graph.bindDisplayFunctions({ expand: this.expandNodeFromData, node: this.setCurrentNode, save: this.saveCurrentProjectData });
 
-    if (nextprops.graphData != null && nextprops.project && nextprops.project._id != this.props.project._id) {
+    if (this.props.project && nextprops.graphData && nextprops.project && nextprops.project._id != this.props.project._id) {
       const graphData = { nodes: nextprops.graphData.nodes, links: nextprops.graphData.links };
       this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));
     }

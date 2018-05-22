@@ -96,7 +96,7 @@ class GraphSidebar extends Component {
     switch(this.props.match.params.sidebarState) {
       case "search":
         return  (
-          <div className="full-width flex-column">
+          <div className="full-width full-height flex-column">
               <div className="searchbar-container">
                 <DatabaseSearchBar graphid={this.props.graphid} search={(this.props.match.params ? this.props.match.params.query : null)} showSettings={true}/>
               </div>
