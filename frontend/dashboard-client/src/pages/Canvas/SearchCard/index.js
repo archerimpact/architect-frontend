@@ -37,6 +37,26 @@ class SearchCard extends Component {
     }
   }
 
+  componentWillReceiveProps(nextprops) {
+    if (this.props.id !== nextprops.id) {
+      let isn = isNaN(parseInt(nextprops.id));
+      let sf = nextprops.shouldFetch
+      if (!(!sf || !isn)) {
+        // TODO refactor ready logic
+        server.getNode(nextprops.id, false)
+          .then(d => {
+            this.setState({ isDataReady: true, data: d.nodes.filter(n => n.id === nextprops.id)[0] })
+          })
+          .catch(err => console.log(err));
+      } else {
+        // If data isnt ready, set state
+        let urlId = decodeURIComponent(nextprops.id).split("/");
+        let urlName = urlId[urlId.length - 1];
+        this.setState({name: nextprops.data.name ? nextprops.data.name : urlName, data: nextprops.data})
+      }
+    }
+  }
+
   toggleCollapse() {
     const current = this.state.collapsed;
     this.setState({ collapsed: !current });
