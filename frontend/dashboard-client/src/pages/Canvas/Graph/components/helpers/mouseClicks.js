@@ -81,6 +81,8 @@ export function dragstart(d, self) {
     .attr('dragfix', node.classed('fixed'))
     .attr('dragselect', node.classed('selected'))
     .attr('dragdistance', 0);
+  this.force.resume();
+
 }
 
 export function dragging(d, self) {
@@ -99,7 +101,8 @@ export function dragend(d, self) {
 
   if (node.attr('dragdistance')) {
     node.classed('fixed', d.fixed = true);
-    this.force.resume();
+    this.force.stop();
+    // this.force.resume();
   }
 
   this.isDragging = false;
