@@ -66,7 +66,7 @@ class Entity extends Component {
         <hr />
         <div className="entity-body">
           <h5 className="">Attributes</h5>
-          <EntityAttributes node={node} poo="hi"/>
+          <EntityAttributes node={node}/>
 
           {aliases.length ? <h5 className="subheader">Aliases</h5> : null}
           {aliases.map(a => <EntityCard data={a} id={a.target} shouldFetch graph={this.props.graph}/> )}

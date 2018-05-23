@@ -2,13 +2,14 @@
   margin-bottom: 10px;
 }
 
-.searchResults{
+.search-results{
   width: 100%;
   margin: 0 0 40px 0;
   height: 350px;
   overflow-y: scroll;
   overflow-x: hidden;
-  height: 100%;
+  height: calc(100% - 78px);
+  padding: 0 20px;
 }
 
 .entity-result {
