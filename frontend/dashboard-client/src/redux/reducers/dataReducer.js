@@ -26,7 +26,7 @@ export default function (state = initialState, action) {
 				}, 
 				currentNode: null,
 				currentEntity: null,
-				currentProject: null
+				// currentProject: null
 			};
 		case TOGGLE_SIDEBAR:
 			return {
@@ -47,7 +47,10 @@ export default function (state = initialState, action) {
 		case RESET_PROJECT:
 			return {
 				...state,
-				currentProject: null
+				currentProject: {
+          ...state.currentProject,
+          graphData: null
+        }
 			}
 		case STORE_ENTITY:
 			return {
