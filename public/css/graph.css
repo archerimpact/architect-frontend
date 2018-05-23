@@ -12,6 +12,13 @@ body {
   overflow: hidden;
 }
 
+.unselectable {
+  -webkit-user-select: none; /* Safari */        
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+}
+
 #graph-container {
   height: 100%;
 }
@@ -42,6 +49,18 @@ svg line {
   transition-property: opacity;
   transition-delay: 0ms;
   transition-duration: 50ms;
+}
+
+.link text {
+  font-size: 12px;
+  stroke: #545454;
+  stroke-width: .2px;
+  fill: #545454;
+}
+
+.link tspan.text-shadow {
+  stroke-width: 3px;
+  stroke: #fff;
 }
 
 .link.dynamic {
@@ -192,7 +211,7 @@ i.fa-close {
   cursor: move;
 }
 
-.link {
+.link line {
   stroke: #545454;
   opacity: 0.7;
   transition-property: opacity;
@@ -204,7 +223,7 @@ i.fa-close {
   pointer-events: none;
 }
 
-.link.hidden {
+.link.hidden line {
   stroke-width: 0;
 }
 
@@ -279,7 +298,7 @@ i.fa-close {
   transition-property: stroke-opacity, fill-opacity;
 }
 
-.link.same-as {
+.link.same-as line {
   stroke-dasharray: 5,3;
 }
 
@@ -296,7 +315,7 @@ i.fa-close {
   fill: #0d77e2 !important;
 }
 
-.link.selected {
+.link.selected line {
   stroke: #0d77e2;
 }
 
@@ -342,3 +361,8 @@ i.fa-close {
   background-color: #ff5d4c;
   color: #fefefe;
 }
+.context-menu ul li ul:hover {
+  background-color: #f2f2f2;
+}
+
+
