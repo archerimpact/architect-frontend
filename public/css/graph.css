@@ -309,6 +309,10 @@ i.fa-close {
   fill-opacity: 0.5;
 }
 
+.node.expandable.fixed circle {
+  fill-opacity: 0.8; 
+}
+
 .context-menu {
   position: absolute;
   display: none;
