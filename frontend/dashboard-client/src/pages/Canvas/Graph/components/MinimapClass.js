@@ -94,6 +94,7 @@ class Minimap {
 
     this.container = this.svg.append('g') 
       .attr('class', 'minimap')
+      .style('display', 'none')
       .call(this.zoom);
 
     // image container
