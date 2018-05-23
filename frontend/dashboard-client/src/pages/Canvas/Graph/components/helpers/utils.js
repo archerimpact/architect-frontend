@@ -35,6 +35,10 @@ export function getName(d) {
   }
 }
 
+export function getNewCoord(x, translate, scale) {
+  return x - translate / scale;
+}
+
 export function isVisibleNode(val) {
   return (val === DISPLAYED);
 }
@@ -46,7 +50,7 @@ export function isGroup(d) {
 export function isExpandable(d) {  
   let links = d.totalLinks;
   if (d.totalLinks && d.linkTypes) {
-    links = d.linkTypes.AKA ? links - d.linkTypes.AKA : links;
+    // links = d.linkTypes.AKA ? links - d.linkTypes.AKA : links;
     links = d.linkTypes.SANCTIONED_ON ? links - d.linkTypes.SANCTIONED_ON : links;
     links = d.linkTypes.HAS_KNOWN_LOCATION ? links - d.linkTypes.HAS_KNOWN_LOCATION : links;
     // links = d.linkTypes.HAS_ID_DOC ? links - d.linkTypes.HAS_ID_DOC : links;

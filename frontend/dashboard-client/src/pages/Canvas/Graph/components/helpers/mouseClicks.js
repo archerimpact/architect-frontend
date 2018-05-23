@@ -41,7 +41,7 @@ export function clicked(d, self, i) {
   const node = d3.select(self);
   const fixed = !(node.attr('dragfix') == 'true');
   node.classed('fixed', d.fixed = fixed);
-  this.force.resume();
+  // this.force.resume();
   d3.event.stopPropagation();
 }
 
@@ -99,13 +99,13 @@ export function dragend(d, self) {
 
   if (node.attr('dragdistance')) {
     node.classed('fixed', d.fixed = true);
+    this.force.resume();
   }
 
   this.isDragging = false;
   this.draggedNode = null;
   this.toRenderMinimap = true;
   this.tickCount = 0;
-  this.force.resume();
 }
 
 export function mousedown(d, self) {
@@ -349,9 +349,12 @@ export function zoomButton(zoom_in) {
 }
 
 export function translateGraphAroundNode(d) {
+  debugger;
   // Center each vector, stretch, then put back
-  var x = this.center[0] > d.x ? (this.center[0] - d.x) : -1*(d.x-this.center[0]);
-  var y = this.center[1] > d.y ? (this.center[1] - d.y) : -1*(d.y-this.center[1]);
+  const centerX = this.center[0] * this.zoomScale + this.zoomTranslate[0];
+  const centerY = this.center[1] * this.zoomScale + this.zoomTranslate[1];
+  var x = centerX > d.x ? (centerX - d.x) : -1*(d.x-centerX);
+  var y = centerY > d.y ? (centerY - d.y) : -1*(d.y-centerY);
   var translate = this.zoom.translate();
   var scale = this.zoom.scale();
   this.isZooming = true;
@@ -375,14 +378,30 @@ export function translateGraphAroundId(id) {
   var d;
   this.nodes.map((node)=> { if (node.id === id) { d = node; } });
   if (d == null) { return; }
-  var x = this.zoomScale*(this.center[0] > d.px ? (this.center[0] - d.px) : -1*(d.px-this.center[0]));
-  var y = this.zoomScale*(this.center[1] > d.py? (this.center[1] - d.py) : -1*(d.py-this.center[1]));
+  console.log("translate: ", this.zoomTranslate, " scale: ", this.zoomScale, " center: ", this.center, " d.x: ", d.x, " d.y: ", d.y);
 
-  //console.log("this is where x is after: ", x, " and where y is after: ", y)
+  const centerX = utils.getNewCoord(this.center[0], this.zoomTranslate[0], this.zoomScale);
+  const centerY = utils.getNewCoord(this.center[1], this.zoomTranslate[1], this.zoomScale);
+  // const centerX = (this.width * this.zoomScale) / 2;
+  // const centerY = (this.height * this.zoomScale) / 2;
+  // const centerX = this.center[0];
+  // const centerY = this.center[1];
+  let x = utils.getNewCoord(d.x, this.zoomTranslate[0], this.zoomScale);
+  let y = utils.getNewCoord(d.y, this.zoomTranslate[1], this.zoomScale);
+  // let x = d.x;
+  // let y = d.y;
+
+  console.log("centerX: ", centerX, " centerY: ", centerY, " d.x: ", x, " d.y: ", y);
+  x = centerX > x ? (centerX - x) : (x - centerX);
+  y = centerY > y ? (centerY - y) : (y - centerY);
+
+  console.log("this is where x is after: ", x, " and where y is after: ", y)
   this.isZooming = true;
   var translate = this.zoom.translate();
   var self = this;
 
+  x = x * this.zoomScale;
+  y = y * this.zoomScale;
   // Transition to the new view over 500ms
   d3.transition().duration(500).tween("translate", function () {
     var interpolateTranslate = d3.interpolate(translate, [x, y]);

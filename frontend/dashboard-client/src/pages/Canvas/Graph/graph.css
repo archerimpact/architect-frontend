@@ -307,7 +307,10 @@ i.fa-close {
 .node.expandable circle {
   fill: #7cbdff !important;
   fill-opacity: 0.5;
+}
 
+.node.expandable.fixed circle {
+  fill-opacity: 0.8; 
 }
 
 .context-menu {
