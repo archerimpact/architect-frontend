@@ -44,6 +44,18 @@ svg line {
   transition-duration: 50ms;
 }
 
+.link text {
+  font-size: 12px;
+  stroke: #545454;
+  stroke-width: .2px;
+  fill: #545454;
+}
+
+.link tspan.text-shadow {
+  stroke-width: 3px;
+  stroke: #fff;
+}
+
 .link.dynamic {
   pointer-events: none;
 }
@@ -192,7 +204,7 @@ i.fa-close {
   cursor: move;
 }
 
-.link {
+.link line {
   stroke: #545454;
   opacity: 0.7;
   transition-property: opacity;
@@ -204,7 +216,7 @@ i.fa-close {
   pointer-events: none;
 }
 
-.link.hidden {
+.link.hidden line {
   stroke-width: 0;
 }
 
@@ -279,7 +291,7 @@ i.fa-close {
   transition-property: stroke-opacity, fill-opacity;
 }
 
-.link.same-as {
+.link.same-as line {
   stroke-dasharray: 5,3;
 }
 
@@ -296,7 +308,7 @@ i.fa-close {
   fill: #0d77e2 !important;
 }
 
-.link.selected {
+.link.selected line {
   stroke: #0d77e2;
 }
 
@@ -338,3 +350,8 @@ i.fa-close {
   background-color: #ff5d4c;
   color: #fefefe;
 }
+.context-menu ul li ul:hover {
+  background-color: #f2f2f2;
+}
+
+

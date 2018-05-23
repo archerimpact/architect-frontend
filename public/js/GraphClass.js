@@ -131,7 +131,8 @@ class Graph {
     this.getToolbarLabels = this.getToolbarLabels.bind(this);
     this.initializeZoomButtons = this.initializeZoomButtons.bind(this);
     this.initializeButton = this.initializeButton.bind(this);
-    this.textWrap = this.textWrap.bind(this);
+    this.nodeTextWrap = this.nodeTextWrap.bind(this);
+    this.linkTextWrap = this.linkTextWrap.bind(this);
     this.displayTooltip = this.displayTooltip.bind(this);
     this.displayDebugTooltip = this.displayDebugTooltip.bind(this);
     this.populateNodeInfoBody = this.populateNodeInfoBody.bind(this);
@@ -278,6 +279,18 @@ class Graph {
       {
         title: 'Expand 1st degree connections...',
         action: (elm, d, i) => {  }
+        // subtype: 'checklist',
+        // children: [
+        //   {
+        //     title: 'hi'
+        //   },
+        //   {
+        //     title: 'hello'
+        //   },
+        //   {
+        //     title: 'world'
+        //   }
+        // ]
       }
 
     ]
@@ -309,6 +322,19 @@ class Graph {
             d.action(self, data, index);
             d3.select('.context-menu').style('display', 'none');
           });
+          // .on('mouseover', function(d, i) {
+          //   if (d.children && d.children.length === 0) { return; }
+          //   console.log('d.subtype')
+          //   if (d.subtype === 'checklist') {
+          //     d3.select(this).selectAll('ul').remove(); 
+          //     var parentNode = d3.select(this).node().parentNode;
+          //     d3.select(parentNode ).append('li').append('ul')
+          //       .selectAll('li')
+          //         .data(d.children).enter()
+          //         .append('li')
+          //         .text((cd) => { return cd.title; });
+          //   }
+          // });
 
         // the openCallback allows an action to fire before the menu is displayed
         // an example usage would be closing a tooltip
@@ -609,14 +635,22 @@ class Graph {
       .links(this.links);
 
     // Update links
-    this.link = this.link.data(this.links, (d) => { return d.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
-    this.link
-      .enter().append('line')
+    this.link = this.link.data(this.links, (l) => { return l.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
+    this.linkEnter = this.link.enter().append('g')
       .attr('class', 'link')
       .classed('same-as', (l) => { return l.type.substring(0, 8).toLowerCase() === 'possibly'; })
       .classed('faded', (l) => { return this.hoveredNode && !(l.source == this.hoveredNode || l.target == this.hoveredNode); })
-      .on('mouseover', this.mouseoverLink)
-      .call(this.styleLink, false);
+      .on('mouseover', this.mouseoverLink);
+
+    this.linkEnter.append('line');
+
+    const hi = this.linkEnter.append('text')
+      .attr('text-anchor', 'middle')
+      .attr('dy', '.3em')
+      .text(function (l) { return l.type; });
+      hi.call(this.linkTextWrap);
+
+    this.link.call(this.styleLink, false);
     this.link.exit().remove();
 
     // Update nodes
@@ -657,8 +691,9 @@ class Graph {
       .attr('class', 'node-name')
       .attr('text-anchor', 'middle')
       .attr('dy', '40px')
+      .classed('unselectable', true)
       .text((d) => { return d.group ? '' : utils.processNodeName(d.name ? d.name : d.number, this.printFull); })
-      .call(this.textWrap, this.printFull)
+      .call(this.nodeTextWrap, this.printFull)
       .on('click', function (d) { self.stopPropagation(); })
       .on('mouseover', function (d) { self.stopPropagation(); })
       .on('mouseout', function (d) { self.stopPropagation(); })
@@ -736,7 +771,7 @@ class Graph {
         .attr('d', this.drawHull);
     }
 
-    this.link
+    this.link.select('line')
       .each(function(l) {
         const x1 = l.source.x,
               y1 = l.source.y,
@@ -754,6 +789,15 @@ class Graph {
       .attr('y1', (l) => { return l.sourceY; })
       .attr('x2', (l) => { return l.targetX; })
       .attr('y2', (l) => { return l.targetY; });
+
+    this.link.select('text')
+      .attr("transform", function(l) { 
+        let angle = Math.atan2(l.sourceY - l.targetY, l.sourceX - l.targetX) * 180 / Math.PI;
+        angle = ((l.sourceX > l.targetX && l.sourceY < l.targetY) || (l.sourceX > l.targetX && l.sourceY > l.targetY)) ? angle : angle + 180 % 360;
+        const centerX = (l.sourceX + l.targetX)/2;
+        const centerY = (l.sourceY + l.targetY)/2;
+        return `rotate(${angle} ${centerX} ${centerY}) translate(${centerX},${centerY})`;
+      });
 
     if (this.editMode && this.mousedownNode) {
       const x1 = this.mousedownNode.x * this.zoomScale + this.zoomTranslate[0],
@@ -853,7 +897,7 @@ class Graph {
           this.printFull = (this.printFull + 1) % 3;
           this.selectAllNodeNames()
               .text((d) => { return utils.processNodeName(d.name, this.printFull); })
-              .call(this.textWrap, this.printFull);
+              .call(this.nodeTextWrap, this.printFull);
         }
         
         // t: expand by degree
@@ -961,7 +1005,8 @@ Graph.prototype.fillGroupNodes = aesthetics.fillGroupNodes;
 Graph.prototype.fadeGraph = aesthetics.fadeGraph;
 Graph.prototype.resetGraphOpacity = aesthetics.resetGraphOpacity;
 Graph.prototype.resetDragLink = aesthetics.resetDragLink;
-Graph.prototype.textWrap = aesthetics.textWrap;
+Graph.prototype.nodeTextWrap = aesthetics.nodeTextWrap;
+Graph.prototype.linkTextWrap = aesthetics.linkTextWrap;
 
 //From mouseClicks.js
 Graph.prototype.brushstart = mouseClicks.brushstart;
