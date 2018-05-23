@@ -88,9 +88,11 @@ export function addToGraphFromId(graph, id) {
     server.getNode(id)
       .then(data => {
         // var graphData = parseNeo4jData(data);
-        var graphData = data;
-        graph.addData(graphData.centerid, makeDeepCopy(graphData.nodes), makeDeepCopy(graphData.links));
-        dispatch(updateGraphDispatch(graphData));
+        var graphData = getState();
+        // data.nodes = data.nodes.concat(graphData.data.currentProject.graphData.nodes);
+        // data.links = data.links.concat(graphData.data.currentProject.graphData.links);
+        graph.addData(data.centerid, makeDeepCopy(data.nodes), makeDeepCopy(data.links));
+        dispatch(updateGraphDispatch(data));
       })
       .catch(err => { console.log(err); });
     }

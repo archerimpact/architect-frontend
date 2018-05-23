@@ -60,7 +60,11 @@ export default function (state = initialState, action) {
 				canvas: {
 					...state.canvas,
 					graphData: action.payload
-				}
+				},
+        currentProject: {
+          ...state.currentProject,
+          graphData: action.payload
+        }
 			};
 		case STORE_SEARCH_RESULTS:
 			return {

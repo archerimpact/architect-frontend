@@ -47,6 +47,10 @@ export function isGroup(d) {
   return (d.type === GROUP || d.type === GROUP_HULL);
 }
 
+export function isPossibleLink(val) {
+  return (val.substring(0, 8).toLowerCase() === "possibly" || val === "MATCHED_NUMBER");
+}
+
 export function isExpandable(d) {  
   let links = d.totalLinks;
   if (d.totalLinks && d.linkTypes) {

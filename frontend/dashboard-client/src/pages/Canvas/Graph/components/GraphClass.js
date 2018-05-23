@@ -277,7 +277,7 @@ class Graph {
       },
       {
         title: 'Expand 1st degree connections...',
-        action: (elm, d, i) => {  }
+        action: (elm, d, i) => { this.expandNodeFromData(d); }
       }
 
     ]
@@ -587,6 +587,7 @@ class Graph {
     this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
     this.expandNodeFromData = displayFunctions.expand ? displayFunctions.expand : function(d) {};
     this.saveAllData = displayFunctions.save ? displayFunctions.save : function(d) {};
+    this.initializeMenuActions();
   }
 
   // Updates nodes and links according to current data
@@ -603,7 +604,6 @@ class Graph {
       .gravity(.33)
       .charge((d) => { return d.group ? -7500 : -20000})
       .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
-      .friction(this.nodes.length < 15 ? .75 : .65)
       .alpha(.8)
       .nodes(this.nodes)
       .links(this.links);
@@ -613,7 +613,7 @@ class Graph {
     this.link
       .enter().append('line')
       .attr('class', 'link')
-      .classed('same-as', (l) => { return l.type.substring(0, 8).toLowerCase() === 'possibly'; })
+      .classed('same-as', (l) => { return utils.isPossibleLink(l.type); })
       .classed('faded', (l) => { return this.hoveredNode && !(l.source == this.hoveredNode || l.target == this.hoveredNode); })
       .on('mouseover', this.mouseoverLink)
       .call(this.styleLink, false);
@@ -711,7 +711,7 @@ class Graph {
     this.ybound = [this.height, 0];
     this.tickCount += 1;
 
-    if (e.alpha < 0.05) {
+    if (e.alpha < 0.025) {
       this.force.stop();
       return;
     }
