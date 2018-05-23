@@ -41,59 +41,147 @@ class Entity extends Component {
       return null
     }
     nodes.map(n => nodeMap[n.id] = n.name)
-    const aliases = links.filter(link => link.type === 'AKA' && (node.id === link.source || node.id === link.target));
+
+    const extract_link = (type, compareSource, compareTarget) => {
+      return links.filter(link => link.type === type && 
+                                  (
+                                    (compareSource && node.id === link.source) || 
+                                    (compareTarget && node.id === link.target)
+                                  )
+                          );
+    };
+
+    const aliases = extract_link('AKA', true, true);
+    const documents = extract_link('HAS_ID_DOC', true, false);
+    const locations = extract_link('HAS_KNOWN_LOCATION', true, false);
+    const sanctions = extract_link('SANCTIONED_ON', true, false);
+
+    const part_ofs = extract_link('SIGNIFICANT_PART_OF', true, false);
+    const contains = extract_link('SIGNIFICANT_PART_OF', false, true);
+
+    const supporting = extract_link('PROVIDING_SUPPORT_TO', true, false);
+    const supported = extract_link('PROVIDING_SUPPORT_TO', false, true);
+
+    const owned = extract_link('OWNED_BY', true, false);
+    const owns = extract_link('OWNED_BY', false, true);
+
+    const subservants = extract_link('LEADER_OF', true, false);
+    const leaders = extract_link('LEADER_OF', false, true);
+    const acting = extract_link('ACTING_FOR', true, false);
+    const action_received = extract_link('ACTING_FOR', false, true);
+
+    const associates = extract_link('ASSOCIATE_OF', false, true);
+    const related = extract_link('RELATED_TO', true, true);
+
     const maybe_sames = links.filter(link => link.type === link.type.startsWith('POSSIBLY_SAME_') && node.id === link.source);
-    const docs = links.filter(link => link.type === 'HAS_ID_DOC' && (node.id === link.source || node.id === link.target));
-    const locs = links.filter(link => link.type === 'HAS_KNOWN_LOCATION' && (node.id === link.source || node.id === link.target));
-    const sancs = links.filter(link => link.type === 'SANCTIONED_ON' && (node.id === link.source || node.id === link.target));
 
-    const sig = links.filter(link => link.type === 'SIGNIFICANT_PART_OF' && (node.id === link.source || node.id === link.target));
-    const prov = links.filter(link => link.type === 'PROVIDING_SUPPORT_TO' && (node.id === link.source || node.id === link.target));
-    const owned = links.filter(link => link.type === 'OWNED_BY' && (node.id === link.source || node.id === link.target));
-    const act = links.filter(link => link.type === 'ACTING_FOR' && (node.id === link.source || node.id === link.target));
-    // const others = links.filter(link => Object.keys(otherLinks).includes(link.type) && node.id === link.source);
-
+    const linktypes = {
+      'Aliases': {
+        type: 'AKA',
+        extracted: aliases,
+        chooseDisplay: 'target',
+      },
+      'Documents': {
+        type: 'HAS_ID_DOC',
+        extracted: documents,
+        chooseDisplay: 'target',
+      },
+      'Locations': {
+        type: 'HAS_KNOWN_LOCATION',
+        extracted: locations,
+        chooseDisplay: 'target',
+      },
+      'Sanctioned On': {
+        type: 'SANCTIONED_ON',
+        extracted: sanctions,
+        chooseDisplay: 'target',
+      },
+      'Significant Part Of': {
+        type: 'SIGNIFICANT_PART_OF',
+        extracted: part_ofs,
+        chooseDisplay: 'target',
+      },
+      'Significantly Contains': {
+        type: 'SIGNIFICANT_PART_OF',
+        extracted: contains,
+        chooseDisplay: 'source',
+      },
+      'Providing Support To': {
+        type: 'PROVIDING_SUPPORT_TO',
+        extracted: supporting,
+        chooseDisplay: 'target',
+      },
+      'Supported By': {
+        type: 'PROVIDING_SUPPORT_TO',
+        extracted: supported,
+        chooseDisplay: 'source',
+      },
+      'Owned By': {
+        type: 'OWNED_BY',
+        extracted: owned,
+      },
+      'Owns': {
+        type: 'OWNED_BY',
+        extracted: owns,
+      },
+      'Leader Of': {
+        type: 'LEADER_OF',
+        extracted: subservants,
+        chooseDisplay: 'target',
+      },
+      'Lead By': {
+        type: 'LEADER_OF',
+        extracted: leaders,
+        chooseDisplay: 'source',
+      },
+      'Acting For': {
+        type: 'ACTING_FOR',
+        extracted: acting,
+        chooseDisplay: 'target',
+      },
+      'Receives Actions From': {
+        type: 'ACTING_FOR',
+        extracted: action_received,
+        chooseDisplay: 'source',
+      },
+      'Associate Of': {
+        type: 'ASSOCIATE_OF',
+        extracted: associates,
+        chooseDisplay: 'source',
+      },
+      'Related To': {
+        type: 'RELATED_TO',
+        extracted: related,
+      },
+    };
 
     return (
       <div className="full-width">
         <div className="entity-header-wrapper">
           <div className="entity-header">
-            <div className="entity-name">{node.name}</div>
+            <div className="entity-name">{node.name || node.combined || node.number || node.description}</div>
             <div className="entity-type">({node.type})</div>
           </div>
           <div className="entity-source">{node.dataset}</div>
         </div>
         <hr />
         <div className="entity-body">
+
           <h5 className="">Attributes</h5>
           <EntityAttributes node={node}/>
 
-          {aliases.length ? <h5 className="subheader">Aliases</h5> : null}
-          {aliases.map(a => <EntityCard data={a} id={a.target} shouldFetch graph={this.props.graph}/> )}
+          { Object.keys(linktypes).map(l => {
+            const t = linktypes[l];
+            if (t.extracted.length !== 0) {
+              return (
+                <div>
+                  <h5 className="subheader">{l}</h5>
+                  { t.extracted.map(i => <EntityCard data={i} id={i[t.chooseDisplay || 'target']} shouldFetch graph={this.props.graph} />) }
+                </div>
+              );
+            }
+          })}
 
-          {docs.length ? <h5 className="subheader">Documents</h5> : null}
-          {docs.map(a => <EntityCard data={a} id={a.target} shouldFetch graph={this.props.graph}/> )}
-
-          {locs.length ? <h5 className="subheader">Locations</h5> : null}
-          {locs.map(a => <EntityCard data={a} id={a.target} shouldFetch graph={this.props.graph}/> )}
-
-          {sancs.length ? <h5 className="subheader">Sanction Events</h5> : null}
-          {sancs.map(a => <EntityCard data={a} id={a.target} shouldFetch graph={this.props.graph}/> )}
-
-          {maybe_sames.length ? <h5 className="subheader">Possibly Same As</h5> : null}
-          {maybe_sames.map(a => <EntityCard data={a} id={a.target} shouldFetch graph={this.props.graph}/> )}
-
-          {sig.length ? <h5 className="subheader">Significant Part Of</h5> : null}
-          {sig.map(a => <EntityCard data={a} id={a.target} shouldFetch graph={this.props.graph}/>)}
-
-          {prov.length ? <h5 className="subheader">Providing Support To</h5> : null}
-          {prov.map(a => <EntityCard data={a} id={a.target} shouldFetch graph={this.props.graph}/>)}
-
-          {owned.length ? <h5 className="subheader">Owned By</h5> : null}
-          {owned.map(a => <EntityCard data={a} id={a.target} shouldFetch graph={this.props.graph}/>)}
-
-          {act.length ? <h5 className="subheader">Acting For</h5> : null}
-          {act.map(a => <EntityCard data={a} id={a.target} shouldFetch graph={this.props.graph}/>)}
         </div>
       </div>
     )

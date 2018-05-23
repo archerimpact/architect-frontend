@@ -11,23 +11,27 @@ const keys = [
 ];
 
 export default (args) => {
+	let empty = true;
 	return (
 		<div>
 			{ keys.map(k => {
 				let n = args.node;
-		        const val = n[k[0]];
-		        if (val) {
-		          return (
-		            <div className="info-row" key={k}>
-		              <p className="info-key">{k[1]}:</p>
-		              { (!(val instanceof Array))
-		                  ? <p className="info-value">{val}</p>
-		                  : <div className="info-value-list"> {val.map(v => <div className="info-value">{v}</div>)} </div>
-		              }
-		            </div>
-		          )
-		        }
-		    }) }
+				const val = n[k[0]];
+				if (val) {
+					empty = false;
+					return (
+						<div className="info-row" key={k}>
+							<p className="info-key">{k[1]}:</p>
+							{ (!(val instanceof Array))
+								? <p className="info-value">{val}</p>
+								: <div className="info-value-list"> {val.map(v => <div className="info-value">{v}</div>)} </div>
+							}
+						</div>
+					)
+				}
+			}) }
+
+			{ empty ? <div>No attributes.</div> : null }
 		</div>
 	);
 }

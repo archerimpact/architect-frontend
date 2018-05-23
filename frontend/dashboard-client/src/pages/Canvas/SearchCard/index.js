@@ -73,11 +73,15 @@ class SearchCard extends Component {
       actionFunc = () => this.props.actions.addToGraphFromId(this.props.graph, this.props.id);
     }
     return (
-      <div>
-        <i className="entity-icon add-to-graph-icon material-icons" onClick={actionFunc}>{action}</i>
-        <Link to={url}>
-          <i className="entity-icon detailed-view-icon material-icons">description</i>
-        </Link>
+      <div className="d-flex">
+        <div className="icon-div">
+          <i className="entity-icon add-to-graph-icon material-icons" onClick={actionFunc}>{action}</i>
+        </div>
+        <div className="icon-div">
+          <Link to={url}>
+            <i className="entity-icon detailed-view-icon material-icons">description</i>
+          </Link>
+        </div>
       </div>
     )
 
