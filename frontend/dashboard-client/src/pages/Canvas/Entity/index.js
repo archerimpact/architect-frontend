@@ -51,7 +51,7 @@ class Entity extends Component {
                           );
     };
 
-    const aliases = extract_link('AKA', true, true);
+    const aliases = extract_link('AKA', true, false);
     const documents = extract_link('HAS_ID_DOC', true, false);
     const locations = extract_link('HAS_KNOWN_LOCATION', true, false);
     const sanctions = extract_link('SANCTIONED_ON', true, false);
@@ -67,13 +67,14 @@ class Entity extends Component {
 
     const subservants = extract_link('LEADER_OF', true, false);
     const leaders = extract_link('LEADER_OF', false, true);
+
     const acting = extract_link('ACTING_FOR', true, false);
     const action_received = extract_link('ACTING_FOR', false, true);
 
     const associates = extract_link('ASSOCIATE_OF', false, true);
-    const related = extract_link('RELATED_TO', true, true);
+    const related = extract_link('RELATED_TO', false, true);
 
-    const maybe_sames = links.filter(link => link.type === link.type.startsWith('POSSIBLY_SAME_') && node.id === link.source);
+    const maybe_sames = links.filter(link => link.type === link.type.startsWith('MATCHED_') && node.id === link.source);
 
     const linktypes = {
       'Aliases': {
@@ -119,10 +120,12 @@ class Entity extends Component {
       'Owned By': {
         type: 'OWNED_BY',
         extracted: owned,
+        chooseDisplay: 'target',
       },
       'Owns': {
         type: 'OWNED_BY',
         extracted: owns,
+        chooseDisplay: 'source',
       },
       'Leader Of': {
         type: 'LEADER_OF',
@@ -152,6 +155,7 @@ class Entity extends Component {
       'Related To': {
         type: 'RELATED_TO',
         extracted: related,
+        chooseDisplay: 'source',
       },
     };
 
@@ -176,7 +180,7 @@ class Entity extends Component {
               return (
                 <div>
                   <h5 className="subheader">{l}</h5>
-                  { t.extracted.map(i => <EntityCard data={i} id={i[t.chooseDisplay || 'target']} shouldFetch graph={this.props.graph} />) }
+                  { t.extracted.map(i => <EntityCard data={i} id={i[t.chooseDisplay]} shouldFetch graph={this.props.graph} />) }
                 </div>
               );
             }
