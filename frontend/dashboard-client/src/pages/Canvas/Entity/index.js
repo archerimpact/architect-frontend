@@ -34,6 +34,14 @@ class Entity extends Component {
       .catch(err => console.log(err));
   }
 
+  componentWillReceiveProps(nextprops) {
+    server.getNode(decodeURIComponent(this.props.id), false)
+      .then(d => {
+        this.setState({ currentEntity: d })
+      })
+      .catch(err => console.log(err));
+  }
+
 
   renderEntity(node, nodes, links, keys) {
     const nodeMap = {};
@@ -77,11 +85,6 @@ class Entity extends Component {
     const maybe_sames = links.filter(link => link.type === link.type.startsWith('MATCHED_') && node.id === link.source);
 
     const linktypes = {
-      'Aliases': {
-        type: 'AKA',
-        extracted: aliases,
-        chooseDisplay: 'target',
-      },
       'Documents': {
         type: 'HAS_ID_DOC',
         extracted: documents,
@@ -157,7 +160,19 @@ class Entity extends Component {
         extracted: related,
         chooseDisplay: 'source',
       },
+      'Aliases': {
+        type: 'AKA',
+        extracted: aliases,
+        chooseDisplay: 'target',
+      },
+      'Possibly Same As': {
+        type: '',
+        extracted: maybe_sames,
+        chooseDisplay: 'target',
+      }
     };
+
+    const attrs = <EntityAttributes node={node}/>;
 
     return (
       <div className="full-width">
@@ -172,7 +187,7 @@ class Entity extends Component {
         <div className="entity-body">
 
           <h5 className="">Attributes</h5>
-          <EntityAttributes node={node}/>
+          { attrs }
 
           { Object.keys(linktypes).map(l => {
             const t = linktypes[l];
