@@ -797,9 +797,7 @@ class Graph {
     d3.select('body')
       .on('keydown', () => {
 
-        if (d3.event.target.nodeName === 'INPUT') {
-          return this.force.resume();
-        }
+        if (d3.event.target.nodeName === 'INPUT') { return; }
 
         // u: Unpin selected nodes
         if (d3.event.keyCode == 85) {
