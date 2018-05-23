@@ -581,6 +581,7 @@ class Graph {
     this.setMatrix(nodes, links, byIndex);
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
     this.update();
+    for (let i = 150; i > 0; --i) this.force.tick();  
 
     // set global node id to match the nodes getting passed in
     nodes.map((node) => {
@@ -591,7 +592,6 @@ class Graph {
       if (link.id < 0) { this.globallinkid = Math.min(this.globallinkid, link.id); }
     });
 
-    for (let i = 150; i > 0; --i) this.force.tick();  
     this.reloadNeighbors();
 
     this.minimap
@@ -692,7 +692,7 @@ class Graph {
       .attr('text-anchor', 'middle')
       .attr('dy', '40px')
       .classed('unselectable', true)
-      .text((d) => { return d.group ? '' : utils.processNodeName(d.name ? d.name : d.number, this.printFull); })
+      .text((d) => { return d.group ? '' : utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
       .call(this.nodeTextWrap, this.printFull)
       .on('click', function (d) { self.stopPropagation(); })
       .on('mouseover', function (d) { self.stopPropagation(); })
@@ -896,7 +896,7 @@ class Graph {
         else if (d3.event.keyCode == 80) {
           this.printFull = (this.printFull + 1) % 3;
           this.selectAllNodeNames()
-              .text((d) => { return utils.processNodeName(d.name, this.printFull); })
+              .text((d) => { return utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
               .call(this.nodeTextWrap, this.printFull);
         }
         
