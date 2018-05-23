@@ -376,8 +376,11 @@ export function translateGraphAroundNode(d) {
 export function translateGraphAroundId(id) {
   // Center each vector, stretch, then put back
   var d;
-  this.nodes.map((node)=> { if (node.id === id) { d = node; } });
+  this.node.classed("selected", false)
+    .filter((node)=> { if (node.id === id) { d = node; return node; } })
+    .classed("selected", true);
   if (d == null) { return; }
+
   console.log("translate: ", this.zoomTranslate, " scale: ", this.zoomScale, " center: ", this.center, " d.x: ", d.x, " d.y: ", d.y);
 
   const centerX = utils.getNewCoord(this.center[0], this.zoomTranslate[0], this.zoomScale);
@@ -392,8 +395,8 @@ export function translateGraphAroundId(id) {
   // let y = d.y;
 
   console.log("centerX: ", centerX, " centerY: ", centerY, " d.x: ", x, " d.y: ", y);
-  x = centerX > x ? (centerX - x) : (x - centerX);
-  y = centerY > y ? (centerY - y) : (y - centerY);
+  x = centerX > x ? (centerX - x) :  -1*(x - centerX);
+  y = centerY > y ? (centerY - y) : -1*(y - centerY);
 
   console.log("this is where x is after: ", x, " and where y is after: ", y)
   this.isZooming = true;

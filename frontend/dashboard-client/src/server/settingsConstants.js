@@ -1,3 +1,3 @@
 export const EXPANSION_DEFAULT = {
-  "exclude" : [ "SANCTIONED_ON", "HAS_KNOWN_LOCATION" ]
+  "exclude" : [ "AKA", "SANCTIONED_ON", "HAS_KNOWN_LOCATION" ]
 }
