@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Entity from '../Entity';
 import SearchResults from '../SearchResults';
 import ProjectData from '../ProjectData';
-import DatabaseSearchBar from '../../../components/SearchBar/databaseSearchBar';
+import DatabaseSearchBar from '../../../components/DatabaseSearchBar';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter , Link} from 'react-router-dom';
