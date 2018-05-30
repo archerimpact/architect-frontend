@@ -378,11 +378,25 @@ export function translateGraphAroundNode(d) {
 
 export function translateGraphAroundId(id) {
   // Center each vector, stretch, then put back
-  var d;
-  this.nodes.map((node)=> { if (node.id === id) { d = node; } });
-  if (d == null) { return; }
-  var x = this.zoomScale*(this.center[0] > d.px ? (this.center[0] - d.px) : -1*(d.px-this.center[0]));
-  var y = this.zoomScale*(this.center[1] > d.py? (this.center[1] - d.py) : -1*(d.py-this.center[1]));
+  var node;
+  this.node.each((d)=> { if (d.id === id) { return node = d; } })
+    .classed("selected", (d) => {debugger; return true} );
+  if (node == null) { return; }
+
+  debugger
+  const centerX = utils.getNewCoord(this.center[0], this.zoomTranslate[0], this.zoomScale);
+  const centerY = utils.getNewCoord(this.center[1], this.zoomTranslate[1], this.zoomScale);
+  // const centerX = (this.width * this.zoomScale) / 2;
+  // const centerY = (this.height * this.zoomScale) / 2;
+  // const centerX = this.center[0];
+  // const centerY = this.center[1];
+  let x = utils.getNewCoord(d.x, this.zoomTranslate[0], this.zoomScale);
+  let y = utils.getNewCoord(d.y, this.zoomTranslate[1], this.zoomScale);
+  // let x = d.x;
+  // let y = d.y;
+
+  console.log("centerX: ", centerX, " centerY: ", centerY, " d.x: ", x, " d.y: ", y);
+  x = centerX > x ? (centerX - x) : (x - centerX);
 
   //console.log("this is where x is after: ", x, " and where y is after: ", y)
   this.isZooming = true;

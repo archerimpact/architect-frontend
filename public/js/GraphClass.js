@@ -281,7 +281,7 @@ class Graph {
       },
       {
         title: 'Expand 1st degree connections...',
-        action: (elm, d, i) => {  }
+        action: (elm, d, i) => { this.expandNodeFromData(d); }
         // subtype: 'checklist',
         // children: [
         //   {
@@ -586,7 +586,7 @@ class Graph {
     this.setMatrix(nodes, links, byIndex);
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
     this.update();
-    for (let i = 150; i > 0; --i) this.force.tick();  
+    for (let i = 250; i > 0; --i) this.force.tick();  
 
     // set global node id to match the nodes getting passed in
     nodes.map((node) => {
@@ -618,6 +618,7 @@ class Graph {
     this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
     this.expandNodeFromData = displayFunctions.expand ? displayFunctions.expand : function(d) {};
     this.saveAllData = displayFunctions.save ? displayFunctions.save : function(d) {};
+    this.initializeMenuActions();
   }
 
   // Updates nodes and links according to current data
@@ -634,7 +635,6 @@ class Graph {
       .gravity(.33)
       .charge((d) => { return d.group ? -7500 : -20000})
       .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
-      .friction(this.nodes.length < 15 ? .75 : .65)
       .alpha(.8)
       .nodes(this.nodes)
       .links(this.links);
@@ -645,27 +645,9 @@ class Graph {
       .append('path')
       .attr('class', 'link')
       .attr('id', (l) => { return `link-${l.id}`; })
-      .classed('same-as', (l) => { return l.type.substring(0, 8).toLowerCase() === 'possibly'; })
+      .classed('same-as', (l) => { return utils.isPossibleLink(l.type); })
       .classed('faded', (l) => { return this.hoveredNode && !(l.source == this.hoveredNode || l.target == this.hoveredNode); })
       .on('mouseover', this.mouseoverLink);
-
-    // this.linkEnter.append('line');
-    // this.linkEnter.append('path');
-
-    // this.linkEnter.append('text')
-    //   .attr('text-anchor', 'middle')
-    //   .attr('dy', '.3em')
-    //   .text(function (l) { return l.type; })
-    //   .call(this.linkTextWrap);
-
-    // this.linkEnter
-    // .append('text')
-    //   .attr('class', 'link-text')
-    //   .attr('text-anchor', 'middle')
-    // .append('textPath')
-    //   .attr('startOffset', '50%')
-    //   .attr('xlink:href', (d) => { return d.id; })
-    //   .text((l) => { return l.type; })
 
     this.link.call(this.styleLink, false);
     this.link.exit().remove();
@@ -758,10 +740,15 @@ class Graph {
   // Occurs each tick of simulation
   ticked(e, self) {
     const classThis = this;
-    this.force.resume();
+    // this.force.resume();
     this.xbound = [this.width, 0];
     this.ybound = [this.height, 0];
     this.tickCount += 1;
+
+    if (e.alpha < 0.025) {
+      this.force.stop();
+      return;
+    }
 
     this.node
       .each(this.groupNodesForce(.3))
@@ -854,7 +841,7 @@ class Graph {
       .on('keydown', () => {
 
         if (d3.event.target.nodeName === 'INPUT') {
-          return this.force.resume();
+          return;
         }
 
         // u: Unpin selected nodes

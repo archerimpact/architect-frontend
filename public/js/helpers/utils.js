@@ -23,6 +23,10 @@ export function isMorePreferredState(val1, val2) {
   else if (val1 === HIDDEN) { return true; }
 }
 
+export function isPossibleLink(val) {
+  return (val.substring(0, 8).toLowerCase() === "possibly" || val === "MATCHED_NUMBER");
+}
+
 export function isVisibleNode(val) {
   return (val === DISPLAYED);
 }
@@ -31,11 +35,16 @@ export function isGroup(d) {
   return (d.type === GROUP || d.type === GROUP_HULL);
 }
 
+export function getNewCoord(x, translate, scale) {
+  return x - translate / scale;
+}
+
 export function isExpandable(d) {  
   let links = d.totalLinks;
   if (d.totalLinks && d.linkTypes) {
     links = d.linkTypes.AKA ? links - d.linkTypes.AKA : links;
     links = d.linkTypes.SANCTIONED_ON ? links - d.linkTypes.SANCTIONED_ON : links;
+    links = d.linkTypes.HAS_KNOWN_LOCATION ? links - d.linkTypes.HAS_KNOWN_LOCATION : links;
     // links = d.linkTypes.HAS_ID_DOC ? links - d.linkTypes.HAS_ID_DOC : links;
   }
   return (links > d.weight);
