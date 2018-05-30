@@ -175,6 +175,13 @@ export function mouseover(d, self) {
     this.hoveredNode = d;
     this.fadeGraph(d);
 
+    // Add link text
+    //console.log(this.link.filter((l) => { return l.source === d || l.target === d; }))
+    //console.log(utils.getData(this.link.filter((l) => { return l.source === d || l.target === d; })))
+    this.addLinkText(utils.getData(this.link.filter((l) => { return l.source === d || l.target === d; })))
+      //.call(this.addLinkText);
+    // this.addLinkText(this.links);
+
     // Text elongation
     if (this.printFull == 0) {
       d3.select(self)
@@ -200,6 +207,9 @@ export function mouseout(d, self) {
 
   // Show drag link
   if (this.editMode && this.mousedownNode) { this.dragLink.style('visibility', 'visible'); }
+
+  // Reomve link text
+  this.addLinkText([]);
 
   // Text truncation
   if (this.printFull != 1) {

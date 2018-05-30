@@ -81,6 +81,8 @@ class Graph {
 
     this.node = null;
     this.link = null;
+    this.linkContainer = null;
+    this.linkText = null;
     this.hull = null;
     this.nodes = [];
     this.links = [];
@@ -132,6 +134,7 @@ class Graph {
     this.initializeZoomButtons = this.initializeZoomButtons.bind(this);
     this.initializeButton = this.initializeButton.bind(this);
     this.nodeTextWrap = this.nodeTextWrap.bind(this);
+    this.addLinkText = this.addLinkText.bind(this);
     this.linkTextWrap = this.linkTextWrap.bind(this);
     this.displayTooltip = this.displayTooltip.bind(this);
     this.displayDebugTooltip = this.displayDebugTooltip.bind(this);
@@ -212,7 +215,7 @@ class Graph {
   // whereas new append calls must be within the same g, in order for zoom to work.
   initializeContainer() {
     return this.svg.append('g')
-      .attr('class', 'graphItems');
+      .attr('class', 'graph-items');
   }
 
   //set up how to draw the hulls
@@ -224,7 +227,8 @@ class Graph {
 
   initializeSVGgrid() {
     const svgGrid = this.container.append('g')
-      .attr('class', 'svggrid');
+      .attr('class', 'svg-grid');
+
     svgGrid
       .append('g')
       .attr('class', 'x-ticks')
@@ -438,6 +442,7 @@ class Graph {
     const button = this.svg.selectAll('.button')
       .data(buttonData)
       .enter().append('g')
+      .attr('class', 'button')
       .attr('pointer-events', 'all');
 
     button.append('title')
@@ -560,9 +565,10 @@ class Graph {
     this.setupKeycodes();
 
     // Create selectors
-    this.hull = this.container.append('g').selectAll('.hull')
-    this.link = this.container.append('g').selectAll('.link');
-    this.node = this.container.append('g').selectAll('.node');
+    this.linkContainer = this.container.append('g').attr('class', 'link-items');
+    this.link = this.linkContainer.selectAll('.link');
+    this.node = this.container.append('g').attr('class', 'node-items').selectAll('.node');
+    this.hull = this.container.append('g').attr('class', 'hull-items').selectAll('.hull');
 
     this.force.on('tick', (e) => { this.ticked(e, this) });
 
@@ -635,20 +641,32 @@ class Graph {
       .links(this.links);
 
     // Update links
-    this.link = this.link.data(this.links, (l) => { return l.id; }); //resetting the key is important because otherwise it maps the new data to the old data in order
-    this.linkEnter = this.link.enter().append('g')
+    this.link = this.link.data(this.links, (l) => { return l.id; }); // Resetting the key is important because otherwise it maps the new data to the old data in order
+    this.linkEnter = this.link.enter()
+      .append('path')
       .attr('class', 'link')
+      .attr('id', (l) => { return `link-${l.id}`; })
       .classed('same-as', (l) => { return l.type.substring(0, 8).toLowerCase() === 'possibly'; })
       .classed('faded', (l) => { return this.hoveredNode && !(l.source == this.hoveredNode || l.target == this.hoveredNode); })
       .on('mouseover', this.mouseoverLink);
 
-    this.linkEnter.append('line');
+    // this.linkEnter.append('line');
+    // this.linkEnter.append('path');
 
-    const hi = this.linkEnter.append('text')
-      .attr('text-anchor', 'middle')
-      .attr('dy', '.3em')
-      .text(function (l) { return l.type; });
-      hi.call(this.linkTextWrap);
+    // this.linkEnter.append('text')
+    //   .attr('text-anchor', 'middle')
+    //   .attr('dy', '.3em')
+    //   .text(function (l) { return l.type; })
+    //   .call(this.linkTextWrap);
+
+    // this.linkEnter
+    // .append('text')
+    //   .attr('class', 'link-text')
+    //   .attr('text-anchor', 'middle')
+    // .append('textPath')
+    //   .attr('startOffset', '50%')
+    //   .attr('xlink:href', (d) => { return d.id; })
+    //   .text((l) => { return l.type; })
 
     this.link.call(this.styleLink, false);
     this.link.exit().remove();
@@ -771,7 +789,25 @@ class Graph {
         .attr('d', this.drawHull);
     }
 
-    this.link.select('line')
+    // this.link.select('line')
+    //   .each(function(l) {
+    //     const x1 = l.source.x,
+    //           y1 = l.source.y,
+    //           x2 = l.target.x,
+    //           y2 = l.target.y;
+    //     const dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+    //     const sourcePadding = l.target.radius + (l.bidirectional ? constants.MARKER_PADDING : 0),
+    //           targetPadding = l.source.radius + constants.MARKER_PADDING;
+    //     l.sourceX = x1 + (x2-x1) * (dist-sourcePadding) / dist;
+    //     l.sourceY = y1 + (y2-y1) * (dist-sourcePadding) / dist;
+    //     l.targetX = x2 - (x2-x1) * (dist-targetPadding) / dist;
+    //     l.targetY = y2 - (y2-y1) * (dist-targetPadding) / dist;
+    //   })
+    //   .attr('x1', (l) => { return l.sourceX; })
+    //   .attr('y1', (l) => { return l.sourceY; })
+    //   .attr('x2', (l) => { return l.targetX; })
+    //   .attr('y2', (l) => { return l.targetY; });
+    this.link
       .each(function(l) {
         const x1 = l.source.x,
               y1 = l.source.y,
@@ -785,19 +821,18 @@ class Graph {
         l.targetX = x2 - (x2-x1) * (dist-targetPadding) / dist;
         l.targetY = y2 - (y2-y1) * (dist-targetPadding) / dist;
       })
-      .attr('x1', (l) => { return l.sourceX; })
-      .attr('y1', (l) => { return l.sourceY; })
-      .attr('x2', (l) => { return l.targetX; })
-      .attr('y2', (l) => { return l.targetY; });
-
-    this.link.select('text')
-      .attr("transform", function(l) { 
-        let angle = Math.atan2(l.sourceY - l.targetY, l.sourceX - l.targetX) * 180 / Math.PI;
-        angle = ((l.sourceX > l.targetX && l.sourceY < l.targetY) || (l.sourceX > l.targetX && l.sourceY > l.targetY)) ? angle : angle + 180 % 360;
-        const centerX = (l.sourceX + l.targetX)/2;
-        const centerY = (l.sourceY + l.targetY)/2;
-        return `rotate(${angle} ${centerX} ${centerY}) translate(${centerX},${centerY})`;
+      .attr('d', (l) => {
+        return 'M' + l.sourceX + ',' + l.sourceY + 'L' + l.targetX + ',' + l.targetY;
       });
+
+    // this.link.select('text')
+    //   .attr("transform", function(l) { 
+    //     let angle = utils.atan2(l.sourceY - l.targetY, l.sourceX - l.targetX);
+    //     angle = ((l.sourceX > l.targetX && l.sourceY < l.targetY) || (l.sourceX > l.targetX && l.sourceY > l.targetY)) ? angle : angle + 180 % 360;
+    //     const centerX = (l.sourceX + l.targetX)/2;
+    //     const centerY = (l.sourceY + l.targetY)/2;
+    //     return `rotate(${angle} ${centerX} ${centerY}) translate(${centerX},${centerY})`;
+    //   });
 
     if (this.editMode && this.mousedownNode) {
       const x1 = this.mousedownNode.x * this.zoomScale + this.zoomTranslate[0],
@@ -1006,6 +1041,7 @@ Graph.prototype.fadeGraph = aesthetics.fadeGraph;
 Graph.prototype.resetGraphOpacity = aesthetics.resetGraphOpacity;
 Graph.prototype.resetDragLink = aesthetics.resetDragLink;
 Graph.prototype.nodeTextWrap = aesthetics.nodeTextWrap;
+Graph.prototype.addLinkText = aesthetics.addLinkText;
 Graph.prototype.linkTextWrap = aesthetics.linkTextWrap;
 
 //From mouseClicks.js

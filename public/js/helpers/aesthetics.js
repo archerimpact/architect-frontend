@@ -41,7 +41,7 @@ export function getNodeColor(d) {
 
 export function styleLink(selection, isSelected) {
   selection.classed('selected', isSelected);
-  selection.select('line')
+  selection
     .style('stroke-width', (l) => { return (l.source.group && l.target.group ? constants.GROUP_STROKE_WIDTH : constants.STROKE_WIDTH) + 'px'; })
     .style('marker-start', (l) => { 
       if (!l.bidirectional) { return ''; }
@@ -151,10 +151,44 @@ export function nodeTextWrap(textSelection, printFull, width=100) {
   });
 }
 
+export function addLinkText(selection) {
+  console.log('selection', selection)
+  console.log(this.linkContainer.selectAll('.link-text'))
+  // console.log(this.svg.selectAll('.link-text'))
+  // const linkText = this.link
+  //   .filter((l) => { return l.source === this.hoveredNode || l.target === this.hoveredNode; })
+  // this.linkText = this.link
+  //   .data(selection, (l) => { return l.id; });
+
+  // this.linkText.enter()
+  //   .append('text')
+  //   .attr('class', 'link-text')
+  //   .attr('text-anchor', 'middle')
+  //   .attr('dy', '.3em')
+  //   .text(function (l) { return l.type; })
+  //   .call(this.linkTextWrap);
+
+  // this.linkText.exit().remove();
+  this.linkText = this.linkContainer.selectAll('.link-text')
+    .data(selection, (l) => { return l.id; });
+
+  this.linkText.enter()
+    .append('text')
+      .attr('class', 'link-text')
+      .attr('text-anchor', 'middle')
+    .append('textPath')
+      .attr('startOffset', '50%')
+      .attr('alignment-baseline', 'ideographic')
+      .attr('xlink:href', (l) => { return `#link-${l.id}`; })
+      .text((l) => { return l.type; })
+
+  this.linkText.exit().remove();
+}
+
 export function linkTextWrap(textSelection) {
   textSelection.each(function (d) {
     // Don't add link text to links within hulls
-    const parentLink = d3.select(this.parentNode).select('line')[0][0].__data__;
+    const parentLink = d3.select(this.parentNode).select('path')[0][0].__data__;
     if (parentLink.source && parentLink.source.group && parentLink.source.group === parentLink.target.group) {
       d3.select(this).text(null);
       return;
