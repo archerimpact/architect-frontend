@@ -44,7 +44,7 @@ svg line {
   transition-duration: 50ms;
 }
 
-.link text {
+/*.link text {
   font-size: 12px;
   stroke: #545454;
   stroke-width: .2px;
@@ -54,6 +54,15 @@ svg line {
 .link tspan.text-shadow {
   stroke-width: 3px;
   stroke: #fff;
+}*/
+
+.link-items text {
+  stroke: #fff;
+  stroke-width: 2px;
+  fill: #545454;
+  paint-order: stroke;
+  font-size: 14px;
+  font-weight: bolder;
 }
 
 .link.dynamic {

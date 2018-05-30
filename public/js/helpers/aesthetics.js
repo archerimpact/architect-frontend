@@ -151,24 +151,7 @@ export function nodeTextWrap(textSelection, printFull, width=100) {
   });
 }
 
-export function addLinkText(selection) {
-  console.log('selection', selection)
-  console.log(this.linkContainer.selectAll('.link-text'))
-  // console.log(this.svg.selectAll('.link-text'))
-  // const linkText = this.link
-  //   .filter((l) => { return l.source === this.hoveredNode || l.target === this.hoveredNode; })
-  // this.linkText = this.link
-  //   .data(selection, (l) => { return l.id; });
-
-  // this.linkText.enter()
-  //   .append('text')
-  //   .attr('class', 'link-text')
-  //   .attr('text-anchor', 'middle')
-  //   .attr('dy', '.3em')
-  //   .text(function (l) { return l.type; })
-  //   .call(this.linkTextWrap);
-
-  // this.linkText.exit().remove();
+export function updateLinkText(selection) {
   this.linkText = this.linkContainer.selectAll('.link-text')
     .data(selection, (l) => { return l.id; });
 
@@ -176,11 +159,11 @@ export function addLinkText(selection) {
     .append('text')
       .attr('class', 'link-text')
       .attr('text-anchor', 'middle')
+      .attr('dy', '.3em')
     .append('textPath')
       .attr('startOffset', '50%')
-      .attr('alignment-baseline', 'ideographic')
       .attr('xlink:href', (l) => { return `#link-${l.id}`; })
-      .text((l) => { return l.type; })
+      .text((l) => { return l.type; });
 
   this.linkText.exit().remove();
 }

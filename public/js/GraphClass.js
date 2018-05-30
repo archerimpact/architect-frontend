@@ -134,7 +134,7 @@ class Graph {
     this.initializeZoomButtons = this.initializeZoomButtons.bind(this);
     this.initializeButton = this.initializeButton.bind(this);
     this.nodeTextWrap = this.nodeTextWrap.bind(this);
-    this.addLinkText = this.addLinkText.bind(this);
+    this.updateLinkText = this.updateLinkText.bind(this);
     this.linkTextWrap = this.linkTextWrap.bind(this);
     this.displayTooltip = this.displayTooltip.bind(this);
     this.displayDebugTooltip = this.displayDebugTooltip.bind(this);
@@ -1041,7 +1041,7 @@ Graph.prototype.fadeGraph = aesthetics.fadeGraph;
 Graph.prototype.resetGraphOpacity = aesthetics.resetGraphOpacity;
 Graph.prototype.resetDragLink = aesthetics.resetDragLink;
 Graph.prototype.nodeTextWrap = aesthetics.nodeTextWrap;
-Graph.prototype.addLinkText = aesthetics.addLinkText;
+Graph.prototype.updateLinkText = aesthetics.updateLinkText;
 Graph.prototype.linkTextWrap = aesthetics.linkTextWrap;
 
 //From mouseClicks.js
