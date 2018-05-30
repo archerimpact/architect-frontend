@@ -135,7 +135,6 @@ class Graph {
     this.initializeButton = this.initializeButton.bind(this);
     this.nodeTextWrap = this.nodeTextWrap.bind(this);
     this.updateLinkText = this.updateLinkText.bind(this);
-    this.linkTextWrap = this.linkTextWrap.bind(this);
     this.displayTooltip = this.displayTooltip.bind(this);
     this.displayDebugTooltip = this.displayDebugTooltip.bind(this);
     this.populateNodeInfoBody = this.populateNodeInfoBody.bind(this);
@@ -789,24 +788,6 @@ class Graph {
         .attr('d', this.drawHull);
     }
 
-    // this.link.select('line')
-    //   .each(function(l) {
-    //     const x1 = l.source.x,
-    //           y1 = l.source.y,
-    //           x2 = l.target.x,
-    //           y2 = l.target.y;
-    //     const dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
-    //     const sourcePadding = l.target.radius + (l.bidirectional ? constants.MARKER_PADDING : 0),
-    //           targetPadding = l.source.radius + constants.MARKER_PADDING;
-    //     l.sourceX = x1 + (x2-x1) * (dist-sourcePadding) / dist;
-    //     l.sourceY = y1 + (y2-y1) * (dist-sourcePadding) / dist;
-    //     l.targetX = x2 - (x2-x1) * (dist-targetPadding) / dist;
-    //     l.targetY = y2 - (y2-y1) * (dist-targetPadding) / dist;
-    //   })
-    //   .attr('x1', (l) => { return l.sourceX; })
-    //   .attr('y1', (l) => { return l.sourceY; })
-    //   .attr('x2', (l) => { return l.targetX; })
-    //   .attr('y2', (l) => { return l.targetY; });
     this.link
       .each(function(l) {
         const x1 = l.source.x,
@@ -825,8 +806,9 @@ class Graph {
         return 'M' + l.sourceX + ',' + l.sourceY + 'L' + l.targetX + ',' + l.targetY;
       });
 
-    // this.link.select('text')
+    // this.linkContainer.select('text')
     //   .attr("transform", function(l) { 
+    //     console.log(l)
     //     let angle = utils.atan2(l.sourceY - l.targetY, l.sourceX - l.targetX);
     //     angle = ((l.sourceX > l.targetX && l.sourceY < l.targetY) || (l.sourceX > l.targetX && l.sourceY > l.targetY)) ? angle : angle + 180 % 360;
     //     const centerX = (l.sourceX + l.targetX)/2;
@@ -1042,7 +1024,6 @@ Graph.prototype.resetGraphOpacity = aesthetics.resetGraphOpacity;
 Graph.prototype.resetDragLink = aesthetics.resetDragLink;
 Graph.prototype.nodeTextWrap = aesthetics.nodeTextWrap;
 Graph.prototype.updateLinkText = aesthetics.updateLinkText;
-Graph.prototype.linkTextWrap = aesthetics.linkTextWrap;
 
 //From mouseClicks.js
 Graph.prototype.brushstart = mouseClicks.brushstart;

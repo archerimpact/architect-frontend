@@ -176,11 +176,7 @@ export function mouseover(d, self) {
     this.fadeGraph(d);
 
     // Add link text
-    //console.log(this.link.filter((l) => { return l.source === d || l.target === d; }))
-    //console.log(utils.getData(this.link.filter((l) => { return l.source === d || l.target === d; })))
-    this.updateLinkText(utils.getData(this.link.filter((l) => { return l.source === d || l.target === d; })))
-      //.call(this.addLinkText);
-    // this.addLinkText(this.links);
+    this.updateLinkText(utils.getData(this.link.filter((l) => { return l.source === d || l.target === d; })));
 
     // Text elongation
     if (this.printFull == 0) {

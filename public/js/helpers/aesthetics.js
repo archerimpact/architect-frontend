@@ -106,11 +106,10 @@ export function nodeTextWrap(textSelection, printFull, width=100) {
     let lineNum = 0;
     const dy = parseInt(text.attr('dy'));
     let tspan = text.append('tspan')
-      .attr('x', 0)
-      .attr('y', 0)
-      .attr('dy', dy)
-      .classed('text-shadow', true)
-      .classed('unselectable', true);
+          .attr('x', 0)
+          .attr('y', 0)
+          .attr('dy', dy)
+          .classed('unselectable', true);
 
     let i;
     for (i = 0; i < tokens.length; i++) {
@@ -122,17 +121,9 @@ export function nodeTextWrap(textSelection, printFull, width=100) {
         tspan = text.append('tspan')
           .attr('x', 0)
           .attr('y', 0)
-          .attr('dy', 15 * (lineNum++) + dy)
-          .text(line.join(' '))
+          .attr('dy', 15 * (++lineNum) + dy)
           .classed('unselectable', true);
           
-        tspan = text.append('tspan')
-          .attr('x', 0)
-          .attr('y', 0)
-          .attr('dy', 15 * lineNum + dy)
-          .classed('text-shadow', true)
-          .classed('unselectable', true);
-
         line = remainder ? [remainder] : [];
       }
 
@@ -142,12 +133,6 @@ export function nodeTextWrap(textSelection, printFull, width=100) {
     let finalLine = line.join(' ');
     finalLine = (printFull == 0 && i < tokens.length) ? `${finalLine.trim()}...` : finalLine;
     tspan.text(finalLine);
-    tspan = text.append('tspan')
-          .attr('x', 0)
-          .attr('y', 0)
-          .attr('dy', 15 * (lineNum++) + dy)
-          .text(finalLine)
-          .classed('unselectable', true);
   });
 }
 
@@ -166,43 +151,4 @@ export function updateLinkText(selection) {
       .text((l) => { return l.type; });
 
   this.linkText.exit().remove();
-}
-
-export function linkTextWrap(textSelection) {
-  textSelection.each(function (d) {
-    // Don't add link text to links within hulls
-    const parentLink = d3.select(this.parentNode).select('path')[0][0].__data__;
-    if (parentLink.source && parentLink.source.group && parentLink.source.group === parentLink.target.group) {
-      d3.select(this).text(null);
-      return;
-    }
-
-    // TODO: change this to reflect actual length of each link
-    const width = (constants.LINK_DISTANCE + 2 * (constants.MARKER_PADDING + constants.MARKER_SIZE_BIG)) - 2*constants.NODE_RADIUS; 
-
-    const text = d3.select(this);
-    const numChars = width / 4;
-    let linkText = text.text();
-    linkText = linkText.substr(0, numChars) + (numChars < linkText.length ? '...' : '');
-    text.text(null);
-
-    let line = [];
-    let remainder;
-    let lineNum = 0;
-    const dy = text.attr('dy');
-    let tspan = text.append('tspan')
-      .attr('x', 0)
-      .attr('y', 0)
-      .attr('dy', dy)
-      .classed('text-shadow', true)
-      .classed('unselectable', true)
-      .text(linkText);
-
-    tspan = text.append('tspan')
-      .attr('x', 0)
-      .attr('y', 0)
-      .attr('dy', dy)
-      .text(linkText)
-      .classed('unselectable', true);
-  });
 }
