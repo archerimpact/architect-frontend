@@ -14,7 +14,7 @@ class Minimap {
     this.container = null; // container for entire minimap
     this.box = null; // gray box for snippet into the graph
     this.image = null; // contains the actual svg image
-    this.isVisible = true;
+    this.isVisible = false;
 
     // minimap settings
     this.width = DEFAULT_MINIMAP_SIZE;

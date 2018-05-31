@@ -378,12 +378,12 @@ export function translateGraphAroundNode(d) {
 
 export function translateGraphAroundId(id) {
   // Center each vector, stretch, then put back
-  var node;
-  this.node.each((d)=> { if (d.id === id) { return node = d; } })
-    .classed("selected", (d) => {debugger; return true} );
-  if (node == null) { return; }
+  var d;
+  this.node.classed("selected", false)
+    .filter((node)=> { if (node.id === id) { d = node; return node; } })
+    .classed("selected", true);
+  if (d == null) { return; }
 
-  debugger
   const centerX = utils.getNewCoord(this.center[0], this.zoomTranslate[0], this.zoomScale);
   const centerY = utils.getNewCoord(this.center[1], this.zoomTranslate[1], this.zoomScale);
   // const centerX = (this.width * this.zoomScale) / 2;
@@ -397,11 +397,15 @@ export function translateGraphAroundId(id) {
 
   console.log("centerX: ", centerX, " centerY: ", centerY, " d.x: ", x, " d.y: ", y);
   x = centerX > x ? (centerX - x) : (x - centerX);
+  y = centerY > y ? (centerY - y) : (y - centerY);
 
   //console.log("this is where x is after: ", x, " and where y is after: ", y)
   this.isZooming = true;
   var translate = this.zoom.translate();
   var self = this;
+
+  x = x * this.zoomScale;
+  y = y * this.zoomScale;
 
   // Transition to the new view over 500ms
   d3.transition().duration(500).tween("translate", function () {

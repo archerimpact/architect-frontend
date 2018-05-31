@@ -568,8 +568,8 @@ class Graph {
     this.linkContainer = this.container.append('g').attr('class', 'link-items');
     this.linkText = this.linkContainer.selectAll('.link-text');
     this.link = this.linkContainer.selectAll('.link');
-    this.node = this.container.append('g').attr('class', 'node-items').selectAll('.node');
     this.hull = this.container.append('g').attr('class', 'hull-items').selectAll('.hull');
+    this.node = this.container.append('g').attr('class', 'node-items').selectAll('.node');
 
     this.force.on('tick', (e) => { this.ticked(e, this) });
 

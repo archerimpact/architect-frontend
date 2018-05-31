@@ -24,7 +24,7 @@ export function isMorePreferredState(val1, val2) {
 }
 
 export function isPossibleLink(val) {
-  return (val.substring(0, 8).toLowerCase() === "possibly" || val === "MATCHED_NUMBER");
+  return (val.substring(0, 8).toLowerCase() === "possibly" || val === "MATCHED_NUMBER" || val === "MATCHED_NAME");
 }
 
 export function isVisibleNode(val) {

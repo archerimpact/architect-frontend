@@ -155,7 +155,6 @@ export function createNode(type, name, event=null) {
     state: DISPLAYED,
     data: newNode
   }
-
   return newNode;
 }
 
