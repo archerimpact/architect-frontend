@@ -174,7 +174,7 @@ export function groupSame() {
   var alreadyGrouped = []
   var group = 0;
   for (var i = 0; i < this.links.length; i++) {
-    if (this.links[i].type.substring(0, 8).toLowerCase() === 'possibly') {
+    if (this.links[i].substring(0, 8).toLowerCase() === 'possibly') {
       var newGroup = true;
       for (var key in sameGroups) {
         if (sameGroups[key].indexOf(this.idToIndex[this.links[i].source.id]) >= 0) {

@@ -41,7 +41,7 @@ export function clicked(d, self, i) {
   const node = d3.select(self);
   const fixed = !(node.attr('dragfix') == 'true');
   node.classed('fixed', d.fixed = fixed);
-  // this.force.resume();
+  this.force.resume();
   d3.event.stopPropagation();
 }
 
@@ -81,8 +81,6 @@ export function dragstart(d, self) {
     .attr('dragfix', node.classed('fixed'))
     .attr('dragselect', node.classed('selected'))
     .attr('dragdistance', 0);
-  this.force.resume();
-
 }
 
 export function dragging(d, self) {
@@ -101,14 +99,13 @@ export function dragend(d, self) {
 
   if (node.attr('dragdistance')) {
     node.classed('fixed', d.fixed = true);
-    this.force.stop();
-    // this.force.resume();
   }
 
   this.isDragging = false;
   this.draggedNode = null;
   this.toRenderMinimap = true;
   this.tickCount = 0;
+  this.force.resume();
 }
 
 export function mousedown(d, self) {
@@ -178,12 +175,15 @@ export function mouseover(d, self) {
     this.hoveredNode = d;
     this.fadeGraph(d);
 
+    // Add link text
+    this.updateLinkText(utils.getData(this.link.filter((l) => { return l.source === d || l.target === d; })));
+
     // Text elongation
     if (this.printFull == 0) {
       d3.select(self)
         .select('.node-name')
-        .text(utils.processNodeName(utils.getName(d), this.printFull), 2)
-        .call(this.textWrap, 2);
+        .text(utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull), 2)
+        .call(this.wrapNodeText, 2);
     }
   }
 
@@ -204,12 +204,15 @@ export function mouseout(d, self) {
   // Show drag link
   if (this.editMode && this.mousedownNode) { this.dragLink.style('visibility', 'visible'); }
 
+  // Remove link text
+  if (!this.isDragging) this.updateLinkText([]);
+
   // Text truncation
   if (this.printFull != 1) {
     d3.select(self)
       .select('.node-name')
-      .text((d) => { return d.group ? '' : utils.processNodeName(utils.getName(d), this.printFull); })
-      .call(this.textWrap, this.printFull);
+      .text((d) => { return d.group ? '' : utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
+      .call(this.wrapNodeText, this.printFull);
   } 
 
   // Restore node drag functionality for future left clicks
@@ -352,12 +355,9 @@ export function zoomButton(zoom_in) {
 }
 
 export function translateGraphAroundNode(d) {
-  debugger;
   // Center each vector, stretch, then put back
-  const centerX = this.center[0] * this.zoomScale + this.zoomTranslate[0];
-  const centerY = this.center[1] * this.zoomScale + this.zoomTranslate[1];
-  var x = centerX > d.x ? (centerX - d.x) : -1*(d.x-centerX);
-  var y = centerY > d.y ? (centerY - d.y) : -1*(d.y-centerY);
+  var x = this.center[0] > d.x ? (this.center[0] - d.x) : -1*(d.x-this.center[0]);
+  var y = this.center[1] > d.y ? (this.center[1] - d.y) : -1*(d.y-this.center[1]);
   var translate = this.zoom.translate();
   var scale = this.zoom.scale();
   this.isZooming = true;
@@ -378,14 +378,12 @@ export function translateGraphAroundNode(d) {
 
 export function translateGraphAroundId(id) {
   // Center each vector, stretch, then put back
-  var d;
-  this.node.classed("selected", false)
-    .filter((node)=> { if (node.id === id) { d = node; return node; } })
-    .classed("selected", true);
-  if (d == null) { return; }
+  var node;
+  this.node.each((d)=> { if (d.id === id) { return node = d; } })
+    .classed("selected", (d) => {debugger; return true} );
+  if (node == null) { return; }
 
-  console.log("translate: ", this.zoomTranslate, " scale: ", this.zoomScale, " center: ", this.center, " d.x: ", d.x, " d.y: ", d.y);
-
+  debugger
   const centerX = utils.getNewCoord(this.center[0], this.zoomTranslate[0], this.zoomScale);
   const centerY = utils.getNewCoord(this.center[1], this.zoomTranslate[1], this.zoomScale);
   // const centerX = (this.width * this.zoomScale) / 2;
@@ -398,16 +396,13 @@ export function translateGraphAroundId(id) {
   // let y = d.y;
 
   console.log("centerX: ", centerX, " centerY: ", centerY, " d.x: ", x, " d.y: ", y);
-  x = centerX > x ? (centerX - x) :  -1*(x - centerX);
-  y = centerY > y ? (centerY - y) : -1*(y - centerY);
+  x = centerX > x ? (centerX - x) : (x - centerX);
 
-  console.log("this is where x is after: ", x, " and where y is after: ", y)
+  //console.log("this is where x is after: ", x, " and where y is after: ", y)
   this.isZooming = true;
   var translate = this.zoom.translate();
   var self = this;
 
-  x = x * this.zoomScale;
-  y = y * this.zoomScale;
   // Transition to the new view over 500ms
   d3.transition().duration(500).tween("translate", function () {
     var interpolateTranslate = d3.interpolate(translate, [x, y]);

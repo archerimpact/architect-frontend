@@ -23,20 +23,8 @@ export function isMorePreferredState(val1, val2) {
   else if (val1 === HIDDEN) { return true; }
 }
 
-export function getName(d) {
-  if (d.name) {
-    return d.name;
-  } else if (d.number) {
-    return d.number;
-  } else if (d.combined) {
-    return d.combined;
-  } else if (d.dataset) {
-    return d.dataset;
-  }
-}
-
-export function getNewCoord(x, translate, scale) {
-  return x - translate / scale;
+export function isPossibleLink(val) {
+  return (val.substring(0, 8).toLowerCase() === "possibly" || val === "MATCHED_NUMBER");
 }
 
 export function isVisibleNode(val) {
@@ -47,8 +35,8 @@ export function isGroup(d) {
   return (d.type === GROUP || d.type === GROUP_HULL);
 }
 
-export function isPossibleLink(val) {
-  return (val.substring(0, 8).toLowerCase() === "possibly" || val === "MATCHED_NUMBER");
+export function getNewCoord(x, translate, scale) {
+  return x - translate / scale;
 }
 
 export function isExpandable(d) {  
@@ -59,7 +47,7 @@ export function isExpandable(d) {
     links = d.linkTypes.HAS_KNOWN_LOCATION ? links - d.linkTypes.HAS_KNOWN_LOCATION : links;
     // links = d.linkTypes.HAS_ID_DOC ? links - d.linkTypes.HAS_ID_DOC : links;
   }
-  return (parseInt(links) > d.weight);
+  return (links > d.weight);
 }
 
 export function addRowColumn(matrix) {
@@ -125,9 +113,9 @@ export function createSVGString(targetSVG, x1, x2, y1, y2, width=null, height=nu
   svgClone.setAttribute('viewBox', `${x1} ${y1} ${width} ${height}`);
 
   Array.from(svgClone.childNodes).map((e) => {
-    if (e.classList[0] !== "graphItems") { svgClone.removeChild(e); }
+    if (e.classList[0] !== "graph-items") { svgClone.removeChild(e); }
     Array.from(e.childNodes).map((e) => {
-        if (e.classList[0] === "svggrid") { e.parentNode.removeChild(e); }
+        if (e.classList[0] === "svg-grid") { e.parentNode.removeChild(e); }
     });
   });
 
@@ -152,6 +140,10 @@ export function createSVGString(targetSVG, x1, x2, y1, y2, width=null, height=nu
   
   const svgString = new XMLSerializer().serializeToString(svgClone);
   return svgString;
+}
+
+export function getData(selection) {
+  return selection[0].map(x => x.__data__);
 }
 
 // =================
@@ -233,4 +225,13 @@ export function then(transition, callback) {
   transition 
     .each(function() { ++n; }) 
     .each("end", function() { if (!--n) callback.apply(this, arguments); }); 
+}
+
+export function atan2(y, x) {
+  const a = Math.min(Math.abs(x), Math.abs(y)) / Math.max(Math.abs(x), Math.abs(y));
+  const s = a*a;
+  let r = ((-0.0464964749 * s + 0.15931422) * s - 0.327622764) * s * a + a;
+  if (Math.abs(y) > Math.abs(x)) { r = 1.57079637 - r; }
+  if (x < 0) { r = Math.PI - r; }
+  return ((y < 0) ? -r : r) * 180 / Math.PI;
 }
