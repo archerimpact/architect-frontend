@@ -137,18 +137,23 @@ export function nodeTextWrap(textSelection, printFull, width=100) {
 }
 
 export function updateLinkText(selection) {
-  this.linkText = this.linkContainer.selectAll('.link-text')
+  const linkEnter = this.linkContainer.selectAll('.link-text')
     .data(selection, (l) => { return l.id; });
 
-  this.linkText.enter()
+  this.linkText = linkEnter.enter()
     .append('text')
       .attr('class', 'link-text')
       .attr('text-anchor', 'middle')
-      .attr('dy', '.3em')
+      .attr('dy', '.3em');
+
+  this.linkText
     .append('textPath')
       .attr('startOffset', '50%')
       .attr('xlink:href', (l) => { return `#link-${l.id}`; })
       .text((l) => { return l.type; });
 
-  this.linkText.exit().remove();
+  linkEnter.exit().remove();
+  this.force.resume();
+  this.force.tick();
+  this.force.stop();
 }

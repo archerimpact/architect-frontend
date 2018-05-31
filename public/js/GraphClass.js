@@ -362,8 +362,9 @@ class Graph {
       ['gray', 'blue']
     ];
     const markerList = this.deriveMarkerData(this.getMarkerIdPermutations(possibleAttrs));
+    const defs = this.svg.append('defs');
     for (let marker of markerList) {
-      this.svg.append('defs')
+      defs
         .append('marker')
           .attr('id', marker.id)
           .attr('viewBox', '5 -5 10 10')
@@ -565,6 +566,7 @@ class Graph {
 
     // Create selectors
     this.linkContainer = this.container.append('g').attr('class', 'link-items');
+    this.linkText = this.linkContainer.selectAll('.link-text');
     this.link = this.linkContainer.selectAll('.link');
     this.node = this.container.append('g').attr('class', 'node-items').selectAll('.node');
     this.hull = this.container.append('g').attr('class', 'hull-items').selectAll('.hull');
@@ -793,15 +795,14 @@ class Graph {
         return 'M' + l.sourceX + ',' + l.sourceY + 'L' + l.targetX + ',' + l.targetY;
       });
 
-    // this.linkContainer.select('text')
-    //   .attr("transform", function(l) { 
-    //     console.log(l)
-    //     let angle = utils.atan2(l.sourceY - l.targetY, l.sourceX - l.targetX);
-    //     angle = ((l.sourceX > l.targetX && l.sourceY < l.targetY) || (l.sourceX > l.targetX && l.sourceY > l.targetY)) ? angle : angle + 180 % 360;
-    //     const centerX = (l.sourceX + l.targetX)/2;
-    //     const centerY = (l.sourceY + l.targetY)/2;
-    //     return `rotate(${angle} ${centerX} ${centerY}) translate(${centerX},${centerY})`;
-    //   });
+    this.linkText
+      .attr('transform', function(l) {
+        if (l.sourceX < l.targetX) return '';
+        const bbox = this.getBBox();
+        const centerX = bbox.x + bbox.width/2;
+        const centerY = bbox.y + bbox.height/2;
+        return `rotate(180 ${centerX} ${centerY})`;
+      });
 
     if (this.editMode && this.mousedownNode) {
       const x1 = this.mousedownNode.x * this.zoomScale + this.zoomTranslate[0],
