@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import * as utils from './utils.js';
+
 import { isGroup, then } from './utils.js';
 import * as constants from './constants.js';
 import * as colors from './colorConstants.js';
@@ -39,8 +40,8 @@ export function getNodeColor(d) {
 }
 
 export function styleLink(selection, isSelected) {
+  selection.classed('selected', isSelected);
   selection
-    .classed('selected', isSelected)
     .style('stroke-width', (l) => { return (l.source.group && l.target.group ? constants.GROUP_STROKE_WIDTH : constants.STROKE_WIDTH) + 'px'; })
     .style('marker-start', (l) => { 
       if (!l.bidirectional) { return ''; }
@@ -94,8 +95,7 @@ export function resetDragLink(self) {
 }
 
 // Wrap text
-export function textWrap(textSelection, printFull, width=100) {
-  var self = this;
+export function wrapNodeText(textSelection, printFull, width=100) {
   textSelection.each(function (d) {
     const text = d3.select(this);
     const tokens = text.text().split(' ');
@@ -106,13 +106,13 @@ export function textWrap(textSelection, printFull, width=100) {
     let lineNum = 0;
     const dy = parseInt(text.attr('dy'));
     let tspan = text.append('tspan')
-      .attr('x', 0)
-      .attr('y', 0)
-      .attr('dy', dy)
-      .classed('text-shadow', true)
-      .classed('unselectable', true);
+          .attr('x', 0)
+          .attr('y', 0)
+          .attr('dy', dy)
+          .classed('unselectable', true);
 
-    for (let i = 0; i < tokens.length; i++) {
+    let i;
+    for (i = 0; i < tokens.length; i++) {
       line.push(tokens[i]);
       tspan = tspan.text(line.join(' '));
       if (tspan.node().getComputedTextLength() > width) {
@@ -121,17 +121,9 @@ export function textWrap(textSelection, printFull, width=100) {
         tspan = text.append('tspan')
           .attr('x', 0)
           .attr('y', 0)
-          .attr('dy', 15 * (lineNum++) + dy)
-          .text(line.join(' '))
+          .attr('dy', 15 * (++lineNum) + dy)
           .classed('unselectable', true);
           
-        tspan = text.append('tspan')
-          .attr('x', 0)
-          .attr('y', 0)
-          .attr('dy', 15 * lineNum + dy)
-          .classed('text-shadow', true)
-          .classed('unselectable', true);
-
         line = remainder ? [remainder] : [];
       }
 
@@ -139,13 +131,34 @@ export function textWrap(textSelection, printFull, width=100) {
     }
 
     let finalLine = line.join(' ');
-    finalLine = (printFull == 0 && lineNum > 0) ? `${finalLine.trim()}...` : finalLine;
+    finalLine = (printFull == 0 && i < tokens.length) ? `${finalLine.trim()}...` : finalLine;
     tspan.text(finalLine);
-    tspan = text.append('tspan')
-          .attr('x', 0)
-          .attr('y', 0)
-          .attr('dy', 15 * (lineNum++) + dy)
-          .text(finalLine)
-          .classed('unselectable', true);
   });
+}
+
+export function updateLinkText(selection) {
+  const self = this;
+  const linkEnter = this.linkContainer.selectAll('.link-text')
+    .data(selection, (l) => { return l.id; });
+
+  this.linkText = linkEnter.enter()
+    .append('text')
+      .attr('class', 'link-text')
+      .attr('text-anchor', 'middle')
+      .attr('dy', '.3em');
+
+  this.linkText
+    .append('textPath')
+      .attr('startOffset', '50%')
+      .attr('xlink:href', (l) => { return `#link-${l.id}`; })
+      .attr('length', (l) => { return l.distance; })
+      .text((l) => { return l.type; });
+
+  linkEnter.exit().remove();
+  this.force.resume();
+}
+
+export function wrapLinkText(selection) {
+  if (!selection) return;
+  // TODO: Implement later
 }

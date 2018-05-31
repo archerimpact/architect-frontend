@@ -51,7 +51,7 @@ svg line {
   transition-duration: 50ms;
 }
 
-.link text {
+/*.link text {
   font-size: 12px;
   stroke: #545454;
   stroke-width: .2px;
@@ -61,6 +61,15 @@ svg line {
 .link tspan.text-shadow {
   stroke-width: 3px;
   stroke: #fff;
+}*/
+
+.link-items text {
+  stroke: #fff;
+  stroke-width: 2px;
+  fill: #545454;
+  paint-order: stroke;
+  font-size: 14px;
+  font-weight: bolder; 
 }
 
 .link.dynamic {
@@ -76,11 +85,14 @@ svg line {
   transition-duration: 50ms;
 }
 
-.node text {
-  stroke: #545454;
+.node tspan {
+  stroke: #fff;
+  stroke-width: 3px; 
+  font-size: 15px;
   fill: #545454;
+  font-weight: bolder;
+  paint-order: stroke;
   cursor: pointer;
-  stroke-width: 1px; 
 }
 
 .node text.icon {
@@ -91,11 +103,6 @@ svg line {
 .node circle {
   cursor: pointer;
   stroke-width: 3px;
-}
-
-.node tspan.text-shadow {
-  stroke-width: 4px;
-  stroke: #fff;
 }
 
 .node.fixed circle {
@@ -211,7 +218,7 @@ i.fa-close {
   cursor: move;
 }
 
-.link line {
+path.link {
   stroke: #545454;
   opacity: 0.7;
   transition-property: opacity;
@@ -223,7 +230,7 @@ i.fa-close {
   pointer-events: none;
 }
 
-.link.hidden line {
+path.link.hidden  {
   stroke-width: 0;
 }
 
@@ -266,17 +273,6 @@ i.fa-close {
   fill: #bbbbbb !important;
 }
 
-.hull, path {
-  fill: #0d77e2;
-  stroke-opacity: 1;
-  fill-opacity: 0.2;
-  stroke: #7cbdff;
-  stroke-width: 2px;
-  transition-property: stroke-opacity, fill-opacity;
-  transition-delay: 0ms;
-  transition-duration: 50ms;
-}
-
 .faded {
   transition-delay: 75ms;
 }
@@ -298,7 +294,7 @@ i.fa-close {
   transition-property: stroke-opacity, fill-opacity;
 }
 
-.link.same-as line {
+path.link.same-as {
   stroke-dasharray: 5,3;
 }
 
@@ -315,7 +311,7 @@ i.fa-close {
   fill: #0d77e2 !important;
 }
 
-.link.selected line {
+path.link.selected {
   stroke: #0d77e2;
 }
 
