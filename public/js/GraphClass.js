@@ -133,7 +133,7 @@ class Graph {
     this.getToolbarLabels = this.getToolbarLabels.bind(this);
     this.initializeZoomButtons = this.initializeZoomButtons.bind(this);
     this.initializeButton = this.initializeButton.bind(this);
-    this.nodeTextWrap = this.nodeTextWrap.bind(this);
+    this.wrapNodeText = this.wrapNodeText.bind(this);
     this.updateLinkText = this.updateLinkText.bind(this);
     this.displayTooltip = this.displayTooltip.bind(this);
     this.displayDebugTooltip = this.displayDebugTooltip.bind(this);
@@ -587,8 +587,7 @@ class Graph {
   setData(centerid, nodes, links, byIndex) {
     this.setMatrix(nodes, links, byIndex);
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
-    this.update();
-    for (let i = 250; i > 0; --i) this.force.tick();  
+    this.update(null, 500); 
 
     // set global node id to match the nodes getting passed in
     nodes.map((node) => {
@@ -694,7 +693,7 @@ class Graph {
       .attr('dy', '40px')
       .classed('unselectable', true)
       .text((d) => { return d.group ? '' : utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
-      .call(this.nodeTextWrap, this.printFull)
+      .call(this.wrapNodeText, this.printFull)
       .on('click', function (d) { self.stopPropagation(); })
       .on('mouseover', function (d) { self.stopPropagation(); })
       .on('mouseout', function (d) { self.stopPropagation(); })
@@ -742,7 +741,7 @@ class Graph {
   // Occurs each tick of simulation
   ticked(e, self) {
     const classThis = this;
-    // this.force.resume();
+    this.force.resume();
     this.xbound = [this.width, 0];
     this.ybound = [this.height, 0];
     this.tickCount += 1;
@@ -783,13 +782,13 @@ class Graph {
               y1 = l.source.y,
               x2 = l.target.x,
               y2 = l.target.y;
-        const dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+        l.distance = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
         const sourcePadding = l.target.radius + (l.bidirectional ? constants.MARKER_PADDING : 0),
               targetPadding = l.source.radius + constants.MARKER_PADDING;
-        l.sourceX = x1 + (x2-x1) * (dist-sourcePadding) / dist;
-        l.sourceY = y1 + (y2-y1) * (dist-sourcePadding) / dist;
-        l.targetX = x2 - (x2-x1) * (dist-targetPadding) / dist;
-        l.targetY = y2 - (y2-y1) * (dist-targetPadding) / dist;
+        l.sourceX = x1 + (x2-x1) * (l.distance-sourcePadding) / l.distance;
+        l.sourceY = y1 + (y2-y1) * (l.distance-sourcePadding) / l.distance;
+        l.targetX = x2 - (x2-x1) * (l.distance-targetPadding) / l.distance;
+        l.targetY = y2 - (y2-y1) * (l.distance-targetPadding) / l.distance;
       })
       .attr('d', (l) => {
         return 'M' + l.sourceX + ',' + l.sourceY + 'L' + l.targetX + ',' + l.targetY;
@@ -902,7 +901,7 @@ class Graph {
           this.printFull = (this.printFull + 1) % 3;
           this.selectAllNodeNames()
               .text((d) => { return utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
-              .call(this.nodeTextWrap, this.printFull);
+              .call(this.wrapNodeText, this.printFull);
         }
         
         // t: expand by degree
@@ -1010,8 +1009,9 @@ Graph.prototype.fillGroupNodes = aesthetics.fillGroupNodes;
 Graph.prototype.fadeGraph = aesthetics.fadeGraph;
 Graph.prototype.resetGraphOpacity = aesthetics.resetGraphOpacity;
 Graph.prototype.resetDragLink = aesthetics.resetDragLink;
-Graph.prototype.nodeTextWrap = aesthetics.nodeTextWrap;
+Graph.prototype.wrapNodeText = aesthetics.wrapNodeText;
 Graph.prototype.updateLinkText = aesthetics.updateLinkText;
+Graph.prototype.wrapLinkText = aesthetics.wrapLinkText;
 
 //From mouseClicks.js
 Graph.prototype.brushstart = mouseClicks.brushstart;

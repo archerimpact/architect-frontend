@@ -183,7 +183,7 @@ export function mouseover(d, self) {
       d3.select(self)
         .select('.node-name')
         .text(utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull), 2)
-        .call(this.nodeTextWrap, 2);
+        .call(this.wrapNodeText, 2);
     }
   }
 
@@ -212,7 +212,7 @@ export function mouseout(d, self) {
     d3.select(self)
       .select('.node-name')
       .text((d) => { return d.group ? '' : utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
-      .call(this.nodeTextWrap, this.printFull);
+      .call(this.wrapNodeText, this.printFull);
   } 
 
   // Restore node drag functionality for future left clicks

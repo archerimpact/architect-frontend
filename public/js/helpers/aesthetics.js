@@ -95,7 +95,7 @@ export function resetDragLink(self) {
 }
 
 // Wrap text
-export function nodeTextWrap(textSelection, printFull, width=100) {
+export function wrapNodeText(textSelection, printFull, width=100) {
   textSelection.each(function (d) {
     const text = d3.select(this);
     const tokens = text.text().split(' ');
@@ -137,6 +137,7 @@ export function nodeTextWrap(textSelection, printFull, width=100) {
 }
 
 export function updateLinkText(selection) {
+  const self = this;
   const linkEnter = this.linkContainer.selectAll('.link-text')
     .data(selection, (l) => { return l.id; });
 
@@ -150,10 +151,14 @@ export function updateLinkText(selection) {
     .append('textPath')
       .attr('startOffset', '50%')
       .attr('xlink:href', (l) => { return `#link-${l.id}`; })
+      .attr('length', (l) => { return l.distance; })
       .text((l) => { return l.type; });
 
   linkEnter.exit().remove();
   this.force.resume();
-  this.force.tick();
-  this.force.stop();
+}
+
+export function wrapLinkText(selection) {
+  if (!selection) return;
+  // TODO: Implement later
 }
