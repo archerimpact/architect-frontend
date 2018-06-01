@@ -10,23 +10,15 @@ import './style.css';
 
 class Graph extends Component {
 
-  constructor(props) {
-    super(props);
-    this.renderProjectToolbar = this.renderProjectToolbar.bind(this);
-    this.expandNodeFromData = this.expandNodeFromData.bind(this);
-    this.setCurrentNode = this.setCurrentNode.bind(this);
-    this.saveCurrentProjectData = this.saveCurrentProjectData.bind(this);
-  }
-
-  setCurrentNode(d) {
+  setCurrentNode = (d) => {
     this.props.actions.setCurrentNode(d);
   }
 
-  expandNodeFromData(d) {
+  expandNodeFromData = (d) => {
     this.props.actions.addToGraphFromId(this.props.graph, d.id);
   }
 
-  saveCurrentProjectData() {
+  saveCurrentProjectData = () => {
     this.props.actions.saveCurrentProjectData(this.props.graph);
   }
 
@@ -57,7 +49,7 @@ class Graph extends Component {
     return newArray;
   }
 
-  renderProjectToolbar() {
+  renderProjectToolbar = () => {
     return (
       <div className="back-button" onClick={() => {
         this.props.dispatch(graphActions.resetProject())
@@ -87,7 +79,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state) {
   let sidebarSize = state.data.sidebarVisible ? 600 : 0;
   let graphData = null
   if (state.data.currentProject != null && state.data.currentProject.graphData != null) {

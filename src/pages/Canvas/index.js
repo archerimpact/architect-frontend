@@ -24,7 +24,7 @@ class Canvas extends Component {
       this.props.actions.fetchProject(this.props.match.params.investigationId);
     }
     if (this.props.currentNode != null) {
-      this.props.history.push(this.baseUrl+'/entity/'+encodeURIComponent(this.props.currentNode.id))
+      this.props.history.push(this.baseUrl+'/entity/' + encodeURIComponent(this.props.currentNode.id))
     }
     if (this.props.match.params && this.props.match.params.sidebarState === 'search' && this.props.match.params.query != null) {
       this.props.actions.fetchSearchResults(this.props.match.params.query);
@@ -72,9 +72,9 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, props) {
   return {
-    sidebarVisible: state.data.sidebarVisible,
-    currentProject: state.data.currentProject,
-    currentNode: state.data.currentNode,
+    sidebarVisible: state.graph.sidebarVisible,
+    currentProject: state.graph.currentProject,
+    currentNode: state.graph.currentNode,
   };
 }
 

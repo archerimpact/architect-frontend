@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Redirect, withRouter } from 'react-router-dom';
+import { Redirect, withRouter, Link } from 'react-router-dom';
 import { authenticateAccount } from "../../server/auth_routes";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -17,21 +17,18 @@ class Login extends Component {
             redirectToReferrer: false,
             error: '',
         };
-        this.handleEmailInputChange = this.handleEmailInputChange.bind(this);
-        this.handlePasswordInputChange = this.handlePasswordInputChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleEmailInputChange(event) {
+    handleEmailInputChange = (event) => {
         console.log('typing email');
         this.setState({email: event.target.value});
-    }
+    };
 
-    handlePasswordInputChange(event) {
+    handlePasswordInputChange = (event) => {
         this.setState({password: event.target.value});
-    }
+    };
 
-    handleSubmit(event) {
+    handleSubmit = (event) => {
         event.preventDefault();
         console.log('Submitting...');
         // TODO: Implement form validation
@@ -110,17 +107,15 @@ class Login extends Component {
                             >Login </button>
                         </div>
 
-                        {/* this should go to create_account }
-                        <button 
+                        <button
                             className="btn btn-primary"
                             style={{margin: 15}}
-                            onClick={this.handleSubmit} 
+                            onClick={this.handleSubmit}
                         >Sign Up </button>
-                        
+
                         <div>
                             <Link to={'/create_account'} style={{color: 'inherit'}}> New around here? Create an Account!</Link>
                         </div>
-                        */}
                     </form>
                     <img src="https://preview.ibb.co/egm3KS/gradient_real_bottom_graph.png" id="right-img" className="" />
                 </div>
@@ -138,7 +133,7 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
     return {
-        savedEntities: state.data.savedEntities,
+        savedEntities: state.data.savedEntities, // what data you want to access as props
         savedSources: state.data.savedSources
     };
 }

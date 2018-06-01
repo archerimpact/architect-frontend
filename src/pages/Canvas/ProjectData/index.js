@@ -3,16 +3,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
-import * as actions from '../Graph/graphActions';
+import * as graphActions from '../Graph/graphActions';
 import EntityCard from '../EntityCard';
 
 import './style.css';
 
 class ProjectData extends Component {
-
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     if (this.props.currentProject === null) {
@@ -37,15 +33,15 @@ class ProjectData extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(actions, dispatch),
+    actions: bindActionCreators(graphActions, dispatch),
     dispatch: dispatch,
   };
 }
 
-function mapStateToProps(state, props) {
-  if (state.data.currentProject) {
+function mapStateToProps(state) {
+  if (state.graph.currentProject) {
     return {
-      currentProject: state.data.currentProject
+      currentProject: state.graph.currentProject
     }
   }
   return {

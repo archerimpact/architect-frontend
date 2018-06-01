@@ -82,7 +82,7 @@ class Graph {
     this.node = null;
     this.link = null;
     this.hull = null;
-    this.nodes = [];
+    this.nodes = []; // adding or removing data from here TODO refactor
     this.links = [];
     this.hulls = [];
     this.nodeEnter = null;
@@ -590,7 +590,7 @@ class Graph {
     this.initializeMenuActions();
   }
 
-  // Updates nodes and links according to current data
+  // Updates nodes and links according to current data TODO enter redux connection to new store (make new store)
   update(event=null, ticks=null, minimap=true) {
     var self = this;
 

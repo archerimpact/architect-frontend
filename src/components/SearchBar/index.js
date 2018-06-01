@@ -9,10 +9,6 @@ class SearchBar extends Component {
     this.state = {
       settingsExpanded: false
     };
-    this.submitSearch = this.submitSearch.bind(this);
-    this.toggleSettings = this.toggleSettings.bind(this);
-    this.getDataSources = this.getDataSources.bind(this);
-    this.getEntityTypes = this.getEntityTypes.bind(this);
   }
 
   componentDidMount() {
@@ -24,27 +20,27 @@ class SearchBar extends Component {
     }
   }
 
-  submitSearch(e) {
+  submitSearch = (e) => {
     e.preventDefault();
     this.props.onSubmit(this.refs.query.value);
   }
 
-  toggleSettings(e) {
+  toggleSettings = (e) => {
     e.preventDefault();
     const current = this.state.settingsExpanded;
     this.setState({settingsExpanded: !current});
   }
 
-  getDataSources() {
+  getDataSources = () => {
     /* TODO can later be replaced with an actual call to the server to get the datasets */
     return ['All datasets', 'OFAC sanctions', 'OpenCorporate records', 'UK Corporate Registry records'];
   }
 
-  getEntityTypes() {
+  getEntityTypes = () => {
     return ['All types', 'Individual', 'Organization', 'Vessel', 'Aircraft'];
   }
 
-  render (){
+  render() {
     return (
       <div>
         <div className="search-input-container">

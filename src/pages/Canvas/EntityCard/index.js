@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-// import queryString from 'query-string';
 import * as server from '../../../server';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../../Canvas/Graph/graphActions';
+import * as graphActions from '../../Canvas/Graph/graphActions';
 
 import EntityAttributes from '../EntityAttributes';
 
@@ -14,8 +13,6 @@ class EntityCard extends Component {
 
   constructor(props) {
     super(props);
-    this.toggleCollapse = this.toggleCollapse.bind(this);
-    this.renderButtons = this.renderButtons.bind(this);
     let isDataReady = !props.shouldFetch || !isNaN(parseInt(this.props.id));
     let urlId = decodeURIComponent(this.props.id).split("/");
     let urlName = urlId[urlId.length - 1];
@@ -37,12 +34,12 @@ class EntityCard extends Component {
     }
   }
 
-  toggleCollapse() {
+  toggleCollapse = () => {
     const current = this.state.collapsed;
     this.setState({ collapsed: !current });
   }
 
-  renderButtons() {
+  renderButtons = () => {
     let action, actionFunc;
     const url = '/build/' + this.props.match.params.investigationId + '/entity/' + encodeURIComponent(this.props.id);
     if (this.props.currentProject && this.props.currentProject.graphData && this.props.currentProject.graphData.nodes && this.props.currentProject.graphData.nodes.some(e => e.id === this.props.id)) {
@@ -65,7 +62,7 @@ class EntityCard extends Component {
       </div>
     )
 
-  }
+  };
 
   render() {
     // TODO centralize
@@ -102,12 +99,12 @@ class EntityCard extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(actions, dispatch),
+    actions: bindActionCreators(graphActions, dispatch),
     dispatch: dispatch,
   };
 }
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state) {
   return {
     currentProject: state.data.currentProject,
   };

@@ -43,14 +43,14 @@ export function fetchProject(id) {
 	return (dispatch) => {
 		server.getProject(id)
 			.then((data)=>{
-				let graphData
+				let graphData;
 				try {
 					graphData = JSON.parse(data.message.data)
 				}
 				catch (err) {
 					graphData = null
 				}
-				let proj = {...data.message, data: graphData}
+				let proj = {...data.message, data: graphData};
 
 				dispatch(storeProject(proj));
 			})

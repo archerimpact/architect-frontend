@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import DatabaseSearchBar from '../../components/DatabaseSearchBar'
 
 import './style.css';
-class Home extends Component {
+
+export default class Home extends Component {
 
   render() {
     return (
@@ -16,5 +17,3 @@ class Home extends Component {
     );
   }
 }
-
-export default Home;

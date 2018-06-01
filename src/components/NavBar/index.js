@@ -13,8 +13,6 @@ class NavBar extends Component {
 			dropdownShow: 'none',
 			visible: true,
 		};
-		this.toggleDropdown = this.toggleDropdown.bind(this);
-		this.handleClickOutside = this.handleClickOutside.bind(this);
 	}
 
 	componentDidMount() {
@@ -39,7 +37,7 @@ class NavBar extends Component {
 	// 	}
 	// }
 
-	handleClickOutside(event) {
+	handleClickOutside = (event) => {
 		let targetClass = event.target.className;
 		if (targetClass === 'nav-dropbtn') {
 			return this.toggleDropdown();
@@ -51,7 +49,7 @@ class NavBar extends Component {
 		}
 	}
 
-	toggleDropdown() {
+	toggleDropdown = () => {
 		let newShow = '';
 		if (this.state.dropdownShow === 'none') {
 			newShow = 'block';
@@ -61,6 +59,7 @@ class NavBar extends Component {
 		this.setState({ dropdownShow: newShow })
 		return true
 	}
+
 	render() {
 		const authenticated = (
 			<nav className="navbar navbar-expand-lg navbar-dark bg-primary">

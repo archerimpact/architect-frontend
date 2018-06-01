@@ -16,25 +16,21 @@ class CreateAccount extends Component {
       error_message: '',
       redirectToReferrer: false
     };
-    this.handleEmailInputChange = this.handleEmailInputChange.bind(this);
-    this.handlePasswordInputChange = this.handlePasswordInputChange.bind(this);
-    this.handlePasswordConfInputChange = this.handlePasswordConfInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleEmailInputChange(event) {
+  handleEmailInputChange = (event) => {
     this.setState({ email: event.target.value });
   }
 
-  handlePasswordInputChange(event) {
+  handlePasswordInputChange = (event) => {
     this.setState({ password: event.target.value });
   }
 
-  handlePasswordConfInputChange(event) {
+  handlePasswordConfInputChange = (event) => {
     this.setState({ passwordConf: event.target.value });
   }
 
-  handleSubmit(event) {
+  handleSubmit = (event) => {
     // TODO: Implement form validation
     var self = this;
     registerAccount({ username: this.state.email, password: this.state.password })
@@ -71,7 +67,6 @@ class CreateAccount extends Component {
         }} >
           <input
             placeholder="alice@investigator.com"
-            fullWidth={false}
             value={this.state.email}
             style={{ width: 380, marginRight: 20 }}
             onChange={this.handleEmailInputChange}
@@ -82,7 +77,6 @@ class CreateAccount extends Component {
           <input
             placeholder="**********"
             label="Enter a password"
-            fullWidth={false}
             value={this.state.password}
             style={{ width: 380, marginRight: 20 }}
             onChange={this.handlePasswordInputChange}
@@ -93,7 +87,6 @@ class CreateAccount extends Component {
           <input
             placeholder="**********"
             label="Confirm password"
-            fullWidth={false}
             value={this.state.passwordConf}
             style={{ width: 380, marginRight: 20 }}
             onChange={this.handlePasswordConfInputChange}
@@ -103,7 +96,6 @@ class CreateAccount extends Component {
           <br />
           <button
             style={{ margin: 15 }}
-            primary
             onClick={this.handleSubmit}
             label="Create account"
             type="submit"
@@ -114,6 +106,12 @@ class CreateAccount extends Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    random: state
+  }
+}
+
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(actions, dispatch),
@@ -121,4 +119,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default withRouter(connect({}, mapDispatchToProps)(CreateAccount));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CreateAccount));

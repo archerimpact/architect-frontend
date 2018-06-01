@@ -23,7 +23,6 @@ class Entity extends Component {
     this.state = {
       currentEntity: null,
     };
-    this.renderEntity = this.renderEntity.bind(this);
   }
 
   componentWillMount() {
@@ -43,7 +42,7 @@ class Entity extends Component {
   }
 
 
-  renderEntity(node, nodes, links, keys) {
+  renderEntity = (node, nodes, links, keys) => {
     const nodeMap = {};
     if (node == null) {
       return null
@@ -236,8 +235,8 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, props) {
   return {
-    currentNode: state.data.currentNode,
-    currentEntity: state.data.currentEntity
+    currentNode: state.graph.currentNode,
+    currentEntity: state.graph.currentEntity
   };
 }
 

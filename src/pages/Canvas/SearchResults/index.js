@@ -6,29 +6,26 @@ import SearchCard from '../SearchCard';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
-import * as actions from '../Graph/graphActions';
+import * as graphActions from '../Graph/graphActions';
 
 class BackendSearch extends Component {
 
   constructor(props) {
     super(props);
-    this.toggleSearchResults = this.toggleSearchResults.bind(this);
-    this.addToGraph = this.addToGraph.bind(this);
-    this.saveCurrentProjectData = this.saveCurrentProjectData.bind(this);
     this.state = {
       showResults: true,
     };
   }
 
-  toggleSearchResults() {
+  toggleSearchResults = () => {
     return this.setState({ showResults: !this.state.showResults });
   }
 
-  addToGraph(id) {
+  addToGraph = (id) => {
     this.props.actions.addToGraphFromId(this.props.graph, id);
   }
 
-  saveCurrentProjectData() {
+  saveCurrentProjectData = () => {
     this.props.actions.saveCurrentProjectData(this.props.graph);
   }
 
@@ -57,15 +54,15 @@ class BackendSearch extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(actions, dispatch),
+    actions: bindActionCreators(graphActions, dispatch),
     dispatch: dispatch,
   };
 }
 
-function mapStateToProps(state, props) {
-  if (state.data.canvas) {
+function mapStateToProps(state) {
+  if (state.graph.canvas) {
     return {
-      searchData: state.data.canvas.searchData
+      searchData: state.graph.canvas.searchData
     }
   }
   return {

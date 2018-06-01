@@ -20,9 +20,6 @@ class GraphSidebar extends Component {
       history: [],
       listener: null
     };
-    this.renderTabs = this.renderTabs.bind(this);
-    this.renderSidebarContainer = this.renderSidebarContainer.bind(this);
-    this.renderSettings = this.renderSettings.bind(this);
   }
 
   componentDidMount() {
@@ -45,7 +42,7 @@ class GraphSidebar extends Component {
     }
   }
 
-  renderTabs() {
+  renderTabs = () => {
     let baseUrl = '/build/'+ this.props.match.params.investigationId;
     const activeState = this.props.match.params.sidebarState;
 
@@ -86,13 +83,13 @@ class GraphSidebar extends Component {
     )
   }
 
-  renderSettings() {
+  renderSettings = () => {
     return (
       <div> Sample text </div>
     )
   }
 
-  renderSidebarContainer() {
+  renderSidebarContainer = () => {
     switch(this.props.match.params.sidebarState) {
       case "search":
         return  (
@@ -134,7 +131,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state) {
   return {
     sidebarVisible: state.data.sidebarVisible
   };

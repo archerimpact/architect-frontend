@@ -11,7 +11,7 @@ export default class Root extends Component {
 				<Provider store={this.props.store}>
 					<PersistGate loading={<div> Loading... </div>} persistor={this.props.persistor}>
 						<Router>
-              <App/>
+              				<App/>
 						</Router>
 					</PersistGate>
 				</Provider>
