@@ -34,7 +34,7 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
   return {
-    isAuthenticated: state.data.user.isAuthenticated,
+    isAuthenticated: state.user.isAuthenticated,
   };
 }
 
