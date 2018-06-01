@@ -3,5 +3,6 @@ export const USER_LOGOUT = 'USER_LOGOUT';
 export const TOGGLE_SIDEBAR = "TOGGLE_SIDEBAR";
 export const STORE_PROJECT = "STORE_PROJECT";
 export const STORE_ENTITY = "STORE_ENTITY";
+export const GET_PROJECTS = "GET_PROJECTS";
 
 

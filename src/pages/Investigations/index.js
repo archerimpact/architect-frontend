@@ -6,8 +6,6 @@ import * as actions from '../../redux/actions/';
 import { Link, withRouter } from 'react-router-dom';
 import { getProjects } from "../../server/index.js";
 
-import InlineSVG from 'svg-inline-react';
-
 import './style.css';
 
 class Investigations extends Component {
@@ -24,7 +22,6 @@ class Investigations extends Component {
 			console.log(this.state.projects);
 		});
 	}
-
 
 	render() {
 		return (

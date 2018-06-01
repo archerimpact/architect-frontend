@@ -4,6 +4,7 @@ import {
 	TOGGLE_SIDEBAR,
 	STORE_PROJECT,
 	STORE_ENTITY,
+    GET_PROJECTS
   } from './actionTypes';
 
 import { logoutAccount } from "../../server/auth_routes";
@@ -83,3 +84,21 @@ function storeEntity(entity) {
 }
 
 
+
+
+export function getProjects() {
+    return (dispatch) => {
+        server.getProjects()
+            .then((data)=>{
+                dispatch(getProjects(data.message));
+            })
+            .catch((err) =>  console.log(err.message));
+    }
+}
+
+function getProjects(project_list) {
+    return {
+        type: GET_PROJECTS,
+        payload: project_list
+    };
+}
