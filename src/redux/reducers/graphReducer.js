@@ -9,16 +9,6 @@ import {
 
 export default function (state = {}, action) {
     switch(action.type) {
-        case INITIALIZE_CANVAS:
-            return {
-                ...state,
-                canvas: {
-                    graphData: null
-                },
-                currentNode: null,
-                currentEntity: null,
-                // currentProject: null
-            };
         case RESET_PROJECT: // active
             return {
                 ...state,

@@ -133,7 +133,7 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
   return {
-    sidebarVisible: state.data.sidebarVisible
+    sidebarVisible: state.project.sidebarVisible
   };
 }
 

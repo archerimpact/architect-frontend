@@ -4,32 +4,24 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../../redux/actions/';
 
 import { Link, withRouter } from 'react-router-dom';
-import { getProjects } from "../../server/index.js";
 
 import './style.css';
 
 class Investigations extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			projects: [],
-		};
-	}
 
-	componentDidMount() {
-		getProjects().then(data => {
-			this.setState({projects: data.message});
-			console.log(this.state.projects);
-		});
+	async componentWillMount() {
+		let res = await this.props.dispatch(actions.getProjects());
+		// Should put proper flash message here (reload page or loading wheel until action is completed)
 	}
 
 	render() {
+	    console.log("this.props", this.props)
 		return (
 			<div className="container y-scrollable">
 				<h2 className="investigations-page-header">My Investigations</h2>
 				{/*<p>{"All projects as JSON: " + JSON.stringify(this.state.projects)}</p>*/}
 				<div className="row investigations-grid">
-				{this.state.projects.map((proj) => {
+				{this.props.project_list.map((proj) => {
 					let image_blob;
 								
 					if (proj.img) {
@@ -76,7 +68,8 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
   return {
-    isAuthenticated: state.user.isAuthenticated,
+      isAuthenticated: state.user.isAuthenticated,
+      project_list: state.project.project_list
   };
 }
 

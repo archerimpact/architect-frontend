@@ -2,6 +2,7 @@ import {
     TOGGLE_SIDEBAR,
     STORE_PROJECT,
     STORE_ENTITY,
+    GET_PROJECTS
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -30,6 +31,11 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 currentEntity: action.payload
+            };
+        case GET_PROJECTS:
+            return {
+                ...state,
+                project_list: action.payload
             };
         default:
             return state;

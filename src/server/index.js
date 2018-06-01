@@ -11,7 +11,9 @@ let api_inst = axios.create({
 });
 
 export async function getProjects() {
+    console.log("we in the server call")
   const response = await api_inst.get('/projects/all');
+  console.log("server res", response.data)
   return response.data;
 }
 

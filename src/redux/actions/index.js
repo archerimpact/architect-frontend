@@ -87,18 +87,20 @@ function storeEntity(entity) {
 
 
 export function getProjects() {
+    console.log("we in here")
     return (dispatch) => {
         server.getProjects()
-            .then((data)=>{
+            .then((data)=> {
+                console.log("wtfff")
                 dispatch(getProjects(data.message));
             })
-            .catch((err) =>  console.log(err.message));
+            .catch((err) =>  console.log("YOLOL WHADDUP"));
     }
 }
 
-function getProjects(project_list) {
+getProjects = (project_list) => {
     return {
         type: GET_PROJECTS,
         payload: project_list
     };
-}
+};

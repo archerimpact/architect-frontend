@@ -9,12 +9,12 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../redux/actions';
 import * as graphActions from './Graph/graphActions';
-import * as server from '../../server/';
 
 class Canvas extends Component {
 
   constructor(props) {
     super(props);
+    console.log("this.props", this.props);
     this.graph = new ArcherGraph();
     this.baseUrl = '/build/' + (this.props.match.params ? this.props.match.params.investigationId : null);
   }

@@ -23,7 +23,8 @@ class Graph extends Component {
   }
 
   componentDidMount() {
-    this.props.actions.initializeCanvas(this.props.graph, this.props.width, this.props.height);
+    this.props.graph.generateCanvas(this.props.width, this.props.height);
+    this.props.graph.setData(0, [], []);
     this.props.graph.bindDisplayFunctions({ expand: this.expandNodeFromData, node: this.setCurrentNode, save: this.saveCurrentProjectData });
     
     if (this.props.graphData != null) {

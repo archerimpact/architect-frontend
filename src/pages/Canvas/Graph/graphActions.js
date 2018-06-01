@@ -8,21 +8,6 @@ export const STORE_CURRENT_NODE = "STORE_CURRENT_NODE";
 export const UPDATE_PROJECT_DATA = "UPDATE_PROJECT_DATA";
 export const RESET_PROJECT = "RESET_PROJECT";
 
-export function initializeCanvas(graph, width, height) {
-  return (dispatch, getState) => {
-    graph.generateCanvas(width, height);
-    graph.setData(0, [], []);
-    dispatch(initializeCanvasDispatch(graph));
-  };
-}
-
-function initializeCanvasDispatch(graph) {
-  return {
-    type: INITIALIZE_CANVAS,
-    payload: graph
-  };
-}
-
 export function saveCurrentProjectData(graph) {
   return (dispatch, getState) => {
     let state = getState()
