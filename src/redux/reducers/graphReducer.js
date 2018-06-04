@@ -1,33 +1,18 @@
 import {
-    INITIALIZE_CANVAS,
+    LOAD_PROJECT,
     UPDATE_GRAPH_DATA,
-    RESET_PROJECT,
+    RESET_GRAPH,
     STORE_SEARCH_RESULTS,
     STORE_CURRENT_NODE,
-    UPDATE_PROJECT_DATA
-} from '../../pages/Canvas/Graph/graphActions';
+    STORE_ENTITY
+} from '../actions/actionTypes';
 
 export default function (state = {}, action) {
     switch(action.type) {
-        case RESET_PROJECT: // active
+        case RESET_GRAPH:
             return {
                 ...state,
-                currentProject: {
-                    ...state.currentProject,
-                    graphData: null
-                }
-            };
-        case UPDATE_GRAPH_DATA:
-            return {
-                ...state,
-                canvas: {
-                    ...state.canvas,
-                    graphData: action.payload
-                },
-                currentProject: {
-                    ...state.currentProject,
-                    graphData: action.payload
-                }
+                data: null
             };
         case STORE_SEARCH_RESULTS:
             return {
@@ -44,13 +29,15 @@ export default function (state = {}, action) {
                     id: action.payload
                 }
             };
-        case UPDATE_PROJECT_DATA:
+        case LOAD_PROJECT || UPDATE_GRAPH_DATA:
             return {
                 ...state,
-                currentProject: {
-                    ...state.currentProject,
-                    graphData: action.payload.data
-                }
+                data: action.payload.data
+            };
+        case STORE_ENTITY:
+            return {
+                ...state,
+                currentEntity: action.payload
             };
         default:
             return state;

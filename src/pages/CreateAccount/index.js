@@ -3,7 +3,7 @@ import { registerAccount } from "../../server/auth_routes";
 import { Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../../redux/actions/';
+import * as actions from '../../redux/actions/userActions';
 
 
 class CreateAccount extends Component {
@@ -37,7 +37,6 @@ class CreateAccount extends Component {
       .then(
         data => {
           if (data.success) {
-            self.props.dispatch(actions.userLogIn());
             self.setState({ redirectToReferrer: true })
           } else {
             self.setState({ email: '', password: '', passwordConf: '', error: true, error_message: data.message })

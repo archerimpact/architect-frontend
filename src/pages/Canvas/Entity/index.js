@@ -4,7 +4,7 @@ import './style.css'
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../../../redux/actions/';
+import * as actions from '../../../redux/actions/userActions';
 import { withRouter } from 'react-router-dom';
 import EntityCard from '../EntityCard';
 import EntityAttributes from '../EntityAttributes';
@@ -206,6 +206,7 @@ class Entity extends Component {
   }
 
   render() {
+    console.log("this.state", this.state)
     const keys = [
       ['registered_in', 'Registered In'],
       ['birthdate', 'Date of Birth'],
@@ -235,7 +236,7 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, props) {
   return {
-    currentNode: state.graph.currentNode,
+    currentNode: state.project.currentProject.currentNode,
     currentEntity: state.graph.currentEntity
   };
 }

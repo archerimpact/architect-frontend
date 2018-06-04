@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import { Redirect, withRouter, Link } from 'react-router-dom';
-import { authenticateAccount } from "../../server/auth_routes";
+import { userLogIn } from "../../redux/actions/userActions";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import './style.css';
-import * as actions from '../../redux/actions/';
+import * as actions from '../../redux/actions/userActions';
 
 
 class Login extends Component {
@@ -32,25 +32,22 @@ class Login extends Component {
         event.preventDefault();
         console.log('Submitting...');
         // TODO: Implement form validation
-        authenticateAccount({
-            username: this.state.email,
-            password: this.state.password
-        }).then(data => {
-            if (data.success) {
-                this.setState({error: false});
-                console.log('logged in!');
-                this.props.dispatch(actions.userLogIn());
-                this.setState({email: '', password: '', redirectToReferrer: true})
-            } else {
-                this.setState({error: data.error});
-                console.log('failed to login!');
-                this.setState({email: '', password: '', passwordConf: '', error: true})
-            }
-        })
-        .catch((err, i) => {
-            console.log('Could not authenticate');
-            this.setState({error: err.response.data});
-        });
+        this.props.dispatch(userLogIn(this.state.email, this.state.password))
+            .then(data => {
+                if (data.success) {
+                    this.setState({error: false});
+                    console.log('logged in!');
+                    this.setState({email: '', password: '', redirectToReferrer: true})
+                } else {
+                    this.setState({error: data.error});
+                    console.log('failed to login!');
+                    this.setState({email: '', password: '', passwordConf: '', error: true})
+                }
+            })
+            .catch((err) => {
+                console.log('Could not authenticate', err);
+                this.setState({error: err});
+            });
     }
 
 
@@ -131,11 +128,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-function mapStateToProps(state) {
-    return {
-        savedEntities: state.data.savedEntities, // what data you want to access as props
-        savedSources: state.data.savedSources
-    };
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));
+export default withRouter(connect(mapDispatchToProps)(Login));

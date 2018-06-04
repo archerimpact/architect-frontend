@@ -1,21 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as actions from '../../redux/actions/';
+import { getProjects } from '../../redux/actions/projectActions';
 
 import { Link, withRouter } from 'react-router-dom';
 
 import './style.css';
 
 class Investigations extends Component {
-
-	async componentWillMount() {
-		let res = await this.props.dispatch(actions.getProjects());
-		// Should put proper flash message here (reload page or loading wheel until action is completed)
-	}
+    constructor(props) {
+        super(props);
+        let res = this.props.dispatch(getProjects());
+        // Should put proper flash message here (reload page or loading wheel until action is completed)
+    }
 
 	render() {
-	    console.log("this.props", this.props)
 		return (
 			<div className="container y-scrollable">
 				<h2 className="investigations-page-header">My Investigations</h2>
@@ -61,7 +59,6 @@ class Investigations extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(actions, dispatch),
     dispatch: dispatch,
   };
 }

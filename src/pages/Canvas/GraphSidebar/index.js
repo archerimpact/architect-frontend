@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter , Link} from 'react-router-dom';
 import './style.css';
-import * as actions from '../../../redux/actions';
+import * as actions from '../../../redux/actions/projectActions';
 
 
 class GraphSidebar extends Component {

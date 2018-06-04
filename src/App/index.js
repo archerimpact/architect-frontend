@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../redux/actions/';
+import { userLogOut } from '../redux/actions/userActions';
 
 import { Route, Redirect, withRouter } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute/';
@@ -35,7 +35,7 @@ class App extends Component {
   }
 
   logOut() {
-    return this.props.actions.userLogOut();
+    return this.props.dispatch(userLogOut());
   }
 
   logIn() {
@@ -75,7 +75,6 @@ class App extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(actions, dispatch),
     dispatch: dispatch,
   };
 }

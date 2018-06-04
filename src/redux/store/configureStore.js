@@ -3,7 +3,7 @@ import { persistStore} from 'redux-persist';
 
 import logger from 'redux-logger';
 import thunk from 'redux-thunk';
-import reducer from '../reducers/rootReducer';
+import reducer from '../reducers';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 let middleware = [thunk];

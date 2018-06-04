@@ -6,7 +6,8 @@ import SearchCard from '../SearchCard';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
-import * as graphActions from '../Graph/graphActions';
+import * as graphActions from '../../../redux/actions/graphActions';
+import { addToGraphFromId, saveCurrentProjectData } from '../../../redux/actions/graphActions';
 
 class BackendSearch extends Component {
 
@@ -22,11 +23,11 @@ class BackendSearch extends Component {
   }
 
   addToGraph = (id) => {
-    this.props.actions.addToGraphFromId(this.props.graph, id);
+    this.props.dispatch(addToGraphFromId(this.props.graph, id));
   }
 
-  saveCurrentProjectData = () => {
-    this.props.actions.saveCurrentProjectData(this.props.graph);
+  saveCurrentProjectDataFunc = () => {
+    this.props.dispatch(saveCurrentProjectData(this.props.graph));
   }
 
   render() {

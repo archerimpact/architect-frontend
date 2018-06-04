@@ -4,7 +4,8 @@ import { Link, withRouter } from 'react-router-dom';
 import * as server from '../../../server';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as graphActions from '../../Canvas/Graph/graphActions';
+import * as graphActions from '../../../redux/actions/graphActions';
+import { addToGraphFromId } from '../../../redux/actions/graphActions';
 
 import EntityAttributes from '../EntityAttributes';
 
@@ -68,7 +69,7 @@ class SearchCard extends Component {
       actionFunc = () => this.props.graph.translateGraphAroundId(this.props.id);
     } else {
       action = "add";
-      actionFunc = () => this.props.actions.addToGraphFromId(this.props.graph, this.props.id);
+      actionFunc = () => this.props.dispatch(addToGraphFromId(this.props.graph, this.props.id));
     }
     return (
       <div className="d-flex">

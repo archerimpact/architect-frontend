@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
-import * as graphActions from '../Graph/graphActions';
+import * as graphActions from '../../../redux/actions/graphActions';
 import EntityCard from '../EntityCard';
 
 import './style.css';
