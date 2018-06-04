@@ -10,6 +10,7 @@ import * as server from '../../server/index';
 
 
 export function saveCurrentProjectData(graph) {
+    console.log("initiate action")
   return (dispatch, getState) => {
     let state = getState();
     let projid = state.project.currentProject._id;
@@ -55,12 +56,13 @@ function makeDeepCopy(array) {
 }
 
 export function addToGraphFromId(graph, id) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     server.getNode(id)
       .then(data => {
-        var graphData = getState();
+          console.log(data);
         graph.addData(data.centerid, makeDeepCopy(data.nodes), makeDeepCopy(data.links));
-        dispatch(updateGraphDispatch(data));
+        dispatch(updateGraphDispatch(data)); // turn into function that saves node in backend and then after response calls
+          // updateGraphDispatch (saving in redux store)
       })
       .catch(err => { console.log(err); });
     }

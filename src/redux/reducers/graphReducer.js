@@ -29,10 +29,18 @@ export default function (state = {}, action) {
                     id: action.payload
                 }
             };
-        case LOAD_PROJECT || UPDATE_GRAPH_DATA:
+        case LOAD_PROJECT:
             return {
                 ...state,
                 data: action.payload.data
+            };
+        case UPDATE_GRAPH_DATA:
+            return {
+                ...state,
+                data: {
+                    links: state.data.links.concat(action.payload.links),
+                    nodes: state.data.nodes.concat(action.payload.nodes)
+                }
             };
         case STORE_ENTITY:
             return {

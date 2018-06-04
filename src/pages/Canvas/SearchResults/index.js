@@ -6,7 +6,6 @@ import SearchCard from '../SearchCard';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
-import * as graphActions from '../../../redux/actions/graphActions';
 import { addToGraphFromId, saveCurrentProjectData } from '../../../redux/actions/graphActions';
 
 class BackendSearch extends Component {
@@ -55,7 +54,6 @@ class BackendSearch extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(graphActions, dispatch),
     dispatch: dispatch,
   };
 }

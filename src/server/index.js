@@ -31,6 +31,7 @@ export async function updateProject(data) {
     data: data.d3Data,
     img: data.image
   });
+  console.log("response.data in updateProject", response.data)
   return response.data;
 }
 
