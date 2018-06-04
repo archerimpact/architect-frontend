@@ -8,19 +8,14 @@ import {
 
 import * as server from '../../server/index';
 
+/* =========================================== HELPERS ==========================================  */
 
-export function saveCurrentProjectData(graph) {
-    console.log("initiate action")
-  return (dispatch, getState) => {
-    let state = getState();
-    let projid = state.project.currentProject._id;
-    let data = graph.fetchData();
-    server.updateProject({id: projid, d3Data: data, image: ''})
-      .then((response) => {
-        // TODO verify update was correct
-      })
-      .catch((err) => { console.log(err)});
-  }
+function makeDeepCopy(array) {
+    var newArray = [];
+    array.map((object) => {
+        return newArray.push(Object.assign({}, object));
+    });
+    return newArray;
 }
 
 /* =============================================================================================  */
@@ -47,24 +42,36 @@ function updateGraphDispatch(data) {
     };
 }
 
-function makeDeepCopy(array) {
-    var newArray = [];
-    array.map((object) => {
-        return newArray.push(Object.assign({}, object));
-    });
-    return newArray;
+export function saveCurrentProjectData(graph) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let projid = state.project.currentProject._id;
+        let data = graph.fetchData();
+        console.log("saveCurrentProjectData", data)
+        server.updateProject({id: projid, d3Data: data, image: ''})
+            .then((res) => {
+                if (res.success) {
+                    dispatch(updateGraphDispatch(data))
+                } else {
+                    console.log("graph did not update successfully!")
+                    // TODO flash messages for failures on parent page
+                }
+            })
+            .catch((err) => { console.log(err)});
+    }
 }
 
 export function addToGraphFromId(graph, id) {
-  return (dispatch) => {
-    server.getNode(id)
-      .then(data => {
-          console.log(data);
-        graph.addData(data.centerid, makeDeepCopy(data.nodes), makeDeepCopy(data.links));
-        dispatch(updateGraphDispatch(data)); // turn into function that saves node in backend and then after response calls
-          // updateGraphDispatch (saving in redux store)
-      })
-      .catch(err => { console.log(err); });
+    return (dispatch) => {
+        server.getNode(id)
+            .then(data => {
+                console.log("data", data);
+                graph.addData(data.centerid, makeDeepCopy(data.nodes), makeDeepCopy(data.links));
+                console.log("graph", graph)
+                // dispatch(saveCurrentProjectData(graph))
+                dispatch(updateGraphDispatch(data)); // right here change to saveCurrentProjectData
+            })
+            .catch(err => { console.log(err); });
     }
 }
 
