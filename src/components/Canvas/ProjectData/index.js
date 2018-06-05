@@ -22,7 +22,7 @@ class ProjectData extends Component {
           <div className="searchResults">
             { !this.props.data || !this.props.data.nodes ?
               null :
-              this.props.data.nodes.map(node => <EntityCard  data={node} id={node.id} shouldFetch graph={this.props.graph}/>)
+              this.props.data.nodes.map(node => <EntityCard key={node.id} data={node} id={node.id} shouldFetch graph={this.props.graph}/>)
             }
           </div>
         </div>

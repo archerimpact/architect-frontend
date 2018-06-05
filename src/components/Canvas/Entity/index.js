@@ -188,7 +188,7 @@ class Entity extends Component {
               return (
                 <div>
                   <h5 className="subheader">{l}</h5>
-                  { t.extracted.map(i => <EntityCard data={i} id={i[t.chooseDisplay]} shouldFetch graph={this.props.graph} />) }
+                  { t.extracted.map(i => <EntityCard key={i[t.chooseDisplay]} data={i} id={i[t.chooseDisplay]} shouldFetch graph={this.props.graph} />) }
                 </div>
               );
           })}
