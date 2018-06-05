@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { userLogOut } from '../redux/actions/userActions';
 
 import { Route, Redirect, withRouter } from 'react-router-dom';

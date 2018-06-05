@@ -27,8 +27,8 @@ class Graph extends Component {
     this.props.graph.generateCanvas(this.props.width, this.props.height);
     this.props.graph.setData(0, [], []);
     this.props.graph.bindDisplayFunctions({ expand: this.expandNodeFromData, node: this.setCurrentNodeFunc, save: this.saveCurrentProjectDataFunc });
-    
-    if (this.props.graphData != null) {
+      if (this.props.graphData !== null) {
+        console.log("entering data from state")
       const graphData = { nodes: this.props.graphData.nodes, links: this.props.graphData.links };
       this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));      
     }
@@ -37,7 +37,7 @@ class Graph extends Component {
   componentWillReceiveProps(nextprops) {
     this.props.graph.bindDisplayFunctions({ expand: this.expandNodeFromData, node: this.setCurrentNodeFunc, save: this.saveCurrentProjectDataFunc });
 
-    if (this.props.project && nextprops.graphData && nextprops.project && nextprops.project._id != this.props.project._id) {
+    if (this.props.project && nextprops.graphData && nextprops.project && nextprops.project._id !== this.props.project._id) {
       const graphData = { nodes: nextprops.graphData.nodes, links: nextprops.graphData.links };
       this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));
     }
@@ -54,8 +54,9 @@ class Graph extends Component {
   renderProjectToolbar = () => {
     return (
       <div className="back-button" onClick={() => {
+        this.props.history.push('/build')
         this.props.dispatch(resetProject())
-        this.props.history.push('/build')}
+      }
       }>
         <i className="material-icons back-button-icon">home</i>
       </div>
@@ -84,7 +85,7 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
   let sidebarSize = state.graph.sidebarVisible ? 600 : 0;
   let graphData = null
-  if (state.project.currentProject != null && state.graph.data != null) {
+  if (state.project.currentProject !== null && state.graph.data !== null) {
     // TODO this is called a lot
     graphData = state.graph.data
   }

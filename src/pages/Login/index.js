@@ -64,7 +64,7 @@ class Login extends Component {
         return (
             <div className="row">
                 <div className="col-sm-6 page-col left-col d-flex justify-content-center">
-                    <img src="https://image.ibb.co/jU5GpS/architect_dark_hex_promo_angle_fixed_01.png" id="tagline-img" className="img-fluid"/>
+                    <img src="https://image.ibb.co/jU5GpS/architect_dark_hex_promo_angle_fixed_01.png" id="tagline-img" className="img-fluid" alt=""/>
                 </div>
 
                 <div className='col-sm-6 page-col right-col d-flex'>
@@ -114,7 +114,7 @@ class Login extends Component {
                             <Link to={'/create_account'} style={{color: 'inherit'}}> New around here? Create an Account!</Link>
                         </div>
                     </form>
-                    <img src="https://preview.ibb.co/egm3KS/gradient_real_bottom_graph.png" id="right-img" className="" />
+                    <img src="https://preview.ibb.co/egm3KS/gradient_real_bottom_graph.png" id="right-img" className="" alt=""/>
                 </div>
             </div>
         );

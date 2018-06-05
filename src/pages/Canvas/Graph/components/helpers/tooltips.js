@@ -45,7 +45,7 @@ export function populateNodeInfoBody(targetId, info, attrs) {
   if (attrs && !this.debug) {
     for (let attr of attrs) {
       $(targetId).append(createInfoTextEntry(attr, info[attr]));
-      if (typeof info[attr] === 'undefined' && info['type'] != 'Document') {
+      if (typeof info[attr] === 'undefined' && info['type'] !== 'Document') {
         console.error(`${attr} is not a valid attribute.`);
       }
     }

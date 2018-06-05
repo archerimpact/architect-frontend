@@ -11,10 +11,10 @@ import EntityAttributes from '../EntityAttributes';
 import * as server from '../../../server';
 
 
-const tab_style = {
-  backgroundColor: '#FFFFFF',
-  color: '#747474'
-};
+// const tab_style = {
+//   backgroundColor: '#FFFFFF',
+//   color: '#747474'
+// };
 
 class Entity extends Component {
 
@@ -188,16 +188,14 @@ class Entity extends Component {
           <h5 className="">Attributes</h5>
           { attrs }
 
-          { Object.keys(linktypes).map(l => {
+          { Object.keys(linktypes).filter(l => linktypes[l].extracted.length !== 0).map(l => {
             const t = linktypes[l];
-            if (t.extracted.length !== 0) {
               return (
                 <div>
                   <h5 className="subheader">{l}</h5>
                   { t.extracted.map(i => <EntityCard data={i} id={i[t.chooseDisplay]} shouldFetch graph={this.props.graph} />) }
                 </div>
               );
-            }
           })}
 
         </div>

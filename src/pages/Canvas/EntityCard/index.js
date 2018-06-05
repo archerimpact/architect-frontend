@@ -14,7 +14,7 @@ class EntityCard extends Component {
 
   constructor(props) {
     super(props);
-    let isDataReady = !props.shouldFetch || !isNaN(parseInt(this.props.id));
+    let isDataReady = !props.shouldFetch || !isNaN(this.props.id);
     let urlId = decodeURIComponent(this.props.id).split("/");
     let urlName = urlId[urlId.length - 1];
     this.state = {

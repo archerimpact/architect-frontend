@@ -10,17 +10,22 @@ import * as server from '../../server/index';
 
 
 export function saveCurrentProjectData(graph) {
-    console.log("initiate action")
-  return (dispatch, getState) => {
-    let state = getState();
-    let projid = state.project.currentProject._id;
-    let data = graph.fetchData();
-    server.updateProject({id: projid, d3Data: data, image: ''})
-      .then((response) => {
-        // TODO verify update was correct
-      })
-      .catch((err) => { console.log(err)});
-  }
+    return (dispatch, getState) => {
+        let state = getState();
+        let projid = state.project.currentProject._id;
+        let data = graph.fetchData();
+        console.log("saveCurrentProjectData", data)
+        server.updateProject({id: projid, d3Data: data, image: ''})
+            .then((res) => {
+                if (res.success) {
+                    dispatch(updateGraphDispatch(data))
+                } else {
+                    console.log("graph did not update successfully!")
+                    // TODO flash messages for failures on parent page
+                }
+            })
+            .catch((err) => { console.log(err)});
+    }
 }
 
 /* =============================================================================================  */

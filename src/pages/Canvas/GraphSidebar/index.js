@@ -106,7 +106,9 @@ class GraphSidebar extends Component {
          return <ProjectData graph={this.props.graph}/>
       case "settings":
         return this.renderSettings();
-    };
+      default:
+        return null
+    }
   }
 
   render() {

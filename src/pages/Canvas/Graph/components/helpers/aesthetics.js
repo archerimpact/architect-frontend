@@ -1,13 +1,13 @@
 import * as d3 from 'd3';
 import * as utils from './utils.js';
 
-import { isGroup, then } from './utils.js';
+import { isGroup } from './utils.js';
 import * as constants from './constants.js';
 import * as colors from './colorConstants.js';
 
 export function highlightExpandableNode(){
   this.node.classed('expandable', false)
-  this.node.filter((d) => { if (utils.isExpandable(d)) { return d } })
+  this.node.filter(d => utils.isExpandable(d))
     .classed('expandable', true)
 }
 
@@ -20,7 +20,7 @@ export function highlightLinksFromAllNodes() {
 
 export function highlightLinksFromNode(node) {
   node = node[0].__data__.index;
-  this.link.filter((d) => { return d.source.index == node || d.target.index == node; })
+  this.link.filter((d) => { return d.source.index === node || d.target.index === node; })
     .call(this.styleLink, (d) => { return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index]; });
 }
 
@@ -43,13 +43,13 @@ export function styleLink(selection, isSelected) {
   selection.classed('selected', isSelected);
   selection
     .style('stroke-width', (l) => { return (l.source.group && l.target.group ? constants.GROUP_STROKE_WIDTH : constants.STROKE_WIDTH) + 'px'; })
-    .style('marker-start', (l) => { 
+    .style('marker-start', (l) => {
       if (!l.bidirectional) { return ''; }
       const size = l.target.group ? 'small' : 'big';
       const color = (typeof isSelected === 'function' ? isSelected(l) : isSelected) ? 'blue' : 'gray';
       return `url(#start-${size}-${color})`;
     })
-    .style('marker-end', (l) => { 
+    .style('marker-end', (l) => {
       const size = l.source.group ? 'small' : 'big';
       const color = (typeof isSelected === 'function' ? isSelected(l) : isSelected) ? 'blue' : 'gray';
       return `url(#end-${size}-${color})`;
@@ -76,7 +76,7 @@ export function fadeGraph(d) {
   this.node
     .filter((o) => { return !this.areNeighbors(d, o); })
     .classed('faded', true);
-  this.link.classed('faded', o => { return !(o.source == d || o.target == d); });
+  this.link.classed('faded', o => { return !(o.source === d || o.target === d); });
   this.hull.classed('faded', true);
 }
 
@@ -104,7 +104,7 @@ export function wrapNodeText(textSelection, printFull, width=100) {
     let line = [];
     let remainder;
     let lineNum = 0;
-    const dy = parseInt(text.attr('dy'));
+    const dy = parseInt(text.attr('dy'), 10);
     let tspan = text.append('tspan')
           .attr('x', 0)
           .attr('y', 0)
@@ -123,21 +123,21 @@ export function wrapNodeText(textSelection, printFull, width=100) {
           .attr('y', 0)
           .attr('dy', 15 * (++lineNum) + dy)
           .classed('unselectable', true);
-          
+
         line = remainder ? [remainder] : [];
       }
 
-      if (printFull == 0 && lineNum > 0) { break; }
+      if (printFull === 0 && lineNum > 0) { break; }
     }
 
     let finalLine = line.join(' ');
-    finalLine = (printFull == 0 && i < tokens.length) ? `${finalLine.trim()}...` : finalLine;
+    finalLine = (printFull === 0 && i < tokens.length) ? `${finalLine.trim()}...` : finalLine;
     tspan.text(finalLine);
   });
 }
 
 export function updateLinkText(selection) {
-  const self = this;
+  // const self = this;
   const linkEnter = this.linkContainer.selectAll('.link-text')
     .data(selection, (l) => { return l.id; });
 

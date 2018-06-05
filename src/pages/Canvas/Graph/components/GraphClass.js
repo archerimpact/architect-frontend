@@ -1,5 +1,3 @@
-'use strict';
-
 import * as d3 from 'd3';
 import * as aesthetics from './helpers/aesthetics.js';
 import * as utils from './helpers/utils.js';
@@ -10,7 +8,7 @@ import * as d3Data from './helpers/changeD3Data.js';
 import Minimap from './MinimapClass.js'
 import * as constants from './helpers/constants.js';
 import * as colors from './helpers/colorConstants.js';
-import { GROUP, HULL_GROUP, DOCUMENT, PERSON, CORPORATION } from './helpers/constants.js';
+import { DOCUMENT } from './helpers/constants.js';
 
 // FontAwesome icon unicode-to-node type dict
 // Use this to find codes for FA icons: https://fontawesome.com/cheatsheet
@@ -84,6 +82,7 @@ class Graph {
     this.linkContainer = null;
     this.linkText = null;
     this.hull = null;
+
     this.nodes = []; // adding or removing data from here TODO refactor
     this.links = [];
     this.hulls = [];
@@ -98,7 +97,7 @@ class Graph {
     this.force = null;
     this.drag = null;
 
-    this.adjacencyMatrix = new Array();
+    this.adjacencyMatrix = [];
     this.globalLinks = {};
     this.globalNodes = [];
 
@@ -384,7 +383,7 @@ class Graph {
   // This method should return a list of all possible permutations of the given attrs
   getMarkerIdPermutations(possibleAttrs) {
     if (!possibleAttrs) { return []; }
-    if (possibleAttrs.length == 1) { return possibleAttrs[0]; }
+    if (possibleAttrs.length === 1) { return possibleAttrs[0]; }
     let i, j;
     const markerIds = [];
     const rest = this.getMarkerIdPermutations(possibleAttrs.slice(1));
@@ -408,7 +407,7 @@ class Graph {
       'blue': colors.HEX_BLUE
     };
 
-    let marker, id, tokens;
+    let marker, tokens;
     for (marker of markerList) {
       tokens = marker.id.split('-');
       marker.direction = (tokens[0] === 'end') ? 'auto' : 'auto-start-reverse';
@@ -519,7 +518,7 @@ class Graph {
     this.width = width;
     this.height = height;
     this.center = [this.width / 2, this.height / 2];
-    this.brushX = d3.scale.linear().range([0, width]),
+    this.brushX = d3.scale.linear().range([0, width]);
     this.brushY = d3.scale.linear().range([0, height]);
     this.minimapPaddingX = constants.MINIMAP_MARGIN + constants.BUTTON_WIDTH;
     this.minimapPaddingY = height - constants.DEFAULT_MINIMAP_SIZE - constants.MINIMAP_MARGIN + 2;
@@ -590,11 +589,11 @@ class Graph {
     this.update(null, 500); 
 
     // set global node id to match the nodes getting passed in
-    nodes.map((node) => {
+    nodes.forEach((node) => {
       if (node.id < 0) { this.globalnodeid = Math.min(this.globalnodeid, node.id); }
     });
 
-    links.map((link) => {
+    links.forEach((link) => {
       if (link.id < 0) { this.globallinkid = Math.min(this.globallinkid, link.id); }
     });
 
@@ -647,7 +646,7 @@ class Graph {
       .attr('class', 'link')
       .attr('id', (l) => { return `link-${l.id}`; })
       .classed('same-as', (l) => { return utils.isPossibleLink(l.type); })
-      .classed('faded', (l) => { return this.hoveredNode && !(l.source == this.hoveredNode || l.target == this.hoveredNode); })
+      .classed('faded', (l) => { return this.hoveredNode && !(l.source === this.hoveredNode || l.target === this.hoveredNode); })
       .on('mouseover', this.mouseoverLink);
 
     this.link.call(this.styleLink, false);
@@ -740,7 +739,7 @@ class Graph {
 
   // Occurs each tick of simulation
   ticked(e, self) {
-    const classThis = this;
+    // const classThis = this;
     this.force.resume();
     this.xbound = [this.width, 0];
     this.ybound = [this.height, 0];
@@ -828,7 +827,7 @@ class Graph {
     var self = this;
     // Only apply force on grouped nodes that aren't being dragged and aren't fixed
     return function (d) {
-      if (d.group && (!self.isDragging || d.id != self.draggedNode.id) && !d.fixed) {
+      if (d.group && (!self.isDragging || d.id !== self.draggedNode.id) && !d.fixed) {
         d.y += (d.centroidy - d.y) * alpha;
         d.x += (d.centroidx - d.x) * alpha;
       }
@@ -845,59 +844,59 @@ class Graph {
         }
 
         // u: Unpin selected nodes
-        if (d3.event.keyCode == 85) {
+        if (d3.event.keyCode === 85) {
           this.svg.selectAll('.node.selected')
             .each(function (d) { d.fixed = false; })
             .classed('fixed', false);
         }
 
         // g: Group selected nodes
-        else if (d3.event.keyCode == 71) {
+        else if (d3.event.keyCode === 71) {
           this.groupSelectedNodes();
         }
 
         // h: Ungroup selected nodes
-        else if (d3.event.keyCode == 72) {
+        else if (d3.event.keyCode === 72) {
           this.ungroupSelectedGroups();
         }
 
         // c: Group all of the possibly same as's
-        else if (d3.event.keyCode == 67) {
+        else if (d3.event.keyCode === 67) {
           this.groupSame();
         }
 
         // e: Toggle edit mode
-        else if (d3.event.keyCode == 69) {
+        else if (d3.event.keyCode === 69) {
           this.toggleEditMode();
         }
 
         // r/del: Remove selected nodes/links
-        else if ((d3.event.keyCode == 82 || d3.event.keyCode == 46) && this.editMode) {
+        else if ((d3.event.keyCode === 82 || d3.event.keyCode === 46) && this.editMode) {
           this.deleteSelectedNodes();
         }
         // l: remove selected links only
-        else if (d3.event.keyCode == 76 && this.editMode) {
+        else if (d3.event.keyCode === 76 && this.editMode) {
           this.deleteSelectedLinks();
         }
 
         // a: Add node linked to selected
-        else if (d3.event.keyCode == 65 && this.editMode) {
+        else if (d3.event.keyCode === 65 && this.editMode) {
           const selection = this.svg.selectAll('.node.selected');
           this.addNodeToSelected(selection);
         }
 
         // // o: save as PNG
-        // else if (d3.event.keyCode == 79) {
+        // else if (d3.event.keyCode === 79) {
         //   this.saveAsPng();
         // }
 
         // d: Hide document nodes
-        else if (d3.event.keyCode == 68) {
+        else if (d3.event.keyCode === 68) {
           this.toggleTypeView(DOCUMENT);
         }
 
         // p: Toggle btwn full/abbrev text
-        else if (d3.event.keyCode == 80) {
+        else if (d3.event.keyCode === 80) {
           this.printFull = (this.printFull + 1) % 3;
           this.selectAllNodeNames()
               .text((d) => { return utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
@@ -905,7 +904,7 @@ class Graph {
         }
         
         // t: expand by degree
-        else if (d3.event.keyCode == 84) {
+        else if (d3.event.keyCode === 84) {
           if (this.degreeExpanded === 0 && this.nodes.length !== 1) { return; }
           
           if (this.degreeExpanded === 0 && this.nodes.length === 1) {
@@ -973,7 +972,7 @@ class Graph {
   areNeighbors(a, b) {
     return this.linkedById[a.id + ',' + b.id]
       || this.linkedById[b.id + ',' + a.id]
-      || a.id == b.id;
+      || a.id === b.id;
   }
 
   reloadNeighbors() {

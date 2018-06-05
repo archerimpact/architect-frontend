@@ -15,7 +15,7 @@ class SearchCard extends Component {
 
   constructor(props) {
     super(props);
-    let isDataReady = !props.shouldFetch || !isNaN(parseInt(this.props.id));
+    let isDataReady = !props.shouldFetch || !isNaN(this.props.id);
     let urlId = decodeURIComponent(this.props.id).split("/");
     let urlName = urlId[urlId.length - 1];
     this.state = {
@@ -38,7 +38,7 @@ class SearchCard extends Component {
 
   componentWillReceiveProps(nextprops) {
     if (this.props.id !== nextprops.id) {
-      let isn = isNaN(parseInt(nextprops.id));
+      let isn = isNaN(nextprops.id);
       let sf = nextprops.shouldFetch
       if (!(!sf || !isn)) {
         // TODO refactor ready logic

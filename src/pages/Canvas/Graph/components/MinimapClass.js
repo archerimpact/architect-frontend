@@ -1,9 +1,7 @@
-'use strict';
-
 import * as d3 from 'd3';
 import * as utils from './helpers/utils.js'
 import { stopPropagation } from './helpers/mouseClicks.js'; 
-import { GRID_LENGTH, MINIMAP_PADDING, DEFAULT_MINIMAP_SIZE } from './helpers/constants.js';
+import { MINIMAP_PADDING, DEFAULT_MINIMAP_SIZE } from './helpers/constants.js';
 import * as constants from './helpers/constants.js';
 
 class Minimap {

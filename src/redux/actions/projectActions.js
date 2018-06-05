@@ -17,7 +17,7 @@ export function toggleSidebar() {
 /* =============================================================================================  */
 
 
-function fetchProjectDispatch(project) {
+function fetchProjectDispatch(project) { // also affects graph reducer (transfers over data)
     return {
         type: LOAD_PROJECT,
         payload: project

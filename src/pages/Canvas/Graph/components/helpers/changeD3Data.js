@@ -2,10 +2,7 @@ import * as d3 from 'd3';
 import * as utils from './utils.js';
 
 import { 
-  ENTITY,
-  GROUP,
   GROUP_HULL,
-  DOCUMENT
 } from './constants.js';
 
 export function getInverseAction(action) {
@@ -15,9 +12,9 @@ export function getInverseAction(action) {
 
 // Multi-node manipulation methods
 export function deleteSelectedNodes() {
-  var select = this.svg.selectAll('.node.selected');
+  let select = this.svg.selectAll('.node.selected');
   select.each((d) => {
-    for (var i = this.adjacencyMatrix.length-1; i >=0; i--) {
+    for (let i = this.adjacencyMatrix.length-1; i >=0; i--) {
       if (this.adjacencyMatrix[i][i].data.id === d.id) { 
         this.deleteNode(i);
         if (d === this.hoveredNode) { this.deletingHoveredNode = true; }
@@ -31,7 +28,7 @@ export function deleteSelectedNodes() {
 
 // Delete selected links
 export function deleteSelectedLinks() {
-  var select = this.svg.selectAll('.link.selected');
+  let select = this.svg.selectAll('.link.selected');
 
   select.each((d) => {
     let i = this.idToIndex[d.source.id];
@@ -60,7 +57,7 @@ export function selectLink(source, target) {
 }
 
 export function addNodeToSelected(selection, event=null) {
-  let node = this.createNode(ENTITY, null, event);
+  // let node = this.createNode(ENTITY, null, event);
   // For each node selected, create a link attaching the new node to the selected node
   selection
     .each((d) => {
@@ -83,16 +80,16 @@ export function toggleTypeView(type) {
 }
 
 export function hideTypeNodes(type) {
-  var select = this.svg.selectAll('.node')
-    .filter((d) => {
-      if (d.type === type) { this.hideNode(this.idToIndex[d.id]); }
-    });
+  // let select = this.svg.selectAll('.node')
+  //   .filter((d) => {
+  //     if (d.type === type) { this.hideNode(this.idToIndex[d.id]); }
+  //   });
 
   this.typesShown[type] = false;
 }
 
 export function showHiddenType(type) {
-  for (var i = 0; i < this.adjacencyMatrix.length; i++) {
+  for (let i = 0; i < this.adjacencyMatrix.length; i++) {
     if (this.adjacencyMatrix[i][i].data.type === type) { this.displayNode(i); }
   }
 
@@ -100,7 +97,7 @@ export function showHiddenType(type) {
 }
 
 export function groupSelectedNodes() {
-  var select = this.svg.selectAll('.node.selected');
+  let select = this.svg.selectAll('.node.selected');
   if (select[0].length <= 1) { return; } //do nothing if nothing is selected & if there's one node
 
   const group = [];
@@ -119,14 +116,14 @@ export function groupSelectedNodes() {
 }
 
 export function ungroupSelectedGroups() {
-  var select = this.svg.selectAll('.node.selected')
-    .filter((d) => {
-      for (var i = this.adjacencyMatrix.length-1; i >=0; i--) {
-        if (this.adjacencyMatrix[i][i].data.id === d.id && utils.isGroup(d)) { this.ungroup(i); }
-      }
-
-      if (d === this.hoveredNode) { this.deletingHoveredNode = true; }
-    });
+  // let select = this.svg.selectAll('.node.selected')
+  //   .filter((d) => {
+  //     for (let i = this.adjacencyMatrix.length-1; i >=0; i--) {
+  //       if (this.adjacencyMatrix[i][i].data.id === d.id && utils.isGroup(d)) { this.ungroup(i); }
+  //     }
+  //
+  //     if (d === this.hoveredNode) { this.deletingHoveredNode = true; }
+  //   });
 
   this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
   this.node.classed('selected', false);
@@ -148,7 +145,7 @@ export function toggleGroupView(id) {
   if (!utils.isGroup(this.adjacencyMatrix[index][index].data)) { return; }
   if (this.expandedGroups[id]) {
     this.collapseGroup(index);
-    this.hulls.map((hull, i) => {
+    this.hulls.forEach((hull, i) => {
       if (hull.groupId === id) {
         this.hulls.splice(i, 1); // remove this hull from the global list of hulls
       }
@@ -170,13 +167,13 @@ export function toggleGroupView(id) {
 export function groupSame() {
   /* Groups all the nodes that are connected to each other with possibly_same_as */
 
-  var sameGroups = {};
-  var alreadyGrouped = []
-  var group = 0;
-  for (var i = 0; i < this.links.length; i++) {
+  let sameGroups = {};
+  // let alreadyGrouped = []
+  let group = 0;
+  for (let i = 0; i < this.links.length; i++) {
     if (utils.isPossibleLink(this.links[i].type)) {
-      var newGroup = true;
-      for (var key in sameGroups) {
+      let newGroup = true;
+      for (let key in sameGroups) {
         if (sameGroups[key].indexOf(this.idToIndex[this.links[i].source.id]) >= 0) {
           newGroup = false;
           if (sameGroups[key].indexOf(this.idToIndex[this.links[i].target.id]) < 0) {
@@ -195,8 +192,8 @@ export function groupSame() {
     }
   }
 
-  for (var key in sameGroups) {
-    this.createGroup(sameGroups[key], this.nodes[sameGroups[key][0]].name);
+  for (let k in sameGroups) {
+    this.createGroup(sameGroups[k], this.nodes[sameGroups[k][0]].name);
   }
 
   this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
@@ -207,10 +204,10 @@ export function groupSame() {
 
 //Hull functions
 export function createHull(groupId, group) {
-  var vertices = [];
-  var offset = 30; //arbitrary, the size of the node radius
+  let vertices = [];
+  let offset = 30; //arbitrary, the size of the node radius
 
-  for (var a = 0; a < group.length; a++) {
+  for (let a = 0; a < group.length; a++) {
     let i = group[a]
     if (utils.isVisibleNode(this.adjacencyMatrix[i][i].state)) {
       let d = this.adjacencyMatrix[i][i].data;     
@@ -228,10 +225,10 @@ export function createHull(groupId, group) {
 
 export function calculateAllHulls() {
   /* calculates paths of all hulls in the global hulls list */
-  this.hulls.slice().map((hull, i) => {
+  this.hulls.slice().forEach((hull, i) => {
     if (this.idToIndex[hull.groupId]) {
       let group = this.getGroupMembers(this.idToIndex[hull.groupId]);
-      for (var a = 0; a < group.length; a++) {
+      for (let a = 0; a < group.length; a++) {
         let subGroup = this.getGroupMembers(group[a]);
         if (subGroup.length > 0 
           && this.expandedGroups[this.indexToId[group[a]]]) { 

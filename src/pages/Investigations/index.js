@@ -9,7 +9,7 @@ import './style.css';
 class Investigations extends Component {
     constructor(props) {
         super(props);
-        let res = this.props.dispatch(getProjects());
+        this.props.dispatch(getProjects());
         // Should put proper flash message here (reload page or loading wheel until action is completed)
     }
 
@@ -20,14 +20,14 @@ class Investigations extends Component {
 				{/*<p>{"All projects as JSON: " + JSON.stringify(this.state.projects)}</p>*/}
 				<div className="row investigations-grid">
 				{this.props.project_list.map((proj) => {
-					let image_blob;
+					// let image_blob;
 								
-					if (proj.img) {
-						image_blob = proj.img;
-					}
-					else {
-						image_blob = "no image provided";
-					}
+					// if (proj.img) {
+					// 	image_blob = proj.img;
+					// }
+					// else {
+					// 	image_blob = "no image provided";
+					// }
 
 					return (
 						<div key={proj._id} className='col-md-3'>
