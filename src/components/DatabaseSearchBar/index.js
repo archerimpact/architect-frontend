@@ -6,7 +6,7 @@ import SearchBar from './../SearchBar';
 
 class DatabaseSearchBar extends Component {
 
-    goToSearchPage = (query) => {
+  goToSearchPage = (query) => {
         let buildCanvasPath = new RegExp('/build/\\S+');
         let newPathname = '';
         if (buildCanvasPath.test(this.props.location.pathname)) {
