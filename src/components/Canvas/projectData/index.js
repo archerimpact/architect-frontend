@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
 import * as graphActions from '../../../redux/actions/graphActions';
-import EntityCard from '../EntityCard';
+import EntityCard from '../entityCard';
 
 import './style.css';
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import DatabaseSearchBar from '../DatabaseSearchBar/index'
+import DatabaseSearchBar from '../databaseSearchBar/index'
 
 import './style.css';
 

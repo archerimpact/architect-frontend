@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
-import Entity from '../Entity';
-import SearchResults from '../SearchResults';
-import ProjectData from '../ProjectData';
-import DatabaseSearchBar from '../../../components/DatabaseSearchBar';
+import Entity from '../entity';
+import SearchResults from '../searchResults';
+import ProjectData from '../projectData';
+import DatabaseSearchBar from '../../databaseSearchBar';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter , Link} from 'react-router-dom';

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import Graph from './Graph';
 import ArcherGraph from './Graph/components/GraphClass';
-import GraphSidebar from './GraphSidebar';
+import GraphSidebar from './graphSidebar';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';

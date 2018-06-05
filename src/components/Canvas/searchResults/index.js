@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import './style.css'
-import SearchCard from '../SearchResultsCard';
+import SearchCard from '../searchResultsCard';
 
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';

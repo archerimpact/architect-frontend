@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-// import queryString from 'query-string';
 import * as server from '../../../server';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as graphActions from '../../../redux/actions/graphActions';
 import { addToGraphFromId } from '../../../redux/actions/graphActions';
 
-import EntityAttributes from '../EntityAttributes';
+import EntityAttributes from '../entityAttributes';
 
 import './style.css';
 

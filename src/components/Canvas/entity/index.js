@@ -6,8 +6,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../../redux/actions/userActions';
 import { withRouter } from 'react-router-dom';
-import EntityCard from '../EntityCard';
-import EntityAttributes from '../EntityAttributes';
+import EntityCard from '../entityCard';
+import EntityAttributes from '../entityAttributes';
 import * as server from '../../../server';
 
 

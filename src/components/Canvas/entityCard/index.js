@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import { addToGraphFromId } from '../../../redux/actions/graphActions';
 import * as graphActions from '../../../redux/actions/graphActions';
 
-import EntityAttributes from '../EntityAttributes';
+import EntityAttributes from '../entityAttributes';
 
 import './style.css';
 

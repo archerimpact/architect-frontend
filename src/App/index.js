@@ -5,7 +5,7 @@ import { userLogOut } from '../redux/actions/userActions';
 import { Route, Redirect, withRouter } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute/';
 
-import NavBar from '../components/NavBar/';
+import NavBar from '../components/navBar/';
 
 import Login from '../components/Login/';
 import CreateAccount from '../components/CreateAccount/';
