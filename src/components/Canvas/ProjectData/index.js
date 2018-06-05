@@ -11,7 +11,7 @@ import './style.css';
 class ProjectData extends Component {
 
   render() {
-    if (this.props.currentProject === null) {
+    if (this.props.data === null) {
       return (
         <div>Loading...</div>
       );
@@ -20,9 +20,9 @@ class ProjectData extends Component {
         <div className="sidebar-content-container">
           <h5 className="text-center">{this.props.currentProject.name}: Entities</h5>
           <div className="searchResults">
-            { !this.props.currentProject.graphData || !this.props.currentProject.graphData.nodes ? 
+            { !this.props.data || !this.props.data.nodes ?
               null :
-              this.props.currentProject.graphData.nodes.map(node => <EntityCard  data={node} id={node.id} shouldFetch graph={this.props.graph}/>)
+              this.props.data.nodes.map(node => <EntityCard  data={node} id={node.id} shouldFetch graph={this.props.graph}/>)
             }
           </div>
         </div>
@@ -39,9 +39,10 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state) {
-  if (state.graph.currentProject) {
+  if (state.project.currentProject) {
     return {
-      currentProject: state.graph.currentProject
+      data: state.graph.data,
+      currentProject: state.project.currentProject
     }
   }
   return {

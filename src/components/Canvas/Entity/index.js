@@ -11,11 +11,6 @@ import EntityAttributes from '../EntityAttributes';
 import * as server from '../../../server';
 
 
-// const tab_style = {
-//   backgroundColor: '#FFFFFF',
-//   color: '#747474'
-// };
-
 class Entity extends Component {
 
   constructor(props) {
@@ -204,7 +199,7 @@ class Entity extends Component {
   }
 
   render() {
-    console.log("this.state", this.state)
+    console.log("this.state in entity", this.state)
     const keys = [
       ['registered_in', 'Registered In'],
       ['birthdate', 'Date of Birth'],
@@ -213,7 +208,7 @@ class Entity extends Component {
       ['last_seen', 'Last Seen'],
       ['incorporation_date', 'Incorporation Date']
     ];
-    if (this.state.currentEntity == null) {
+    if (this.state.currentEntity === null) {
       return <div className="sidebar-content-container"> Click a node to view information about it </div>
     }
     let id = decodeURIComponent(this.props.match.params.query);
