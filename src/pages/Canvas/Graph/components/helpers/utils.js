@@ -107,8 +107,8 @@ export function createSVGImage(targetSVG, x1, x2, y1, y2, width=null, height=nul
 export function createSVGString(targetSVG, x1, x2, y1, y2, width=null, height=null){
   let svgClone = targetSVG.cloneNode(true);
   
-  if (!width) { width = x2 - x1; }
-  if (!height) { height = y2 - y1; }
+  if (!width) { width = Math.max(x2 - x1, x1 - x2); }
+  if (!height) { height = Math.max(y2 - y1, y1 - y2); }
   svgClone.setAttribute('viewBox', `${x1} ${y1} ${width} ${height}`);
 
   Array.from(svgClone.childNodes).forEach((e) => {

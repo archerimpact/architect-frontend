@@ -151,6 +151,8 @@ class Graph {
 
     this.globallinkid = -1;
     this.globalnodeid = -1;
+    this.xbound = [0, 0];
+    this.ybound = [0, 0];
   }
 
   initializeZoom() {
@@ -587,7 +589,7 @@ class Graph {
     this.setMatrix(nodes, links, byIndex);
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
     this.update(null, 500); 
-
+  // debugger
     // set global node id to match the nodes getting passed in
     nodes.forEach((node) => {
       if (node.id < 0) { this.globalnodeid = Math.min(this.globalnodeid, node.id); }
@@ -761,7 +763,7 @@ class Graph {
       })
       .attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
 
-    if (this.toRenderMinimap) { 
+    if (this.toRenderMinimap && document.querySelector('svg') !== null) {
       if (this.tickCount === constants.MINIMAP_TICK) {
         this.minimap.syncToSVG(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
         this.tickCount = 0;

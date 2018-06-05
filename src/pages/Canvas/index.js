@@ -17,18 +17,17 @@ class Canvas extends Component {
     super(props);
     this.graph = new ArcherGraph();
     this.baseUrl = '/build/' + (this.props.match.params ? this.props.match.params.investigationId : null);
-    this.props.dispatch(fetchProject(this.props.match.params.investigationId));
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     if (this.props.match.params && this.props.match.params.investigationId) {
-      this.props.dispatch(fetchProject(this.props.match.params.investigationId));
+      await this.props.dispatch(fetchProject(this.props.match.params.investigationId));
     }
     if (this.props.match.params && this.props.match.params.sidebarState === 'search' && this.props.match.params.query !== null) {
-      this.props.dispatch(fetchSearchResults(this.props.match.params.query));
+      await this.props.dispatch(fetchSearchResults(this.props.match.params.query));
 
     } else if (this.props.match.params && this.props.match.params.sidebarState === 'entity') {
-      this.props.dispatch(fetchEntity(decodeURIComponent(this.props.match.params.query)));
+      await this.props.dispatch(fetchEntity(decodeURIComponent(this.props.match.params.query)));
     }
   }
 
