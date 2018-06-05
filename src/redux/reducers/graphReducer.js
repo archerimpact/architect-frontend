@@ -22,8 +22,8 @@ export default function (state = {}, action) {
                     searchData: action.payload
                 }
             };
-        case STORE_CURRENT_NODE: // active
-            return {
+        case STORE_CURRENT_NODE:
+                return {
                 ...state,
                 currentNode: {
                     id: action.payload
@@ -37,10 +37,7 @@ export default function (state = {}, action) {
         case UPDATE_GRAPH_DATA:
             return {
                 ...state,
-                data: {
-                    links: action.payload.links,
-                    nodes: action.payload.nodes
-                }
+                data: action.payload.data
             };
         case STORE_ENTITY:
             return {
