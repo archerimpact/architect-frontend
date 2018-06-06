@@ -7,10 +7,9 @@ import {Link, withRouter} from 'react-router-dom';
 import './style.css';
 
 class Investigations extends Component {
-  constructor(props) {
-    super(props);
-    let res = this.props.dispatch(getProjects());
-    // Should put proper flash message here (reload page or loading wheel until action is completed)
+
+  componentDidMount() {
+    this.props.dispatch(getProjects());
   }
 
   render() {
