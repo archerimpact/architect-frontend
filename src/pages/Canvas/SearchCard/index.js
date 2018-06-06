@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import React, {Component} from 'react';
+import {Link, withRouter} from 'react-router-dom';
 // import queryString from 'query-string';
 import * as server from '../../../server';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import * as graphActions from '../../../redux/actions/graphActions';
-import { addToGraphFromId } from '../../../redux/actions/graphActions';
+import {addToGraphFromId} from '../../../redux/actions/graphActions';
 
 import EntityAttributes from '../EntityAttributes';
 
@@ -29,10 +29,10 @@ class SearchCard extends Component {
   componentWillMount() {
     if (!this.state.isDataReady) {
       server.getNode(this.props.id, false)
-        .then(d => {
-          this.setState({ isDataReady: true, data: d.nodes.filter(n => n.id === this.props.id)[0] })
-        })
-        .catch(err => console.log(err));
+      .then(d => {
+        this.setState({isDataReady: true, data: d.nodes.filter(n => n.id === this.props.id)[0]})
+      })
+      .catch(err => console.log(err));
     }
   }
 
@@ -43,10 +43,10 @@ class SearchCard extends Component {
       if (!(!sf || !isn)) {
         // TODO refactor ready logic
         server.getNode(nextprops.id, false)
-          .then(d => {
-            this.setState({ isDataReady: true, data: d.nodes.filter(n => n.id === nextprops.id)[0] })
-          })
-          .catch(err => console.log(err));
+        .then(d => {
+          this.setState({isDataReady: true, data: d.nodes.filter(n => n.id === nextprops.id)[0]})
+        })
+        .catch(err => console.log(err));
       } else {
         // If data isnt ready, set state
         let urlId = decodeURIComponent(nextprops.id).split("/");
@@ -58,7 +58,7 @@ class SearchCard extends Component {
 
   toggleCollapse = () => {
     const current = this.state.collapsed;
-    this.setState({ collapsed: !current });
+    this.setState({collapsed: !current});
   }
 
   renderButtons = () => {
@@ -98,18 +98,19 @@ class SearchCard extends Component {
           <span className="collapse-link" onClick={this.toggleCollapse}>
             {this.state.data._source.name || this.state.data._source.combined || this.state.data._source.number || this.state.data.description}
           </span>
-          
+
 
           <div className="ml-auto card-program">
-            {this.props.data._type} <small className="card-sdn-type">
-            {this.props.data._source.dataset}
-          </small>
+            {this.props.data._type}
+            <small className="card-sdn-type">
+              {this.props.data._source.dataset}
+            </small>
           </div>
 
         </div>
         <div className={this.state.collapsed ? 'collapse' : null}>
           <div className="card-body result-card-body">
-            <EntityAttributes node={this.state.data._source} />
+            <EntityAttributes node={this.state.data._source}/>
           </div>
         </div>
       </div>

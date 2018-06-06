@@ -1,4 +1,4 @@
-import { persistCombineReducers } from 'redux-persist';
+import {persistCombineReducers} from 'redux-persist';
 import storage from 'redux-persist/es/storage';
 import graph from './graphReducer';
 import user from './userReducer';
@@ -11,9 +11,9 @@ const config = {
 
 config.debug = true;
 const reducers = {
-    graph,
-    user,
-    project
+  graph,
+  user,
+  project
 };
 
 const reducer = persistCombineReducers(config, reducers);

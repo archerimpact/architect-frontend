@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { withRouter } from 'react-router-dom';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {withRouter} from 'react-router-dom';
 import * as graphActions from '../../../redux/actions/graphActions';
 import EntityCard from '../EntityCard';
 
@@ -20,9 +20,10 @@ class ProjectData extends Component {
         <div className="sidebar-content-container">
           <h5 className="text-center">{this.props.currentProject.name}: Entities</h5>
           <div className="searchResults">
-            { !this.props.currentProject.graphData || !this.props.currentProject.graphData.nodes ? 
+            { !this.props.currentProject.graphData || !this.props.currentProject.graphData.nodes ?
               null :
-              this.props.currentProject.graphData.nodes.map(node => <EntityCard  data={node} id={node.id} shouldFetch graph={this.props.graph}/>)
+              this.props.currentProject.graphData.nodes.map(node => <EntityCard data={node} id={node.id} shouldFetch
+                                                                                graph={this.props.graph}/>)
             }
           </div>
         </div>

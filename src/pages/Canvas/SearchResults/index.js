@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import './style.css'
 import SearchCard from '../SearchCard';
 
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { withRouter } from 'react-router-dom';
-import { addToGraphFromId, saveCurrentProjectData } from '../../../redux/actions/graphActions';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {withRouter} from 'react-router-dom';
+import {addToGraphFromId, saveCurrentProjectData} from '../../../redux/actions/graphActions';
 
 class BackendSearch extends Component {
 
@@ -18,7 +18,7 @@ class BackendSearch extends Component {
   }
 
   toggleSearchResults = () => {
-    return this.setState({ showResults: !this.state.showResults });
+    return this.setState({showResults: !this.state.showResults});
   }
 
   addToGraph = (id) => {
@@ -37,7 +37,7 @@ class BackendSearch extends Component {
     } else {
       return (
         <div className="search-results">
-          { !this.props.searchData ? 
+          { !this.props.searchData ?
             null :
             this.props.searchData.map((entity) => {
               return (

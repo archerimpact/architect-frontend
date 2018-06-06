@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import * as utils from './utils.js';
-import { MAX_HEIGHT } from './constants.js';
+import {MAX_HEIGHT} from './constants.js';
 var $ = require("jquery");
 
 export function initializeTooltip() {
@@ -9,14 +9,16 @@ export function initializeTooltip() {
 }
 
 export function displayDebugTooltip(self) {
-  if (!this.debug) { return; }
+  if (!this.debug) {
+    return;
+  }
   const e = d3.event,
-        data = {
-          'eventX': e.x,
-          'eventY': e.y,
-          'mouseX': (e.x - this.zoomTranslate[0]) / this.zoomScale,
-          'mouseY': (e.y - this.zoomTranslate[1]) / this.zoomScale
-        };
+    data = {
+      'eventX': e.x,
+      'eventY': e.y,
+      'mouseX': (e.x - this.zoomTranslate[0]) / this.zoomScale,
+      'mouseY': (e.y - this.zoomTranslate[1]) / this.zoomScale
+    };
 
   this.displayData('node-tooltip', 'Coordinate debugger', this.populateNodeInfoBody, data);
   $('#node-tooltip').show();
@@ -34,7 +36,7 @@ export function moveTooltip(d) {
   const xPos = d.x * this.zoomScale + this.zoomTranslate[0] + offset;
   const yPos = d.y * this.zoomScale + this.zoomTranslate[1] + offset;
   $('#node-tooltip').css('left', `${xPos}px`)
-                    .css('top', `${yPos}px`);
+  .css('top', `${yPos}px`);
 }
 
 export function hideTooltip() {
@@ -64,11 +66,11 @@ export function displayData(targetId, titleText, populateBody) {
   const titleId = `#${sectionTitle.id}`;
 
   const sectionBody = document.createElement('div');
-  sectionBody.id = `${targetId}-body`; 
+  sectionBody.id = `${targetId}-body`;
   const bodyId = `#${sectionBody.id}`;
 
   sectionTitle.onclick = () => {
-    $(bodyId).css('max-height',  $(titleId).hasClass('open') ? 0 : MAX_HEIGHT);
+    $(bodyId).css('max-height', $(titleId).hasClass('open') ? 0 : MAX_HEIGHT);
     $(titleId).toggleClass('open');
   }
 
@@ -93,7 +95,7 @@ export function createInfoTextEntry(key, value) {
   return contentEntry;
 }
 
-export function createTitleElement(title, close=false) {
+export function createTitleElement(title, close = false) {
   const titleElement = createDivElement('tooltip-title');
   const titleText = document.createElement('p');
   titleText.className = 'unselectable';

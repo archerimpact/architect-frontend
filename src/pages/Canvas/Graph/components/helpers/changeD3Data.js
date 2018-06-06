@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import * as utils from './utils.js';
 
-import { 
+import {
   ENTITY,
   GROUP,
   GROUP_HULL,
@@ -10,17 +10,19 @@ import {
 
 export function getInverseAction(action) {
   // Implement for undo
-  
+
 }
 
 // Multi-node manipulation methods
 export function deleteSelectedNodes() {
   var select = this.svg.selectAll('.node.selected');
   select.each((d) => {
-    for (var i = this.adjacencyMatrix.length-1; i >=0; i--) {
-      if (this.adjacencyMatrix[i][i].data.id === d.id) { 
+    for (var i = this.adjacencyMatrix.length - 1; i >= 0; i--) {
+      if (this.adjacencyMatrix[i][i].data.id === d.id) {
         this.deleteNode(i);
-        if (d === this.hoveredNode) { this.deletingHoveredNode = true; }
+        if (d === this.hoveredNode) {
+          this.deletingHoveredNode = true;
+        }
       }
     }
   })
@@ -55,19 +57,21 @@ export function addLink(source, target) {
 
 export function selectLink(source, target) {
   const linkId = this.linkedById[source.id + ',' + target.id] || this.linkedById[target.id + ',' + source.id];
-  this.link.filter((d) => { return d.id === linkId; })
-    .call(this.styleLink, true);
+  this.link.filter((d) => {
+    return d.id === linkId;
+  })
+  .call(this.styleLink, true);
 }
 
-export function addNodeToSelected(selection, event=null) {
+export function addNodeToSelected(selection, event = null) {
   let node = this.createNode(ENTITY, null, event);
   // For each node selected, create a link attaching the new node to the selected node
   selection
-    .each((d) => {
-      let i = this.adjacencyMatrix.length-1;
-      let j = this.idToIndex[d.id];
-      this.createLink(i, j);
-    });
+  .each((d) => {
+    let i = this.adjacencyMatrix.length - 1;
+    let j = this.idToIndex[d.id];
+    this.createLink(i, j);
+  });
 
   // Remove highlighting of all nodes and links 
   this.node.classed('selected', false);
@@ -84,16 +88,20 @@ export function toggleTypeView(type) {
 
 export function hideTypeNodes(type) {
   var select = this.svg.selectAll('.node')
-    .filter((d) => {
-      if (d.type === type) { this.hideNode(this.idToIndex[d.id]); }
-    });
+  .filter((d) => {
+    if (d.type === type) {
+      this.hideNode(this.idToIndex[d.id]);
+    }
+  });
 
   this.typesShown[type] = false;
 }
 
 export function showHiddenType(type) {
   for (var i = 0; i < this.adjacencyMatrix.length; i++) {
-    if (this.adjacencyMatrix[i][i].data.type === type) { this.displayNode(i); }
+    if (this.adjacencyMatrix[i][i].data.type === type) {
+      this.displayNode(i);
+    }
   }
 
   this.typesShown[type] = true;
@@ -101,13 +109,17 @@ export function showHiddenType(type) {
 
 export function groupSelectedNodes() {
   var select = this.svg.selectAll('.node.selected');
-  if (select[0].length <= 1) { return; } //do nothing if nothing is selected & if there's one node
+  if (select[0].length <= 1) {
+    return;
+  } //do nothing if nothing is selected & if there's one node
 
   const group = [];
 
-  select.each((d) => { 
-    if (d === this.hoveredNode) { this.deletingHoveredNode = true; }
-    group.push(this.idToIndex[d.id]); 
+  select.each((d) => {
+    if (d === this.hoveredNode) {
+      this.deletingHoveredNode = true;
+    }
+    group.push(this.idToIndex[d.id]);
   });
 
   this.createGroup(group);
@@ -120,13 +132,17 @@ export function groupSelectedNodes() {
 
 export function ungroupSelectedGroups() {
   var select = this.svg.selectAll('.node.selected')
-    .filter((d) => {
-      for (var i = this.adjacencyMatrix.length-1; i >=0; i--) {
-        if (this.adjacencyMatrix[i][i].data.id === d.id && utils.isGroup(d)) { this.ungroup(i); }
+  .filter((d) => {
+    for (var i = this.adjacencyMatrix.length - 1; i >= 0; i--) {
+      if (this.adjacencyMatrix[i][i].data.id === d.id && utils.isGroup(d)) {
+        this.ungroup(i);
       }
+    }
 
-      if (d === this.hoveredNode) { this.deletingHoveredNode = true; }
-    });
+    if (d === this.hoveredNode) {
+      this.deletingHoveredNode = true;
+    }
+  });
 
   this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
   this.node.classed('selected', false);
@@ -137,15 +153,19 @@ export function ungroupSelectedGroups() {
 }
 
 export function expandGroups(select, centered = false) {
-  select.each((d) => { this.expandGroup(this.idToIndex[d.id]); });
+  select.each((d) => {
+    this.expandGroup(this.idToIndex[d.id]);
+  });
 }
 
 export function toggleGroupView(id) {
   /* switch between viewing the group in expanded and collapsed state.
-    When expanded, the nodes in the group will have a hull polygon encircling it */
+   When expanded, the nodes in the group will have a hull polygon encircling it */
   let index = this.idToIndex[id]
 
-  if (!utils.isGroup(this.adjacencyMatrix[index][index].data)) { return; }
+  if (!utils.isGroup(this.adjacencyMatrix[index][index].data)) {
+    return;
+  }
   if (this.expandedGroups[id]) {
     this.collapseGroup(index);
     this.hulls.map((hull, i) => {
@@ -213,17 +233,17 @@ export function createHull(groupId, group) {
   for (var a = 0; a < group.length; a++) {
     let i = group[a]
     if (utils.isVisibleNode(this.adjacencyMatrix[i][i].state)) {
-      let d = this.adjacencyMatrix[i][i].data;     
+      let d = this.adjacencyMatrix[i][i].data;
       vertices.push(
         [d.x + offset, d.y + offset], // creates a buffer around the nodes so the hull is larger
         [d.x - offset, d.y + offset],
         [d.x - offset, d.y - offset],
         [d.x + offset, d.y - offset]
-      );   
+      );
     }
   }
 
-  return { groupId: groupId, path: d3.geom.hull(vertices), type: GROUP_HULL }; //returns a hull object
+  return {groupId: groupId, path: d3.geom.hull(vertices), type: GROUP_HULL}; //returns a hull object
 }
 
 export function calculateAllHulls() {
@@ -233,8 +253,8 @@ export function calculateAllHulls() {
       let group = this.getGroupMembers(this.idToIndex[hull.groupId]);
       for (var a = 0; a < group.length; a++) {
         let subGroup = this.getGroupMembers(group[a]);
-        if (subGroup.length > 0 
-          && this.expandedGroups[this.indexToId[group[a]]]) { 
+        if (subGroup.length > 0
+          && this.expandedGroups[this.indexToId[group[a]]]) {
           group = group.concat(subGroup);
         }
       }

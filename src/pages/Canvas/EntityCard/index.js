@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import React, {Component} from 'react';
+import {Link, withRouter} from 'react-router-dom';
 import * as server from '../../../server';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { addToGraphFromId } from '../../../redux/actions/graphActions';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {addToGraphFromId} from '../../../redux/actions/graphActions';
 import * as graphActions from '../../../redux/actions/graphActions';
 
 import EntityAttributes from '../EntityAttributes';
@@ -28,16 +28,16 @@ class EntityCard extends Component {
   componentWillMount() {
     if (!this.state.isDataReady) {
       server.getNode(this.props.id, false)
-        .then(d => {
-          this.setState({ isDataReady: true, data: d.nodes.filter(n => n.id === this.props.id)[0] })
-        })
-        .catch(err => console.log(err));
+      .then(d => {
+        this.setState({isDataReady: true, data: d.nodes.filter(n => n.id === this.props.id)[0]})
+      })
+      .catch(err => console.log(err));
     }
   }
 
   toggleCollapse = () => {
     const current = this.state.collapsed;
-    this.setState({ collapsed: !current });
+    this.setState({collapsed: !current});
   }
 
   renderButtons = () => {
@@ -89,7 +89,7 @@ class EntityCard extends Component {
         </div>
         <div className={this.state.collapsed ? 'collapse' : null}>
           <div className="card-body result-card-body">
-            <EntityAttributes node={this.state.data} />
+            <EntityAttributes node={this.state.data}/>
           </div>
         </div>
       </div>

@@ -1,9 +1,9 @@
 import {
-    STORE_CURRENT_NODE,
-    STORE_SEARCH_RESULTS,
-    UPDATE_GRAPH_DATA,
-    RESET_GRAPH,
-    STORE_ENTITY
+  STORE_CURRENT_NODE,
+  STORE_SEARCH_RESULTS,
+  UPDATE_GRAPH_DATA,
+  RESET_GRAPH,
+  STORE_ENTITY
 } from './actionTypes';
 
 import * as server from '../../server/index';
@@ -12,40 +12,42 @@ import * as server from '../../server/index';
 
 // Redux state cannot be mutated. Must create new copies of objects - function here ensures that
 function makeDeepCopy(array) {
-    var newArray = [];
-    array.map((object) => {
-        return newArray.push(Object.assign({}, object));
-    });
-    return newArray;
+  var newArray = [];
+  array.map((object) => {
+    return newArray.push(Object.assign({}, object));
+  });
+  return newArray;
 }
 
 // Action subroutine to call when wanting to update a graph (saving it under a project)
 export function saveCurrentProjectData(graph) {
-    return (dispatch, getState) => {
-        let state = getState();
-        let projid = state.project.currentProject._id;
-        let data = graph.fetchData();
-        console.log("saveCurrentProjectData", data)
-        server.updateProject({id: projid, d3Data: data, image: ''})
-            .then((res) => {
-                if (res.success) {
-                    dispatch(updateGraphDispatch(data))
-                } else {
-                    console.log("graph did not update successfully!")
-                    // TODO flash messages for failures on parent page
-                }
-            })
-            .catch((err) => { console.log(err)});
-    }
+  return (dispatch, getState) => {
+    let state = getState();
+    let projid = state.project.currentProject._id;
+    let data = graph.fetchData();
+    console.log("saveCurrentProjectData", data)
+    server.updateProject({id: projid, d3Data: data, image: ''})
+    .then((res) => {
+      if (res.success) {
+        dispatch(updateGraphDispatch(data))
+      } else {
+        console.log("graph did not update successfully!")
+        // TODO flash messages for failures on parent page
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+    });
+  }
 }
 
 /* =============================================================================================  */
 
 export function storeCurrentNodeDispatch(id) {
-    return {
-        type: STORE_CURRENT_NODE,
-        payload: id
-    }
+  return {
+    type: STORE_CURRENT_NODE,
+    payload: id
+  }
 }
 
 export function setCurrentNode(d) {
@@ -57,62 +59,64 @@ export function setCurrentNode(d) {
 /* =============================================================================================  */
 
 function updateGraphDispatch(data) {
-    return {
-        type: UPDATE_GRAPH_DATA,
-        payload: data
-    };
+  return {
+    type: UPDATE_GRAPH_DATA,
+    payload: data
+  };
 }
 
 export function addToGraphFromId(graph, id) {
-    return (dispatch) => {
-        server.getNode(id)
-            .then(data => {
-                console.log("data", data);
-                graph.addData(data.centerid, makeDeepCopy(data.nodes), makeDeepCopy(data.links));
-                console.log("graph", graph)
-                dispatch(saveCurrentProjectData(graph))
-                // dispatch(updateGraphDispatch(data)); // right here change to saveCurrentProjectData
-            })
-            .catch(err => { console.log(err); });
-    }
+  return (dispatch) => {
+    server.getNode(id)
+    .then(data => {
+      console.log("data", data);
+      graph.addData(data.centerid, makeDeepCopy(data.nodes), makeDeepCopy(data.links));
+      console.log("graph", graph)
+      dispatch(saveCurrentProjectData(graph))
+      // dispatch(updateGraphDispatch(data)); // right here change to saveCurrentProjectData
+    })
+    .catch(err => {
+      console.log(err);
+    });
+  }
 }
 
 /* =============================================================================================  */
 
 function fetchSearchResultsDispatch(data) {
-    return {
-        type: STORE_SEARCH_RESULTS,
-        payload: data
-    }
+  return {
+    type: STORE_SEARCH_RESULTS,
+    payload: data
+  }
 }
 
 export function fetchSearchResults(query) {
   return (dispatch) => {
     server.searchBackendText(query)
-      .then((data)=>{
-        dispatch(fetchSearchResultsDispatch(data.hits.hits));
-      })
-      .catch((error) => console.log(error));
+    .then((data) => {
+      dispatch(fetchSearchResultsDispatch(data.hits.hits));
+    })
+    .catch((error) => console.log(error));
   }
 }
 
 /* =============================================================================================  */
 
 function fetchEntityDispatch(entity) {
-    return {
-        type: STORE_ENTITY,
-        payload: entity
-    }
+  return {
+    type: STORE_ENTITY,
+    payload: entity
+  }
 }
 
 export function fetchEntity(id) {
-    return (dispatch) => {
-        server.getNode(id)
-            .then(data => {
-                dispatch(fetchEntityDispatch(data))
-            })
-            .catch(err => console.log(err))
-    }
+  return (dispatch) => {
+    server.getNode(id)
+    .then(data => {
+      dispatch(fetchEntityDispatch(data))
+    })
+    .catch(err => console.log(err))
+  }
 }
 
 /* =============================================================================================  */
@@ -164,7 +168,6 @@ export function resetProject(project) {
 // }
 
 
-
 // searchBackend(query){
 // server.searchBackendText(query)
 //   .then((data)=>{
@@ -179,7 +182,6 @@ export function resetProject(project) {
 // }
 
 
-
 // searchBackendNodes(idsArray){
 //   server.getBackendNodes(idsArray)
 //     .then(data => {
@@ -187,7 +189,6 @@ export function resetProject(project) {
 //     })
 //     .catch(err => { console.log(err); });
 // }
-
 
 
 // export function fetchGraphFromQuery(query) {

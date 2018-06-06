@@ -1,26 +1,27 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import * as actions from '../../redux/actions/userActions';
-import { Route, Redirect, withRouter } from 'react-router-dom';
+import {Route, Redirect, withRouter} from 'react-router-dom';
 
-const PrivateRouter = ({ component: Component, ...rest, isAuthenticated }) => (
+const PrivateRouter = ({component: Component, ...rest, isAuthenticated}) => (
   <Route {...rest} render={props => (
     isAuthenticated ? (
       <Component {...props} />
     ) : (
-        <Redirect to={{
-          pathname: '/login',
-          state: { from: props.location }
-        }} />
-      )
-  )} />
+      <Redirect to={{
+        pathname: '/login',
+        state: {from: props.location}
+      }}/>
+    )
+  )}/>
 )
 
 class PrivateRoute extends Component {
 
   render() {
-    return (<PrivateRouter component={this.props.component} {...this.props} isAuthenticated={this.props.isAuthenticated} />
+    return (
+      <PrivateRouter component={this.props.component} {...this.props} isAuthenticated={this.props.isAuthenticated}/>
     );
   }
 }

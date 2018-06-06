@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import Graph from './Graph';
 import ArcherGraph from './Graph/components/GraphClass';
 import GraphSidebar from './GraphSidebar';
 
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { withRouter } from 'react-router-dom';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {withRouter} from 'react-router-dom';
 import * as actions from '../../redux/actions/projectActions';
-import { fetchProject } from '../../redux/actions/projectActions';
-import { fetchEntity, fetchSearchResults } from '../../redux/actions/graphActions';
+import {fetchProject} from '../../redux/actions/projectActions';
+import {fetchEntity, fetchSearchResults} from '../../redux/actions/graphActions';
 
 class Canvas extends Component {
 
@@ -24,7 +24,7 @@ class Canvas extends Component {
       this.props.dispatch(fetchProject(this.props.match.params.investigationId));
     }
     if (this.props.currentNode != null) {
-      this.props.history.push(this.baseUrl+'/entity/' + encodeURIComponent(this.props.currentNode.id))
+      this.props.history.push(this.baseUrl + '/entity/' + encodeURIComponent(this.props.currentNode.id))
     }
     if (this.props.match.params && this.props.match.params.sidebarState === 'search' && this.props.match.params.query != null) {
       this.props.dispatch(fetchSearchResults(this.props.match.params.query));
@@ -36,7 +36,7 @@ class Canvas extends Component {
 
   componentWillReceiveProps(nextprops) {
     if (nextprops.currentNode !== null && this.props.currentNode !== nextprops.currentNode) {
-      this.props.history.push(this.baseUrl+'/entity/'+encodeURIComponent(nextprops.currentNode.id))
+      this.props.history.push(this.baseUrl + '/entity/' + encodeURIComponent(nextprops.currentNode.id))
     }
     if (this.props.location.pathname !== nextprops.location.pathname && nextprops.match.params) {
       // this.props.actions.fetchProject(nextprops.match.params.investigationId);
@@ -65,7 +65,7 @@ class Canvas extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({ ...actions}, dispatch),
+    actions: bindActionCreators({...actions}, dispatch),
     dispatch: dispatch,
   };
 }
