@@ -5,7 +5,8 @@ import {
 } from '../actions/actionTypes';
 
 const initialState = {
-    sidebarVisible: true
+  sidebarVisible: true,
+  project_list: []
 };
 
 export default function (state = initialState, action) {
