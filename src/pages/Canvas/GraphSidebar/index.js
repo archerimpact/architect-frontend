@@ -3,7 +3,8 @@ import Entity from "../Entity";
 import SearchResults from "../SearchResults";
 import ProjectData from "../ProjectData";
 import DatabaseSearchBar from "../../../components/DatabaseSearchBar";
-import {Link} from "react-router-dom";
+import {Link,withRouter} from "react-router-dom";
+import {connect} from "react-redux";
 import "./style.css";
 import * as actions from "../../../redux/actions/projectActions";
 
@@ -105,6 +106,8 @@ class GraphSidebar extends Component {
                 return <ProjectData graph={this.props.graph}/>
             case "settings":
                 return this.renderSettings();
+            default:
+                return null
         }
     }
 

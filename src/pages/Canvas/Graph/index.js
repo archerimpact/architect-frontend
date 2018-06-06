@@ -50,7 +50,7 @@ class Graph extends Component {
             save: this.saveCurrentProjectDataFunc
         });
 
-        if (this.props.project && nextprops.graphData && nextprops.project && nextprops.project._id != this.props.project._id) {
+        if (this.props.project && nextprops.graphData && nextprops.project && nextprops.project._id !== this.props.project._id) {
             const graphData = {nodes: nextprops.graphData.nodes, links: nextprops.graphData.links};
             this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));
         }
