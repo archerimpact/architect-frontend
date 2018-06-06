@@ -1,16 +1,12 @@
-import {
-    TOGGLE_SIDEBAR,
-    GET_PROJECTS,
-    LOAD_PROJECT
-} from '../actions/actionTypes';
+import {GET_PROJECTS, LOAD_PROJECT, TOGGLE_SIDEBAR} from "../actions/actionTypes";
 
 const initialState = {
-  sidebarVisible: true,
-  project_list: []
+    sidebarVisible: true,
+    project_list: []
 };
 
 export default function (state = initialState, action) {
-    switch(action.type) {
+    switch (action.type) {
         case TOGGLE_SIDEBAR:
             return {
                 ...state,

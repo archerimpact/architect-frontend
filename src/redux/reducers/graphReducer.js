@@ -1,14 +1,14 @@
 import {
     LOAD_PROJECT,
-    UPDATE_GRAPH_DATA,
     RESET_GRAPH,
-    STORE_SEARCH_RESULTS,
     STORE_CURRENT_NODE,
-    STORE_ENTITY
-} from '../actions/actionTypes';
+    STORE_ENTITY,
+    STORE_SEARCH_RESULTS,
+    UPDATE_GRAPH_DATA
+} from "../actions/actionTypes";
 
 export default function (state = {}, action) {
-    switch(action.type) {
+    switch (action.type) {
         case RESET_GRAPH:
             return {
                 ...state,
@@ -23,7 +23,7 @@ export default function (state = {}, action) {
                 }
             };
         case STORE_CURRENT_NODE:
-                return {
+            return {
                 ...state,
                 currentNode: {
                     id: action.payload

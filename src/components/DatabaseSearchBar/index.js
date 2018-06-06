@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
-import './style.css'
+import React, {Component} from "react";
+import {withRouter} from "react-router-dom";
+import "./style.css";
 
-import SearchBar from './../SearchBar';
+import SearchBar from "./../SearchBar";
 
 class DatabaseSearchBar extends Component {
 
-  goToSearchPage = (query) => {
+    goToSearchPage = (query) => {
         let buildCanvasPath = new RegExp('/build/\\S+');
         let newPathname = '';
         if (buildCanvasPath.test(this.props.location.pathname)) {

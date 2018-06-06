@@ -1,14 +1,11 @@
-import {
-    USER_LOGIN,
-    USER_LOGOUT,
-} from '../actions/actionTypes';
+import {USER_LOGIN, USER_LOGOUT} from "../actions/actionTypes";
 
 const initialState = {
     isAuthenticated: false,
 };
 
 export default function (state = initialState, action) {
-    switch(action.type) {
+    switch (action.type) {
         case USER_LOGIN:
             return {
                 ...state,
