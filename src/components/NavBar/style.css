@@ -57,8 +57,9 @@
 }
 */
 .active-right-link {
-  border-bottom: 3px solid #FE6060;
+    border-bottom: 3px solid #FE6060;
 }
+
 /*
 .nav-dropdown:hover .nav-dropbtn, .nav-dropbtn:focus {
 }
@@ -136,7 +137,7 @@ nav.navbar {
     z-index: 10;
 }
 
-.active>.nav-link {
+.active > .nav-link {
     color: #ff7700 !important;
 }
 
@@ -145,7 +146,7 @@ nav.navbar {
 }*/
 
 .nav-link:hover, .nav-link:focus {
-  color: #ff7700 !important;
+    color: #ff7700 !important;
 }
 
 @media (min-width: 992px) {

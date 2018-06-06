@@ -1,18 +1,13 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
-import './style.css'
+import React, {Component} from "react";
+import {withRouter} from "react-router-dom";
+import "./style.css";
 
-import SearchBar from './../SearchBar';
+import SearchBar from "./../SearchBar";
 
 class DatabaseSearchBar extends Component {
 
-    constructor(props) {
-        super(props);
-        this.goToSearchPage = this.goToSearchPage.bind(this);
-    }
-
-    goToSearchPage(query){
-        var buildCanvasPath = new RegExp('/build/\\S+');
+    goToSearchPage = (query) => {
+        let buildCanvasPath = new RegExp('/build/\\S+');
         let newPathname = '';
         if (buildCanvasPath.test(this.props.location.pathname)) {
             newPathname = '/build/' + this.props.match.params.investigationId + '/search/' + query
@@ -20,7 +15,7 @@ class DatabaseSearchBar extends Component {
             newPathname = 'explore/search/' + query
         }
         this.props.history.push(newPathname);
-    }
+    };
 
     render() {
         return (

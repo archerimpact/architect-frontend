@@ -41,14 +41,14 @@ export const BUTTON_UNDO_ACTION_TITLE = 'Undo';
 export const BUTTON_REDO_ACTION_TITLE = 'Redo';
 export const BUTTON_SAVE_PROJECT_TITLE = 'Save project';
 
-export const MINIMAP_SCALE = 0.15;
+// export const MINIMAP_SCALE = 0.15;
 export const MINIMAP_PADDING = 100;
 export const DEFAULT_MINIMAP_SIZE = 300;
 export const MINIMAP_MARGIN = 15;
 export const MINIMAP_TICK = 50;
 
 export const ENTITY = "Entity";
-export const INDIVIDUAL = "Individual";
+// export const INDIVIDUAL = "Individual";
 export const PERSON = "person";
 export const GROUP = "group";
 export const GROUP_HULL = "Group Hull";

@@ -1,54 +1,54 @@
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-  min-width: 900px;
-  font: normal 16px arial, sans-serif;
-  height: 100vh;
-  width: 100%;
-  overflow: hidden;
+    min-width: 900px;
+    font: normal 16px arial, sans-serif;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
 }
 
 .unselectable {
-  -webkit-user-select: none; /* Safari */        
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* IE10+/Edge */
-  user-select: none; /* Standard */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
 }
 
 #graph-container {
-  height: 100%;
+    height: 100%;
 }
 
 .svg-content {
-  height: 100%;
-  width: 100%;
+    height: 100%;
+    width: 100%;
 }
 
 svg {
-  z-index: -3;
+    z-index: -3;
 }
 
 svg rect.extent {
-  stroke: #ccc;
-  stroke-width: 2px;
-  fill: #edf5fc;
+    stroke: #ccc;
+    stroke-width: 2px;
+    fill: #edf5fc;
 }
 
 svg line {
-  stroke: #ebebeb;
-  stroke-width: 1.5px; 
+    stroke: #ebebeb;
+    stroke-width: 1.5px;
 }
 
 .link {
-  stroke: #545454;
-  opacity: 1;
-  transition-property: opacity;
-  transition-delay: 0ms;
-  transition-duration: 50ms;
+    stroke: #545454;
+    opacity: 1;
+    transition-property: opacity;
+    transition-delay: 0ms;
+    transition-duration: 50ms;
 }
 
 /*.link text {
@@ -64,299 +64,300 @@ svg line {
 }*/
 
 .link-items text {
-  stroke: #fff;
-  stroke-width: 2px;
-  fill: #545454;
-  paint-order: stroke;
-  font-size: 14px;
-  font-weight: bolder; 
+    stroke: #fff;
+    stroke-width: 2px;
+    fill: #545454;
+    paint-order: stroke;
+    font-size: 14px;
+    font-weight: bolder;
 }
 
 .link.dynamic {
-  pointer-events: none;
+    pointer-events: none;
 }
 
 .node {
-  fill: #ebebeb;
-  stroke: #545454;
-  opacity: 1;
-  transition-property: stroke-opacity, fill-opacity;
-  transition-delay: 0ms;
-  transition-duration: 50ms;
+    fill: #ebebeb;
+    stroke: #545454;
+    opacity: 1;
+    transition-property: stroke-opacity, fill-opacity;
+    transition-delay: 0ms;
+    transition-duration: 50ms;
 }
 
 .node tspan {
-  stroke: #fff;
-  stroke-width: 3px; 
-  font-size: 15px;
-  fill: #545454;
-  font-weight: bolder;
-  paint-order: stroke;
-  cursor: pointer;
+    stroke: #fff;
+    stroke-width: 3px;
+    font-size: 15px;
+    fill: #545454;
+    font-weight: bolder;
+    paint-order: stroke;
+    cursor: pointer;
 }
 
 .node text.icon {
-  stroke: none;
-  fill: #545454;
+    stroke: none;
+    fill: #545454;
 }
 
 .node circle {
-  cursor: pointer;
-  stroke-width: 3px;
+    cursor: pointer;
+    stroke-width: 3px;
 }
 
 .node.fixed circle {
-  fill: #bbbbbb;
+    fill: #bbbbbb;
 }
 
 .node.grouped circle {
-  fill: #7cbdff;
+    fill: #7cbdff;
 }
 
 .node.grouped.fixed circle {
-  fill: #0d77e2;
+    fill: #0d77e2;
 }
 
 .hull, path {
-  fill: #0d77e2;
-  stroke-opacity: 1;
-  fill-opacity: 0.2;
-  stroke: #7cbdff;
-  stroke-width: 2px;
-  transition-property: stroke-opacity, fill-opacity;
-  transition-delay: 0ms;
-  transition-duration: 50ms;
+    fill: #0d77e2;
+    stroke-opacity: 1;
+    fill-opacity: 0.2;
+    stroke: #7cbdff;
+    stroke-width: 2px;
+    transition-property: stroke-opacity, fill-opacity;
+    transition-delay: 0ms;
+    transition-duration: 50ms;
 }
 
 .button {
-  fill: transparent;
-  cursor: pointer;
+    fill: transparent;
+    cursor: pointer;
 }
 
 .button:hover {
-  fill: rgba(0, 0, 0, .1);
+    fill: rgba(0, 0, 0, .1);
 }
 
 .button:active, .button.selected {
-  fill: rgba(0, 0, 0, .25);
+    fill: rgba(0, 0, 0, .25);
 }
 
 #node-tooltip {
-  width: 240px;
-  background: rgba(255, 255, 255, .75);
-  border: 1px solid #000;
-  border-radius: 1px;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  font-size: 14px;
-  color: #000;
-  letter-spacing: 1px;
-  transition-delay: 75ms;
+    width: 240px;
+    background: rgba(255, 255, 255, .75);
+    border: 1px solid #000;
+    border-radius: 1px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    font-size: 14px;
+    color: #000;
+    letter-spacing: 1px;
+    transition-delay: 75ms;
 }
 
 .tooltip-title {
-  font-size: 20px;
-  border-bottom: 1.5px solid #0d77e2;
-  background: rgba(13, 119, 226, .2);
-  padding: 5px;
-  color: #0d77e2;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
+    font-size: 20px;
+    border-bottom: 1.5px solid #0d77e2;
+    background: rgba(13, 119, 226, .2);
+    padding: 5px;
+    color: #0d77e2;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
 }
 
 i.fa-close {
-  left: auto;
-  font-size: 16px; 
-  padding: 1px;
+    left: auto;
+    font-size: 16px;
+    padding: 1px;
 }
 
 .content-entry {
-  border-bottom: 1px solid #cccccc;
-  display: flex;
-  justify-content: space-between;
-  padding: 5px;
+    border-bottom: 1px solid #cccccc;
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
 }
 
 .content-entry:last-child {
-  border-bottom: none;
+    border-bottom: none;
 }
 
 .tooltip-left {
-  margin: auto;
-  margin-left: 0px;
-  max-width: 150px;
+    margin: auto;
+    margin-left: 0px;
+    max-width: 150px;
 }
 
 .tooltip-right {
-  margin: auto;
-  margin-right: 0px;
-  display: flex;
-  text-align: right;
-  flex-direction: row;
-  font-size: 14px;
-  max-width: 165px;
-  color: #545454;
+    margin: auto;
+    margin-right: 0px;
+    display: flex;
+    text-align: right;
+    flex-direction: row;
+    font-size: 14px;
+    max-width: 165px;
+    color: #545454;
 }
 
 #svg-image {
-  border: none;
-  cursor: default;
+    border: none;
+    cursor: default;
 }
 
 #minimap-box {
-  fill: #fff;
-  opacity: 0.8;
+    fill: #fff;
+    opacity: 0.8;
 }
 
 #minimap-box-square {
-  fill: #b1b1b1;
-  stroke: #545454;
-  stroke-width: 1.5px;
-  opacity: 0.4;
-  cursor: move;
+    fill: #b1b1b1;
+    stroke: #545454;
+    stroke-width: 1.5px;
+    opacity: 0.4;
+    cursor: move;
 }
 
 path.link {
-  stroke: #545454;
-  opacity: 0.7;
-  transition-property: opacity;
-  transition-delay: 0ms;
-  transition-duration: 50ms;
+    stroke: #545454;
+    opacity: 0.7;
+    transition-property: opacity;
+    transition-delay: 0ms;
+    transition-duration: 50ms;
 }
 
 .link.dynamic {
-  pointer-events: none;
+    pointer-events: none;
 }
 
-path.link.hidden  {
-  stroke-width: 0;
+path.link.hidden {
+    stroke-width: 0;
 }
 
 .node {
-  fill: #ebebeb;
-  stroke: #545454;
-  opacity: 1;
-  transition-property: stroke-opacity, fill-opacity;
-  transition-delay: 0ms;
-  transition-duration: 50ms;
+    fill: #ebebeb;
+    stroke: #545454;
+    opacity: 1;
+    transition-property: stroke-opacity, fill-opacity;
+    transition-delay: 0ms;
+    transition-duration: 50ms;
 }
 
 .node text {
-  stroke: #545454;
-  fill: #545454;
-  cursor: pointer;
-  stroke-width: 1px; 
+    stroke: #545454;
+    fill: #545454;
+    cursor: pointer;
+    stroke-width: 1px;
 }
 
 .node text.icon {
-  stroke: none;
-  fill: #545454;
+    stroke: none;
+    fill: #545454;
 }
 
 .node circle {
-  cursor: pointer;
-  stroke-width: 2.6px;
+    cursor: pointer;
+    stroke-width: 2.6px;
 }
 
 .node circle.hull-node {
-  stroke-width: 2.4px;
+    stroke-width: 2.4px;
 }
 
 .node tspan.text-shadow {
-  stroke-width: 4px;
-  stroke: #fff;
+    stroke-width: 4px;
+    stroke: #fff;
 }
 
 .node.fixed circle {
-  fill: #bbbbbb !important;
+    fill: #bbbbbb !important;
 }
 
 .faded {
-  transition-delay: 75ms;
+    transition-delay: 75ms;
 }
 
 .node.faded {
-  stroke-opacity: 0.1 !important;
-  fill-opacity: 0.1 !important;
-  transition-property: stroke-opacity, fill-opacity;
+    stroke-opacity: 0.1 !important;
+    fill-opacity: 0.1 !important;
+    transition-property: stroke-opacity, fill-opacity;
 }
 
 .link.faded {
-  opacity: 0.1 !important;
-  transition-property: opacity;
+    opacity: 0.1 !important;
+    transition-property: opacity;
 }
 
 .hull.faded {
-  stroke-opacity: 0.2 !important;
-  fill-opacity: 0.05 !important;
-  transition-property: stroke-opacity, fill-opacity;
+    stroke-opacity: 0.2 !important;
+    fill-opacity: 0.05 !important;
+    transition-property: stroke-opacity, fill-opacity;
 }
 
 path.link.same-as {
-  stroke-dasharray: 5,3;
+    stroke-dasharray: 5, 3;
 }
 
 .node.selected circle {
-  stroke: #0d77e2 !important;
+    stroke: #0d77e2 !important;
 }
 
 .node.selected circle.hull-node {
-  stroke: #fff !important;;
-  fill: #0d77e2 !important;
+    stroke: #fff !important;;
+    fill: #0d77e2 !important;
 }
 
 .node.selected .icon {
-  fill: #0d77e2 !important;
+    fill: #0d77e2 !important;
 }
 
 path.link.selected {
-  stroke: #0d77e2;
+    stroke: #0d77e2;
 }
 
 .node.expandable {
-  fill: #0d77e2;
+    fill: #0d77e2;
 }
 
 .node.expandable circle {
-  fill: #7cbdff !important;
-  fill-opacity: 0.5;
+    fill: #7cbdff !important;
+    fill-opacity: 0.5;
 }
 
 .node.expandable.fixed circle {
-  fill-opacity: 0.8; 
+    fill-opacity: 0.8;
 }
 
 .context-menu {
-  position: absolute;
-  display: none;
-  background-color: #f2f2f2;
-  border-radius: 0px;
+    position: absolute;
+    display: none;
+    background-color: #f2f2f2;
+    border-radius: 0px;
 
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  min-width: 150px;
-  border: 1px solid #d4d4d4;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    min-width: 150px;
+    border: 1px solid #d4d4d4;
 
-  z-index: 1200;
+    z-index: 1200;
 }
 
 .context-menu ul {
-  list-style-type: none;
-  /*margin: 4px 0px;*/
-  padding: 0px;
-  cursor: default;
+    list-style-type: none;
+    /*margin: 4px 0px;*/
+    padding: 0px;
+    cursor: default;
 }
 
 .context-menu ul li {
-  padding: 9px 12px;
+    padding: 9px 12px;
 }
 
 .context-menu ul li:hover {
-  background-color: #ff5d4c;
-  color: #fefefe;
+    background-color: #ff5d4c;
+    color: #fefefe;
 }
+
 .context-menu ul li ul:hover {
-  background-color: #f2f2f2;
+    background-color: #f2f2f2;
 }
