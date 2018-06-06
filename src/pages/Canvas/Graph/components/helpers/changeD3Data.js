@@ -1,6 +1,5 @@
 import * as d3 from "d3";
 import * as utils from "./utils.js";
-
 import {GROUP_HULL} from "./constants.js";
 
 export function getInverseAction(action) {
@@ -217,7 +216,7 @@ export function groupSame() {
 //Hull functions
 export function createHull(groupId, group) {
     let vertices = [];
-    let offset = 30; //arbitrary, the size of the node radius
+    const offset = 30; //arbitrary, the size of the node radius
 
     for (let a = 0; a < group.length; a++) {
         let i = group[a]

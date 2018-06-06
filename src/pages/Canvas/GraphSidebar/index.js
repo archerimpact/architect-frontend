@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-
 import Entity from "../Entity";
 import SearchResults from "../SearchResults";
 import ProjectData from "../ProjectData";
@@ -126,7 +125,6 @@ class GraphSidebar extends Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(actions, dispatch),
         dispatch: dispatch,
     };
 }

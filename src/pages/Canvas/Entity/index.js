@@ -44,7 +44,7 @@ class Entity extends Component {
 
     renderEntity = (node, nodes, links, keys) => {
         const nodeMap = {};
-        if (node == null) {
+        if (node === null) {
             return null
         }
         nodes.map(n => nodeMap[n.id] = n.name)
@@ -215,7 +215,7 @@ class Entity extends Component {
             ['last_seen', 'Last Seen'],
             ['incorporation_date', 'Incorporation Date']
         ];
-        if (this.state.currentEntity == null) {
+        if (this.state.currentEntity === null) {
             return <div className="sidebar-content-container"> Click a node to view information about it </div>
         }
         let id = decodeURIComponent(this.props.match.params.query);

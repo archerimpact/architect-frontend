@@ -82,7 +82,6 @@ class Graph {
         this.linkContainer = null;
         this.linkText = null;
         this.hull = null;
-
         this.nodes = []; // adding or removing data from here TODO refactor
         this.links = [];
         this.hulls = [];

@@ -1,10 +1,9 @@
 import React, {Component} from "react";
-
-import "./style.css";
 import SearchCard from "../SearchCard";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import {addToGraphFromId, saveCurrentProjectData} from "../../../redux/actions/graphActions";
+import "./style.css";
 
 class BackendSearch extends Component {
 

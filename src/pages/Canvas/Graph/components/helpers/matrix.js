@@ -1,7 +1,6 @@
 import {BELONGS_TO, DISPLAYED, GROUP_MEMBER, HIDDEN, NONEXISTENT} from "./matrixConstants.js";
 
 import {GROUP} from "./constants.js";
-
 import * as utils from "./utils.js";
 
 export function setMatrix(nodes, links, byIndex = false) {
@@ -64,10 +63,10 @@ export function addToMatrix(centerid, nodes, links) {
 
     this.reloadIdToIndex();
 
-    let numLinks = links.length;
+    const numLinks = links.length;
     let num = 0;
 
-    let sourceIndex, targetIndex
+    let sourceIndex, targetIndex;
     for (let i = 0; i < numLinks; i++) {
         if (links[i].source.id) {
             links[i].source = sourceIndex = this.idToIndex[links[i].source.id];
@@ -187,7 +186,7 @@ export function createNode(type, name, event = null) {
     this.adjacencyMatrix[this.adjacencyMatrix.length - 1][this.adjacencyMatrix.length - 1] = {
         state: DISPLAYED,
         data: newNode
-    }
+    };
     return newNode;
 }
 

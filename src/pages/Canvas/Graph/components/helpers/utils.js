@@ -87,16 +87,16 @@ export function isRightClick() {
 }
 
 export function getXYFromTranslate(translateString) {
-    let currentTransform = d3.transform(translateString);
-    let currentX = currentTransform.translate[0];
-    let currentY = currentTransform.translate[1];
+    const currentTransform = d3.transform(translateString);
+    const currentX = currentTransform.translate[0];
+    const currentY = currentTransform.translate[1];
     return [currentX, currentY];
 };
 
 export function getScaleFromZoom(zoomString) {
-    let currentTransform = d3.transform(zoomString);
-    let currentX = currentTransform.scale[0];
-    let currentY = currentTransform.scale[1];
+    const currentTransform = d3.transform(zoomString);
+    const currentX = currentTransform.scale[0];
+    const currentY = currentTransform.scale[1];
     return [currentX, currentY];
 };
 
