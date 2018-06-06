@@ -1,9 +1,9 @@
 import * as d3 from 'd3';
 import * as utils from './utils.js'
 
-import { MAX_SCALE, GRID_LENGTH } from './constants.js'
-import { getD3Event, findEntryById, processNodeName, isLeftClick, isRightClick, isGroup, then } from './utils.js';
-import { resetDragLink } from './aesthetics.js';
+import {MAX_SCALE, GRID_LENGTH} from './constants.js'
+import {getD3Event, findEntryById, processNodeName, isLeftClick, isRightClick, isGroup, then} from './utils.js';
+import {resetDragLink} from './aesthetics.js';
 
 // Click-drag node selection
 export function brushstart() {
@@ -15,15 +15,15 @@ export function brushing() {
   if (isRightClick()) {
     const extent = this.brush.extent();
     this.svg.selectAll('.node')
-      .classed('selected', function (d) {
-        const xPos = self.brushX.invert(d.x * self.zoomScale + self.zoomTranslate[0]);
-        const yPos = self.brushY.invert(d.y * self.zoomScale + self.zoomTranslate[1]);
-        const selected = (extent[0][0] <= xPos && xPos <= extent[1][0]
-          && extent[0][1] <= yPos && yPos <= extent[1][1])
-          || (this.classList.contains('selected') && d3.event.sourceEvent.ctrlKey);
-        self.nodeSelection[d.index] = selected;
-        return selected;
-      });
+    .classed('selected', function (d) {
+      const xPos = self.brushX.invert(d.x * self.zoomScale + self.zoomTranslate[0]);
+      const yPos = self.brushY.invert(d.y * self.zoomScale + self.zoomTranslate[1]);
+      const selected = (extent[0][0] <= xPos && xPos <= extent[1][0]
+        && extent[0][1] <= yPos && yPos <= extent[1][1])
+        || (this.classList.contains('selected') && d3.event.sourceEvent.ctrlKey);
+      self.nodeSelection[d.index] = selected;
+      return selected;
+    });
 
     this.highlightLinksFromAllNodes();
   }
@@ -78,17 +78,17 @@ export function dragstart(d, self) {
   this.displayNodeInfo(d);
   const node = d3.select(self);
   node
-    .attr('dragfix', node.classed('fixed'))
-    .attr('dragselect', node.classed('selected'))
-    .attr('dragdistance', 0);
+  .attr('dragfix', node.classed('fixed'))
+  .attr('dragselect', node.classed('selected'))
+  .attr('dragdistance', 0);
 }
 
 export function dragging(d, self) {
   const node = d3.select(self);
   node
-    .attr('cx', d.px = d.x = d3.event.x)
-    .attr('cy', d.py = d.y = d3.event.y)
-    .attr('dragdistance', parseInt(node.attr('dragdistance')) + 1);
+  .attr('cx', d.px = d.x = d3.event.x)
+  .attr('cy', d.py = d.y = d3.event.y)
+  .attr('dragdistance', parseInt(node.attr('dragdistance')) + 1);
 }
 
 export function dragend(d, self) {
@@ -112,19 +112,27 @@ export function mousedown(d, self) {
   d3.event.stopPropagation();
   // Disable drag for right clicks (all drag disabled in edit mode)
   if (!isLeftClick() && !this.editMode) {
-    if (!this.dragCallback) { this.dragCallback = this.node.property('__onmousedown.drag')['_'] };
-    this.node.on('mousedown.drag', null); 
+    if (!this.dragCallback) {
+      this.dragCallback = this.node.property('__onmousedown.drag')['_']
+    }
+    ;
+    this.node.on('mousedown.drag', null);
   }
 
-  if (isLeftClick()) { this.link.call(this.styleLink, false); }
-  if (this.editMode) { this.mousedownNode = d; };
+  if (isLeftClick()) {
+    this.link.call(this.styleLink, false);
+  }
+  if (this.editMode) {
+    this.mousedownNode = d;
+  }
+  ;
   this.dragDistance = 0;
   if (this.editMode) {
     this.dragLink
-      .attr('tx1', d.x)
-      .attr('ty1', d.y)
-      .attr('tx2', d.x)
-      .attr('ty2', d.y);
+    .attr('tx1', d.x)
+    .attr('ty1', d.y)
+    .attr('tx2', d.x)
+    .attr('ty2', d.y);
   }
 }
 
@@ -134,12 +142,12 @@ export function mouseup(d, self) {
   if (this.editMode && this.mousedownNode && d != this.mousedownNode) {
     const currNode = d3.select(self);
     currNode.select('circle')
-      .attr('transform', '');
+    .attr('transform', '');
 
-    const source = d, 
-          target = this.mousedownNode,
-          fwdLinkId = this.linkedById[source.id + ',' + target.id],
-          bwdLinkId = this.linkedById[target.id + ',' + source.id];
+    const source = d,
+      target = this.mousedownNode,
+      fwdLinkId = this.linkedById[source.id + ',' + target.id],
+      bwdLinkId = this.linkedById[target.id + ',' + source.id];
     if (fwdLinkId) {
       // If link already exists, select it
       this.selectLink(source, target);
@@ -147,8 +155,10 @@ export function mouseup(d, self) {
       // If link exists in opposite direction, make it bidirectional and select it
       const currLink = findEntryById(this.links, bwdLinkId);
       currLink.bidirectional = true;
-      this.link.filter((o) => { return o.id === bwdLinkId; })
-        .call(this.styleLink, true);
+      this.link.filter((o) => {
+        return o.id === bwdLinkId;
+      })
+      .call(this.styleLink, true);
     } else {
       // If link doesn't exist, create and select it
       this.addLink(source, target);
@@ -164,7 +174,7 @@ export function mouseover(d, self) {
   if (this.editMode && this.mousedownNode) {
     if (d != this.mousedownNode) {
       d3.select(self).select('circle')
-        .attr('transform', 'scale(1.1)');
+      .attr('transform', 'scale(1.1)');
     } else {
       this.dragLink.style('visibility', 'hidden');
     }
@@ -176,14 +186,16 @@ export function mouseover(d, self) {
     this.fadeGraph(d);
 
     // Add link text
-    this.updateLinkText(utils.getData(this.link.filter((l) => { return l.source === d || l.target === d; })));
+    this.updateLinkText(utils.getData(this.link.filter((l) => {
+      return l.source === d || l.target === d;
+    })));
 
     // Text elongation
     if (this.printFull == 0) {
       d3.select(self)
-        .select('.node-name')
-        .text(utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull), 2)
-        .call(this.wrapNodeText, 2);
+      .select('.node-name')
+      .text(utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull), 2)
+      .call(this.wrapNodeText, 2);
     }
   }
 
@@ -198,11 +210,13 @@ export function mouseout(d, self) {
   // Reduce size of focused node
   if (this.editMode && this.mousedownNode && d != this.mousedownNode) {
     d3.select(self).select('circle')
-      .attr('transform', '');
+    .attr('transform', '');
   }
 
   // Show drag link
-  if (this.editMode && this.mousedownNode) { this.dragLink.style('visibility', 'visible'); }
+  if (this.editMode && this.mousedownNode) {
+    this.dragLink.style('visibility', 'visible');
+  }
 
   // Remove link text
   if (!this.isDragging) this.updateLinkText([]);
@@ -210,14 +224,16 @@ export function mouseout(d, self) {
   // Text truncation
   if (this.printFull != 1) {
     d3.select(self)
-      .select('.node-name')
-      .text((d) => { return d.group ? '' : utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
-      .call(this.wrapNodeText, this.printFull);
-  } 
+    .select('.node-name')
+    .text((d) => {
+      return d.group ? '' : utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull);
+    })
+    .call(this.wrapNodeText, this.printFull);
+  }
 
   // Restore node drag functionality for future left clicks
   if (!this.editMode && !isLeftClick() && this.dragCallback) {
-    this.node.on('mousedown.drag', this.dragCallback); 
+    this.node.on('mousedown.drag', this.dragCallback);
     this.dragCallback = null;
   }
 }
@@ -244,12 +260,14 @@ export function mousemoveCanvas(self) {
   const e = d3.event;
   this.displayDebugTooltip(self);
   if (this.editMode && this.mousedownNode) {
-    const currNode = this.node.filter(function(o) { return classThis.mousedownNode.id === o.id; });
+    const currNode = this.node.filter(function (o) {
+      return classThis.mousedownNode.id === o.id;
+    });
     this.dragDistance++;
     this.dragLink
-      .style('visibility', 'visible')
-      .attr('tx2', e.x)
-      .attr('ty2', e.y);
+    .style('visibility', 'visible')
+    .attr('tx2', e.x)
+    .attr('ty2', e.y);
   }
 }
 
@@ -291,7 +309,7 @@ export function performZoom(translate, scale) {
   const transform = 'translate(' + (((translate[0] / scale) % GRID_LENGTH) - translate[0] / scale)
     + ',' + (((translate[1] / scale) % GRID_LENGTH) - translate[1] / scale) + ')scale(' + 1 + ')';
   this.svgGrid.attr('transform', transform);
-  this.container.attr('transform', `translate(${translate})scale(${scale})`); 
+  this.container.attr('transform', `translate(${translate})scale(${scale})`);
 }
 
 export function zoomend(d, self) {
@@ -317,7 +335,9 @@ export function zoomButton(zoom_in) {
     targetScale = scale * factor;
 
   // If we're already at an extent, done
-  if (targetScale === extent[0] || targetScale === extent[1]) { return false; }
+  if (targetScale === extent[0] || targetScale === extent[1]) {
+    return false;
+  }
 
   // If the factor is too much, scale it down to reach the extent exactly
   var clampedTargetScale = Math.max(extent[0], Math.min(extent[1], targetScale));
@@ -334,17 +354,17 @@ export function zoomButton(zoom_in) {
   this.isZooming = true;
   d3.transition().duration(100).tween("zoom", function () {
     var interpolate_scale = d3.interpolate(scale, targetScale),
-        interpolate_trans = d3.interpolate(translate, [x, y]);
+      interpolate_trans = d3.interpolate(translate, [x, y]);
     return function (t) {
       self.zoom
-          .scale(interpolate_scale(t))
-          .translate(interpolate_trans(t));
+      .scale(interpolate_scale(t))
+      .translate(interpolate_trans(t));
       self.zoomTranslate = self.zoom.translate();
       self.zoomScale = self.zoom.scale();
       self.manualZoom();
     };
   }).each("end", () => {
-    if (this.zoomPressed) this.zoomButton(zoom_in); 
+    if (this.zoomPressed) this.zoomButton(zoom_in);
     else this.isZooming = false;
     if (this.minimap) {
       this.minimap.zooming();
@@ -356,8 +376,8 @@ export function zoomButton(zoom_in) {
 
 export function translateGraphAroundNode(d) {
   // Center each vector, stretch, then put back
-  var x = this.center[0] > d.x ? (this.center[0] - d.x) : -1*(d.x-this.center[0]);
-  var y = this.center[1] > d.y ? (this.center[1] - d.y) : -1*(d.y-this.center[1]);
+  var x = this.center[0] > d.x ? (this.center[0] - d.x) : -1 * (d.x - this.center[0]);
+  var y = this.center[1] > d.y ? (this.center[1] - d.y) : -1 * (d.y - this.center[1]);
   var translate = this.zoom.translate();
   var scale = this.zoom.scale();
   this.isZooming = true;
@@ -368,21 +388,30 @@ export function translateGraphAroundNode(d) {
     var interpolateTranslate = d3.interpolate(translate, [x, y]);
     return function (t) {
       self.zoom
-          .translate(interpolateTranslate(t));
+      .translate(interpolateTranslate(t));
       self.zoomTranslate = self.zoom.translate();
       self.zoomScale = self.zoom.scale();
       self.manualZoom();
     };
-  }).call(then, () => { this.isZooming = false; });
+  }).call(then, () => {
+    this.isZooming = false;
+  });
 }
 
 export function translateGraphAroundId(id) {
   // Center each vector, stretch, then put back
   var d;
   this.node.classed("selected", false)
-    .filter((node)=> { if (node.id === id) { d = node; return node; } })
-    .classed("selected", true);
-  if (d == null) { return; }
+  .filter((node) => {
+    if (node.id === id) {
+      d = node;
+      return node;
+    }
+  })
+  .classed("selected", true);
+  if (d == null) {
+    return;
+  }
 
   const centerX = utils.getNewCoord(this.center[0], this.zoomTranslate[0], this.zoomScale);
   const centerY = utils.getNewCoord(this.center[1], this.zoomTranslate[1], this.zoomScale);
@@ -412,12 +441,14 @@ export function translateGraphAroundId(id) {
     var interpolateTranslate = d3.interpolate(translate, [x, y]);
     return function (t) {
       self.zoom
-          .translate(interpolateTranslate(t));
+      .translate(interpolateTranslate(t));
       self.zoomTranslate = self.zoom.translate();
       self.zoomScale = self.zoom.scale();
       self.manualZoom();
     };
-  }).call(then, () => { this.isZooming = false; });
+  }).call(then, () => {
+    this.isZooming = false;
+  });
 }
 
 export function manualZoom() {
@@ -429,7 +460,7 @@ export function manualZoom() {
 
 export function disableZoom() {
   this.svg.on("mousedown.zoom", null)
-    .on("touchstart.zoom", null)
-    .on("touchmove.zoom", null)
-    .on("touchend.zoom", null);
+  .on("touchstart.zoom", null)
+  .on("touchmove.zoom", null)
+  .on("touchend.zoom", null);
 }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import './style.css'
 
@@ -9,55 +9,54 @@ class SearchBar extends Component {
     this.state = {
       settingsExpanded: false
     };
-    this.submitSearch = this.submitSearch.bind(this);
-    this.toggleSettings = this.toggleSettings.bind(this);
-    this.getDataSources = this.getDataSources.bind(this);
-    this.getEntityTypes = this.getEntityTypes.bind(this);
   }
 
   componentDidMount() {
     this.refs.query.value = this.props.value ? this.props.value : null;
   }
+
   componentWillReceiveProps(nextprops) {
     if (this.props.value !== nextprops.value) {
       this.refs.query.value = nextprops.value;
     }
   }
 
-  submitSearch(e) {
+  submitSearch = (e) => {
     e.preventDefault();
     this.props.onSubmit(this.refs.query.value);
   }
 
-  toggleSettings(e) {
+  toggleSettings = (e) => {
     e.preventDefault();
     const current = this.state.settingsExpanded;
     this.setState({settingsExpanded: !current});
   }
 
-  getDataSources() {
+  getDataSources = () => {
     /* TODO can later be replaced with an actual call to the server to get the datasets */
     return ['All datasets', 'OFAC sanctions', 'OpenCorporate records', 'UK Corporate Registry records'];
   }
 
-  getEntityTypes() {
+  getEntityTypes = () => {
     return ['All types', 'Individual', 'Organization', 'Vessel', 'Aircraft'];
   }
 
-  render (){
+  render() {
     return (
       <div>
         <div className="search-input-container">
           <div className="d-flex flex-row full-height">
-            { !this.props.showSettings ? 
+            { !this.props.showSettings ?
               null :
-              <i id="sort-icon" className="searchbar-icon material-icons" onClick={(e) => {this.toggleSettings(e)}}>sort</i>
+              <i id="sort-icon" className="searchbar-icon material-icons" onClick={(e) => {
+                this.toggleSettings(e)
+              }}>sort</i>
             }
             <form className="search-form" onSubmit={(e) => this.submitSearch(e)}>
               <input className="search-input"
-                ref="query"
-                type="text"
-                placeholder="Search our connected data"
+                     ref="query"
+                     type="text"
+                     placeholder="Search our connected data"
               />
             </form>
             <i id="search-icon" className="searchbar-icon mr-auto material-icons" onClick={(e) => this.submitSearch(e)}>search</i>
@@ -66,13 +65,13 @@ class SearchBar extends Component {
         <div className={this.state.settingsExpanded ? "settings-expanded" : "settings-collapsed"}>
           <div className="filter-controls flex-row d-flex">
             <select className="form-control filter-select sexy-select" id="data-source-select">
-              { this.getDataSources().map(s => 
+              { this.getDataSources().map(s =>
                 <option value={s} key={s}>{s}</option>
               ) }
             </select>
 
             <select className="form-control filter-select sexy-select" id="entity-type-select">
-              { this.getEntityTypes().map(e => 
+              { this.getEntityTypes().map(e =>
                 <option value={e} key={e}>{e}</option>
               ) }
             </select>

@@ -1,6 +1,8 @@
-import { persistCombineReducers } from 'redux-persist';
+import {persistCombineReducers} from 'redux-persist';
 import storage from 'redux-persist/es/storage';
-import data from './dataReducer';
+import graph from './graphReducer';
+import user from './userReducer';
+import project from './projectReducer';
 
 const config = {
   key: 'root',
@@ -9,7 +11,9 @@ const config = {
 
 config.debug = true;
 const reducers = {
-  data
+  graph,
+  user,
+  project
 };
 
 const reducer = persistCombineReducers(config, reducers);

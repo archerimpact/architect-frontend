@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import Entity from '../Entity';
 import SearchResults from '../SearchResults';
 import ProjectData from '../ProjectData';
 import DatabaseSearchBar from '../../../components/DatabaseSearchBar';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { withRouter , Link} from 'react-router-dom';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {withRouter, Link} from 'react-router-dom';
 import './style.css';
-import * as actions from '../../../redux/actions';
+import * as actions from '../../../redux/actions/projectActions';
 
 
 class GraphSidebar extends Component {
@@ -20,19 +20,16 @@ class GraphSidebar extends Component {
       history: [],
       listener: null
     };
-    this.renderTabs = this.renderTabs.bind(this);
-    this.renderSidebarContainer = this.renderSidebarContainer.bind(this);
-    this.renderSettings = this.renderSettings.bind(this);
   }
 
   componentDidMount() {
     let listener = this.props.history.listen((location, action) => {
-      this.setState({ history: [...this.state.history, location] });
+      this.setState({history: [...this.state.history, location]});
     })
     this.setState({listener: listener})
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.state.listener();
   }
 
@@ -45,8 +42,8 @@ class GraphSidebar extends Component {
     }
   }
 
-  renderTabs() {
-    let baseUrl = '/build/'+ this.props.match.params.investigationId;
+  renderTabs = () => {
+    let baseUrl = '/build/' + this.props.match.params.investigationId;
     const activeState = this.props.match.params.sidebarState;
 
     return (
@@ -86,30 +83,33 @@ class GraphSidebar extends Component {
     )
   }
 
-  renderSettings() {
+  renderSettings = () => {
     return (
       <div> Sample text </div>
     )
   }
 
-  renderSidebarContainer() {
-    switch(this.props.match.params.sidebarState) {
+  renderSidebarContainer = () => {
+    switch (this.props.match.params.sidebarState) {
       case "search":
-        return  (
+        return (
           <div className="full-width full-height flex-column">
-              <div className="searchbar-container">
-                <DatabaseSearchBar graphid={this.props.graphid} search={(this.props.match.params ? this.props.match.params.query : null)} showSettings={true}/>
-              </div>
-              <SearchResults graph={this.props.graph} entity />
+            <div className="searchbar-container">
+              <DatabaseSearchBar graphid={this.props.graphid}
+                                 search={(this.props.match.params ? this.props.match.params.query : null)}
+                                 showSettings={true}/>
+            </div>
+            <SearchResults graph={this.props.graph} entity/>
           </div>
-         );
+        );
       case "entity":
-          return <Entity graph={this.props.graph} id={this.props.match.params.query}/>
+        return <Entity graph={this.props.graph} id={this.props.match.params.query}/>
       case "list":
-         return <ProjectData graph={this.props.graph}/>
+        return <ProjectData graph={this.props.graph}/>
       case "settings":
         return this.renderSettings();
-    };
+    }
+    ;
   }
 
   render() {
@@ -134,9 +134,9 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state) {
   return {
-    sidebarVisible: state.data.sidebarVisible
+    sidebarVisible: state.project.sidebarVisible
   };
 }
 

@@ -13,7 +13,7 @@ body {
 }
 
 .unselectable {
-  -webkit-user-select: none; /* Safari */        
+  -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+/Edge */
   user-select: none; /* Standard */
@@ -40,7 +40,7 @@ svg rect.extent {
 
 svg line {
   stroke: #ebebeb;
-  stroke-width: 1.5px; 
+  stroke-width: 1.5px;
 }
 
 .link {
@@ -69,7 +69,7 @@ svg line {
   fill: #545454;
   paint-order: stroke;
   font-size: 14px;
-  font-weight: bolder; 
+  font-weight: bolder;
 }
 
 .link.dynamic {
@@ -87,7 +87,7 @@ svg line {
 
 .node tspan {
   stroke: #fff;
-  stroke-width: 3px; 
+  stroke-width: 3px;
   font-size: 15px;
   fill: #545454;
   font-weight: bolder;
@@ -168,7 +168,7 @@ svg line {
 
 i.fa-close {
   left: auto;
-  font-size: 16px; 
+  font-size: 16px;
   padding: 1px;
 }
 
@@ -230,7 +230,7 @@ path.link {
   pointer-events: none;
 }
 
-path.link.hidden  {
+path.link.hidden {
   stroke-width: 0;
 }
 
@@ -247,7 +247,7 @@ path.link.hidden  {
   stroke: #545454;
   fill: #545454;
   cursor: pointer;
-  stroke-width: 1px; 
+  stroke-width: 1px;
 }
 
 .node text.icon {
@@ -295,7 +295,7 @@ path.link.hidden  {
 }
 
 path.link.same-as {
-  stroke-dasharray: 5,3;
+  stroke-dasharray: 5, 3;
 }
 
 .node.selected circle {
@@ -325,7 +325,7 @@ path.link.selected {
 }
 
 .node.expandable.fixed circle {
-  fill-opacity: 0.8; 
+  fill-opacity: 0.8;
 }
 
 .context-menu {
@@ -357,6 +357,7 @@ path.link.selected {
   background-color: #ff5d4c;
   color: #fefefe;
 }
+
 .context-menu ul li ul:hover {
   background-color: #f2f2f2;
 }

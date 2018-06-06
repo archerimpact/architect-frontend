@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Open Sans');
 
 body {
-	font-family: 'Open Sans', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   color: #1a1a1a;
 }
 
@@ -18,8 +18,6 @@ body {
 .show-nav {
   height: calc(100% - 46px);
 }
-
-
 
 .no-nav {
   height: 100%;
