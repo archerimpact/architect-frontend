@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import './style.css'
 
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import * as actions from '../../../redux/actions/userActions';
-import {withRouter} from 'react-router-dom';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as actions from '../../../redux/actions/';
+import { withRouter } from 'react-router-dom';
 import EntityCard from '../EntityCard';
 import EntityAttributes from '../EntityAttributes';
 import * as server from '../../../server';
@@ -23,26 +23,27 @@ class Entity extends Component {
     this.state = {
       currentEntity: null,
     };
+    this.renderEntity = this.renderEntity.bind(this);
   }
 
   componentWillMount() {
     server.getNode(decodeURIComponent(this.props.id), false)
-    .then(d => {
-      this.setState({currentEntity: d})
-    })
-    .catch(err => console.log(err));
+      .then(d => {
+        this.setState({ currentEntity: d })
+      })
+      .catch(err => console.log(err));
   }
 
   componentWillReceiveProps(nextprops) {
     server.getNode(decodeURIComponent(this.props.id), false)
-    .then(d => {
-      this.setState({currentEntity: d})
-    })
-    .catch(err => console.log(err));
+      .then(d => {
+        this.setState({ currentEntity: d })
+      })
+      .catch(err => console.log(err));
   }
 
 
-  renderEntity = (node, nodes, links, keys) => {
+  renderEntity(node, nodes, links, keys) {
     const nodeMap = {};
     if (node == null) {
       return null
@@ -50,12 +51,12 @@ class Entity extends Component {
     nodes.map(n => nodeMap[n.id] = n.name)
 
     const extract_link = (type, compareSource, compareTarget) => {
-      return links.filter(link => link.type === type &&
-        (
-          (compareSource && node.id === link.source) ||
-          (compareTarget && node.id === link.target)
-        )
-      );
+      return links.filter(link => link.type === type && 
+                                  (
+                                    (compareSource && node.id === link.source) || 
+                                    (compareTarget && node.id === link.target)
+                                  )
+                          );
     };
 
     const aliases = extract_link('AKA', true, false);
@@ -194,8 +195,7 @@ class Entity extends Component {
               return (
                 <div>
                   <h5 className="subheader">{l}</h5>
-                  { t.extracted.map(i => <EntityCard data={i} id={i[t.chooseDisplay]} shouldFetch
-                                                     graph={this.props.graph}/>) }
+                  { t.extracted.map(i => <EntityCard data={i} id={i[t.chooseDisplay]} shouldFetch graph={this.props.graph} />) }
                 </div>
               );
             }
@@ -207,7 +207,6 @@ class Entity extends Component {
   }
 
   render() {
-    console.log("this.state", this.state)
     const keys = [
       ['registered_in', 'Registered In'],
       ['birthdate', 'Date of Birth'],
@@ -237,8 +236,8 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, props) {
   return {
-    currentNode: state.project.currentProject.currentNode,
-    currentEntity: state.graph.currentEntity
+    currentNode: state.data.currentNode,
+    currentEntity: state.data.currentEntity
   };
 }
 

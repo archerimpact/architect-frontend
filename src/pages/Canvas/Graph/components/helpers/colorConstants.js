@@ -9,9 +9,9 @@ export const HEX_PRIMARY_ACCENT = '#6B238E';
 export const NODE_COLORS = {
   'person': '#800080',
   'Document': '#008000',
-  [constants.IDENTIFYING_DOCUMENT]: '#008000',
+  [constants.IDENTIFYING_DOCUMENT] : '#008000',
   'corporation': '#800000',
-  [constants.ORGANIZATION]: '#800000',
+  [constants.ORGANIZATION] : '#800000',
   'group': '#008080',
   'same_as_group': '#008080'
 }

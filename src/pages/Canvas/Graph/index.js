@@ -1,57 +1,50 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {withRouter} from 'react-router-dom';
-import * as graphActions from '../../../redux/actions/graphActions';
-import {
-  resetProject,
-  addToGraphFromId,
-  setCurrentNode,
-  saveCurrentProjectData
-} from '../../../redux/actions/graphActions';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router-dom';
+import * as graphActions from './graphActions';
 
 import './graph.css';
 import './style.css';
 
 class Graph extends Component {
 
-  setCurrentNodeFunc = (d) => {
-    this.props.dispatch(setCurrentNode(d));
+  constructor(props) {
+    super(props);
+    this.renderProjectToolbar = this.renderProjectToolbar.bind(this);
+    this.expandNodeFromData = this.expandNodeFromData.bind(this);
+    this.setCurrentNode = this.setCurrentNode.bind(this);
+    this.saveCurrentProjectData = this.saveCurrentProjectData.bind(this);
   }
 
-  expandNodeFromData = (d) => {
-    this.props.dispatch(addToGraphFromId(this.props.graph, d.id));
+  setCurrentNode(d) {
+    this.props.actions.setCurrentNode(d);
   }
 
-  saveCurrentProjectDataFunc = () => {
-    this.props.dispatch(saveCurrentProjectData(this.props.graph));
+  expandNodeFromData(d) {
+    this.props.actions.addToGraphFromId(this.props.graph, d.id);
+  }
+
+  saveCurrentProjectData() {
+    this.props.actions.saveCurrentProjectData(this.props.graph);
   }
 
   componentDidMount() {
-    this.props.graph.generateCanvas(this.props.width, this.props.height);
-    this.props.graph.setData(0, [], []);
-    this.props.graph.bindDisplayFunctions({
-      expand: this.expandNodeFromData,
-      node: this.setCurrentNodeFunc,
-      save: this.saveCurrentProjectDataFunc
-    });
-
+    this.props.actions.initializeCanvas(this.props.graph, this.props.width, this.props.height);
+    this.props.graph.bindDisplayFunctions({ expand: this.expandNodeFromData, node: this.setCurrentNode, save: this.saveCurrentProjectData });
+    
     if (this.props.graphData != null) {
-      const graphData = {nodes: this.props.graphData.nodes, links: this.props.graphData.links};
-      this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));
+      const graphData = { nodes: this.props.graphData.nodes, links: this.props.graphData.links };
+      this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));      
     }
   }
 
   componentWillReceiveProps(nextprops) {
-    this.props.graph.bindDisplayFunctions({
-      expand: this.expandNodeFromData,
-      node: this.setCurrentNodeFunc,
-      save: this.saveCurrentProjectDataFunc
-    });
+    this.props.graph.bindDisplayFunctions({ expand: this.expandNodeFromData, node: this.setCurrentNode, save: this.saveCurrentProjectData });
 
     if (this.props.project && nextprops.graphData && nextprops.project && nextprops.project._id != this.props.project._id) {
-      const graphData = {nodes: nextprops.graphData.nodes, links: nextprops.graphData.links};
+      const graphData = { nodes: nextprops.graphData.nodes, links: nextprops.graphData.links };
       this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));
     }
   }
@@ -64,22 +57,21 @@ class Graph extends Component {
     return newArray;
   }
 
-  renderProjectToolbar = () => {
+  renderProjectToolbar() {
     return (
       <div className="back-button" onClick={() => {
-        this.props.dispatch(resetProject())
-        this.props.history.push('/build')
-      }
+        this.props.dispatch(graphActions.resetProject())
+        this.props.history.push('/build')}
       }>
         <i className="material-icons back-button-icon">home</i>
       </div>
     )
   }
-
+  
   render() {
-    return (
+    return( 
       <div>
-        {this.props.project && this.props.match.path !== "/explore/:sidebarState?" ? this.renderProjectToolbar() :
+        {this.props.project && this.props.match.path !== "/explore/:sidebarState?" ? this.renderProjectToolbar() : 
           null
         }
         <div id="graph-container" style={{"height": this.props.height + "px", "width": this.props.width + "px"}}></div>
@@ -95,18 +87,18 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-function mapStateToProps(state) {
-  let sidebarSize = state.graph.sidebarVisible ? 600 : 0;
+function mapStateToProps(state, props) {
+  let sidebarSize = state.data.sidebarVisible ? 600 : 0;
   let graphData = null
-  if (state.project.currentProject != null && state.graph.data != null) {
+  if (state.data.currentProject != null && state.data.currentProject.graphData != null) {
     // TODO this is called a lot
-    graphData = state.graph.data
+    graphData = state.data.currentProject.graphData
   }
   return {
-    height: window.innerHeight,
-    width: Math.max(window.innerWidth - sidebarSize),
-    project: state.project.currentProject,
-    graphData: graphData
+      height: window.innerHeight,
+      width: Math.max(window.innerWidth - sidebarSize),
+      project: state.data.currentProject,
+      graphData: graphData
   };
 }
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Graph));

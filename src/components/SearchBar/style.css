@@ -1,13 +1,13 @@
 .search-input-container {
   display: block;
-  position: relative;
-  margin: 0 auto;
-  background: #ffffff;
+  position:relative;
+  margin:0 auto;
+  background:#ffffff;
   max-width: 650px;
   width: 100%;
-  -webkit-box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
+  -webkit-box-shadow: 0px 3px 8px 0px rgba(0,0,0,0.3);
+  -moz-box-shadow: 0px 3px 8px 0px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2), 0 -1px 0px rgba(0,0,0,0.02);
   display: inline-flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -28,10 +28,10 @@
 
 .search-form {
   flex-grow: 100;
-  margin-left: 10px; /* fixes issue with white rectangle clipping outside the rounded rect search bar */
+  margin-left: 10px;    /* fixes issue with white rectangle clipping outside the rounded rect search bar */
 }
 
-.search-input:focus {
+.search-input:focus{
   outline: none;
 }
 
@@ -62,8 +62,8 @@
 
 /* filter bar */
 .settings-collapsed {
-  height: 0px;
-  -webkit-transition: height, 0.5s linear;
+  height:0px;
+  -webkit-transition:height, 0.5s linear;
   -moz-transition: height, 0.5s linear;
   -ms-transition: height, 0.5s linear;
   -o-transition: height, 0.5s linear;
@@ -99,12 +99,13 @@
 }
 
 #data-source-select {
-  width: 110px; /* long names means we need to constrain its length */
+  width: 110px;   /* long names means we need to constrain its length */
 }
 
 #entity-type-select {
   width: 90px;
 }
+
 
 .filter-controls {
   margin-top: 5px;

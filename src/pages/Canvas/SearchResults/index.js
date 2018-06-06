@@ -1,32 +1,35 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import './style.css'
 import SearchCard from '../SearchCard';
 
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {withRouter} from 'react-router-dom';
-import {addToGraphFromId, saveCurrentProjectData} from '../../../redux/actions/graphActions';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router-dom';
+import * as actions from '../Graph/graphActions';
 
 class BackendSearch extends Component {
 
   constructor(props) {
     super(props);
+    this.toggleSearchResults = this.toggleSearchResults.bind(this);
+    this.addToGraph = this.addToGraph.bind(this);
+    this.saveCurrentProjectData = this.saveCurrentProjectData.bind(this);
     this.state = {
       showResults: true,
     };
   }
 
-  toggleSearchResults = () => {
-    return this.setState({showResults: !this.state.showResults});
+  toggleSearchResults() {
+    return this.setState({ showResults: !this.state.showResults });
   }
 
-  addToGraph = (id) => {
-    this.props.dispatch(addToGraphFromId(this.props.graph, id));
+  addToGraph(id) {
+    this.props.actions.addToGraphFromId(this.props.graph, id);
   }
 
-  saveCurrentProjectDataFunc = () => {
-    this.props.dispatch(saveCurrentProjectData(this.props.graph));
+  saveCurrentProjectData() {
+    this.props.actions.saveCurrentProjectData(this.props.graph);
   }
 
   render() {
@@ -37,7 +40,7 @@ class BackendSearch extends Component {
     } else {
       return (
         <div className="search-results">
-          { !this.props.searchData ?
+          { !this.props.searchData ? 
             null :
             this.props.searchData.map((entity) => {
               return (
@@ -54,14 +57,15 @@ class BackendSearch extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
+    actions: bindActionCreators(actions, dispatch),
     dispatch: dispatch,
   };
 }
 
-function mapStateToProps(state) {
-  if (state.graph.canvas) {
+function mapStateToProps(state, props) {
+  if (state.data.canvas) {
     return {
-      searchData: state.graph.canvas.searchData
+      searchData: state.data.canvas.searchData
     }
   }
   return {

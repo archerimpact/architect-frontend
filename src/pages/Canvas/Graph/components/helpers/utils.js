@@ -1,40 +1,26 @@
 import * as d3 from 'd3';
-import {
-  NONEXISTENT,
-  DISPLAYED,
-  HIDDEN,
+import { 
+  NONEXISTENT, 
+  DISPLAYED, 
+  HIDDEN, 
   GROUP_MEMBER,
   BELONGS_TO
 } from './matrixConstants.js';
 
-import {
-  ENTITY,
+import { 
+  ENTITY, 
   GROUP,
   GROUP_HULL
 } from './constants.js';
 
 export function isMorePreferredState(val1, val2) {
-  if (val1 === GROUP_MEMBER) {
-    return false;
-  }
-  else if (val2 === GROUP_MEMBER) {
-    return false;
-  }
-  else if (val1 === BELONGS_TO) {
-    return true;
-  }
-  else if (val2 === BELONGS_TO) {
-    return false;
-  }
-  else if (val1 === DISPLAYED) {
-    return true;
-  }
-  else if (val2 === DISPLAYED) {
-    return false;
-  }
-  else if (val1 === HIDDEN) {
-    return true;
-  }
+  if (val1 === GROUP_MEMBER) { return false; }
+  else if (val2 === GROUP_MEMBER) { return false;}
+  else if (val1 === BELONGS_TO) { return true; }
+  else if (val2 === BELONGS_TO) { return false; }
+  else if (val1 === DISPLAYED) { return true; }
+  else if (val2 === DISPLAYED) { return false; }
+  else if (val1 === HIDDEN) { return true; }
 }
 
 export function isPossibleLink(val) {
@@ -53,7 +39,7 @@ export function getNewCoord(x, translate, scale) {
   return x - translate / scale;
 }
 
-export function isExpandable(d) {
+export function isExpandable(d) {  
   let links = d.totalLinks;
   if (d.totalLinks && d.linkTypes) {
     links = d.linkTypes.AKA ? links - d.linkTypes.AKA : links;
@@ -65,20 +51,21 @@ export function isExpandable(d) {
 }
 
 export function addRowColumn(matrix) {
-  for (var i = 0; i < matrix.length; i++) {
+  for(var i = 0 ; i < matrix.length ; i++) {
     matrix[i].push({state: NONEXISTENT, data: null});
   }
-
+  
   matrix.push(new Array(matrix.length + 1));
-  for (var i = 0; i < matrix.length; i++) {
+  for(var i = 0; i < matrix.length; i++) {
     matrix[matrix.length - 1][i] = {state: NONEXISTENT, data: null};
   }
   return matrix
 }
 
 export function removeColumn(matrix, index) {
-  for (var i = 0; i < matrix.length; i++) {
-    matrix[i].splice(index, 1);
+  for(var i = 0 ; i < matrix.length ; i++)
+  {
+     matrix[i].splice(index, 1);
   }
   matrix.splice(index, 1);
 }
@@ -110,49 +97,39 @@ export function getScaleFromZoom(zoomString) {
   return [currentX, currentY];
 };
 
-export function createSVGImage(targetSVG, x1, x2, y1, y2, width = null, height = null) {
+export function createSVGImage(targetSVG, x1, x2, y1, y2, width=null, height=null) {  
   const svgString = createSVGString(targetSVG, x1, x2, y1, y2, width, height);
-  const blob = new Blob([svgString], {type: 'image/svg+xml'});
+  const blob = new Blob([ svgString ], { type: 'image/svg+xml' });
   const url = URL.createObjectURL(blob);
 
   return url;
 }
 
-export function createSVGString(targetSVG, x1, x2, y1, y2, width = null, height = null) {
+export function createSVGString(targetSVG, x1, x2, y1, y2, width=null, height=null){
   var svgClone = targetSVG.cloneNode(true);
-
-  if (!width) {
-    width = x2 - x1;
-  }
-  if (!height) {
-    height = y2 - y1;
-  }
+  
+  if (!width) { width = x2 - x1; }
+  if (!height) { height = y2 - y1; }
   svgClone.setAttribute('viewBox', `${x1} ${y1} ${width} ${height}`);
 
   Array.from(svgClone.childNodes).map((e) => {
-    if (e.classList[0] !== "graph-items") {
-      svgClone.removeChild(e);
-    }
+    if (e.classList[0] !== "graph-items") { svgClone.removeChild(e); }
     Array.from(e.childNodes).map((e) => {
-      if (e.classList[0] === "svg-grid") {
-        e.parentNode.removeChild(e);
-      }
+        if (e.classList[0] === "svg-grid") { e.parentNode.removeChild(e); }
     });
   });
 
   const sheets = document.styleSheets;
   var styleStr = '';
-  Array.prototype.forEach.call(sheets, function (sheet) {
+  Array.prototype.forEach.call(sheets, function(sheet) {
     try { // we need a try-catch block for external stylesheets that could be there...
       if (sheet.cssRules) {
-        styleStr += Array.prototype.reduce.call(sheet.cssRules, function (a, b) {
+        styleStr += Array.prototype.reduce.call(sheet.cssRules, function(a, b){
           return a + b.cssText; // just concatenate all our cssRules' text
-        }, "");
+        }, "");       
       }
     }
-    catch (e) {
-      console.log(e);
-    }
+    catch(e) { console.log(e); }
   });
   // create our svg nodes that will hold all these rules
   const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
@@ -160,7 +137,7 @@ export function createSVGString(targetSVG, x1, x2, y1, y2, width = null, height 
   style.innerHTML = styleStr;
   defs.appendChild(style);
   svgClone.insertBefore(defs, svgClone.firstElementChild);
-
+  
   const svgString = new XMLSerializer().serializeToString(svgClone);
   return svgString;
 }
@@ -206,12 +183,8 @@ export function findEntryById(dictList, id) {
 // Normalize node text to same casing conventions and length
 // printFull states - 0: abbrev, 1: none, 2: full
 export function processNodeName(str, printFull) {
-  if (!str) {
-    return 'Document';
-  }
-  if (printFull == 1) {
-    return '';
-  }
+  if (!str) { return 'Document'; } 
+  if (printFull == 1) { return ''; }
 
   const delims = [' ', '.', '('];
   for (let i = 0; i < delims.length; i++) {
@@ -247,28 +220,18 @@ export function getD3Event() {
 // Execute callback after transition has completed for EVERY element in a selection
 export function then(transition, callback) {
   if (typeof callback !== "function") throw new Error("Invalid callback in then");
-  if (transition.size() === 0) {
-    callback();
-  }
-  var n = 0;
-  transition
-  .each(function () {
-    ++n;
-  })
-  .each("end", function () {
-    if (!--n) callback.apply(this, arguments);
-  });
+  if (transition.size() === 0) { callback(); }
+  var n = 0; 
+  transition 
+    .each(function() { ++n; }) 
+    .each("end", function() { if (!--n) callback.apply(this, arguments); }); 
 }
 
 export function atan2(y, x) {
   const a = Math.min(Math.abs(x), Math.abs(y)) / Math.max(Math.abs(x), Math.abs(y));
-  const s = a * a;
+  const s = a*a;
   let r = ((-0.0464964749 * s + 0.15931422) * s - 0.327622764) * s * a + a;
-  if (Math.abs(y) > Math.abs(x)) {
-    r = 1.57079637 - r;
-  }
-  if (x < 0) {
-    r = Math.PI - r;
-  }
+  if (Math.abs(y) > Math.abs(x)) { r = 1.57079637 - r; }
+  if (x < 0) { r = Math.PI - r; }
   return ((y < 0) ? -r : r) * 180 / Math.PI;
 }

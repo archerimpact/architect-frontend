@@ -1,14 +1,18 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {withRouter} from 'react-router-dom';
-import * as graphActions from '../../../redux/actions/graphActions';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router-dom';
+import * as actions from '../Graph/graphActions';
 import EntityCard from '../EntityCard';
 
 import './style.css';
 
 class ProjectData extends Component {
+
+  constructor(props) {
+    super(props);
+  }
 
   render() {
     if (this.props.currentProject === null) {
@@ -20,10 +24,9 @@ class ProjectData extends Component {
         <div className="sidebar-content-container">
           <h5 className="text-center">{this.props.currentProject.name}: Entities</h5>
           <div className="searchResults">
-            { !this.props.currentProject.graphData || !this.props.currentProject.graphData.nodes ?
+            { !this.props.currentProject.graphData || !this.props.currentProject.graphData.nodes ? 
               null :
-              this.props.currentProject.graphData.nodes.map(node => <EntityCard data={node} id={node.id} shouldFetch
-                                                                                graph={this.props.graph}/>)
+              this.props.currentProject.graphData.nodes.map(node => <EntityCard  data={node} id={node.id} shouldFetch graph={this.props.graph}/>)
             }
           </div>
         </div>
@@ -34,15 +37,15 @@ class ProjectData extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(graphActions, dispatch),
+    actions: bindActionCreators(actions, dispatch),
     dispatch: dispatch,
   };
 }
 
-function mapStateToProps(state) {
-  if (state.graph.currentProject) {
+function mapStateToProps(state, props) {
+  if (state.data.currentProject) {
     return {
-      currentProject: state.graph.currentProject
+      currentProject: state.data.currentProject
     }
   }
   return {

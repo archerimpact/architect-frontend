@@ -10,7 +10,7 @@ import * as d3Data from './helpers/changeD3Data.js';
 import Minimap from './MinimapClass.js'
 import * as constants from './helpers/constants.js';
 import * as colors from './helpers/colorConstants.js';
-import {GROUP, HULL_GROUP, DOCUMENT, PERSON, CORPORATION} from './helpers/constants.js';
+import { GROUP, HULL_GROUP, DOCUMENT, PERSON, CORPORATION } from './helpers/constants.js';
 
 // FontAwesome icon unicode-to-node type dict
 // Use this to find codes for FA icons: https://fontawesome.com/cheatsheet
@@ -18,7 +18,7 @@ const icons = {
   [constants.PERSON]: '',
   'Individual': '',
   'Document': '',
-  [constants.IDENTIFYING_DOCUMENT]: '',
+  [constants.IDENTIFYING_DOCUMENT] : '',
   'corporation': '',
   'Entity': '',
   [constants.ORGANIZATION]: '',
@@ -34,7 +34,7 @@ const icons = {
   [constants.BUTTON_TOGGLE_MINIMAP_ID]: '',
   [constants.BUTTON_UNDO_ACTION_ID]: '',
   [constants.BUTTON_REDO_ACTION_ID]: '',
-  [constants.BUTTON_SAVE_PROJECT_ID]: ''
+  [constants.BUTTON_SAVE_PROJECT_ID]: '' 
 };
 
 class Graph {
@@ -68,7 +68,7 @@ class Graph {
     this.draggedNode = null; // Store reference to currently dragged node, null otherwise
     this.isBrushing = false;
     this.isEmphasized = false; // Keep track of node emphasis to end node emphasis on drag
-    this.typesShown = {'Document': true, 'person': true, 'corporation': true};
+    this.typesShown = { 'Document' : true, 'person' : true, 'corporation' : true };
     this.hoveredNode = null; // Store reference to currently hovered/emphasized node, null otherwise
     this.deletingHoveredNode = false; // Store whether you are deleting a hovered node, if so you reset graph opacity
     this.printFull = 0; // Allow user to toggle node text length
@@ -84,7 +84,7 @@ class Graph {
     this.linkContainer = null;
     this.linkText = null;
     this.hull = null;
-    this.nodes = []; // adding or removing data from here TODO refactor
+    this.nodes = [];
     this.links = [];
     this.hulls = [];
     this.nodeEnter = null;
@@ -146,7 +146,7 @@ class Graph {
   initializeDataDicts() {
     this.groups = {}; // Store groupNodeId --> {links: [], nodes: [], groupid: int}
     this.expandedGroups = {}; // Store groupNodeId --> expansion state
-    this.hidden = {links: [], nodes: []}; // Store all links and nodes that are hidden
+    this.hidden = { links: [], nodes: [] }; // Store all links and nodes that are hidden  
     this.nodeSelection = {}; // Store node.index --> selection state
     this.linkedById = {}; // Store each pair of neighboring nodes
 
@@ -157,16 +157,10 @@ class Graph {
   initializeZoom() {
     const self = this;
     const zoom = d3.behavior.zoom()
-    .scaleExtent([constants.MIN_SCALE, constants.MAX_SCALE])
-    .on('zoomstart', function (d) {
-      self.zoomstart(d, this)
-    })
-    .on('zoom', function (d) {
-      self.zooming(d, this)
-    })
-    .on('zoomend', function (d) {
-      self.zoomend(d, this)
-    });
+      .scaleExtent([constants.MIN_SCALE, constants.MAX_SCALE])
+      .on('zoomstart', function (d) { self.zoomstart(d, this) })
+      .on('zoom', function (d) { self.zooming(d, this) })
+      .on('zoomend', function (d) { self.zoomend(d, this) });
 
     return zoom;
   }
@@ -174,34 +168,24 @@ class Graph {
   initializeBrush() {
     const self = this;
     return d3.svg.brush()
-    .on('brushstart', function (d) {
-      self.brushstart(d, this)
-    })
-    .on('brush', function (d) {
-      self.brushing(d, this)
-    })
-    .on('brushend', function (d) {
-      self.brushend(d, this)
-    })
-    .x(self.brushX).y(self.brushY);
+      .on('brushstart', function (d) { self.brushstart(d, this) })
+      .on('brush', function (d) { self.brushing(d, this) })
+      .on('brushend', function (d) { self.brushend(d, this) })
+      .x(self.brushX).y(self.brushY);
   }
 
   // Create canvas
   initializeSVG() {
     const self = this;
     const svg = d3.select('#graph-container').append('svg')
-    .attr('id', 'canvas')
-    .attr('pointer-events', 'all')
-    .classed('svg-content', true)
-    .on('mouseup', function () {
-      self.mouseupCanvas(this);
-    })
-    .call(d3.behavior.drag()
-      .on('dragstart', function (d) {
-        self.dragstartCanvas(d, this)
-      })
-    )
-    .call(this.zoom);
+      .attr('id', 'canvas')
+      .attr('pointer-events', 'all')
+      .classed('svg-content', true)
+      .on('mouseup', function () { self.mouseupCanvas(this); })
+      .call(d3.behavior.drag()
+        .on('dragstart', function (d) { self.dragstartCanvas(d, this) })
+      )
+      .call(this.zoom);
 
     // Disable context menu from popping up on right click
     svg.on('contextmenu', function (d, i) {
@@ -216,8 +200,8 @@ class Graph {
   initializeSVGBrush() {
     // Extent invisible on left click
     const svgBrush = this.svg.append('g')
-    .attr('class', 'brush')
-    .call(this.brush);
+      .attr('class', 'brush')
+      .call(this.brush);
 
     this.svg.on('mousedown', () => {
       svgBrush.style('opacity', utils.isRightClick() ? 1 : 0);
@@ -230,81 +214,57 @@ class Graph {
   // whereas new append calls must be within the same g, in order for zoom to work.
   initializeContainer() {
     return this.svg.append('g')
-    .attr('class', 'graph-items');
+      .attr('class', 'graph-items');
   }
 
   //set up how to draw the hulls
   initializeCurve() {
     return d3.svg.line()
-    .interpolate('cardinal-closed')
-    .tension(.85);
+      .interpolate('cardinal-closed')
+      .tension(.85);
   }
 
   initializeSVGgrid() {
     const svgGrid = this.container.append('g')
-    .attr('class', 'svg-grid');
+      .attr('class', 'svg-grid');
 
     svgGrid
-    .append('g')
-    .attr('class', 'x-ticks')
-    .selectAll('line')
-    .data(d3.range(0, (this.numTicks + 1) * constants.GRID_LENGTH, constants.GRID_LENGTH))
-    .enter().append('line')
-    .attr('x1', (d) => {
-      return d;
-    })
-    .attr('y1', (d) => {
-      return -1 * constants.GRID_LENGTH;
-    })
-    .attr('x2', (d) => {
-      return d;
-    })
-    .attr('y2', (d) => {
-      return (1 / constants.MIN_SCALE) * this.height + constants.GRID_LENGTH;
-    });
+      .append('g')
+      .attr('class', 'x-ticks')
+      .selectAll('line')
+      .data(d3.range(0, (this.numTicks + 1) * constants.GRID_LENGTH, constants.GRID_LENGTH))
+      .enter().append('line')
+      .attr('x1', (d) => { return d; })
+      .attr('y1', (d) => { return -1 * constants.GRID_LENGTH; })
+      .attr('x2', (d) => { return d; })
+      .attr('y2', (d) => { return (1 / constants.MIN_SCALE) * this.height + constants.GRID_LENGTH; });
 
     svgGrid
-    .append('g')
-    .attr('class', 'y-ticks')
-    .selectAll('line')
-    .data(d3.range(0, (this.numTicks + 1) * constants.GRID_LENGTH, constants.GRID_LENGTH))
-    .enter().append('line')
-    .attr('x1', (d) => {
-      return -1 * constants.GRID_LENGTH;
-    })
-    .attr('y1', (d) => {
-      return d;
-    })
-    .attr('x2', (d) => {
-      return (1 / constants.MIN_SCALE) * this.width + constants.GRID_LENGTH;
-    })
-    .attr('y2', (d) => {
-      return d;
-    });
+      .append('g')
+      .attr('class', 'y-ticks')
+      .selectAll('line')
+      .data(d3.range(0, (this.numTicks + 1) * constants.GRID_LENGTH, constants.GRID_LENGTH))
+      .enter().append('line')
+      .attr('x1', (d) => { return -1 * constants.GRID_LENGTH; })
+      .attr('y1', (d) => { return d; })
+      .attr('x2', (d) => { return (1 / constants.MIN_SCALE) * this.width + constants.GRID_LENGTH; })
+      .attr('y2', (d) => { return d; });
 
     return svgGrid;
   }
 
   initializeForce() {
     return d3.layout.force()
-    .size([this.width, this.height]);
+      .size([this.width, this.height]);
   }
 
   intitializeDrag() {
     const self = this;
     const drag = this.force.drag()
-    .origin((d) => {
-      return d;
-    })
-    .on('dragstart', function (d) {
-      self.dragstart(d, this)
-    })
-    .on('drag', function (d) {
-      self.dragging(d, this)
-    })
-    .on('dragend', function (d) {
-      self.dragend(d, this)
-    });
+      .origin((d) => { return d; })
+      .on('dragstart', function (d) { self.dragstart(d, this) })
+      .on('drag', function (d) { self.dragging(d, this) })
+      .on('dragend', function (d) { self.dragend(d, this) });
 
     return drag;
   }
@@ -313,21 +273,15 @@ class Graph {
     this.menuActions = [
       {
         title: 'Group selected nodes',
-        action: (elm, d, i) => {
-          this.groupSelectedNodes();
-        }
+        action: (elm, d, i) => { this.groupSelectedNodes(); }
       },
       {
         title: 'Ungroup selected nodes',
-        action: (elm, d, i) => {
-          this.ungroupSelectedGroups();
-        }
+        action: (elm, d, i) => { this.ungroupSelectedGroups(); }
       },
       {
         title: 'Expand 1st degree connections...',
-        action: (elm, d, i) => {
-          this.expandNodeFromData(d);
-        }
+        action: (elm, d, i) => { this.expandNodeFromData(d); }
         // subtype: 'checklist',
         // children: [
         //   {
@@ -350,44 +304,40 @@ class Graph {
     this.contextMenu = function (menu, openCallback) {
       // create the div element that will hold the context menu
       d3.selectAll('.context-menu')
-      .data([1]).enter()
-      .append('div')
-      .attr('class', 'context-menu');
+        .data([1]).enter()
+        .append('div')
+        .attr('class', 'context-menu');
 
       // Close context menu 
-      d3.select('body').on('click', () => {
-        d3.select('.context-menu').style('display', 'none');
-      });
+      d3.select('body').on('click', () => { d3.select('.context-menu').style('display', 'none'); });
 
       // this gets executed when a contextmenu event occurs
-      return function (data, index) {
+      return function(data, index) {
         const self = this;
         d3.selectAll('.context-menu').html('');
         var list = d3.selectAll('.context-menu').append('ul');
         list.selectAll('li')
-        .data(menu).enter()
-        .append('li')
-        .html((d) => {
-          return d.title;
-        })
-        .classed('unselectable', true)
-        .on('click', function (d, i) {
-          d.action(self, data, index);
-          d3.select('.context-menu').style('display', 'none');
-        });
-        // .on('mouseover', function(d, i) {
-        //   if (d.children && d.children.length === 0) { return; }
-        //   console.log('d.subtype')
-        //   if (d.subtype === 'checklist') {
-        //     d3.select(this).selectAll('ul').remove();
-        //     var parentNode = d3.select(this).node().parentNode;
-        //     d3.select(parentNode ).append('li').append('ul')
-        //       .selectAll('li')
-        //         .data(d.children).enter()
-        //         .append('li')
-        //         .text((cd) => { return cd.title; });
-        //   }
-        // });
+          .data(menu).enter()
+          .append('li')
+          .html((d) => { return d.title; })
+          .classed('unselectable', true)
+          .on('click', function(d, i) {
+            d.action(self, data, index);
+            d3.select('.context-menu').style('display', 'none');
+          });
+          // .on('mouseover', function(d, i) {
+          //   if (d.children && d.children.length === 0) { return; }
+          //   console.log('d.subtype')
+          //   if (d.subtype === 'checklist') {
+          //     d3.select(this).selectAll('ul').remove(); 
+          //     var parentNode = d3.select(this).node().parentNode;
+          //     d3.select(parentNode ).append('li').append('ul')
+          //       .selectAll('li')
+          //         .data(d.children).enter()
+          //         .append('li')
+          //         .text((cd) => { return cd.title; });
+          //   }
+          // });
 
         // the openCallback allows an action to fire before the menu is displayed
         // an example usage would be closing a tooltip
@@ -395,9 +345,9 @@ class Graph {
 
         // display context menu
         d3.select('.context-menu')
-        .style('left', (d3.event.x - 2) + 'px')
-        .style('top', (d3.event.y - 2) + 'px')
-        .style('display', 'block');
+          .style('left', (d3.event.x - 2) + 'px')
+          .style('top', (d3.event.y - 2) + 'px')
+          .style('display', 'block');
 
         d3.event.preventDefault();
       };
@@ -415,30 +365,26 @@ class Graph {
     const defs = this.svg.append('defs');
     for (let marker of markerList) {
       defs
-      .append('marker')
-      .attr('id', marker.id)
-      .attr('viewBox', '5 -5 10 10')
-      .attr('refX', 10)
-      .attr('markerWidth', marker.size)
-      .attr('markerHeight', marker.size)
-      .attr('orient', marker.direction)
-      .append('path')
-      .attr('d', 'M 0,-5 L 10,0 L 0,5')
-      .style('stroke', marker.color)
-      .style('fill', marker.color)
-      .style('fill-opacity', 1);
+        .append('marker')
+          .attr('id', marker.id)
+          .attr('viewBox', '5 -5 10 10')
+          .attr('refX', 10)
+          .attr('markerWidth', marker.size)
+          .attr('markerHeight', marker.size)
+          .attr('orient', marker.direction)
+        .append('path')
+          .attr('d', 'M 0,-5 L 10,0 L 0,5')
+          .style('stroke', marker.color)
+          .style('fill', marker.color)
+          .style('fill-opacity', 1);
     }
   }
 
   // possibleAttrs is a list of lists that contains the possibilities for each attr
   // This method should return a list of all possible permutations of the given attrs
   getMarkerIdPermutations(possibleAttrs) {
-    if (!possibleAttrs) {
-      return [];
-    }
-    if (possibleAttrs.length == 1) {
-      return possibleAttrs[0];
-    }
+    if (!possibleAttrs) { return []; }
+    if (possibleAttrs.length == 1) { return possibleAttrs[0]; }
     let i, j;
     const markerIds = [];
     const rest = this.getMarkerIdPermutations(possibleAttrs.slice(1));
@@ -454,7 +400,7 @@ class Graph {
   deriveMarkerData(permutationList) {
     const markerList = [];
     for (let markerId of permutationList) {
-      markerList.push({id: markerId});
+      markerList.push({ id: markerId });
     }
 
     const colorNameToHex = {
@@ -475,93 +421,67 @@ class Graph {
 
   initializeDragLink() {
     return this.svg.append('line')
-    .attr('class', 'link dynamic')
-    .attr('x1', 0)
-    .attr('y1', 0)
-    .attr('x2', 0)
-    .attr('y2', 0)
-    .attr('marker-end', 'url(#end-big-gray)')
-    .style('visibility', 'hidden');
+      .attr('class', 'link dynamic')
+      .attr('x1', 0)
+      .attr('y1', 0)
+      .attr('x2', 0)
+      .attr('y2', 0)
+      .attr('marker-end', 'url(#end-big-gray)')
+      .style('visibility', 'hidden');
   }
 
   initializeToolbarButtons() {
     const buttonData = this.getToolbarLabels();
 
     this.svg.append('rect')
-    .attr('y', constants.TOOLBAR_PADDING)
-    .attr({
-      x: constants.TOOLBAR_PADDING,
-      width: constants.BUTTON_WIDTH,
-      height: this.height - constants.TOOLBAR_PADDING * 2
-    })
-    .style('fill', colors.HEX_PRIMARY_ACCENT)
-    .on('click', () => {
-      d3.select('.context-menu').style('display', 'none');
-    });
+      .attr('y', constants.TOOLBAR_PADDING)
+      .attr({ x: constants.TOOLBAR_PADDING, width: constants.BUTTON_WIDTH, height: this.height - constants.TOOLBAR_PADDING * 2 })
+      .style('fill', colors.HEX_PRIMARY_ACCENT)
+      .on('click', () => { d3.select('.context-menu').style('display', 'none'); });
 
     const button = this.svg.selectAll('.button')
-    .data(buttonData)
-    .enter().append('g')
-    .attr('class', 'button')
-    .attr('pointer-events', 'all');
+      .data(buttonData)
+      .enter().append('g')
+      .attr('class', 'button')
+      .attr('pointer-events', 'all');
 
     button.append('title')
-    .text((d) => {
-      return d.title;
-    });
+      .text((d) => { return d.title; });
 
     button.append('text')
-    .attr('class', 'button-icon')
-    .attr('x', constants.TOOLBAR_PADDING + constants.BUTTON_WIDTH / 2)
-    .attr('y', (d, i) => {
-      return (constants.TOOLBAR_PADDING + constants.BUTTON_WIDTH / 2) + i * constants.BUTTON_WIDTH;
-    })
-    .style({
-      'text-anchor': 'middle',
-      'dominant-baseline': 'central',
-      'font-family': 'FontAwesome',
-      'font-size': constants.BUTTON_WIDTH * 0.4 + 'px'
-    })
-    .style('fill', colors.HEX_WHITE)
-    .style('font-weight', 'lighter')
-    .text((d) => {
-      return (d.label && icons[d.label]) ? icons[d.label] : '';
-    })
-    .classed('unselectable', true);
+      .attr('class', 'button-icon')
+      .attr('x', constants.TOOLBAR_PADDING + constants.BUTTON_WIDTH / 2)
+      .attr('y', (d, i) => { return (constants.TOOLBAR_PADDING + constants.BUTTON_WIDTH / 2) + i * constants.BUTTON_WIDTH; })
+      .style({ 'text-anchor': 'middle', 'dominant-baseline': 'central', 'font-family': 'FontAwesome', 'font-size': constants.BUTTON_WIDTH * 0.4 + 'px' })
+      .style('fill', colors.HEX_WHITE)
+      .style('font-weight', 'lighter')
+      .text((d) => { return (d.label && icons[d.label]) ? icons[d.label] : ''; })
+      .classed('unselectable', true);
 
     button.append('rect')
-    .attr('id', (d) => {
-      return d.label;
-    })
-    .attr('y', (d, i) => {
-      return constants.TOOLBAR_PADDING + i * constants.BUTTON_WIDTH;
-    })
-    .attr({
-      x: constants.TOOLBAR_PADDING,
-      width: constants.BUTTON_WIDTH,
-      height: constants.BUTTON_WIDTH,
-      class: 'button'
-    })
-    .on('dblclick', this.stopPropagation)
-    .call(d3.behavior.drag()
-      .on('dragstart', this.stopPropagation)
-      .on('drag', this.stopPropagation)
-      .on('dragend', this.stopPropagation)
-    );
+      .attr('id', (d) => { return d.label; })
+      .attr('y', (d, i) => { return constants.TOOLBAR_PADDING + i * constants.BUTTON_WIDTH; })
+      .attr({ x: constants.TOOLBAR_PADDING, width: constants.BUTTON_WIDTH, height: constants.BUTTON_WIDTH, class: 'button' })
+      .on('dblclick', this.stopPropagation)
+      .call(d3.behavior.drag()
+        .on('dragstart', this.stopPropagation)
+        .on('drag', this.stopPropagation)
+        .on('dragend', this.stopPropagation)
+      );
   }
 
   getToolbarLabels() {
     const labels = [constants.BUTTON_ZOOM_IN_ID, constants.BUTTON_ZOOM_OUT_ID, constants.BUTTON_POINTER_TOOL_ID,
-      constants.BUTTON_SELECTION_TOOL_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_FIX_NODE_ID,
-      constants.BUTTON_SIMPLIFY_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_UNDO_ACTION_ID,
-      constants.BUTTON_REDO_ACTION_ID, constants.BUTTON_SAVE_PROJECT_ID];
+                    constants.BUTTON_SELECTION_TOOL_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_FIX_NODE_ID, 
+                    constants.BUTTON_SIMPLIFY_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_UNDO_ACTION_ID, 
+                    constants.BUTTON_REDO_ACTION_ID, constants.BUTTON_SAVE_PROJECT_ID];
     const titles = [constants.BUTTON_ZOOM_IN_TITLE, constants.BUTTON_ZOOM_OUT_TITLE, constants.BUTTON_POINTER_TOOL_TITLE,
-      constants.BUTTON_SELECTION_TOOL_TITLE, constants.BUTTON_EDIT_MODE_TITLE, constants.BUTTON_FIX_NODE_TITLE,
-      constants.BUTTON_SIMPLIFY_TITLE, constants.BUTTON_TOGGLE_MINIMAP_TITLE, constants.BUTTON_UNDO_ACTION_TITLE,
-      constants.BUTTON_REDO_ACTION_TITLE, constants.BUTTON_SAVE_PROJECT_TITLE];
+                    constants.BUTTON_SELECTION_TOOL_TITLE, constants.BUTTON_EDIT_MODE_TITLE, constants.BUTTON_FIX_NODE_TITLE, 
+                    constants.BUTTON_SIMPLIFY_TITLE, constants.BUTTON_TOGGLE_MINIMAP_TITLE, constants.BUTTON_UNDO_ACTION_TITLE, 
+                    constants.BUTTON_REDO_ACTION_TITLE, constants.BUTTON_SAVE_PROJECT_TITLE];
     const labelObjects = [];
     for (let i = 0; i < labels.length; i++) {
-      labelObjects.push({label: labels[i], title: titles[i]});
+      labelObjects.push({ label: labels[i], title: titles[i] });
     }
 
     return labelObjects;
@@ -573,32 +493,26 @@ class Graph {
     const self = this;
     this.zoomPressed = false;
     d3.selectAll(`#${constants.BUTTON_ZOOM_IN_ID}, #${constants.BUTTON_ZOOM_OUT_ID}`)
-    .on('mousedown', function () {
-      self.zoomPressed = true;
-      self.disableZoom();
-      self.zoomButton(this.id === constants.BUTTON_ZOOM_IN_ID);
-      d3.select('.context-menu').style('display', 'none');
-    })
-    .on('mouseup', () => {
-      this.zoomPressed = false;
-    })
-    .on('mouseout', () => {
-      this.zoomPressed = false;
-    });
+      .on('mousedown', function() {
+        self.zoomPressed = true;
+        self.disableZoom();
+        self.zoomButton(this.id === constants.BUTTON_ZOOM_IN_ID);
+        d3.select('.context-menu').style('display', 'none');
+      })
+      .on('mouseup', () => { this.zoomPressed = false; })
+      .on('mouseout', () => { this.zoomPressed = false; });
 
-    this.svg.on('mouseup', () => {
-      this.svg.call(this.zoom)
-    });
+    this.svg.on('mouseup', () => { this.svg.call(this.zoom) });
   }
 
-  initializeButton(id, onclick, isSelected = false) {
+  initializeButton(id, onclick, isSelected=false) {
     d3.select('#' + id)
-    .on('click', () => {
-      onclick();
-      d3.select('.context-menu').style('display', 'none');
-      this.stopPropagation();
-    })
-    .classed('selected', isSelected);
+      .on('click', () => { 
+        onclick();
+        d3.select('.context-menu').style('display', 'none');
+        this.stopPropagation(); 
+      })
+      .classed('selected', isSelected);
   }
 
   generateCanvas(width, height) {
@@ -606,7 +520,7 @@ class Graph {
     this.height = height;
     this.center = [this.width / 2, this.height / 2];
     this.brushX = d3.scale.linear().range([0, width]),
-      this.brushY = d3.scale.linear().range([0, height]);
+    this.brushY = d3.scale.linear().range([0, height]);
     this.minimapPaddingX = constants.MINIMAP_MARGIN + constants.BUTTON_WIDTH;
     this.minimapPaddingY = height - constants.DEFAULT_MINIMAP_SIZE - constants.MINIMAP_MARGIN + 2;
     this.minimapScale = 0.25;
@@ -630,33 +544,23 @@ class Graph {
     this.initializeToolbarButtons();
     this.initializeZoomButtons();
     this.initializeButton(constants.BUTTON_POINTER_TOOL_ID, () => {
-      d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', false);
+      d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', false); 
       d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', true);
     }, true); // Placeholder method
     this.initializeButton(constants.BUTTON_SELECTION_TOOL_ID, () => {
       d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', false);
       d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', true);
     }); // Placeholder method
-    this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => {
-      this.toggleEditMode()
-    });
-    this.initializeButton(constants.BUTTON_FIX_NODE_ID, () => {
-      this.toggleFixedNodes()
-    });
+    this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => { this.toggleEditMode() });
+    this.initializeButton(constants.BUTTON_FIX_NODE_ID, () => { this.toggleFixedNodes() });
     this.initializeButton(constants.BUTTON_SIMPLIFY_ID, () => {
       this.hideTypeNodes(DOCUMENT);
       this.groupSame();
     });
-    this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => {
-      this.minimap.toggleMinimapVisibility();
-    }); // Wrap in unnamed function bc minimap has't been initialized yet
-    this.initializeButton(constants.BUTTON_UNDO_ACTION_ID, () => {
-    }); // Placeholder method
-    this.initializeButton(constants.BUTTON_REDO_ACTION_ID, () => {
-    }); // Placeholder method
-    this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => {
-      this.saveAllData()
-    }); // Placeholder method
+    this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => { this.minimap.toggleMinimapVisibility(); }); // Wrap in unnamed function bc minimap has't been initialized yet
+    this.initializeButton(constants.BUTTON_UNDO_ACTION_ID, () => {}); // Placeholder method
+    this.initializeButton(constants.BUTTON_REDO_ACTION_ID, () => {}); // Placeholder method
+    this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => { this.saveAllData() }); // Placeholder method
 
     this.setupKeycodes();
 
@@ -667,16 +571,14 @@ class Graph {
     this.hull = this.container.append('g').attr('class', 'hull-items').selectAll('.hull');
     this.node = this.container.append('g').attr('class', 'node-items').selectAll('.node');
 
-    this.force.on('tick', (e) => {
-      this.ticked(e, this)
-    });
+    this.force.on('tick', (e) => { this.ticked(e, this) });
 
     this.minimap = new Minimap()
-    .setZoom(this.zoom)
-    .setTarget(this.container) // that's what you're trying to track/the images
-    .setMinimapPositionX(this.minimapPaddingX)
-    .setMinimapPositionY(this.minimapPaddingY)
-    .setGraph(this);
+                    .setZoom(this.zoom)
+                    .setTarget(this.container) // that's what you're trying to track/the images
+                    .setMinimapPositionX(this.minimapPaddingX)
+                    .setMinimapPositionY(this.minimapPaddingY)
+                    .setGraph(this);
 
     this.minimap.initializeMinimap(this.svg, this.width, this.height);
   }
@@ -685,26 +587,22 @@ class Graph {
   setData(centerid, nodes, links, byIndex) {
     this.setMatrix(nodes, links, byIndex);
     this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
-    this.update(null, 500);
+    this.update(null, 500); 
 
     // set global node id to match the nodes getting passed in
     nodes.map((node) => {
-      if (node.id < 0) {
-        this.globalnodeid = Math.min(this.globalnodeid, node.id);
-      }
+      if (node.id < 0) { this.globalnodeid = Math.min(this.globalnodeid, node.id); }
     });
 
     links.map((link) => {
-      if (link.id < 0) {
-        this.globallinkid = Math.min(this.globallinkid, link.id);
-      }
+      if (link.id < 0) { this.globallinkid = Math.min(this.globallinkid, link.id); }
     });
 
     this.reloadNeighbors();
 
     this.minimap
-    .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
-    .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
+      .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
+      .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]); 
   }
 
   addData(centerid, nodes, links) {
@@ -712,145 +610,98 @@ class Graph {
   }
 
   fetchData() {
-    return {nodes: this.nodes, links: this.links};
+    return { nodes: this.nodes, links: this.links };
   }
 
   bindDisplayFunctions(displayFunctions) {
-    this.displayNodeInfo = displayFunctions.node ? displayFunctions.node : function (d) {
-    };
-    this.displayLinkInfo = displayFunctions.link ? displayFunctions.link : function (d) {
-    };
-    this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function (d) {
-    };
-    this.expandNodeFromData = displayFunctions.expand ? displayFunctions.expand : function (d) {
-    };
-    this.saveAllData = displayFunctions.save ? displayFunctions.save : function (d) {
-    };
+    this.displayNodeInfo = displayFunctions.node ? displayFunctions.node : function(d) {};
+    this.displayLinkInfo = displayFunctions.link ? displayFunctions.link : function(d) {};
+    this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function(d) {};
+    this.expandNodeFromData = displayFunctions.expand ? displayFunctions.expand : function(d) {};
+    this.saveAllData = displayFunctions.save ? displayFunctions.save : function(d) {};
     this.initializeMenuActions();
   }
 
-  // Updates nodes and links according to current data TODO enter redux connection to new store (make new store)
-  update(event = null, ticks = null, minimap = true) {
+  // Updates nodes and links according to current data
+  update(event=null, ticks=null, minimap=true) {
     var self = this;
 
     this.resetGraphOpacity();
 
     this.force.stop();
     this.matrixToGraph();
-    this.reloadNeighbors();
+    this.reloadNeighbors(); 
 
     this.force
-    .gravity(.33)
-    .charge((d) => {
-      return d.group ? -7500 : -20000
-    })
-    .linkDistance((l) => {
-      return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE
-    })
-    .alpha(.8)
-    .nodes(this.nodes)
-    .links(this.links);
+      .gravity(.33)
+      .charge((d) => { return d.group ? -7500 : -20000})
+      .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
+      .alpha(.8)
+      .nodes(this.nodes)
+      .links(this.links);
 
     // Update links
-    this.link = this.link.data(this.links, (l) => {
-      return l.id;
-    }); // Resetting the key is important because otherwise it maps the new data to the old data in order
+    this.link = this.link.data(this.links, (l) => { return l.id; }); // Resetting the key is important because otherwise it maps the new data to the old data in order
     this.linkEnter = this.link.enter()
-    .append('path')
-    .attr('class', 'link')
-    .attr('id', (l) => {
-      return `link-${l.id}`;
-    })
-    .classed('same-as', (l) => {
-      return utils.isPossibleLink(l.type);
-    })
-    .classed('faded', (l) => {
-      return this.hoveredNode && !(l.source == this.hoveredNode || l.target == this.hoveredNode);
-    })
-    .on('mouseover', this.mouseoverLink);
+      .append('path')
+      .attr('class', 'link')
+      .attr('id', (l) => { return `link-${l.id}`; })
+      .classed('same-as', (l) => { return utils.isPossibleLink(l.type); })
+      .classed('faded', (l) => { return this.hoveredNode && !(l.source == this.hoveredNode || l.target == this.hoveredNode); })
+      .on('mouseover', this.mouseoverLink);
 
     this.link.call(this.styleLink, false);
     this.link.exit().remove();
 
     // Update nodes
-    this.node = this.node.data(this.nodes, (d) => {
-      return d.id;
-    });
+    this.node = this.node.data(this.nodes, (d) => { return d.id; });
     this.nodeEnter = this.node.enter().append('g')
-    .attr('class', 'node')
-    .attr('dragfix', false)
-    .attr('dragselect', false)
-    .on('click', function (d) {
-      self.clicked(d, this);
-    })
-    .on('dblclick', function (d) {
-      self.dblclicked(d, this);
-    })
-    .on('mousedown', function (d) {
-      self.mousedown(d, this);
-    })
-    .on('mouseover', function (d) {
-      self.mouseover(d, this);
-    })
-    .on('mouseout', function (d) {
-      self.mouseout(d, this);
-    })
-    .on('contextmenu', this.contextMenu(this.menuActions))
-    .classed('fixed', (d) => {
-      return d.fixed;
-    })
-    .classed('faded', (d) => {
-      return this.hoveredNode && !this.areNeighbors(this.hoveredNode, d);
-    })
-    .call(this.drag);
+      .attr('class', 'node')
+      .attr('dragfix', false)
+      .attr('dragselect', false)
+      .on('click', function (d) { self.clicked(d, this); })
+      .on('dblclick', function (d) { self.dblclicked(d, this); })
+      .on('mousedown', function (d) { self.mousedown(d, this); })
+      .on('mouseover', function (d) { self.mouseover(d, this); })
+      .on('mouseout', function (d) { self.mouseout(d, this); })
+      .on('contextmenu', this.contextMenu(this.menuActions))
+      .classed('fixed', (d) => { return d.fixed; })
+      .classed('faded', (d) => { return this.hoveredNode && !this.areNeighbors(this.hoveredNode, d); })
+      .call(this.drag);
 
     if (this.editMode) {
       this.nodeEnter
-      .on('mousedown.drag', null)
-      .on('mousedown', function (d) {
-        self.mousedown(d, this);
-      })
-      .on('mouseup', function (d) {
-        self.mouseup(d, this);
-      });
+        .on('mousedown.drag', null)
+        .on('mousedown', function (d) { self.mousedown(d, this); })
+        .on('mouseup', function (d) { self.mouseup(d, this); });
     }
 
     this.nodeEnter.append('circle');
 
     this.nodeEnter.append('text')
-    .attr('class', 'icon')
-    .attr('text-anchor', 'middle')
-    .attr('dominant-baseline', 'central')
-    .attr('font-family', 'FontAwesome')
-    .attr('font-size', '21px')
-    .text((d) => {
-      return (!d.group && d.type && icons[d.type]) ? icons[d.type] : '';
-    })
-    .classed('unselectable', true);
+      .attr('class', 'icon')
+      .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'central')
+      .attr('font-family', 'FontAwesome')
+      .attr('font-size', '21px')
+      .text((d) => { return (!d.group && d.type && icons[d.type]) ? icons[d.type] : ''; })
+      .classed('unselectable', true);
 
     this.nodeEnter.append('text')
-    .attr('class', 'node-name')
-    .attr('text-anchor', 'middle')
-    .attr('dy', '40px')
-    .classed('unselectable', true)
-    .text((d) => {
-      return d.group ? '' : utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull);
-    })
-    .call(this.wrapNodeText, this.printFull)
-    .on('click', function (d) {
-      self.stopPropagation();
-    })
-    .on('mouseover', function (d) {
-      self.stopPropagation();
-    })
-    .on('mouseout', function (d) {
-      self.stopPropagation();
-    })
-    .call(d3.behavior.drag()
-      .on('dragstart', this.stopPropagation)
-      .on('drag', this.stopPropagation)
-      .on('dragend', this.stopPropagation)
-    );
+      .attr('class', 'node-name')
+      .attr('text-anchor', 'middle')
+      .attr('dy', '40px')
+      .classed('unselectable', true)
+      .text((d) => { return d.group ? '' : utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
+      .call(this.wrapNodeText, this.printFull)
+      .on('click', function (d) { self.stopPropagation(); })
+      .on('mouseover', function (d) { self.stopPropagation(); })
+      .on('mouseout', function (d) { self.stopPropagation(); })
+      .call(d3.behavior.drag()
+        .on('dragstart', this.stopPropagation)
+        .on('drag', this.stopPropagation)
+        .on('dragend', this.stopPropagation)
+      );
 
     this.node.call(this.styleNode)
     this.node.exit().remove();
@@ -858,29 +709,27 @@ class Graph {
     // Update hulls
     this.hull = this.hull.data(this.hulls);
     this.hull
-    .enter().append('path')
-    .attr('class', 'hull')
-    .attr('d', this.drawHull)
-    .classed('faded', this.hoveredNode)
-    .on('dblclick', function (d) {
-      self.toggleGroupView(d.groupId);
-      d3.event.stopPropagation();
-    });
+      .enter().append('path')
+      .attr('class', 'hull')
+      .attr('d', this.drawHull)
+      .classed('faded', this.hoveredNode)
+      .on('dblclick', function (d) {
+        self.toggleGroupView(d.groupId);
+        d3.event.stopPropagation();
+      });
 
     this.hull.exit().remove();
-
+ 
     this.force.start();
     // Avoid initial chaos and skip the wait for graph to drift back onscreen
-    if (ticks) {
-      for (let i = ticks; i > 0; --i) this.force.tick();
-    }
+    if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }   
 
-    if (minimap) {
+    if (minimap) { 
       this.toRenderMinimap = true;
       this.tickCount = 0;
     }
-
-    this.node.each(function (d) {
+    
+    this.node.each(function(d) {
       if (d.fixedTransition) {
         d.fixed = d.fixedTransition = false;
       }
@@ -903,28 +752,17 @@ class Graph {
     }
 
     this.node
-    .each(this.groupNodesForce(.3))
-    .each((d) => {
-      d.px = d.x;
-      d.py = d.y;
-      if (d.x < this.xbound[0]) {
-        this.xbound[0] = d.x;
-      }
-      if (d.x > this.xbound[1]) {
-        this.xbound[1] = d.x;
-      }
-      if (d.y < this.ybound[0]) {
-        this.ybound[0] = d.y;
-      }
-      if (d.y > this.ybound[1]) {
-        this.ybound[1] = d.y;
-      }
-    })
-    .attr('transform', function (d) {
-      return 'translate(' + d.x + ',' + d.y + ')';
-    });
+      .each(this.groupNodesForce(.3))
+      .each((d) => {
+        d.px = d.x; d.py = d.y;
+        if (d.x < this.xbound[0]) { this.xbound[0] = d.x; } 
+        if (d.x > this.xbound[1]) { this.xbound[1] = d.x; }
+        if (d.y < this.ybound[0]) { this.ybound[0] = d.y; } 
+        if (d.y > this.ybound[1]) { this.ybound[1] = d.y; }
+      })
+      .attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
 
-    if (this.toRenderMinimap) {
+    if (this.toRenderMinimap) { 
       if (this.tickCount === constants.MINIMAP_TICK) {
         this.minimap.syncToSVG(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
         this.tickCount = 0;
@@ -935,48 +773,48 @@ class Graph {
     if (!this.hull.empty()) {
       this.calculateAllHulls();
       this.hull.data(this.hulls)
-      .attr('d', this.drawHull);
+        .attr('d', this.drawHull);
     }
 
     this.link
-    .each(function (l) {
-      const x1 = l.source.x,
-        y1 = l.source.y,
-        x2 = l.target.x,
-        y2 = l.target.y;
-      l.distance = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
-      const sourcePadding = l.target.radius + (l.bidirectional ? constants.MARKER_PADDING : 0),
-        targetPadding = l.source.radius + constants.MARKER_PADDING;
-      l.sourceX = x1 + (x2 - x1) * (l.distance - sourcePadding) / l.distance;
-      l.sourceY = y1 + (y2 - y1) * (l.distance - sourcePadding) / l.distance;
-      l.targetX = x2 - (x2 - x1) * (l.distance - targetPadding) / l.distance;
-      l.targetY = y2 - (y2 - y1) * (l.distance - targetPadding) / l.distance;
-    })
-    .attr('d', (l) => {
-      return 'M' + l.sourceX + ',' + l.sourceY + 'L' + l.targetX + ',' + l.targetY;
-    });
+      .each(function(l) {
+        const x1 = l.source.x,
+              y1 = l.source.y,
+              x2 = l.target.x,
+              y2 = l.target.y;
+        l.distance = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+        const sourcePadding = l.target.radius + (l.bidirectional ? constants.MARKER_PADDING : 0),
+              targetPadding = l.source.radius + constants.MARKER_PADDING;
+        l.sourceX = x1 + (x2-x1) * (l.distance-sourcePadding) / l.distance;
+        l.sourceY = y1 + (y2-y1) * (l.distance-sourcePadding) / l.distance;
+        l.targetX = x2 - (x2-x1) * (l.distance-targetPadding) / l.distance;
+        l.targetY = y2 - (y2-y1) * (l.distance-targetPadding) / l.distance;
+      })
+      .attr('d', (l) => {
+        return 'M' + l.sourceX + ',' + l.sourceY + 'L' + l.targetX + ',' + l.targetY;
+      });
 
     this.linkText
-    .attr('transform', function (l) {
-      if (l.sourceX < l.targetX) return '';
-      const bbox = this.getBBox();
-      const centerX = bbox.x + bbox.width / 2;
-      const centerY = bbox.y + bbox.height / 2;
-      return `rotate(180 ${centerX} ${centerY})`;
-    });
+      .attr('transform', function(l) {
+        if (l.sourceX < l.targetX) return '';
+        const bbox = this.getBBox();
+        const centerX = bbox.x + bbox.width/2;
+        const centerY = bbox.y + bbox.height/2;
+        return `rotate(180 ${centerX} ${centerY})`;
+      });
 
     if (this.editMode && this.mousedownNode) {
       const x1 = this.mousedownNode.x * this.zoomScale + this.zoomTranslate[0],
-        y1 = this.mousedownNode.y * this.zoomScale + this.zoomTranslate[1],
-        x2 = this.dragLink.attr('tx2'),
-        y2 = this.dragLink.attr('ty2'),
-        dist = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+            y1 = this.mousedownNode.y * this.zoomScale + this.zoomTranslate[1],
+            x2 = this.dragLink.attr('tx2'),
+            y2 = this.dragLink.attr('ty2'),
+            dist = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
 
       if (dist > 0) {
-        const targetX = x2 - (x2 - x1) * (dist - this.mousedownNode.radius * this.zoomScale) / dist,
-          targetY = y2 - (y2 - y1) * (dist - this.mousedownNode.radius * this.zoomScale) / dist;
+        const targetX = x2 - (x2-x1) * (dist-this.mousedownNode.radius*this.zoomScale) / dist,
+              targetY = y2 - (y2-y1) * (dist-this.mousedownNode.radius*this.zoomScale) / dist;
 
-        this.dragLink
+      this.dragLink
         .attr('x1', targetX)
         .attr('y1', targetY)
         .attr('x2', x2)
@@ -1000,105 +838,99 @@ class Graph {
   // Graph manipulation keycodes
   setupKeycodes() {
     d3.select('body')
-    .on('keydown', () => {
+      .on('keydown', () => {
 
-      if (d3.event.target.nodeName === 'INPUT') {
-        return;
-      }
-
-      // u: Unpin selected nodes
-      if (d3.event.keyCode == 85) {
-        this.svg.selectAll('.node.selected')
-        .each(function (d) {
-          d.fixed = false;
-        })
-        .classed('fixed', false);
-      }
-
-      // g: Group selected nodes
-      else if (d3.event.keyCode == 71) {
-        this.groupSelectedNodes();
-      }
-
-      // h: Ungroup selected nodes
-      else if (d3.event.keyCode == 72) {
-        this.ungroupSelectedGroups();
-      }
-
-      // c: Group all of the possibly same as's
-      else if (d3.event.keyCode == 67) {
-        this.groupSame();
-      }
-
-      // e: Toggle edit mode
-      else if (d3.event.keyCode == 69) {
-        this.toggleEditMode();
-      }
-
-      // r/del: Remove selected nodes/links
-      else if ((d3.event.keyCode == 82 || d3.event.keyCode == 46) && this.editMode) {
-        this.deleteSelectedNodes();
-      }
-      // l: remove selected links only
-      else if (d3.event.keyCode == 76 && this.editMode) {
-        this.deleteSelectedLinks();
-      }
-
-      // a: Add node linked to selected
-      else if (d3.event.keyCode == 65 && this.editMode) {
-        const selection = this.svg.selectAll('.node.selected');
-        this.addNodeToSelected(selection);
-      }
-
-      // // o: save as PNG
-      // else if (d3.event.keyCode == 79) {
-      //   this.saveAsPng();
-      // }
-
-      // d: Hide document nodes
-      else if (d3.event.keyCode == 68) {
-        this.toggleTypeView(DOCUMENT);
-      }
-
-      // p: Toggle btwn full/abbrev text
-      else if (d3.event.keyCode == 80) {
-        this.printFull = (this.printFull + 1) % 3;
-        this.selectAllNodeNames()
-        .text((d) => {
-          return utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull);
-        })
-        .call(this.wrapNodeText, this.printFull);
-      }
-
-      // t: expand by degree
-      else if (d3.event.keyCode == 84) {
-        if (this.degreeExpanded === 0 && this.nodes.length !== 1) {
+        if (d3.event.target.nodeName === 'INPUT') {
           return;
         }
 
-        if (this.degreeExpanded === 0 && this.nodes.length === 1) {
-          this.expandingNode = this.nodes[0];
+        // u: Unpin selected nodes
+        if (d3.event.keyCode == 85) {
+          this.svg.selectAll('.node.selected')
+            .each(function (d) { d.fixed = false; })
+            .classed('fixed', false);
         }
 
-        this.degreeExpanded += 1;
-
-        if (this.degreeExpanded <= 4) {
-          d3.json(`/data/well_connected_${this.degreeExpanded}.json`, (json) => {
-            this.addToMatrix(0, json.nodes, json.links);
-          });
+        // g: Group selected nodes
+        else if (d3.event.keyCode == 71) {
+          this.groupSelectedNodes();
         }
-      }
-    });
+
+        // h: Ungroup selected nodes
+        else if (d3.event.keyCode == 72) {
+          this.ungroupSelectedGroups();
+        }
+
+        // c: Group all of the possibly same as's
+        else if (d3.event.keyCode == 67) {
+          this.groupSame();
+        }
+
+        // e: Toggle edit mode
+        else if (d3.event.keyCode == 69) {
+          this.toggleEditMode();
+        }
+
+        // r/del: Remove selected nodes/links
+        else if ((d3.event.keyCode == 82 || d3.event.keyCode == 46) && this.editMode) {
+          this.deleteSelectedNodes();
+        }
+        // l: remove selected links only
+        else if (d3.event.keyCode == 76 && this.editMode) {
+          this.deleteSelectedLinks();
+        }
+
+        // a: Add node linked to selected
+        else if (d3.event.keyCode == 65 && this.editMode) {
+          const selection = this.svg.selectAll('.node.selected');
+          this.addNodeToSelected(selection);
+        }
+
+        // // o: save as PNG
+        // else if (d3.event.keyCode == 79) {
+        //   this.saveAsPng();
+        // }
+
+        // d: Hide document nodes
+        else if (d3.event.keyCode == 68) {
+          this.toggleTypeView(DOCUMENT);
+        }
+
+        // p: Toggle btwn full/abbrev text
+        else if (d3.event.keyCode == 80) {
+          this.printFull = (this.printFull + 1) % 3;
+          this.selectAllNodeNames()
+              .text((d) => { return utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
+              .call(this.wrapNodeText, this.printFull);
+        }
+        
+        // t: expand by degree
+        else if (d3.event.keyCode == 84) {
+          if (this.degreeExpanded === 0 && this.nodes.length !== 1) { return; }
+          
+          if (this.degreeExpanded === 0 && this.nodes.length === 1) {
+            this.expandingNode = this.nodes[0];
+          }
+
+          this.degreeExpanded += 1;
+
+          if (this.degreeExpanded <= 4) {
+            d3.json(`/data/well_connected_${this.degreeExpanded}.json`, (json) => {
+              this.addToMatrix(0, json.nodes, json.links);
+            });
+          }
+        }
+      });
   }
 
   toggleFixedNodes() {
     const self = this;
     this.isGraphFixed = !this.isGraphFixed;
     d3.selectAll('.node')
-    .each(function (d) {
-      const currNode = d3.select(this);
-      currNode.classed('fixed', d.fixed = self.isGraphFixed)
-    });
+      .each(function (d) {
+        const currNode = d3.select(this);
+        currNode.classed('fixed', d.fixed = self.isGraphFixed)
+      });
   }
 
   toggleEditMode() {
@@ -1107,30 +939,21 @@ class Graph {
     const button = d3.select('#' + constants.BUTTON_EDIT_MODE_ID);
     button.classed('selected', this.editMode);
     if (this.editMode) {
-      if (!this.dragCallback) {
-        this.dragCallback = this.node.property('__onmousedown.drag')['_']
-      }
-      ;
+      if (!this.dragCallback) { this.dragCallback = this.node.property('__onmousedown.drag')['_'] };
       this.svg
-      .on('click', function () {
-        self.clickedCanvas(this);
-      })
-      .on('mousemove', function () {
-        self.mousemoveCanvas(this);
-      });
+        .on('click', function () { self.clickedCanvas(this); })
+        .on('mousemove', function () { self.mousemoveCanvas(this); });
       this.node
-      .on('mousedown.drag', null)
-      .on('mouseup', function (d) {
-        self.mouseup(d, this);
-      });
+        .on('mousedown.drag', null)
+        .on('mouseup', function (d) { self.mouseup(d, this); });
       this.dragLink.style('visibility', 'visible');
     } else {
       this.svg
-      .on('click', null)
-      .on('mousemove', null);
+        .on('click', null)
+        .on('mousemove', null);
       this.node
-      .on('mouseup', null)
-      .on('mousedown.drag', this.dragCallback);
+        .on('mouseup', null)
+        .on('mousedown.drag', this.dragCallback);
       this.dragCallback = null;
       this.dragLink.style('visibility', 'hidden');
     }
@@ -1143,9 +966,7 @@ class Graph {
   // Get all node text elements
   selectAllNodeNames() {
     return d3.selectAll('text')
-    .filter(function (d) {
-      return d3.select(this).classed('node-name');
-    });
+      .filter(function (d) { return d3.select(this).classed('node-name'); });
   }
 
   // Determine if neighboring nodes
