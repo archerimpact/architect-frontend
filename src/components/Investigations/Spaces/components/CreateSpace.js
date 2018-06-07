@@ -11,19 +11,17 @@ class CreateSpace extends Component {
 
   constructor(props) {
     super(props);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
 
     this.state = {
       value: ""
     }
   }
 
-  handleChange(event) {
+  handleChange = (event) => {
     this.setState({value: event.target.value});
   }
 
-  handleSubmit() {
+  handleSubmit = () => {
     this.props.actions.createProject(this.state.value);
     this.setState({value: ""});
     this.props.onSubmit();

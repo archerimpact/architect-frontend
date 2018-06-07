@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { getProjects, deleteProject } from "../../redux/actions/projectActions";
-import * as server from '../../server/';
 
 import { Link, withRouter } from "react-router-dom";
 
 import Spaces from './Spaces';
 import Data from './Data';
-import UploadData from './UploadData';
 import SpacesPreview from './SpacesPreview';
 
 import InlineSVG from 'svg-inline-react';
@@ -29,7 +27,8 @@ class Investigations extends Component {
           { name: "FARA USA", favorited: false, lastUpdated: "2 hrs ago"}
         ],
         selectedProject: null
-      };
+      }; // this is initial data to populate the spaces preview sidebar; we will probably scrap it later
+        // as we redesign the page so it's not worth spending time on putting it in redux right now.
     }
 
     componentDidMount() {
@@ -37,7 +36,7 @@ class Investigations extends Component {
     }
 
     handleSpaceClick = (project) => {
-      this.setState({ selectedProject: project})
+      this.setState({ selectedProject: project })
     }
 
     handleSpaceDoubleClick = (project) => {

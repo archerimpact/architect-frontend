@@ -9,14 +9,13 @@ class Spaces extends Component {
 
   constructor(props) {
     super(props);
-    this.toggleCreateSpace = this.toggleCreateSpace.bind(this);
 
     this.state = {
       createSpaceOpen: false
     }
   }
 
-  toggleCreateSpace() {
+  toggleCreateSpace = () => {
     this.setState({ createSpaceOpen: !this.state.createSpaceOpen});
   }
 
