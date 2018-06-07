@@ -51,21 +51,19 @@ export function addLink(source, target) {
 
 export function selectLink(source, target) {
     const linkId = this.linkedById[source.id + ',' + target.id] || this.linkedById[target.id + ',' + source.id];
-    this.link.filter((d) => {
-        return d.id === linkId;
-    })
-    .call(this.styleLink, true);
+    this.link.filter((d) => { return d.id === linkId; })
+        .call(this.styleLink, true);
 }
 
 export function addNodeToSelected(selection, event = null) {
     // let node = this.createNode(ENTITY, null, event);
     // For each node selected, create a link attaching the new node to the selected node
     selection
-    .each((d) => {
-        let i = this.adjacencyMatrix.length - 1;
-        let j = this.idToIndex[d.id];
-        this.createLink(i, j);
-    });
+        .each((d) => {
+            let i = this.adjacencyMatrix.length - 1;
+            let j = this.idToIndex[d.id];
+            this.createLink(i, j);
+        });
 
     // Remove highlighting of all nodes and links
     this.node.classed('selected', false);
@@ -108,9 +106,7 @@ export function groupSelectedNodes() {
     const group = [];
 
     select.each((d) => {
-        if (d === this.hoveredNode) {
-            this.deletingHoveredNode = true;
-        }
+        if (d === this.hoveredNode) { this.deletingHoveredNode = true; }
         group.push(this.idToIndex[d.id]);
     });
 
@@ -151,9 +147,8 @@ export function toggleGroupView(id) {
      When expanded, the nodes in the group will have a hull polygon encircling it */
     let index = this.idToIndex[id]
 
-    if (!utils.isGroup(this.adjacencyMatrix[index][index].data)) {
-        return;
-    }
+    if (!utils.isGroup(this.adjacencyMatrix[index][index].data)) { return; }
+
     if (this.expandedGroups[id]) {
         this.collapseGroup(index);
         this.hulls.forEach((hull, i) => {
@@ -196,6 +191,7 @@ export function groupSame() {
                     sameGroups[key].push(this.idToIndex[this.links[i].source.id]);
                 }
             }
+            
             if (newGroup) {
                 sameGroups[group] = [this.idToIndex[this.links[i].target.id], this.idToIndex[this.links[i].source.id]];
                 group += 1;
