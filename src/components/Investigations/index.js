@@ -1,9 +1,9 @@
-import React, {Component} from "react";
-import {connect} from "react-redux";
-import {getProjects} from "../../redux/actions/projectActions";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { getProjects, deleteProject } from "../../redux/actions/projectActions";
 import * as server from '../../server/';
 
-import {Link, withRouter} from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
 import Spaces from './Spaces';
 import Data from './Data';
@@ -45,10 +45,7 @@ class Investigations extends Component {
     }
 
     handleDelete = (project) => {
-      server.deleteProject(project._id)
-        .then((data)=> {
-          this.fetchProjects();
-        });
+      this.props.dispatch(deleteProject(project._id));
     }
 
     render() {

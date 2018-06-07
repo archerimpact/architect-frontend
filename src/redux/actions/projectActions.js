@@ -12,6 +12,30 @@ export function toggleSidebar() {
 
 /* =============================================================================================  */
 
+export function createProject(title, description=null) {
+  return (dispatch) => {
+
+    server.createProject(title, description)
+      .then((data) => {
+        dispatch(getProjects());
+      })
+      .catch((error) =>  console.log(error));
+  }
+}
+
+/* =============================================================================================  */
+
+export function deleteProject(id) {
+  return (dispatch) => {
+    server.deleteProject(id)
+      .then((data) => {
+        dispatch(getProjects());
+      })
+      .catch((error) =>  console.log(error));
+  } 
+}
+/* =============================================================================================  */
+
 
 function fetchProjectDispatch(project) {
     return {
