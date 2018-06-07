@@ -100,7 +100,6 @@ class Graph {
         this.globalLinks = {};
         this.globalNodes = [];
 
-        this.ticked = this.ticked.bind(this);
         this.brushstart = this.brushstart.bind(this);
         this.brushing = this.brushing.bind(this);
         this.brushend = this.brushend.bind(this);
@@ -123,14 +122,8 @@ class Graph {
         this.zooming = this.zooming.bind(this);
         this.zoomend = this.zoomend.bind(this);
         this.stopPropagation = this.stopPropagation.bind(this);
-        this.initializeZoom = this.initializeZoom.bind(this);
-        this.initializeBrush = this.initializeBrush.bind(this);
         this.drawHull = this.drawHull.bind(this);
         this.zoomButton = this.zoomButton.bind(this);
-        this.initializeToolbarButtons = this.initializeToolbarButtons.bind(this);
-        this.getToolbarLabels = this.getToolbarLabels.bind(this);
-        this.initializeZoomButtons = this.initializeZoomButtons.bind(this);
-        this.initializeButton = this.initializeButton.bind(this);
         this.wrapNodeText = this.wrapNodeText.bind(this);
         this.updateLinkText = this.updateLinkText.bind(this);
         this.displayTooltip = this.displayTooltip.bind(this);
@@ -141,7 +134,7 @@ class Graph {
         this.bindDisplayFunctions({}); //no display functions yet
     }
 
-    initializeDataDicts() {
+    initializeDataDicts = () => {
         this.groups = {}; // Store groupNodeId --> {links: [], nodes: [], groupid: int}
         this.expandedGroups = {}; // Store groupNodeId --> expansion state
         this.hidden = {links: [], nodes: []}; // Store all links and nodes that are hidden
@@ -154,7 +147,7 @@ class Graph {
         this.ybound = [0, 0];
     }
 
-    initializeZoom() {
+    initializeZoom = () => {
         const self = this;
         const zoom = d3.behavior.zoom()
         .scaleExtent([constants.MIN_SCALE, constants.MAX_SCALE])
@@ -171,7 +164,7 @@ class Graph {
         return zoom;
     }
 
-    initializeBrush() {
+    initializeBrush = () => {
         const self = this;
         return d3.svg.brush()
         .on('brushstart', function (d) {
@@ -187,7 +180,7 @@ class Graph {
     }
 
     // Create canvas
-    initializeSVG() {
+    initializeSVG = () => {
         const self = this;
         const svg = d3.select('#graph-container').append('svg')
         .attr('id', 'canvas')
@@ -213,7 +206,7 @@ class Graph {
 
     // Normally we append a g element right after call(zoom), but in this case we don't
     // want panning to translate the brush off the screen (disabling all mouse events).
-    initializeSVGBrush() {
+    initializeSVGBrush = () => {
         // Extent invisible on left click
         const svgBrush = this.svg.append('g')
         .attr('class', 'brush')
@@ -228,19 +221,19 @@ class Graph {
 
     // We need this reference because selectAll and listener calls will refer to svg,
     // whereas new append calls must be within the same g, in order for zoom to work.
-    initializeContainer() {
+    initializeContainer = () => {
         return this.svg.append('g')
         .attr('class', 'graph-items');
     }
 
     //set up how to draw the hulls
-    initializeCurve() {
+    initializeCurve = () => {
         return d3.svg.line()
         .interpolate('cardinal-closed')
         .tension(.85);
     }
 
-    initializeSVGgrid() {
+    initializeSVGgrid = () => {
         const svgGrid = this.container.append('g')
         .attr('class', 'svg-grid');
 
@@ -285,12 +278,12 @@ class Graph {
         return svgGrid;
     }
 
-    initializeForce() {
+    initializeForce = () => {
         return d3.layout.force()
         .size([this.width, this.height]);
     }
 
-    intitializeDrag() {
+    intitializeDrag = () => {
         const self = this;
         const drag = this.force.drag()
         .origin((d) => {
@@ -309,7 +302,7 @@ class Graph {
         return drag;
     }
 
-    initializeMenuActions() {
+    initializeMenuActions = () => {
         this.menuActions = [
             {
                 title: 'Group selected nodes',
@@ -345,7 +338,7 @@ class Graph {
         ]
     }
 
-    initializeContextMenu() {
+    initializeContextMenu = () => {
         // LICENSING INFO: https://github.com/patorjk/d3-context-menu
         this.contextMenu = function (menu, openCallback) {
             // create the div element that will hold the context menu
@@ -405,7 +398,7 @@ class Graph {
     }
 
     // direction-size-color
-    initializeMarkers() {
+    initializeMarkers = () => {
         const possibleAttrs = [
             ['start', 'end'],
             ['big', 'small'],
@@ -432,7 +425,7 @@ class Graph {
 
     // possibleAttrs is a list of lists that contains the possibilities for each attr
     // This method should return a list of all possible permutations of the given attrs
-    getMarkerIdPermutations(possibleAttrs) {
+    getMarkerIdPermutations = (possibleAttrs) => {
         if (!possibleAttrs) {
             return [];
         }
@@ -451,7 +444,7 @@ class Graph {
         return markerIds;
     }
 
-    deriveMarkerData(permutationList) {
+    deriveMarkerData = (permutationList) => {
         const markerList = [];
         for (let markerId of permutationList) {
             markerList.push({id: markerId});
@@ -473,7 +466,7 @@ class Graph {
         return markerList;
     }
 
-    initializeDragLink() {
+    initializeDragLink = () => {
         return this.svg.append('line')
         .attr('class', 'link dynamic')
         .attr('x1', 0)
@@ -484,7 +477,7 @@ class Graph {
         .style('visibility', 'hidden');
     }
 
-    initializeToolbarButtons() {
+    initializeToolbarButtons = () => {
         const buttonData = this.getToolbarLabels();
 
         this.svg.append('rect')
@@ -550,7 +543,7 @@ class Graph {
         );
     }
 
-    getToolbarLabels() {
+    getToolbarLabels = () => {
         const labels = [constants.BUTTON_ZOOM_IN_ID, constants.BUTTON_ZOOM_OUT_ID, constants.BUTTON_POINTER_TOOL_ID,
             constants.BUTTON_SELECTION_TOOL_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_FIX_NODE_ID,
             constants.BUTTON_SIMPLIFY_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_UNDO_ACTION_ID,
@@ -569,7 +562,7 @@ class Graph {
 
     // Control logic to zoom when buttons are pressed, keep zooming while they are pressed, stop zooming
     // when released or moved off of, not snap-pan when moving off buttons, and restore pan on mouseup.
-    initializeZoomButtons() {
+    initializeZoomButtons = () => {
         const self = this;
         this.zoomPressed = false;
         d3.selectAll(`#${constants.BUTTON_ZOOM_IN_ID}, #${constants.BUTTON_ZOOM_OUT_ID}`)
@@ -591,7 +584,7 @@ class Graph {
         });
     }
 
-    initializeButton(id, onclick, isSelected = false) {
+    initializeButton = (id, onclick, isSelected = false) => {
         d3.select('#' + id)
         .on('click', () => {
             onclick();
@@ -601,7 +594,7 @@ class Graph {
         .classed('selected', isSelected);
     }
 
-    generateCanvas(width, height) {
+    generateCanvas = (width, height) => {
         this.width = width;
         this.height = height;
         this.center = [this.width / 2, this.height / 2];
@@ -679,10 +672,10 @@ class Graph {
         .setGraph(this);
 
         this.minimap.initializeMinimap(this.svg, this.width, this.height);
-    }
+    };
 
-    // Completely rerenders the graph, assuming all new nodes and links
-    setData(centerid, nodes, links, byIndex) {
+    // Completely re-renders the graph, assuming all new nodes and links
+    setData = (centerid, nodes, links, byIndex) => {
         this.setMatrix(nodes, links, byIndex);
         this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
         this.update(null, 500);
@@ -706,15 +699,15 @@ class Graph {
         .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
     }
 
-    addData(centerid, nodes, links) {
+    addData = (centerid, nodes, links) => {
         this.addToMatrix(centerid, nodes, links);
     }
 
-    fetchData() {
+    fetchData = () => {
         return {nodes: this.nodes, links: this.links};
     }
 
-    bindDisplayFunctions(displayFunctions) {
+    bindDisplayFunctions = (displayFunctions) => {
         this.displayNodeInfo = displayFunctions.node ? displayFunctions.node : function (d) {
         };
         this.displayLinkInfo = displayFunctions.link ? displayFunctions.link : function (d) {
@@ -728,8 +721,8 @@ class Graph {
         this.initializeMenuActions();
     }
 
-    // Updates nodes and links according to current data TODO enter redux connection to new store (make new store)
-    update(event = null, ticks = null, minimap = true) {
+    // Updates nodes and links according to current data
+    update = (event = null, ticks = null, minimap = true) => {
         var self = this;
 
         this.resetGraphOpacity();
@@ -888,7 +881,7 @@ class Graph {
     }
 
     // Occurs each tick of simulation
-    ticked(e, self) {
+    ticked = (e, self) => {
         // const classThis = this;
         this.force.resume();
         this.xbound = [this.width, 0];
@@ -984,7 +977,7 @@ class Graph {
     }
 
     // Custom force that takes the parent group position as the centroid to moves all contained nodes toward
-    groupNodesForce(alpha) {
+    groupNodesForce = (alpha) => {
         var self = this;
         // Only apply force on grouped nodes that aren't being dragged and aren't fixed
         return function (d) {
@@ -996,7 +989,7 @@ class Graph {
     }
 
     // Graph manipulation keycodes
-    setupKeycodes() {
+    setupKeycodes = () => {
         d3.select('body')
         .on('keydown', () => {
 
@@ -1089,7 +1082,7 @@ class Graph {
         })
     };
 
-    toggleFixedNodes() {
+    toggleFixedNodes = () => {
         const self = this;
         this.isGraphFixed = !this.isGraphFixed;
         d3.selectAll('.node')
@@ -1099,7 +1092,7 @@ class Graph {
         });
     }
 
-    toggleEditMode() {
+    toggleEditMode = () => {
         const self = this;
         this.editMode = !this.editMode;
         const button = d3.select('#' + constants.BUTTON_EDIT_MODE_ID);
@@ -1139,7 +1132,7 @@ class Graph {
     // =================
 
     // Get all node text elements
-    selectAllNodeNames() {
+    selectAllNodeNames = () => {
         return d3.selectAll('text')
         .filter(function (d) {
             return d3.select(this).classed('node-name');
@@ -1147,13 +1140,13 @@ class Graph {
     }
 
     // Determine if neighboring nodes
-    areNeighbors(a, b) {
+    areNeighbors = (a, b) => {
         return this.linkedById[a.id + ',' + b.id]
             || this.linkedById[b.id + ',' + a.id]
             || a.id === b.id;
     }
 
-    reloadNeighbors() {
+    reloadNeighbors = () => {
         this.linkedById = {};
         this.links.forEach((d) => {
             this.linkedById[d.source.id + "," + d.target.id] = d.id;
@@ -1161,7 +1154,7 @@ class Graph {
         });
     }
 
-    reloadIdToIndex() {
+    reloadIdToIndex = () => {
         this.idToIndex = {};
         this.indexToId = {};
         for (var i = 0; i < this.adjacencyMatrix.length; i++) {
@@ -1171,7 +1164,7 @@ class Graph {
         }
     }
 
-    saveGraphAsSVGString() {
+    saveGraphAsSVGString = () => {
         return utils.createSVGString(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
     }
 }
