@@ -1,0 +1,38 @@
+.side-nav {
+  position: absolute;
+  height: 100%;
+  width: 55px;
+  background: #252525;
+}
+
+.side-nav-button {
+  position: relative;
+  height: 50px;
+  width: 100%;
+}
+
+.side-nav-button i {
+  position: relative;
+  width: 100%;
+  text-align: center;
+  margin-top: 0px;
+  font-size: 2em;
+  height: 50px;
+  line-height: 50px;
+  vertical-align: middle;
+  color: white;
+}
+
+.side-nav-button:hover {
+  background: #131313;
+}
+
+.side-nav-button:hover i {
+  color: #0d77e2;
+}
+
+.bottom {
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+}

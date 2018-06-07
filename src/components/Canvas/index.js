@@ -3,6 +3,7 @@ import React, {Component} from "react";
 import Graph from "./Graph";
 import ArcherGraph from "./Graph/package/GraphClass";
 import GraphSidebar from "./graphSidebar";
+import SideNavBar from "../sideNavBar";
 
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
@@ -55,6 +56,7 @@ class Canvas extends Component {
     render() {
         return (
             <div className="canvas">
+                <SideNavBar />
                 <Graph graph={this.graph}/>
                 <GraphSidebar graph={this.graph}/>
             </div>
