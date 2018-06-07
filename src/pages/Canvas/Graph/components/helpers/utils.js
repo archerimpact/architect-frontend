@@ -134,7 +134,7 @@ export function createSVGString(targetSVG, x1, x2, y1, y2, width = null, height 
     let styleStr = '';
     Array.prototype.forEach.call(sheets, function (sheet) {
         try { // we need a try-catch block for external stylesheets that could be there...
-            if (sheet.hasOwnProperty('cssRules')) {
+            if ("cssRules" in sheet) {
                 styleStr += Array.prototype.reduce.call(sheet.cssRules, function (a, b) {
                     return a + b.cssText; // just concatenate all our cssRules' text
                 }, "");

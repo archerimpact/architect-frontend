@@ -51,12 +51,12 @@ export function addToMatrix(centerid, nodes, links) {
     this.reloadIdToIndex();
 
     let numNodes = nodes.length;
-    for (let i = 0; i < numNodes; i++) {
-        if (this.idToIndex[nodes[i].id] === null) {
+    for (let j = 0; j < numNodes; j++) {
+        if (this.idToIndex[nodes[j].id] === null || this.idToIndex[nodes[j].id] === undefined) {
             utils.addRowColumn(this.adjacencyMatrix);
             this.adjacencyMatrix[this.adjacencyMatrix.length - 1][this.adjacencyMatrix.length - 1] = {
                 state: DISPLAYED,
-                data: nodes[i]
+                data: nodes[j]
             };
         }
     }
