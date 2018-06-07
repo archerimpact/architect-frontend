@@ -84,6 +84,8 @@ class Graph extends Component {
                 {this.props.project && this.props.match.path !== "/explore/:sidebarState?" ? this.renderProjectToolbar() :
                     null
                 }
+                <div id="graph-container" style={{"height": this.props.height + "px", "width": this.props.width + "px"}}></div>
+                {/* Note - this is used for graph injection */}
             </div>
         );
     }
