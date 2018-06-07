@@ -1,0 +1,45 @@
+.data-grid {
+/*  margin-right: -15px;
+*/  margin-left: -15px;
+}
+
+.data-card {
+  width: 100%;
+  max-height: 600px;
+  padding-left: 15px;
+}
+
+.data-card:hover {
+    border-bottom: 8px solid #f1e05a;
+  cursor: pointer;
+  background-color: #fafbfc;
+}
+
+.data-card-body {
+  height: 100%;
+}
+
+.data-card-results {
+  overflow: scroll;
+  height: 100%;
+}
+
+.data-card-top {
+  /*border-bottom: 1.5px solid #0D77E2;*/
+  padding: 5px;
+  padding-left: 0px;
+}
+
+.data-card-title {
+  font-size: 20px;
+  color: #545454;
+  display: flex;
+  justify-content: space-between;
+  text-decoration: none;
+}
+
+.detail-info-text {
+  color: #545454;
+  margin-left: 20px;
+  font-style: italic;
+}
