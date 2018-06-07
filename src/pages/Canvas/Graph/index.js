@@ -6,9 +6,10 @@ import {withRouter} from "react-router-dom";
 import * as graphActions from "../../../redux/actions/graphActions";
 import {
     addToGraphFromId,
-    resetProject,
+    resetProjectDispatch,
     saveCurrentProjectData,
-    setCurrentNode
+    setCurrentNode,
+    // initializeCanvas
 } from "../../../redux/actions/graphActions";
 
 import "./graph.css";
@@ -29,6 +30,7 @@ class Graph extends Component {
     }
 
     componentDidMount() {
+        // this.props.dispatch(initializeCanvas(this.props.graph, this.props.width, this.props.height));
         this.props.graph.generateCanvas(this.props.width, this.props.height);
         this.props.graph.setData(0, [], []);
         this.props.graph.bindDisplayFunctions({
@@ -67,7 +69,7 @@ class Graph extends Component {
     renderProjectToolbar = () => {
         return (
             <div className="back-button" onClick={() => {
-                this.props.dispatch(resetProject())
+                this.props.dispatch(resetProjectDispatch())
                 this.props.history.push('/build')
             }
             }>

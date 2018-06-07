@@ -115,15 +115,21 @@ export function fetchEntity(id) {
 
 /* =============================================================================================  */
 
-export function resetProject(project) {
+export function resetProjectDispatch() {
     return {
         type: RESET_GRAPH,
-        payload: project
     };
 }
 
 /* ===================================== ACTIONS THAT ARE NOT IN USE ========================================  */
 
+// export function initializeCanvas(graph, width, height) {
+//     return (dispatch) => {
+//         graph.generateCanvas(width, height);
+//         graph.setData(0, [], []);
+//         dispatch(resetProjectDispatch());
+//     };
+// }
 
 // function parseNeo4jData(data) {
 //     data = data[0]; //because the neo4j data resides in data[0]
