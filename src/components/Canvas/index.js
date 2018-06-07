@@ -11,6 +11,8 @@ import * as actions from "../../redux/actions/projectActions";
 import {fetchProject} from "../../redux/actions/projectActions";
 import {fetchEntity, fetchSearchResults} from "../../redux/actions/graphActions";
 
+import './style.css';
+
 class Canvas extends Component {
 
     constructor(props) {

@@ -3,12 +3,12 @@
 body {
 	font-family: 'Open Sans', sans-serif;
   color: #1a1a1a;
+  overflow-y: auto;
 }
 
 .main {
+  height: 100%;
   margin-left: 0px;
-  width: calc(100%);
-  position: absolute;
 }
 
 .y-scrollable {

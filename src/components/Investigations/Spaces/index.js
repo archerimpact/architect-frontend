@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { Link, withRouter } from 'react-router-dom';
 
-import CreateSpace from './components/CreateSpace';
+import CreateSpace from './createSpace';
 import './style.css';
 
 class Spaces extends Component {
