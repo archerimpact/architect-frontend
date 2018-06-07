@@ -1,15 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import './style.css'
 
 import { withRouter, Link } from 'react-router-dom';
 
-class SideNavBar extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
+const SideNavBar = function(props) {
     return (
       <div className="side-nav">
         <Link to='/'>
@@ -17,23 +12,28 @@ class SideNavBar extends Component {
             <i className="material-icons">home</i>
           </div>
         </Link>
-        <Link to='/'>
+        <Link to='/data'>
           <div className="side-nav-button">
             <i className="material-icons">data_usage</i>
           </div>
         </Link>
-        <Link to='/'>
+        <Link to='/build'>
           <div className="side-nav-button">
             <i className="material-icons">dashboard</i>
           </div>
         </Link>
+        <Link to='/user'>
+          <div className="side-nav-button">
+            <i className="material-icons">account_box</i>
+          </div>
+        </Link>
         <div className="bottom">
-          <Link to='/'>
+          <Link to='/settings'>
             <div className="side-nav-button">
-              <i className="material-icons">account_box</i>
+              <i className="material-icons">settings</i>
             </div>
           </Link>
-          <Link to='/'>
+          <Link to='/help'>
             <div className="side-nav-button">
               <i className="material-icons">help</i>
             </div>
@@ -41,7 +41,6 @@ class SideNavBar extends Component {
         </div>
       </div>
     );
-  }
 };
 
 export default withRouter(SideNavBar);
