@@ -44,7 +44,7 @@ class Entity extends Component {
 
     renderEntity = (node, nodes, links, keys) => {
         const nodeMap = {};
-        if (node === null) {
+        if (node === null || node === undefined) {
             return null
         }
         nodes.map(n => nodeMap[n.id] = n.name)
