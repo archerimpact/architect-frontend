@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import SearchCard from "../SearchCard";
+import SearchCard from "../searchCard";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import {addToGraphFromId, saveCurrentProjectData} from "../../../redux/actions/graphActions";

@@ -5,13 +5,13 @@ import {userLogOut} from "../redux/actions/userActions";
 import {Redirect, Route, withRouter} from "react-router-dom";
 import PrivateRoute from "./PrivateRoute/";
 
-import NavBar from "../components/NavBar/";
+import NavBar from "../components/navBar/";
 
-import Login from "../pages/Login/";
-import CreateAccount from "../pages/CreateAccount/";
-import Home from "../pages/Home/";
-import Canvas from "../pages/Canvas";
-import Investigations from "../pages/Investigations";
+import Login from "../components/Login/";
+import CreateAccount from "../components/CreateAccount/";
+import Home from "../components/Home/";
+import Canvas from "../components/Canvas";
+import Investigations from "../components/Investigations";
 import "./style.css";
 
 class App extends Component {
