@@ -66,7 +66,6 @@ class EntityCard extends Component {
     };
 
     render() {
-        // TODO centralize
         if (!this.state.isDataReady) {
             return <div key={this.props.id}> Loading ... </div>
         }
