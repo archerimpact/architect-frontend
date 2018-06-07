@@ -1,8 +1,8 @@
 import React, {Component} from "react";
-import Entity from "../Entity";
-import SearchResults from "../SearchResults";
-import ProjectData from "../ProjectData";
-import DatabaseSearchBar from "../../../components/DatabaseSearchBar";
+import Entity from "../entity";
+import SearchResults from "../searchResults";
+import ProjectData from "../projectData";
+import DatabaseSearchBar from "../../../components/databaseSearchBar";
 import {Link,withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import "./style.css";

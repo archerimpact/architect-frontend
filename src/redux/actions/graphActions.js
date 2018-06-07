@@ -19,7 +19,6 @@ export function saveCurrentProjectData(graph) {
         let state = getState();
         let projid = state.project.currentProject._id;
         let data = graph.fetchData();
-        console.log("saveCurrentProjectData", data)
         server.updateProject({id: projid, d3Data: data, image: ''})
         .then((res) => {
             if (res.success) {
