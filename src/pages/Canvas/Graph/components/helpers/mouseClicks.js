@@ -279,7 +279,8 @@ export function mouseoverLink(d) {
 
 // Node text handlers
 export function stopPropagation() {
-    getD3Event().stopPropagation();
+    const e = getD3Event();
+    if (e.stopPropagation) e.stopPropagation();
 }
 
 // SVG zoom & pan

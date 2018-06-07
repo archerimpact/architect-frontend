@@ -230,7 +230,7 @@ export function getD3Event() {
         return d3.event.sourceEvent ? d3.event.sourceEvent : d3.event;
     }
 
-    console.error('Attempted to access nonexistant d3 event.')
+    console.error('Attempted to access nonexistent d3 event.');
     return null;
 }
 
