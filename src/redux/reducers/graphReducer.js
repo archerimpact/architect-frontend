@@ -12,7 +12,9 @@ export default function (state = {}, action) {
         case RESET_GRAPH:
             return {
                 ...state,
-                data: null
+                data: null,
+                currentEntity: null,
+                currentNode: null
             };
         case STORE_SEARCH_RESULTS:
             return {

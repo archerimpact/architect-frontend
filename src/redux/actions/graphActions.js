@@ -6,7 +6,7 @@ import * as server from "../../server/index";
 
 // Redux state cannot be mutated. Must create new copies of objects - function here ensures that
 function makeDeepCopy(array) {
-    var newArray = [];
+    let newArray = [];
     array.map((object) => {
         return newArray.push(Object.assign({}, object));
     });
@@ -115,15 +115,21 @@ export function fetchEntity(id) {
 
 /* =============================================================================================  */
 
-export function resetProject(project) {
+export function resetProjectDispatch() {
     return {
         type: RESET_GRAPH,
-        payload: project
     };
 }
 
 /* ===================================== ACTIONS THAT ARE NOT IN USE ========================================  */
 
+// export function initializeCanvas(graph, width, height) {
+//     return (dispatch) => {
+//         graph.generateCanvas(width, height);
+//         graph.setData(0, [], []);
+//         dispatch(resetProjectDispatch());
+//     };
+// }
 
 // function parseNeo4jData(data) {
 //     data = data[0]; //because the neo4j data resides in data[0]

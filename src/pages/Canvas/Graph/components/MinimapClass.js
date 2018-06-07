@@ -1,5 +1,3 @@
-'use strict';
-
 import * as d3 from "d3";
 import * as utils from "./helpers/utils.js";
 import {stopPropagation} from "./helpers/mouseClicks.js";
@@ -31,55 +29,46 @@ class Minimap {
         this.initialBoxTranslate = null;
         this.widthOffset = 0; // Both for zoom on minimap
         this.heightOffset = 0;
-
-        this.initializeMinimap = this.initializeMinimap.bind(this);
-        this.syncToSVG = this.syncToSVG.bind(this);
-
-        this.dragstart = this.dragstart.bind(this);
-        this.dragging = this.dragging.bind(this);
-        this.dragend = this.dragend.bind(this);
-        this.zooming = this.zooming.bind(this);
-        this.zoomMinimap = this.zoomMinimap.bind(this);
     }
 
-    setBounds(targetSVG, x1, x2, y1, y2) {
+    setBounds = (targetSVG, x1, x2, y1, y2) => {
         this.targetSVG = targetSVG;
         this.xbound = [x1, x2];
         this.ybound = [y1, y2];
         return this;
     }
 
-    setScale(value) {
+    setScale = (value) => {
         this.scale = value;
         return this;
     }
 
-    setZoom(value) {
+    setZoom = (value) => {
         this.zoom = value;
         return this;
     }
 
-    setTarget(value) {
+    setTarget = (value) => {
         this.target = value;
         return this;
     }
 
-    setMinimapPositionX(value) {
+    setMinimapPositionX = (value) => {
         this.positionX = value;
         return this;
     }
 
-    setMinimapPositionY(value) {
+    setMinimapPositionY = (value) => {
         this.positionY = value;
         return this;
     }
 
-    setGraph(value) {
+    setGraph = (value) => {
         this.graph = value;
         return this
     }
 
-    initializeMinimap(svg, width, height) { // svg is the target SVG containing the graph    this.svg = svg;
+    initializeMinimap = (svg, width, height) => { // svg is the target SVG containing the graph    this.svg = svg;
         this.viewportWidth = width;
         this.viewportHeight = height;
         this.svg = svg;
@@ -160,13 +149,13 @@ class Minimap {
 
     }
 
-    toggleMinimapVisibility() {
+    toggleMinimapVisibility = () => {
         this.container
         .style('display', this.isVisible ? 'none' : '');
         this.isVisible = !this.isVisible;
     }
 
-    dragstart() {
+    dragstart = () => {
         d3.event.sourceEvent.stopPropagation();
         d3.select('.context-menu').style('display', 'none');
 
@@ -178,7 +167,7 @@ class Minimap {
         this.graph.zoomstart(null, null);
     }
 
-    dragging() {
+    dragging = () => {
         const e = d3.event;
         e.sourceEvent.stopPropagation();
         // move box to fit the drag
@@ -192,11 +181,11 @@ class Minimap {
         this.zoom.translate(translate);
     }
 
-    dragend() {
+    dragend = () => {
         this.graph.zoomend(null, null);
     }
 
-    zooming() {
+    zooming = () => {
         if (d3.event) {
             if (!utils.isRightClick()) {
                 this.scale = d3.event.scale;
@@ -208,7 +197,7 @@ class Minimap {
         }
     }
 
-    zoomMinimap(scale) {
+    zoomMinimap = (scale) => {
         const targetTransform = utils.getXYFromTranslate(this.target.attr('transform'));
 
         this.boxX += -targetTransform[0] / (this.scale * this.boxScale);
@@ -224,7 +213,7 @@ class Minimap {
     }
 
     /** RENDER **/
-    syncToSVG(targetSVG, x1, x2, y1, y2) {
+    syncToSVG = (targetSVG, x1, x2, y1, y2) => {
 
         const translate = utils.getXYFromTranslate(this.target.attr('transform'));
         const scale = this.scale;
@@ -248,7 +237,7 @@ class Minimap {
         this.image.select('image').attr('xlink:href', image_url);
     }
 
-    initializeBoxToCenter(targetSVG, x1, x2, y1, y2) {
+    initializeBoxToCenter = (targetSVG, x1, x2, y1, y2) => {
 
         const translate = utils.getXYFromTranslate(this.target.attr('transform'));
         const scale = this.scale;
@@ -300,13 +289,13 @@ class Minimap {
         this.heightOffset = (this.height - (this.boxHeight / this.scale)) / 2;
     }
 
-    getBoundingPositionX(position) {
+    getBoundingPositionX = (position) => {
         const leftOffset = -this.widthOffset;
         const rightOffset = (this.width - (this.boxWidth / this.scale)) + leftOffset;
         return Math.max(Math.min(rightOffset, position), leftOffset);
     }
 
-    getBoundingPositionY(position) {
+    getBoundingPositionY = (position) => {
         const topOffset = -this.heightOffset;
         const bottomOffset = (this.height - (this.boxHeight / this.scale)) + topOffset;
         return Math.max(Math.min(bottomOffset, position), topOffset);

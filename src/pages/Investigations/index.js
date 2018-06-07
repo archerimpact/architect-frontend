@@ -9,7 +9,7 @@ import "./style.css";
 class Investigations extends Component {
 
     componentDidMount() {
-        let res = this.props.dispatch(getProjects());
+        this.props.dispatch(getProjects());
     }
 
     render() {
@@ -19,14 +19,14 @@ class Investigations extends Component {
                 {/*<p>{"All projects as JSON: " + JSON.stringify(this.state.projects)}</p>*/}
                 <div className="row investigations-grid">
                     {this.props.project_list.map((proj) => {
-                        let image_blob;
-
-                        if (proj.img) {
-                            image_blob = proj.img;
-                        }
-                        else {
-                            image_blob = "no image provided";
-                        }
+                        // let image_blob;
+                        //
+                        // if (proj.img) {
+                        //     image_blob = proj.img;
+                        // }
+                        // else {
+                        //     image_blob = "no image provided";
+                        // }
 
                         return (
                             <div key={proj._id} className='col-md-3'>

@@ -1,12 +1,10 @@
 import React, {Component} from "react";
-
 import Entity from "../Entity";
 import SearchResults from "../SearchResults";
 import ProjectData from "../ProjectData";
 import DatabaseSearchBar from "../../../components/DatabaseSearchBar";
+import {Link,withRouter} from "react-router-dom";
 import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import {Link, withRouter} from "react-router-dom";
 import "./style.css";
 import * as actions from "../../../redux/actions/projectActions";
 
@@ -108,8 +106,9 @@ class GraphSidebar extends Component {
                 return <ProjectData graph={this.props.graph}/>
             case "settings":
                 return this.renderSettings();
+            default:
+                return null
         }
-        ;
     }
 
     render() {
@@ -129,7 +128,6 @@ class GraphSidebar extends Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(actions, dispatch),
         dispatch: dispatch,
     };
 }

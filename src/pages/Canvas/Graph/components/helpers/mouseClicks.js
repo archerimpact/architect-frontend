@@ -11,7 +11,7 @@ export function brushstart() {
 }
 
 export function brushing() {
-    var self = this;
+    let self = this;
     if (isRightClick()) {
         const extent = this.brush.extent();
         this.svg.selectAll('.node')
@@ -39,15 +39,15 @@ export function brushend() {
 export function clicked(d, self, i) {
     if (d3.event.defaultPrevented) return;
     const node = d3.select(self);
-    const fixed = !(node.attr('dragfix') == 'true');
+    const fixed = !(node.attr('dragfix') === 'true');
     node.classed('fixed', d.fixed = fixed);
     this.force.resume();
     d3.event.stopPropagation();
 }
 
 export function rightclicked(node, d) {
-    // const fixed = node.attr('dragfix') == 'true';
-    // const selected = !(node.attr('dragselect') == 'true');
+    // const fixed = node.attr('dragfix') === 'true';
+    // const selected = !(node.attr('dragselect') === 'true');
     // node.classed('fixed', d.fixed = fixed)
     //   .classed('selected', this.nodeSelection[d.index] = selected);
     // this.highlightLinksFromNode(node[0]);
@@ -88,7 +88,7 @@ export function dragging(d, self) {
     node
     .attr('cx', d.px = d.x = d3.event.x)
     .attr('cy', d.py = d.y = d3.event.y)
-    .attr('dragdistance', parseInt(node.attr('dragdistance')) + 1);
+    .attr('dragdistance', parseInt(node.attr('dragdistance'), 10) + 1);
 }
 
 export function dragend(d, self) {
@@ -125,7 +125,6 @@ export function mousedown(d, self) {
     if (this.editMode) {
         this.mousedownNode = d;
     }
-    ;
     this.dragDistance = 0;
     if (this.editMode) {
         this.dragLink
@@ -139,7 +138,7 @@ export function mousedown(d, self) {
 export function mouseup(d, self) {
     d3.event.stopPropagation();
     // Reduce size of drag link focused node
-    if (this.editMode && this.mousedownNode && d != this.mousedownNode) {
+    if (this.editMode && this.mousedownNode && d !== this.mousedownNode) {
         const currNode = d3.select(self);
         currNode.select('circle')
         .attr('transform', '');
@@ -172,7 +171,7 @@ export function mouseup(d, self) {
 export function mouseover(d, self) {
     // Drag link node emphasis
     if (this.editMode && this.mousedownNode) {
-        if (d != this.mousedownNode) {
+        if (d !== this.mousedownNode) {
             d3.select(self).select('circle')
             .attr('transform', 'scale(1.1)');
         } else {
@@ -191,7 +190,7 @@ export function mouseover(d, self) {
         })));
 
         // Text elongation
-        if (this.printFull == 0) {
+        if (this.printFull === 0) {
             d3.select(self)
             .select('.node-name')
             .text(utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull), 2)
@@ -208,7 +207,7 @@ export function mouseout(d, self) {
     this.resetGraphOpacity();
 
     // Reduce size of focused node
-    if (this.editMode && this.mousedownNode && d != this.mousedownNode) {
+    if (this.editMode && this.mousedownNode && d !== this.mousedownNode) {
         d3.select(self).select('circle')
         .attr('transform', '');
     }
@@ -222,7 +221,7 @@ export function mouseout(d, self) {
     if (!this.isDragging) this.updateLinkText([]);
 
     // Text truncation
-    if (this.printFull != 1) {
+    if (this.printFull !== 1) {
         d3.select(self)
         .select('.node-name')
         .text((d) => {
@@ -242,7 +241,7 @@ export function mouseout(d, self) {
 export function clickedCanvas() {
     resetDragLink(this);
     if (d3.event.defaultPrevented) return;
-    if (this.dragDistance == 0) {
+    if (this.dragDistance === 0) {
         const selection = this.svg.selectAll('.node.selected');
         this.addNodeToSelected(selection, d3.event);
     } else {
@@ -256,13 +255,11 @@ export function dragstartCanvas() {
 }
 
 export function mousemoveCanvas(self) {
-    const classThis = this;
+    // const classThis = this;
     const e = d3.event;
     this.displayDebugTooltip(self);
     if (this.editMode && this.mousedownNode) {
-        const currNode = this.node.filter(function (o) {
-            return classThis.mousedownNode.id === o.id;
-        });
+        // const currNode = this.node.filter(function(o) { return classThis.mousedownNode.id === o.id; });
         this.dragDistance++;
         this.dragLink
         .style('visibility', 'visible')
@@ -282,12 +279,13 @@ export function mouseoverLink(d) {
 
 // Node text handlers
 export function stopPropagation() {
-    getD3Event().stopPropagation();
+    const e = getD3Event();
+    if (e.stopPropagation) e.stopPropagation();
 }
 
 // SVG zoom & pan
 export function zoomstart(d, self) {
-    const e = d3.event;
+    // const e = d3.event;
     if (isRightClick()) {
         this.zoomTranslate = this.zoom.translate();
         this.zoomScale = this.zoom.scale();
@@ -326,8 +324,8 @@ export function zoomend(d, self) {
 
 // Zoom button functionality
 export function zoomButton(zoom_in) {
-    var self = this;
-    var scale = this.zoom.scale(),
+    let self = this;
+    let scale = this.zoom.scale(),
         extent = this.zoom.scaleExtent(),
         translate = this.zoom.translate(),
         x = translate[0], y = translate[1],
@@ -340,8 +338,8 @@ export function zoomButton(zoom_in) {
     }
 
     // If the factor is too much, scale it down to reach the extent exactly
-    var clampedTargetScale = Math.max(extent[0], Math.min(extent[1], targetScale));
-    if (clampedTargetScale != targetScale) {
+    const clampedTargetScale = Math.max(extent[0], Math.min(extent[1], targetScale));
+    if (clampedTargetScale !== targetScale) {
         targetScale = clampedTargetScale;
         factor = targetScale / scale;
     }
@@ -353,8 +351,8 @@ export function zoomButton(zoom_in) {
     // Transition to the new view over 100ms
     this.isZooming = true;
     d3.transition().duration(100).tween("zoom", function () {
-        var interpolate_scale = d3.interpolate(scale, targetScale),
-            interpolate_trans = d3.interpolate(translate, [x, y]);
+        const interpolate_scale = d3.interpolate(scale, targetScale),
+              interpolate_trans = d3.interpolate(translate, [x, y]);
         return function (t) {
             self.zoom
             .scale(interpolate_scale(t))
@@ -376,16 +374,16 @@ export function zoomButton(zoom_in) {
 
 export function translateGraphAroundNode(d) {
     // Center each vector, stretch, then put back
-    var x = this.center[0] > d.x ? (this.center[0] - d.x) : -1 * (d.x - this.center[0]);
-    var y = this.center[1] > d.y ? (this.center[1] - d.y) : -1 * (d.y - this.center[1]);
-    var translate = this.zoom.translate();
-    var scale = this.zoom.scale();
+    const x = this.center[0] > d.x ? (this.center[0] - d.x) : -1 * (d.x - this.center[0]);
+    const y = this.center[1] > d.y ? (this.center[1] - d.y) : -1 * (d.y - this.center[1]);
+    let translate = this.zoom.translate();
+    // var scale = this.zoom.scale();
     this.isZooming = true;
-    var self = this;
+    let self = this;
 
     // Transition to the new view over 500ms
     d3.transition().duration(500).tween("translate", function () {
-        var interpolateTranslate = d3.interpolate(translate, [x, y]);
+        let interpolateTranslate = d3.interpolate(translate, [x, y]);
         return function (t) {
             self.zoom
             .translate(interpolateTranslate(t));
@@ -400,16 +398,11 @@ export function translateGraphAroundNode(d) {
 
 export function translateGraphAroundId(id) {
     // Center each vector, stretch, then put back
-    var d;
+    let d;
     this.node.classed("selected", false)
-    .filter((node) => {
-        if (node.id === id) {
-            d = node;
-            return node;
-        }
-    })
+    .filter(node => node.id)
     .classed("selected", true);
-    if (d == null) {
+    if (d === null) {
         return;
     }
 
@@ -430,15 +423,15 @@ export function translateGraphAroundId(id) {
 
     //console.log("this is where x is after: ", x, " and where y is after: ", y)
     this.isZooming = true;
-    var translate = this.zoom.translate();
-    var self = this;
+    const translate = this.zoom.translate();
+    const self = this;
 
     x = x * this.zoomScale;
     y = y * this.zoomScale;
 
     // Transition to the new view over 500ms
     d3.transition().duration(500).tween("translate", function () {
-        var interpolateTranslate = d3.interpolate(translate, [x, y]);
+        const interpolateTranslate = d3.interpolate(translate, [x, y]);
         return function (t) {
             self.zoom
             .translate(interpolateTranslate(t));

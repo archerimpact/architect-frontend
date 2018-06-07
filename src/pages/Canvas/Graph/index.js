@@ -6,9 +6,10 @@ import {withRouter} from "react-router-dom";
 import * as graphActions from "../../../redux/actions/graphActions";
 import {
     addToGraphFromId,
-    resetProject,
+    resetProjectDispatch,
     saveCurrentProjectData,
-    setCurrentNode
+    setCurrentNode,
+    // initializeCanvas
 } from "../../../redux/actions/graphActions";
 
 import "./graph.css";
@@ -29,6 +30,7 @@ class Graph extends Component {
     }
 
     componentDidMount() {
+        // this.props.dispatch(initializeCanvas(this.props.graph, this.props.width, this.props.height));
         this.props.graph.generateCanvas(this.props.width, this.props.height);
         this.props.graph.setData(0, [], []);
         this.props.graph.bindDisplayFunctions({
@@ -37,7 +39,7 @@ class Graph extends Component {
             save: this.saveCurrentProjectDataFunc
         });
 
-        if (this.props.graphData != null) {
+        if (this.props.graphData !== null) {
             const graphData = {nodes: this.props.graphData.nodes, links: this.props.graphData.links};
             this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));
         }
@@ -50,7 +52,7 @@ class Graph extends Component {
             save: this.saveCurrentProjectDataFunc
         });
 
-        if (this.props.project && nextprops.graphData && nextprops.project && nextprops.project._id != this.props.project._id) {
+        if (this.props.project && nextprops.graphData && nextprops.project && nextprops.project._id !== this.props.project._id) {
             const graphData = {nodes: nextprops.graphData.nodes, links: nextprops.graphData.links};
             this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));
         }
@@ -67,7 +69,7 @@ class Graph extends Component {
     renderProjectToolbar = () => {
         return (
             <div className="back-button" onClick={() => {
-                this.props.dispatch(resetProject())
+                this.props.dispatch(resetProjectDispatch())
                 this.props.history.push('/build')
             }
             }>
@@ -82,8 +84,8 @@ class Graph extends Component {
                 {this.props.project && this.props.match.path !== "/explore/:sidebarState?" ? this.renderProjectToolbar() :
                     null
                 }
-                <div id="graph-container"
-                     style={{"height": this.props.height + "px", "width": this.props.width + "px"}}></div>
+                <div id="graph-container" style={{"height": this.props.height + "px", "width": this.props.width + "px"}}></div>
+                {/* Note - this is used for graph injection */}
             </div>
         );
     }
@@ -98,10 +100,10 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
     let sidebarSize = state.graph.sidebarVisible ? 600 : 0;
-    let graphData = null
+    let graphData = null;
     if (state.project.currentProject != null && state.graph.data != null) {
         // TODO this is called a lot
-        graphData = state.graph.data
+        graphData = state.graph.data;
     }
     return {
         height: window.innerHeight,

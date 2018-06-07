@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import * as utils from "./utils.js";
 import {MAX_HEIGHT} from "./constants.js";
-var $ = require("jquery");
+const $ = require("jquery");
 
 export function initializeTooltip() {
     $('body').append("<div id='node-tooltip'></div>");
@@ -47,7 +47,7 @@ export function populateNodeInfoBody(targetId, info, attrs) {
     if (attrs && !this.debug) {
         for (let attr of attrs) {
             $(targetId).append(createInfoTextEntry(attr, info[attr]));
-            if (typeof info[attr] === 'undefined' && info['type'] != 'Document') {
+            if (typeof info[attr] === 'undefined' && info['type'] !== 'Document') {
                 console.error(`${attr} is not a valid attribute.`);
             }
         }

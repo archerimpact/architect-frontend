@@ -11,10 +11,10 @@ import EntityAttributes from "../EntityAttributes";
 import * as server from "../../../server";
 
 
-const tab_style = {
-    backgroundColor: '#FFFFFF',
-    color: '#747474'
-};
+// const tab_style = {
+//   backgroundColor: '#FFFFFF',
+//   color: '#747474'
+// };
 
 class Entity extends Component {
 
@@ -44,10 +44,10 @@ class Entity extends Component {
 
     renderEntity = (node, nodes, links, keys) => {
         const nodeMap = {};
-        if (node == null) {
+        if (node === null || node === undefined) {
             return null
         }
-        nodes.map(n => nodeMap[n.id] = n.name)
+        nodes.forEach(n => nodeMap[n.id] = n.name);
 
         const extract_link = (type, compareSource, compareTarget) => {
             return links.filter(link => link.type === type &&
@@ -189,17 +189,15 @@ class Entity extends Component {
                     <h5 className="">Attributes</h5>
                     { attrs }
 
-                    { Object.keys(linktypes).map(l => {
+                    { Object.keys(linktypes).filter(l => linktypes[l].extracted.length !== 0).map((l, idx) => {
                         const t = linktypes[l];
-                        if (t.extracted.length !== 0) {
-                            return (
-                                <div>
-                                    <h5 className="subheader">{l}</h5>
-                                    { t.extracted.map(i => <EntityCard data={i} id={i[t.chooseDisplay]} shouldFetch
-                                                                       graph={this.props.graph}/>) }
-                                </div>
-                            );
-                        }
+                        return (
+                            <div key={idx}>
+                                <h5 className="subheader" key={`h5-${idx}`}>{l}</h5>
+                                { t.extracted.map(i => <EntityCard key={i[t.chooseDisplay]} data={i} id={i[t.chooseDisplay]} shouldFetch
+                                                                   graph={this.props.graph}/>) }
+                            </div>
+                        );
                     })}
 
                 </div>
@@ -208,7 +206,6 @@ class Entity extends Component {
     }
 
     render() {
-        console.log("this.state", this.state)
         const keys = [
             ['registered_in', 'Registered In'],
             ['birthdate', 'Date of Birth'],
@@ -217,7 +214,7 @@ class Entity extends Component {
             ['last_seen', 'Last Seen'],
             ['incorporation_date', 'Incorporation Date']
         ];
-        if (this.state.currentEntity == null) {
+        if (this.state.currentEntity === null) {
             return <div className="sidebar-content-container"> Click a node to view information about it </div>
         }
         let id = decodeURIComponent(this.props.match.params.query);

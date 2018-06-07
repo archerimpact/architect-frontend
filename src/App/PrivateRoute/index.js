@@ -20,8 +20,9 @@ const PrivateRouter = ({component: Component, ...rest, isAuthenticated}) => (
 class PrivateRoute extends Component {
 
     render() {
-        return (<PrivateRouter component={this.props.component} {...this.props}
-                               isAuthenticated={this.props.isAuthenticated}/>
+        return (
+            <PrivateRouter component={this.props.component} {...this.props}
+                           isAuthenticated={this.props.isAuthenticated}/>
         );
     }
 }

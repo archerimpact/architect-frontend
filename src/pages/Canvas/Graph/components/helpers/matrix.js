@@ -4,12 +4,12 @@ import {GROUP} from "./constants.js";
 import * as utils from "./utils.js";
 
 export function setMatrix(nodes, links, byIndex = false) {
-    var numNodes = nodes.length;
-    var adjacencyMatrix = new Array(numNodes);
-    for (var i = 0; i < numNodes; i++) {
+    let numNodes = nodes.length;
+    let adjacencyMatrix = new Array(numNodes);
+    for (let i = 0; i < numNodes; i++) {
         adjacencyMatrix[i] = new Array(numNodes);
         adjacencyMatrix[i][i] = {state: DISPLAYED, data: nodes[i]}
-        for (var j = 0; j < numNodes; j++) {
+        for (let j = 0; j < numNodes; j++) {
             if (i === j) {
                 continue;
             }
@@ -21,7 +21,7 @@ export function setMatrix(nodes, links, byIndex = false) {
     this.reloadIdToIndex();
     let source, target;
 
-    for (var i = 0; i < links.length; i++) {
+    for (let i = 0; i < links.length; i++) {
         // byIndex is true when the link.source and link.target refer to the index of the node in nodes
         if (byIndex) {
             source = links[i].source;
@@ -50,24 +50,24 @@ export function setMatrix(nodes, links, byIndex = false) {
 export function addToMatrix(centerid, nodes, links) {
     this.reloadIdToIndex();
 
-    var numNodes = nodes.length;
-    for (var i = 0; i < numNodes; i++) {
-        if (this.idToIndex[nodes[i].id] == null) {
+    let numNodes = nodes.length;
+    for (let j = 0; j < numNodes; j++) {
+        if (this.idToIndex[nodes[j].id] === null || this.idToIndex[nodes[j].id] === undefined) {
             utils.addRowColumn(this.adjacencyMatrix);
             this.adjacencyMatrix[this.adjacencyMatrix.length - 1][this.adjacencyMatrix.length - 1] = {
                 state: DISPLAYED,
-                data: nodes[i]
+                data: nodes[j]
             };
         }
     }
 
     this.reloadIdToIndex();
 
-    var numLinks = links.length;
+    const numLinks = links.length;
     let num = 0;
 
-    let sourceIndex, targetIndex
-    for (var i = 0; i < numLinks; i++) {
+    let sourceIndex, targetIndex;
+    for (let i = 0; i < numLinks; i++) {
         if (links[i].source.id) {
             links[i].source = sourceIndex = this.idToIndex[links[i].source.id];
         } // the links have already been mapped to the nodes by d3
@@ -133,10 +133,10 @@ export function addToMatrix(centerid, nodes, links) {
 export function matrixToGraph() {
     this.links.length = 0;
     this.nodes.length = 0;
-    for (var i = 0; i < this.adjacencyMatrix.length; i++) {
+    for (let i = 0; i < this.adjacencyMatrix.length; i++) {
         if (this.adjacencyMatrix[i][i].state === DISPLAYED) {
             this.nodes.push(this.adjacencyMatrix[i][i].data);
-            for (var j = 0; j < this.adjacencyMatrix.length; j++) {
+            for (let j = 0; j < this.adjacencyMatrix.length; j++) {
                 if (i === j) {
                     continue;
                 }
@@ -155,7 +155,7 @@ export function matrixToGraph() {
 export function displayNode(i) {
     if (this.adjacencyMatrix[i][i].state === HIDDEN) {
         this.adjacencyMatrix[i][i].state = DISPLAYED;
-        for (var j = 0; j < this.adjacencyMatrix.length; j++) {
+        for (let j = 0; j < this.adjacencyMatrix.length; j++) {
             if (i === j) {
                 continue;
             } // don't do anything if it's a node
@@ -186,7 +186,7 @@ export function createNode(type, name, event = null) {
     this.adjacencyMatrix[this.adjacencyMatrix.length - 1][this.adjacencyMatrix.length - 1] = {
         state: DISPLAYED,
         data: newNode
-    }
+    };
     return newNode;
 }
 
@@ -197,8 +197,8 @@ export function displayLink(i, j) {
 }
 
 export function createLink(i, j) {
-    let source = this.adjacencyMatrix[i][i].data;
-    let target = this.adjacencyMatrix[j][j].data;
+    // let source = this.adjacencyMatrix[i][i].data;
+    // let target = this.adjacencyMatrix[j][j].data;
     let link = {
         id: this.globallinkid--,
         type: "Custom",
@@ -223,7 +223,7 @@ export function deleteLink(i, j) {
 export function hideNode(i) {
     if (this.adjacencyMatrix[i][i].state === DISPLAYED) {
         this.adjacencyMatrix[i][i].state = HIDDEN;
-        for (var j = 0; j < this.adjacencyMatrix.length; j++) {
+        for (let j = 0; j < this.adjacencyMatrix.length; j++) {
             if (i === j) {
                 continue;
             } // don't do anything if it's a node
@@ -240,14 +240,14 @@ export function hideLink(i, j) {
 }
 
 export function setGroupMembers(i, group) {
-    for (var a = 0; a < group.length; a++) {
+    for (let a = 0; a < group.length; a++) {
         this.adjacencyMatrix[i][group[a]].state = GROUP_MEMBER;
     }
 }
 
 export function getGroupMembers(i) {
-    var group = [];
-    for (var j = 0; j < this.adjacencyMatrix.length; j++) {
+    let group = [];
+    for (let j = 0; j < this.adjacencyMatrix.length; j++) {
         if (i === j) {
             continue;
         }
@@ -263,20 +263,20 @@ export function createGroup(group, name = null) {
     this.createNode(GROUP, name);
     let i = this.adjacencyMatrix.length - 1;
     this.setGroupMembers(i, group);
-    for (var a = 0; a < group.length; a++) {
+    for (let a = 0; a < group.length; a++) {
         this.copyLinks(i, group[a]);
         this.adjacencyMatrix[group[a]][i].state = BELONGS_TO;
         this.adjacencyMatrix[group[a]][group[a]].data.group = this.adjacencyMatrix[i][i].data.id;
     }
 
-    for (var a = 0; a < group.length; a++) {
+    for (let a = 0; a < group.length; a++) {
         this.hideNode(group[a]);
     }
 }
 
 export function ungroup(i) {
     const group = this.getGroupMembers(i);
-    for (var a = 0; a < group.length; a++) {
+    for (let a = 0; a < group.length; a++) {
         delete this.adjacencyMatrix[group[a]][group[a]].data.group;
         this.displayNode(group[a]);
     }
@@ -285,7 +285,7 @@ export function ungroup(i) {
 
 export function expandGroup(i) {
     const group = this.getGroupMembers(i);
-    for (var a = 0; a < group.length; a++) {
+    for (let a = 0; a < group.length; a++) {
         let groupX = this.adjacencyMatrix[i][i].data.x;
         let groupY = this.adjacencyMatrix[i][i].data.y;
         let d = this.adjacencyMatrix[group[a]][group[a]].data
@@ -305,7 +305,7 @@ export function expandGroup(i) {
 
 export function collapseGroup(i) {
     const group = this.getGroupMembers(i);
-    for (var a = 0; a < group.length; a++) {
+    for (let a = 0; a < group.length; a++) {
         if (this.getGroupMembers(group[a]).length > 0 && this.adjacencyMatrix[group[a]][group[a]].state === HIDDEN) {
             this.collapseGroup(group[a]);
         }
@@ -317,7 +317,7 @@ export function collapseGroup(i) {
 }
 
 export function getParent(i) {
-    for (var j = 0; j < this.adjacencyMatrix.length; j++) {
+    for (let j = 0; j < this.adjacencyMatrix.length; j++) {
         if (this.adjacencyMatrix[i][j].state === BELONGS_TO) {
             return j;
         }
@@ -327,7 +327,7 @@ export function getParent(i) {
 }
 
 export function copyLinks(i, j) {
-    for (var k = 0; k < this.adjacencyMatrix.length; k++) {
+    for (let k = 0; k < this.adjacencyMatrix.length; k++) {
         if (i === k || j === k) {
             continue;
         } //don't do anything if the k is just the group node!

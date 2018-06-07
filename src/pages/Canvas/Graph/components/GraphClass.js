@@ -1,5 +1,3 @@
-'use strict';
-
 import * as d3 from "d3";
 import * as aesthetics from "./helpers/aesthetics.js";
 import * as utils from "./helpers/utils.js";
@@ -9,7 +7,7 @@ import * as matrix from "./helpers/matrix.js";
 import * as d3Data from "./helpers/changeD3Data.js";
 import Minimap from "./MinimapClass.js";
 import * as constants from "./helpers/constants.js";
-import {DOCUMENT, HULL_GROUP} from "./helpers/constants.js";
+import {DOCUMENT} from "./helpers/constants.js";
 import * as colors from "./helpers/colorConstants.js";
 
 // FontAwesome icon unicode-to-node type dict
@@ -98,11 +96,10 @@ class Graph {
         this.force = null;
         this.drag = null;
 
-        this.adjacencyMatrix = new Array();
+        this.adjacencyMatrix = [];
         this.globalLinks = {};
         this.globalNodes = [];
 
-        this.ticked = this.ticked.bind(this);
         this.brushstart = this.brushstart.bind(this);
         this.brushing = this.brushing.bind(this);
         this.brushend = this.brushend.bind(this);
@@ -125,14 +122,8 @@ class Graph {
         this.zooming = this.zooming.bind(this);
         this.zoomend = this.zoomend.bind(this);
         this.stopPropagation = this.stopPropagation.bind(this);
-        this.initializeZoom = this.initializeZoom.bind(this);
-        this.initializeBrush = this.initializeBrush.bind(this);
         this.drawHull = this.drawHull.bind(this);
         this.zoomButton = this.zoomButton.bind(this);
-        this.initializeToolbarButtons = this.initializeToolbarButtons.bind(this);
-        this.getToolbarLabels = this.getToolbarLabels.bind(this);
-        this.initializeZoomButtons = this.initializeZoomButtons.bind(this);
-        this.initializeButton = this.initializeButton.bind(this);
         this.wrapNodeText = this.wrapNodeText.bind(this);
         this.updateLinkText = this.updateLinkText.bind(this);
         this.displayTooltip = this.displayTooltip.bind(this);
@@ -143,7 +134,7 @@ class Graph {
         this.bindDisplayFunctions({}); //no display functions yet
     }
 
-    initializeDataDicts() {
+    initializeDataDicts = () => {
         this.groups = {}; // Store groupNodeId --> {links: [], nodes: [], groupid: int}
         this.expandedGroups = {}; // Store groupNodeId --> expansion state
         this.hidden = {links: [], nodes: []}; // Store all links and nodes that are hidden
@@ -152,9 +143,11 @@ class Graph {
 
         this.globallinkid = -1;
         this.globalnodeid = -1;
+        this.xbound = [0, 0];
+        this.ybound = [0, 0];
     }
 
-    initializeZoom() {
+    initializeZoom = () => {
         const self = this;
         const zoom = d3.behavior.zoom()
         .scaleExtent([constants.MIN_SCALE, constants.MAX_SCALE])
@@ -171,7 +164,7 @@ class Graph {
         return zoom;
     }
 
-    initializeBrush() {
+    initializeBrush = () => {
         const self = this;
         return d3.svg.brush()
         .on('brushstart', function (d) {
@@ -187,7 +180,7 @@ class Graph {
     }
 
     // Create canvas
-    initializeSVG() {
+    initializeSVG = () => {
         const self = this;
         const svg = d3.select('#graph-container').append('svg')
         .attr('id', 'canvas')
@@ -213,7 +206,7 @@ class Graph {
 
     // Normally we append a g element right after call(zoom), but in this case we don't
     // want panning to translate the brush off the screen (disabling all mouse events).
-    initializeSVGBrush() {
+    initializeSVGBrush = () => {
         // Extent invisible on left click
         const svgBrush = this.svg.append('g')
         .attr('class', 'brush')
@@ -228,19 +221,19 @@ class Graph {
 
     // We need this reference because selectAll and listener calls will refer to svg,
     // whereas new append calls must be within the same g, in order for zoom to work.
-    initializeContainer() {
+    initializeContainer = () => {
         return this.svg.append('g')
         .attr('class', 'graph-items');
     }
 
     //set up how to draw the hulls
-    initializeCurve() {
+    initializeCurve = () => {
         return d3.svg.line()
         .interpolate('cardinal-closed')
         .tension(.85);
     }
 
-    initializeSVGgrid() {
+    initializeSVGgrid = () => {
         const svgGrid = this.container.append('g')
         .attr('class', 'svg-grid');
 
@@ -285,12 +278,12 @@ class Graph {
         return svgGrid;
     }
 
-    initializeForce() {
+    initializeForce = () => {
         return d3.layout.force()
         .size([this.width, this.height]);
     }
 
-    intitializeDrag() {
+    intitializeDrag = () => {
         const self = this;
         const drag = this.force.drag()
         .origin((d) => {
@@ -309,7 +302,7 @@ class Graph {
         return drag;
     }
 
-    initializeMenuActions() {
+    initializeMenuActions = () => {
         this.menuActions = [
             {
                 title: 'Group selected nodes',
@@ -345,7 +338,7 @@ class Graph {
         ]
     }
 
-    initializeContextMenu() {
+    initializeContextMenu = () => {
         // LICENSING INFO: https://github.com/patorjk/d3-context-menu
         this.contextMenu = function (menu, openCallback) {
             // create the div element that will hold the context menu
@@ -405,7 +398,7 @@ class Graph {
     }
 
     // direction-size-color
-    initializeMarkers() {
+    initializeMarkers = () => {
         const possibleAttrs = [
             ['start', 'end'],
             ['big', 'small'],
@@ -432,11 +425,11 @@ class Graph {
 
     // possibleAttrs is a list of lists that contains the possibilities for each attr
     // This method should return a list of all possible permutations of the given attrs
-    getMarkerIdPermutations(possibleAttrs) {
+    getMarkerIdPermutations = (possibleAttrs) => {
         if (!possibleAttrs) {
             return [];
         }
-        if (possibleAttrs.length == 1) {
+        if (possibleAttrs.length === 1) {
             return possibleAttrs[0];
         }
         let i, j;
@@ -451,7 +444,7 @@ class Graph {
         return markerIds;
     }
 
-    deriveMarkerData(permutationList) {
+    deriveMarkerData = (permutationList) => {
         const markerList = [];
         for (let markerId of permutationList) {
             markerList.push({id: markerId});
@@ -462,7 +455,7 @@ class Graph {
             'blue': colors.HEX_BLUE
         };
 
-        let marker, id, tokens;
+        let marker, tokens;
         for (marker of markerList) {
             tokens = marker.id.split('-');
             marker.direction = (tokens[0] === 'end') ? 'auto' : 'auto-start-reverse';
@@ -473,7 +466,7 @@ class Graph {
         return markerList;
     }
 
-    initializeDragLink() {
+    initializeDragLink = () => {
         return this.svg.append('line')
         .attr('class', 'link dynamic')
         .attr('x1', 0)
@@ -484,7 +477,7 @@ class Graph {
         .style('visibility', 'hidden');
     }
 
-    initializeToolbarButtons() {
+    initializeToolbarButtons = () => {
         const buttonData = this.getToolbarLabels();
 
         this.svg.append('rect')
@@ -550,7 +543,7 @@ class Graph {
         );
     }
 
-    getToolbarLabels() {
+    getToolbarLabels = () => {
         const labels = [constants.BUTTON_ZOOM_IN_ID, constants.BUTTON_ZOOM_OUT_ID, constants.BUTTON_POINTER_TOOL_ID,
             constants.BUTTON_SELECTION_TOOL_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_FIX_NODE_ID,
             constants.BUTTON_SIMPLIFY_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_UNDO_ACTION_ID,
@@ -569,7 +562,7 @@ class Graph {
 
     // Control logic to zoom when buttons are pressed, keep zooming while they are pressed, stop zooming
     // when released or moved off of, not snap-pan when moving off buttons, and restore pan on mouseup.
-    initializeZoomButtons() {
+    initializeZoomButtons = () => {
         const self = this;
         this.zoomPressed = false;
         d3.selectAll(`#${constants.BUTTON_ZOOM_IN_ID}, #${constants.BUTTON_ZOOM_OUT_ID}`)
@@ -591,7 +584,7 @@ class Graph {
         });
     }
 
-    initializeButton(id, onclick, isSelected = false) {
+    initializeButton = (id, onclick, isSelected = false) => {
         d3.select('#' + id)
         .on('click', () => {
             onclick();
@@ -601,12 +594,12 @@ class Graph {
         .classed('selected', isSelected);
     }
 
-    generateCanvas(width, height) {
+    generateCanvas = (width, height) => {
         this.width = width;
         this.height = height;
         this.center = [this.width / 2, this.height / 2];
-        this.brushX = d3.scale.linear().range([0, width]),
-            this.brushY = d3.scale.linear().range([0, height]);
+        this.brushX = d3.scale.linear().range([0, width]);
+        this.brushY = d3.scale.linear().range([0, height]);
         this.minimapPaddingX = constants.MINIMAP_MARGIN + constants.BUTTON_WIDTH;
         this.minimapPaddingY = height - constants.DEFAULT_MINIMAP_SIZE - constants.MINIMAP_MARGIN + 2;
         this.minimapScale = 0.25;
@@ -679,22 +672,21 @@ class Graph {
         .setGraph(this);
 
         this.minimap.initializeMinimap(this.svg, this.width, this.height);
-    }
+    };
 
-    // Completely rerenders the graph, assuming all new nodes and links
-    setData(centerid, nodes, links, byIndex) {
+    // Completely re-renders the graph, assuming all new nodes and links
+    setData = (centerid, nodes, links, byIndex) => {
         this.setMatrix(nodes, links, byIndex);
         this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
         this.update(null, 500);
-
         // set global node id to match the nodes getting passed in
-        nodes.map((node) => {
+        nodes.forEach((node) => {
             if (node.id < 0) {
                 this.globalnodeid = Math.min(this.globalnodeid, node.id);
             }
         });
 
-        links.map((link) => {
+        links.forEach((link) => {
             if (link.id < 0) {
                 this.globallinkid = Math.min(this.globallinkid, link.id);
             }
@@ -707,15 +699,15 @@ class Graph {
         .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
     }
 
-    addData(centerid, nodes, links) {
+    addData = (centerid, nodes, links) => {
         this.addToMatrix(centerid, nodes, links);
     }
 
-    fetchData() {
+    fetchData = () => {
         return {nodes: this.nodes, links: this.links};
     }
 
-    bindDisplayFunctions(displayFunctions) {
+    bindDisplayFunctions = (displayFunctions) => {
         this.displayNodeInfo = displayFunctions.node ? displayFunctions.node : function (d) {
         };
         this.displayLinkInfo = displayFunctions.link ? displayFunctions.link : function (d) {
@@ -729,8 +721,8 @@ class Graph {
         this.initializeMenuActions();
     }
 
-    // Updates nodes and links according to current data TODO enter redux connection to new store (make new store)
-    update(event = null, ticks = null, minimap = true) {
+    // Updates nodes and links according to current data
+    update = (event = null, ticks = null, minimap = true) => {
         var self = this;
 
         this.resetGraphOpacity();
@@ -765,10 +757,9 @@ class Graph {
             return utils.isPossibleLink(l.type);
         })
         .classed('faded', (l) => {
-            return this.hoveredNode && !(l.source == this.hoveredNode || l.target == this.hoveredNode);
+            return this.hoveredNode && !(l.source === this.hoveredNode || l.target === this.hoveredNode);
         })
         .on('mouseover', this.mouseoverLink);
-
         this.link.call(this.styleLink, false);
         this.link.exit().remove();
 
@@ -890,8 +881,8 @@ class Graph {
     }
 
     // Occurs each tick of simulation
-    ticked(e, self) {
-        const classThis = this;
+    ticked = (e, self) => {
+        // const classThis = this;
         this.force.resume();
         this.xbound = [this.width, 0];
         this.ybound = [this.height, 0];
@@ -924,7 +915,7 @@ class Graph {
             return 'translate(' + d.x + ',' + d.y + ')';
         });
 
-        if (this.toRenderMinimap) {
+        if (this.toRenderMinimap && document.querySelector('svg') !== null) {
             if (this.tickCount === constants.MINIMAP_TICK) {
                 this.minimap.syncToSVG(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
                 this.tickCount = 0;
@@ -986,11 +977,11 @@ class Graph {
     }
 
     // Custom force that takes the parent group position as the centroid to moves all contained nodes toward
-    groupNodesForce(alpha) {
+    groupNodesForce = (alpha) => {
         var self = this;
         // Only apply force on grouped nodes that aren't being dragged and aren't fixed
         return function (d) {
-            if (d.group && (!self.isDragging || d.id != self.draggedNode.id) && !d.fixed) {
+            if (d.group && (!self.isDragging || d.id !== self.draggedNode.id) && !d.fixed) {
                 d.y += (d.centroidy - d.y) * alpha;
                 d.x += (d.centroidx - d.x) * alpha;
             }
@@ -998,7 +989,7 @@ class Graph {
     }
 
     // Graph manipulation keycodes
-    setupKeycodes() {
+    setupKeycodes = () => {
         d3.select('body')
         .on('keydown', () => {
 
@@ -1007,7 +998,7 @@ class Graph {
             }
 
             // u: Unpin selected nodes
-            if (d3.event.keyCode == 85) {
+            if (d3.event.keyCode === 85) {
                 this.svg.selectAll('.node.selected')
                 .each(function (d) {
                     d.fixed = false;
@@ -1016,52 +1007,52 @@ class Graph {
             }
 
             // g: Group selected nodes
-            else if (d3.event.keyCode == 71) {
+            else if (d3.event.keyCode === 71) {
                 this.groupSelectedNodes();
             }
 
             // h: Ungroup selected nodes
-            else if (d3.event.keyCode == 72) {
+            else if (d3.event.keyCode === 72) {
                 this.ungroupSelectedGroups();
             }
 
             // c: Group all of the possibly same as's
-            else if (d3.event.keyCode == 67) {
+            else if (d3.event.keyCode === 67) {
                 this.groupSame();
             }
 
             // e: Toggle edit mode
-            else if (d3.event.keyCode == 69) {
+            else if (d3.event.keyCode === 69) {
                 this.toggleEditMode();
             }
 
             // r/del: Remove selected nodes/links
-            else if ((d3.event.keyCode == 82 || d3.event.keyCode == 46) && this.editMode) {
+            else if ((d3.event.keyCode === 82 || d3.event.keyCode === 46) && this.editMode) {
                 this.deleteSelectedNodes();
             }
             // l: remove selected links only
-            else if (d3.event.keyCode == 76 && this.editMode) {
+            else if (d3.event.keyCode === 76 && this.editMode) {
                 this.deleteSelectedLinks();
             }
 
             // a: Add node linked to selected
-            else if (d3.event.keyCode == 65 && this.editMode) {
+            else if (d3.event.keyCode === 65 && this.editMode) {
                 const selection = this.svg.selectAll('.node.selected');
                 this.addNodeToSelected(selection);
             }
 
             // // o: save as PNG
-            // else if (d3.event.keyCode == 79) {
+            // else if (d3.event.keyCode === 79) {
             //   this.saveAsPng();
             // }
 
             // d: Hide document nodes
-            else if (d3.event.keyCode == 68) {
+            else if (d3.event.keyCode === 68) {
                 this.toggleTypeView(DOCUMENT);
             }
 
             // p: Toggle btwn full/abbrev text
-            else if (d3.event.keyCode == 80) {
+            else if (d3.event.keyCode === 80) {
                 this.printFull = (this.printFull + 1) % 3;
                 this.selectAllNodeNames()
                 .text((d) => {
@@ -1071,7 +1062,7 @@ class Graph {
             }
 
             // t: expand by degree
-            else if (d3.event.keyCode == 84) {
+            else if (d3.event.keyCode === 84) {
                 if (this.degreeExpanded === 0 && this.nodes.length !== 1) {
                     return;
                 }
@@ -1088,10 +1079,10 @@ class Graph {
                     });
                 }
             }
-        });
-    }
+        })
+    };
 
-    toggleFixedNodes() {
+    toggleFixedNodes = () => {
         const self = this;
         this.isGraphFixed = !this.isGraphFixed;
         d3.selectAll('.node')
@@ -1101,7 +1092,7 @@ class Graph {
         });
     }
 
-    toggleEditMode() {
+    toggleEditMode = () => {
         const self = this;
         this.editMode = !this.editMode;
         const button = d3.select('#' + constants.BUTTON_EDIT_MODE_ID);
@@ -1141,7 +1132,7 @@ class Graph {
     // =================
 
     // Get all node text elements
-    selectAllNodeNames() {
+    selectAllNodeNames = () => {
         return d3.selectAll('text')
         .filter(function (d) {
             return d3.select(this).classed('node-name');
@@ -1149,13 +1140,13 @@ class Graph {
     }
 
     // Determine if neighboring nodes
-    areNeighbors(a, b) {
+    areNeighbors = (a, b) => {
         return this.linkedById[a.id + ',' + b.id]
             || this.linkedById[b.id + ',' + a.id]
-            || a.id == b.id;
+            || a.id === b.id;
     }
 
-    reloadNeighbors() {
+    reloadNeighbors = () => {
         this.linkedById = {};
         this.links.forEach((d) => {
             this.linkedById[d.source.id + "," + d.target.id] = d.id;
@@ -1163,7 +1154,7 @@ class Graph {
         });
     }
 
-    reloadIdToIndex() {
+    reloadIdToIndex = () => {
         this.idToIndex = {};
         this.indexToId = {};
         for (var i = 0; i < this.adjacencyMatrix.length; i++) {
@@ -1173,7 +1164,7 @@ class Graph {
         }
     }
 
-    saveGraphAsSVGString() {
+    saveGraphAsSVGString = () => {
         return utils.createSVGString(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
     }
 }

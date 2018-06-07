@@ -6,11 +6,7 @@ import * as colors from "./colorConstants.js";
 
 export function highlightExpandableNode() {
     this.node.classed('expandable', false)
-    this.node.filter((d) => {
-        if (utils.isExpandable(d)) {
-            return d
-        }
-    })
+    this.node.filter(d => utils.isExpandable(d))
     .classed('expandable', true)
 }
 
@@ -26,7 +22,7 @@ export function highlightLinksFromAllNodes() {
 export function highlightLinksFromNode(node) {
     node = node[0].__data__.index;
     this.link.filter((d) => {
-        return d.source.index == node || d.target.index == node;
+        return d.source.index === node || d.target.index === node;
     })
     .call(this.styleLink, (d) => {
         return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index];
@@ -104,7 +100,7 @@ export function fadeGraph(d) {
     })
     .classed('faded', true);
     this.link.classed('faded', o => {
-        return !(o.source == d || o.target == d);
+        return !(o.source === d || o.target === d);
     });
     this.hull.classed('faded', true);
 }
@@ -133,7 +129,7 @@ export function wrapNodeText(textSelection, printFull, width = 100) {
         let line = [];
         let remainder;
         let lineNum = 0;
-        const dy = parseInt(text.attr('dy'));
+        const dy = parseInt(text.attr('dy'), 10);
         let tspan = text.append('tspan')
         .attr('x', 0)
         .attr('y', 0)
@@ -156,19 +152,19 @@ export function wrapNodeText(textSelection, printFull, width = 100) {
                 line = remainder ? [remainder] : [];
             }
 
-            if (printFull == 0 && lineNum > 0) {
+            if (printFull === 0 && lineNum > 0) {
                 break;
             }
         }
 
         let finalLine = line.join(' ');
-        finalLine = (printFull == 0 && i < tokens.length) ? `${finalLine.trim()}...` : finalLine;
+        finalLine = (printFull === 0 && i < tokens.length) ? `${finalLine.trim()}...` : finalLine;
         tspan.text(finalLine);
     });
 }
 
 export function updateLinkText(selection) {
-    const self = this;
+    // const self = this;
     const linkEnter = this.linkContainer.selectAll('.link-text')
     .data(selection, (l) => {
         return l.id;
