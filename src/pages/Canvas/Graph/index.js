@@ -100,10 +100,10 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
     let sidebarSize = state.graph.sidebarVisible ? 600 : 0;
-    let graphData = null
-    if (state.project.currentProject !== null && state.graph.data !== null) {
+    let graphData = null;
+    if (state.project.currentProject != null && state.graph.data != null) {
         // TODO this is called a lot
-        graphData = state.graph.data
+        graphData = state.graph.data;
     }
     return {
         height: window.innerHeight,

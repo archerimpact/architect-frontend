@@ -19,9 +19,9 @@ class Canvas extends Component {
         this.baseUrl = '/build/' + (this.props.match.params ? this.props.match.params.investigationId : null);
     }
 
-    async componentWillMount() {
+    componentDidMount() {
         if (this.props.match.params && this.props.match.params.investigationId) {
-            await this.props.dispatch(fetchProject(this.props.match.params.investigationId));
+            this.props.dispatch(fetchProject(this.props.match.params.investigationId));
         }
         if (this.props.currentNode !== null) {
             this.props.history.push(this.baseUrl + '/entity/' + encodeURIComponent(this.props.currentNode.id))
@@ -29,7 +29,7 @@ class Canvas extends Component {
         if (this.props.match.params && this.props.match.params.sidebarState === 'search' && this.props.match.params.query !== null) {
             this.props.dispatch(fetchSearchResults(this.props.match.params.query));
         } else if (this.props.match.params && this.props.match.params.sidebarState === 'entity') {
-            await this.props.dispatch(fetchEntity(decodeURIComponent(this.props.match.params.query)));
+            this.props.dispatch(fetchEntity(decodeURIComponent(this.props.match.params.query)));
         }
     }
 
