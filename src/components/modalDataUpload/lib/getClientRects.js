@@ -1,4 +1,4 @@
-import optimizeClientRects from "./optimize-client-rects";
+import optimizeClientRects from "./optimizeClientRects";
 
 const getClientRects = (range, containerEl, shouldOptimize) => {
     let clientRects = Array.from(range.getClientRects());

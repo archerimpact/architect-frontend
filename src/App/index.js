@@ -7,6 +7,7 @@ import PrivateRoute from "./PrivateRoute/";
 
 import NavBar from "../components/navBar/";
 
+import ModalDataUpload from "../components/modalDataUpload"
 import Login from "../components/Login/";
 import CreateAccount from "../components/CreateAccount/";
 import Home from "../components/Home/";
@@ -50,7 +51,7 @@ class App extends Component {
         }
         return true;
     }
-
+// TODO undo that change (CHANGE DIS)
     render() {
         return (
             <div>
@@ -61,7 +62,7 @@ class App extends Component {
                 }
                 <div className={"main " + (this.state.navbarVisible ? "show-nav" : "no-nav")}>
                     <PrivateRoute exact path="/" component={Home}/>
-                    <Route path="/login" component={Login}/>
+                    <Route path="/login" component={ModalDataUpload}/>
                     <Route path="/create_account" component={CreateAccount}/>
                     <PrivateRoute path="/explore/:sidebarState?" component={Canvas}/>
                     <PrivateRoute path="/build/:investigationId/:sidebarState?/:query?" component={Canvas}/>

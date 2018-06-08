@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import pdfjs from "pdfjs-dist/webpack";
+import pdfjs from "pdfjs-dist/build/pdf";
 
 class PdfLoader extends Component {
     constructor(props) {

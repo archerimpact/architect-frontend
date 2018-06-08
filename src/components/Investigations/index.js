@@ -49,6 +49,7 @@ class Investigations extends Component {
                         )
                     })}
                 </div>
+
             </div>
         );
     }

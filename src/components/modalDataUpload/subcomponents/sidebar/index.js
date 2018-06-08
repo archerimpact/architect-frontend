@@ -1,12 +1,12 @@
 import React from "react";
 
 const updateHash = highlight => {
-    location.hash = `highlight-${highlight.id}`;
+    window.location.hash = `highlight-${highlight.id}`;
 };
 
 const Sidebar = ({ highlights, resetHighlights }) => {
     return (
-        <div className="sidebar" style={{ width: "25vw" }}>
+        <div className="pdf-sidebar" style={{ width: "25vw" }}>
             <div className="description" style={{ padding: "1rem" }}>
                 <h2 style={{ marginBottom: "1rem" }}>Tagged Entities</h2>
                 <p>

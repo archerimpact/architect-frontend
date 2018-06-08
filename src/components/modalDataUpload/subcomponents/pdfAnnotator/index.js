@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import ReactDom from "react-dom";
 import Pointable from "react-pointable";
+import TipContainer from "../tipContainer";
+import MouseSelection from "../mouseSelection";
 import _ from "lodash/fp";
 import { PDFViewer, PDFLinkService } from "pdfjs-dist/web/pdf_viewer";
 
 import "pdfjs-dist/web/pdf_viewer.css";
 import "./style.css";
 
-import getBoundingRect from "../../lib/getAreaAsPng.js";
+import getBoundingRect from "../../lib/getBoundingRect";
 import getClientRects from "../../lib/getClientRects";
 import getAreaAsPng from "../../lib/getAreaAsPng";
 
@@ -16,9 +18,6 @@ import {
     getPageFromElement,
     findOrCreateContainerLayer
 } from "../../lib/pdfjsDOM";
-
-import TipContainer from "../tipContainer";
-import MouseSelection from "../mouseSelection";
 
 import { scaledToViewport, viewportToScaled } from "../../lib/coordinates";
 
@@ -54,7 +53,7 @@ class PdfAnnotator extends Component {
 
     componentDidMount() {
         const { pdfDocument } = this.props;
-
+        debugger;
         this.debouncedAfterSelection = _.debounce(500, this.afterSelection);
         this.linkService = new PDFLinkService();
 
