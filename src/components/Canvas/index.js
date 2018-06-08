@@ -3,7 +3,7 @@ import React, {Component} from "react";
 import Graph from "./Graph";
 import ArcherGraph from "./Graph/package/GraphClass";
 import GraphSidebar from "./graphSidebar";
-import SideNavBar from "../sideNavBar";
+import SideNavBar from "./sideNavBar";
 
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
