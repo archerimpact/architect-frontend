@@ -134,18 +134,22 @@ path.link.selected {
     fill: #bbbbbb !important;
 }
 
-.node.expandable {
+.glyph-label {
+    font-size: 10px;
+    stroke: none;
+    fill: #ebebeb;
+}
+
+/*.node.expandable {
     fill: #0d77e2;
 }
 
 .node.expandable circle {
     fill: #7cbdff !important;
-    fill-opacity: 0.5;
 }
 
 .node.expandable.fixed circle {
-    fill-opacity: 0.8;
-}
+}*/
 
 .node.selected circle {
     stroke: #0d77e2 !important;

@@ -4,10 +4,10 @@ import {isGroup} from "./utils.js";
 import * as constants from "./constants.js";
 import * as colors from "./colorConstants.js";
 
-export function highlightExpandableNode() {
-    this.node.classed('expandable', false)
+export function classExpandableNodes() {
+    this.node.classed('expandable', false);
     this.node.filter(d => utils.isExpandable(d))
-        .classed('expandable', true)
+        .classed('expandable', true);
 }
 
 // Link highlighting
@@ -29,6 +29,10 @@ export function styleNode(selection) {
         .classed('hull-node', (d) => { return d.group; })
         .style('stroke', (d) => { return d.group ? colors.HEX_WHITE : getNodeColor(d); })
         .style('fill', (d) => { return d.group ? getNodeColor(d) : colors.HEX_LIGHT_GRAY; });
+
+    selection.select('.node-glyph')
+        .style('stroke', (d) => { return getNodeColor(d); })
+        .style('fill', (d) => { return getNodeColor(d); });
 
     selection.select('.icon')
         .style('fill', (d) => { return getNodeColor(d); });

@@ -41,6 +41,19 @@ export function isExpandable(d) {
     return (links > d.weight);
 }
 
+export function getNumLinksToExpand(d) {
+    if (d.totalLinks && d.linkTypes) {
+        return Math.max(
+            d.totalLinks 
+            - (d.linkTypes.AKA ? d.linkTypes.AKA : 0) 
+            - (d.linkTypes.SANCTIONED_ON ? d.linkTypes.SANCTIONED_ON : 0) 
+            - (d.linkTypes.HAS_KNOWN_LOCATION ? d.linkTypes.HAS_KNOWN_LOCATION : 0) 
+            - d.weight, 0);
+    }
+
+    return 0;
+}
+
 export function addRowColumn(matrix) {
     for (let i = 0; i < matrix.length; i++) {
         matrix[i].push({state: NONEXISTENT, data: null});

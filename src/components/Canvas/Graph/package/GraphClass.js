@@ -723,7 +723,25 @@ class Graph {
                 .on('mouseup', function (d) { self.mouseup(d, this); });
         }
 
-        this.nodeEnter.append('circle');
+        this.nodeEnter.append('circle')
+            .attr('class', 'node-circle');
+
+        this.nodeEnter
+            .filter((d) => { return !d.group && utils.isExpandable(d); })
+            .append('circle')
+                .attr('class', 'node-glyph')
+                .attr('r', 8)
+                .attr('cx', 17)
+                .attr('cy', 17);
+
+        this.nodeEnter
+            .filter((d) => { return !d.group && utils.isExpandable(d); })
+            .append('text')
+                .attr('class', 'glyph-label')
+                .attr('dx', 17)
+                .attr('dy', 20)
+                .attr('text-anchor', 'middle')
+                .text((d) => { console.log(d); return utils.getNumLinksToExpand(d); });
 
         this.nodeEnter.append('text')
             .attr('class', 'icon')
@@ -784,7 +802,7 @@ class Graph {
             }
         });
 
-        this.highlightExpandableNode();
+        this.classExpandableNodes();
     }
 
     // Occurs each tick of simulation
@@ -989,7 +1007,7 @@ class Graph {
             this.node
                 .on('mouseup', null)
                 .on('mousedown.drag', this.dragCallback);
-            
+
             this.dragCallback = null;
             this.dragLink.style('visibility', 'hidden');
         }
@@ -1037,8 +1055,8 @@ class Graph {
     }
 }
 
-//From aesthetics.js
-Graph.prototype.highlightExpandableNode = aesthetics.highlightExpandableNode;
+// From aesthetics.js
+Graph.prototype.classExpandableNodes = aesthetics.classExpandableNodes;
 Graph.prototype.highlightLinksFromAllNodes = aesthetics.highlightLinksFromAllNodes;
 Graph.prototype.highlightLinksFromNode = aesthetics.highlightLinksFromNode;
 Graph.prototype.styleNode = aesthetics.styleNode;
@@ -1051,7 +1069,7 @@ Graph.prototype.wrapNodeText = aesthetics.wrapNodeText;
 Graph.prototype.updateLinkText = aesthetics.updateLinkText;
 Graph.prototype.wrapLinkText = aesthetics.wrapLinkText;
 
-//From mouseClicks.js
+// From mouseClicks.js
 Graph.prototype.brushstart = mouseClicks.brushstart;
 Graph.prototype.brushing = mouseClicks.brushing;
 Graph.prototype.brushend = mouseClicks.brushend;
@@ -1082,7 +1100,7 @@ Graph.prototype.translateGraphAroundId = mouseClicks.translateGraphAroundId;
 Graph.prototype.disableZoom = mouseClicks.disableZoom;
 Graph.prototype.manualZoom = mouseClicks.manualZoom;
 
-//From changeD3Data.js
+// From changeD3Data.js
 Graph.prototype.deleteSelectedNodes = d3Data.deleteSelectedNodes;
 Graph.prototype.deleteSelectedLinks = d3Data.deleteSelectedLinks;
 Graph.prototype.addNodeToSelected = d3Data.addNodeToSelected;
@@ -1100,7 +1118,7 @@ Graph.prototype.drawHull = d3Data.drawHull;
 Graph.prototype.addLink = d3Data.addLink;
 Graph.prototype.selectLink = d3Data.selectLink;
 
-//From tooltips
+// From tooltips
 Graph.prototype.initializeTooltip = tt.initializeTooltip;
 Graph.prototype.displayTooltip = tt.displayTooltip;
 Graph.prototype.displayDebugTooltip = tt.displayDebugTooltip;
@@ -1110,7 +1128,7 @@ Graph.prototype.populateNodeInfoBody = tt.populateNodeInfoBody;
 Graph.prototype.displayData = tt.displayData;
 Graph.prototype.createTitleElement = tt.createTitleElement;
 
-//from matrix
+// from matrix
 Graph.prototype.setMatrix = matrix.setMatrix;
 Graph.prototype.addToMatrix = matrix.addToMatrix;
 Graph.prototype.matrixToGraph = matrix.matrixToGraph;
