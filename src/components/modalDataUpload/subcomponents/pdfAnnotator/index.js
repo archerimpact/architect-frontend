@@ -53,7 +53,6 @@ class PdfAnnotator extends Component {
 
     componentDidMount() {
         const { pdfDocument } = this.props;
-        debugger;
         this.debouncedAfterSelection = _.debounce(500, this.afterSelection);
         this.linkService = new PDFLinkService();
 
@@ -142,7 +141,7 @@ class PdfAnnotator extends Component {
         this.renderTipAtPosition(highlight.position, content);
     }
 
-    scaledPositionToViewport(pageNumber, boundingRect, rects, usePdfCoordinates) {
+    scaledPositionToViewport({pageNumber, boundingRect, rects, usePdfCoordinates}) {
         const viewport = this.viewer.getPageView(pageNumber - 1).viewport;
 
         return {
@@ -154,7 +153,7 @@ class PdfAnnotator extends Component {
         };
     }
 
-    viewportPositionToScaled(pageNumber, boundingRect, rects) {
+    viewportPositionToScaled({pageNumber, boundingRect, rects}) {
         const viewport = this.viewer.getPageView(pageNumber - 1).viewport;
 
         return {

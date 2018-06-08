@@ -4,7 +4,7 @@ const updateHash = highlight => {
     window.location.hash = `highlight-${highlight.id}`;
 };
 
-const Sidebar = ({ highlights, resetHighlights }) => {
+const Sidebar = ({ highlights, resetHighlights, removeHighlightByIndex }) => {
     return (
         <div className="pdf-sidebar" style={{ width: "25vw" }}>
             <div className="description" style={{ padding: "1rem" }}>
@@ -42,6 +42,12 @@ const Sidebar = ({ highlights, resetHighlights }) => {
                                 </div>
                             ) : null}
                         </div>
+                        <div>
+                          <button onClick={() => removeHighlightByIndex(index)}>
+                            X
+                          </button>
+                        </div>
+                        {/* see if there's a better way to write this CHANGE DIS */}
                         <div className="highlight__location">
                             Page {highlight.position.pageNumber}
                         </div>
