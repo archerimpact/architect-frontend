@@ -1,0 +1,41 @@
+.side-nav {
+  position: absolute;
+  height: 100%;
+  width: 55px;
+  background: #252525;
+  padding: 5px 0px;
+}
+
+.side-nav-button {
+  position: relative;
+  height: 55px;
+  width: 100%;
+  margin: 5px 0px;
+}
+
+.side-nav-button i {
+  position: relative;
+  width: 100%;
+  text-align: center;
+  margin-top: 0px;
+  font-size: 2em;
+  height: 55px;
+  line-height: 55px;
+  vertical-align: middle;
+  color: white;
+}
+
+.side-nav-button:hover {
+  background: #131313;
+  border-left: 3.5px solid #0d77e2;
+}
+
+.side-nav-button:hover i {
+  color: #0d77e2;
+}
+
+.bottom {
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+}
