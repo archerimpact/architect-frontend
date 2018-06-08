@@ -6,10 +6,8 @@ import {withRouter} from "react-router-dom";
 import * as graphActions from "../../../redux/actions/graphActions";
 import {
     addToGraphFromId,
-    resetProjectDispatch,
     saveCurrentProjectData,
-    setCurrentNode,
-    // initializeCanvas
+    setCurrentNode
 } from "../../../redux/actions/graphActions";
 
 import "./graph.css";
@@ -66,26 +64,11 @@ class Graph extends Component {
         return newArray;
     }
 
-    renderProjectToolbar = () => {
-        return (
-            <div className="back-button" onClick={() => {
-                this.props.dispatch(resetProjectDispatch())
-                this.props.history.push('/build')
-            }
-            }>
-                <i className="material-icons back-button-icon">home</i>
-            </div>
-        )
-    }
-
     render() {
         return (
             <div>
-                {this.props.project && this.props.match.path !== "/explore/:sidebarState?" ? this.renderProjectToolbar() :
-                    null
-                }
-                <div id="graph-container" style={{"height": this.props.height + "px", "width": this.props.width + "px"}}></div>
                 {/* Note - this is used for graph injection */}
+                <div id="graph-container" style={{"height": this.props.height + "px", "width": this.props.width + "px"}}></div>
             </div>
         );
     }
