@@ -2,15 +2,15 @@ import React from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
-import { resetProjectDispatch } from '../../redux/actions/graphActions';
+import { resetProjectDispatch } from '../../../redux/actions/graphActions';
 
 import './style.css'
 
-const SideNavBar = (props) => {
+const SideNavBar = ({ dispatch }) => {
   return (
     <div className="side-nav">
       <ReactTooltip place="right" effect="solid"/>
-      <Link to='/' onClick={() => { props.dispatch(resetProjectDispatch()); }}>
+      <Link to='/' onClick={() => { dispatch(resetProjectDispatch()); }}>
         <div className="side-nav-button" data-tip="Home">
           <i className="material-icons">home</i>
         </div>
@@ -20,7 +20,7 @@ const SideNavBar = (props) => {
           <i className="material-icons">data_usage</i>
         </div>
       </Link>
-      <Link to='/build' onClick={() => { props.dispatch(resetProjectDispatch()); }}>
+      <Link to='/build' onClick={() => { dispatch(resetProjectDispatch()); }}>
         <div className="side-nav-button" data-tip="Spaces">
           <i className="material-icons">dashboard</i>
         </div>
