@@ -61,7 +61,6 @@
 
 .investigation-card-body, .data-card-body {
   border-top: 1px solid #e3e3e3;
-  overflow: scroll;
 }
 
 .investigation-card:hover, .investigation-card-selected {
