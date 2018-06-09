@@ -21,27 +21,3 @@
     padding: 0px 4px;
     border-left: 1px solid #D4D4D4;
 }
-
-.back-button-icon {
-    font-size: 36px;
-    color: #fff;
-}
-
-.back-button {
-    display: flex;
-    background-color: #ff5d4c;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 15px;
-    left: 80px;
-    box-shadow: rgba(0, 0, 0, 0.64902) 0px 2px 3px 0px, rgba(0, 0, 0, 0.09804) 0px 1px 2px 0px;
-    cursor: pointer;
-}
-
-.back-button:hover {
-    background-color: #FF7D6F;
-}
