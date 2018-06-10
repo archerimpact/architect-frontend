@@ -300,7 +300,12 @@ class PdfAnnotator extends Component {
             ]
         });
 
-        this.setState( {scrolledToHighlightId: highlight.id}, () => this.renderHighlights() );
+        this.setState(
+            {
+                scrolledToHighlightId: highlight.id
+            },
+            () => this.renderHighlights()
+        );
 
         // wait for scrolling to finish
         setTimeout(() => {
@@ -317,7 +322,7 @@ class PdfAnnotator extends Component {
     };
 
     onSelectionChange = () => {
-        const selection = window.getSelection();
+        const selection: Selection = window.getSelection();
 
         if (selection.isCollapsed) {
             this.setState({ isCollapsed: true });
@@ -353,7 +358,7 @@ class PdfAnnotator extends Component {
         this.viewer.container.removeEventListener("scroll", this.onScroll);
     };
 
-    onMouseDown = (event) => {
+    onMouseDown = (event: MouseEvent) => {
         if (!(event.target instanceof HTMLElement)) {
             return;
         }
@@ -365,7 +370,7 @@ class PdfAnnotator extends Component {
         this.hideTipAndSelection();
     };
 
-    handleKeyDown = (event) => {
+    handleKeyDown = (event: KeyboardEvent) => {
         if (event.code === "Escape") {
             this.hideTipAndSelection();
         }
@@ -399,6 +404,7 @@ class PdfAnnotator extends Component {
         const content = {
             text: range.toString()
         };
+
         const scaledPosition = this.viewportPositionToScaled(viewportPosition);
 
         this.renderTipAtPosition(

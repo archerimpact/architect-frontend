@@ -417,7 +417,6 @@ export function translateGraphAroundId(id) {
     // let x = d.x;
     // let y = d.y;
 
-    console.log("centerX: ", centerX, " centerY: ", centerY, " d.x: ", x, " d.y: ", y);
     x = centerX > x ? (centerX - x) : (x - centerX);
     y = centerY > y ? (centerY - y) : (y - centerY);
 

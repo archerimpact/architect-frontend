@@ -4,7 +4,7 @@
 // for clarity reasons I decided not to store actual (0, 1) coordinates, but
 // provide width and height, so user can compute ratio himself if needed
 
-export const viewportToScaled = (rect, width, height) => {
+export const viewportToScaled = (rect, {width, height}) => {
     return {
         x1: rect.left,
         y1: rect.top,

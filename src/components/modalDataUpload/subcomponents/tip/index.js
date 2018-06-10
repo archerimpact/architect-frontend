@@ -44,18 +44,18 @@ class Tip extends Component {
                         }}
                     >
                         <div>
-              <textarea
-                  width="100%"
-                  placeholder="Your comment"
-                  autoFocus
-                  value={text}
-                  onChange={event => this.setState({ text: event.target.value })}
-                  ref={node => {
-                      if (node) {
-                          node.focus();
-                      }
-                  }}
-              />
+                          <textarea
+                              width="100%"
+                              placeholder="Your comment"
+                              autoFocus
+                              value={text}
+                              onChange={event => this.setState({ text: event.target.value })}
+                              ref={node => {
+                                  if (node) {
+                                      node.focus();
+                                  }
+                              }}
+                          />
                             <div>
                                 {["💩", "😱", "😍", "🔥", "😳", "⚠️"].map(_emoji => (
                                     <label key={_emoji}>

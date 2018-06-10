@@ -139,7 +139,6 @@ class ModalDataUpload extends Component {
                                                 onOpen={transformSelection}
                                                 onConfirm={comment => {
                                                     this.addHighlight({ content, position, comment });
-
                                                     hideTipAndSelection();
                                                 }}
                                             />
