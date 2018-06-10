@@ -29,34 +29,29 @@ class Data extends Component {
 
   render() {
     return (
-      <div className="y-scrollable">
-        <div className="data-grid">
-          {this.props.data.map((data) => {
-            const starColor = data.favorited ? "#0D77E2" : "#000"
-            return (
-              <div key={data.name}>
-                <div className="card data-card">                      
-                  <div className="card-body data-card-body">
-                    {data.published ? <div className="card-text investigation-card-text status-public">PUBLIC</div> :
-                      <div className="status-private">PRIVATE</div>
-                    }
-                    <div className="data-card-top d-flex y-scrollable">
-                      <h5 className="data-card-title">{data.name}</h5>
-                      <div className="card-text investigation-card-text detail-info-text">{data.lastUpdated}</div>
-                    </div>
-                    {/*<SearchBar onSubmit={this.handleSearchSubmit} dataset={data.dataset}/>*/}
-                    {data.dataset === this.state.expandedCard ? 
-                      <div className="data-card-results">
-                        <SearchResults/> 
-                      </div>
-                      : null }
-                  </div> 
+      <div className="data-grid y-scrollable">
+        {this.props.data.map((data) => {
+          return (
+            <div className="data-card" key={data.name}>                      
+              <div className="data-card-body">
+                {data.published ? <div className="card-text investigation-card-text status-public">PUBLIC</div> :
+                  <div className="status-private">PRIVATE</div>
+                }
+                <div className="data-card-top d-flex">
+                  <div className="data-card-title">{data.name}</div>
+                  <div className="card-text investigation-card-text detail-info-text">{data.lastUpdated}</div>
                 </div>
-              </div>                
-            )
-          })}
-        </div>
-      </div>  
+                {/*<SearchBar onSubmit={this.handleSearchSubmit} dataset={data.dataset}/>*/}
+                {data.dataset === this.state.expandedCard ? 
+                  <div className="data-card-results">
+                    <SearchResults/> 
+                  </div>
+                  : null }
+              </div> 
+            </div>
+          )
+        })}
+      </div>
     );
   }
 }

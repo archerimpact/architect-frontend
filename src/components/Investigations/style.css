@@ -17,9 +17,8 @@
 
 .upload-data {
   background-color: #fafbfc;
-  padding-left: 45px;
-  padding-right: 45px;
-  padding-bottom: 45px;
+  padding: 45px;
+  padding-top: 45px;
 }
 
 .data-column {
@@ -64,7 +63,7 @@
 }
 
 .investigation-card:hover, .investigation-card-selected {
-  border-bottom: 8px solid #f1e05a;
+  box-shadow: 0px -8px 0px #f1e05a inset;
   cursor: pointer;
   background-color: #fafbfc;
   color: #0D77E2 !important;

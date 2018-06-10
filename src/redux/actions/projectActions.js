@@ -76,7 +76,18 @@ export function getProjects() {
     return (dispatch) => {
         server.getProjects()
         .then((data) => {
-            dispatch(getProjectsDispatch(data.message));
+          let projects = data.message;
+          projects.map((project, i) => {
+            let graphData;
+            try {
+                graphData = JSON.parse(project.data)
+            }
+            catch (err) {
+                graphData = null
+            }
+            projects[i] = {...projects[i], data: graphData};
+          });
+          dispatch(getProjectsDispatch(projects));
         })
         .catch((err) => console.log(err.message));
     }

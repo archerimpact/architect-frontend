@@ -14,6 +14,7 @@ class SpacesPreview extends Component {
 
   render() {
     if (this.props.project) {
+      debugger;
       let nodesLength = this.props.project.data && this.props.project.data.nodes ? this.props.project.data.nodes.length : 0;
       let linksLength = this.props.project.data && this.props.project.data.links ? this.props.project.data.links.length: 0
       return (
@@ -47,7 +48,7 @@ class SpacesPreview extends Component {
               </div>
             </div>
           </div>
-          <div className="card data-section">
+          <div className="data-section">
             <div className="card-header">
               Datasets
             </div>
