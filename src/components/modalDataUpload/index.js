@@ -75,7 +75,7 @@ class ModalDataUpload extends Component {
     removeHighlightByIndex = (index) => {
         const { highlights } = this.state;
 
-        const newHighlights = highlights; // can write better
+        let newHighlights = [...highlights];
         newHighlights.splice(index, 1);
         this.setState({
             highlights: newHighlights
