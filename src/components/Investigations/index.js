@@ -36,9 +36,7 @@ class Investigations extends Component {
     }
 
     componentWillReceiveProps(nextprops) {
-      if (this.props.project_list !== nextprops.project_list) {
-        this.setState({ selectedProject: nextprops.project_list[0]});
-      }
+      this.setState({ selectedProject: nextprops.project_list[0]});
     }
 
     handleSpaceClick = (project) => {
