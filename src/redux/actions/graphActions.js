@@ -19,7 +19,14 @@ export function saveCurrentProjectData(graph) {
         let state = getState();
         let projid = state.project.currentProject._id;
         let data = graph.fetchData();
-        server.updateProject({id: projid, d3Data: data, image: ''})
+        let image_string;
+        if (data.nodes.length > 0 && data.links.length > 0) {
+          image_string = graph.saveGraphAsSVGString();
+        } else {
+          image_string = null
+        }
+        debugger;
+        server.updateProject({id: projid, d3Data: data, image: image_string})
         .then((res) => {
             if (res.success) {
                 dispatch(updateGraphDispatch(data))

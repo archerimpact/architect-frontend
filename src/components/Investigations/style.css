@@ -38,6 +38,7 @@
 .investigations-page-header {
   margin-bottom: 15px;
   margin-top: 15px;
+  height: 45px;
 }
 
 .investigation-card {
@@ -48,10 +49,6 @@
 
 .investigation-card {
   width: 250px;
-}
-
-.card-img-top {
-  height: 200px;
 }
 
 .investigation-card-body {

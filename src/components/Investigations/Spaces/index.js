@@ -39,13 +39,6 @@ class Spaces extends Component {
         </div>
         <div className="investigations-grid">
         {this.props.projects.map((proj) => {
-          let image_blob;   
-          if (proj.img) {
-            image_blob = "data:image/svg+xml;charset=utf-8,"+ proj.img;
-          }
-          else {
-            image_blob = "no image provided";
-          }
           return (
             <div key={proj._id}>
               {/*<Link to={`/build/${proj._id}`}>*/}
@@ -53,7 +46,9 @@ class Spaces extends Component {
                   onClick={() => {this.props.onSpaceClick(proj)}}
                   onDoubleClick={ () => {this.props.onSpaceDoubleClick(proj)}}
                 >
-                  <img className="card-img-top" src={image_blob} alt={""}></img>
+                  <div className="card-img-top">
+                    <img className="preview-img-sm" src={proj.preview_img} alt={""}></img>
+                  </div>
                   <div className="card-body investigation-card-body">
                     {proj.published ? <div className="card-text investigation-card-text status-public">PUBLIC</div> :
                       <div className="status-private">PRIVATE</div>

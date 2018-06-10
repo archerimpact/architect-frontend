@@ -86,6 +86,11 @@ export function getProjects() {
                 graphData = null
             }
             projects[i] = {...projects[i], data: graphData};
+            if (projects[i].img) {
+              projects[i].preview_img = "data:image/svg+xml;charset=utf-8," + project.img;
+            } else {
+              projects[i].preview_img = "";
+            }
           });
           dispatch(getProjectsDispatch(projects));
         })

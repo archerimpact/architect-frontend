@@ -58,7 +58,7 @@ class SpacesPreview extends Component {
               <div className="card-header image-header toaster-button">Go to Space</div>
             </Link>
             <div className="card-body">
-              <img className="image-full" src={"data:image/svg+xml;charset=utf-8," + this.props.project.img}></img>
+              <img className="image-full" src={this.props.project.preview_img}></img>
             </div>
           </div>
           <div className="card card-header data-section delete-button" onClick={() => {this.props.onDelete(this.props.project)}}>Delete Space</div>
