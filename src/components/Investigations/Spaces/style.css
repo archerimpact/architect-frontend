@@ -1,0 +1,8 @@
+.investigation-card-title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  height: 20px;
+  line-height: 20px;
+  white-space: nowrap;
+
+}
