@@ -14,6 +14,7 @@ import {
 import './style.css'
 
 // TODO import transitions and styling from antd (see them for inspiration). this includes bulk upload.
+// TODO allow links within the document to go to other documents or within page docs
 
 /* ======================================= HELPER FUNCTIONS ===================================== */
 

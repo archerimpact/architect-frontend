@@ -33,7 +33,7 @@ class Tip extends Component {
                             this.setState({ compact: false });
                         }}
                     >
-                        Add highlight
+                        Tag Entity
                     </div>
                 ) : (
                     <form

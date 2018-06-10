@@ -284,7 +284,7 @@ class PdfAnnotator extends Component {
 
         const pageViewport = this.viewer.getPageView(pageNumber - 1).viewport;
 
-        const scrollMargin = 10;
+        const scrollMargin = window.innerHeight / 3;
 
         this.viewer.scrollPageIntoView({
             pageNumber,
@@ -322,7 +322,7 @@ class PdfAnnotator extends Component {
     };
 
     onSelectionChange = () => {
-        const selection: Selection = window.getSelection();
+        const selection = window.getSelection();
 
         if (selection.isCollapsed) {
             this.setState({ isCollapsed: true });
@@ -358,7 +358,7 @@ class PdfAnnotator extends Component {
         this.viewer.container.removeEventListener("scroll", this.onScroll);
     };
 
-    onMouseDown = (event: MouseEvent) => {
+    onMouseDown = (event) => {
         if (!(event.target instanceof HTMLElement)) {
             return;
         }
@@ -370,7 +370,7 @@ class PdfAnnotator extends Component {
         this.hideTipAndSelection();
     };
 
-    handleKeyDown = (event: KeyboardEvent) => {
+    handleKeyDown = (event) => {
         if (event.code === "Escape") {
             this.hideTipAndSelection();
         }
