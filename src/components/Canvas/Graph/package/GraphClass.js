@@ -210,7 +210,7 @@ class Graph {
             .attr('class', 'graph-items');
     }
 
-    //set up how to draw the hulls
+    // Set up how to draw the hulls
     initializeCurve = () => {
         return d3.svg.line()
             .interpolate('cardinal-closed')
@@ -566,10 +566,10 @@ class Graph {
         this.zoom = this.initializeZoom();
         this.brush = this.initializeBrush();
         this.svg = this.initializeSVG();
-        this.svgBrush = this.initializeSVGBrush();
         this.container = this.initializeContainer();
-        this.curve = this.initializeCurve();
         this.svgGrid = this.initializeSVGgrid();
+        this.svgBrush = this.initializeSVGBrush();
+        this.curve = this.initializeCurve();
         this.force = this.initializeForce();
         this.drag = this.intitializeDrag();
         this.dragLink = this.initializeDragLink();

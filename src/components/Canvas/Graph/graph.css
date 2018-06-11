@@ -33,9 +33,9 @@ svg {
 }
 
 svg rect.extent {
-    stroke: #ccc;
+    stroke: rgb(120, 120, 120, .3);
     stroke-width: 2px;
-    fill: #edf5fc;
+    fill: rgb(190, 219, 243, .2);
 }
 
 svg line {
@@ -288,8 +288,8 @@ path.link.selected {
 
 .context-menu ul {
     list-style-type: none;
-    /*margin: 4px 0px;*/
     padding: 0px;
+    margin: 0px;
     cursor: default;
 }
 

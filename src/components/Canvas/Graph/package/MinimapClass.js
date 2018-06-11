@@ -182,15 +182,8 @@ class Minimap {
     }
 
     zooming = () => {
-        if (d3.event) {
-            if (!utils.isRightClick()) {
-                this.scale = d3.event.scale;
-                this.zoomMinimap(this.scale)
-            }
-        } else {
-            this.scale = utils.getScaleFromZoom(this.target.attr('transform'))[0];
-            this.zoomMinimap(this.scale);
-        }
+        this.scale = (d3.event && !utils.isRightClick()) ? d3.event.scale : utils.getScaleFromZoom(this.target.attr('transform'))[0];
+        this.zoomMinimap(this.scale);
     }
 
     zoomMinimap = (scale) => {
@@ -210,7 +203,6 @@ class Minimap {
 
     /** RENDER **/
     syncToSVG = (targetSVG, x1, x2, y1, y2) => {
-
         const translate = utils.getXYFromTranslate(this.target.attr('transform'));
         const scale = this.scale;
 
@@ -234,7 +226,6 @@ class Minimap {
     }
 
     initializeBoxToCenter = (targetSVG, x1, x2, y1, y2) => {
-
         const translate = utils.getXYFromTranslate(this.target.attr('transform'));
         const scale = this.scale;
 
