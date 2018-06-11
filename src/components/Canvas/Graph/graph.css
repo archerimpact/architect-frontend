@@ -39,7 +39,7 @@ svg rect.extent {
 }
 
 svg line {
-    stroke: #ebebeb;
+    stroke: rgb(191, 191, 191, 0.3);
     stroke-width: 1.5px;
 }
 

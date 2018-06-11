@@ -238,9 +238,7 @@ class Graph {
             .selectAll('line')
             .data(d3.range(0, (this.numTicks + 1) * constants.GRID_LENGTH, constants.GRID_LENGTH))
             .enter().append('line')
-            .attr('x1', (d) => {
-                return -1 * constants.GRID_LENGTH;
-            })
+            .attr('x1', (d) => { return -1 * constants.GRID_LENGTH; })
             .attr('y1', (d) => { return d; })
             .attr('x2', (d) => { return (1 / constants.MIN_SCALE) * this.width + constants.GRID_LENGTH; })
             .attr('y2', (d) => { return d; });
@@ -566,9 +564,9 @@ class Graph {
         this.zoom = this.initializeZoom();
         this.brush = this.initializeBrush();
         this.svg = this.initializeSVG();
+        this.svgBrush = this.initializeSVGBrush();
         this.container = this.initializeContainer();
         this.svgGrid = this.initializeSVGgrid();
-        this.svgBrush = this.initializeSVGBrush();
         this.curve = this.initializeCurve();
         this.force = this.initializeForce();
         this.drag = this.intitializeDrag();
