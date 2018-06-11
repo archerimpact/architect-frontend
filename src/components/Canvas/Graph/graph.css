@@ -134,10 +134,18 @@ path.link.selected {
     fill: #bbbbbb !important;
 }
 
+.node-glyph.hidden {
+    display: none;
+}
+
 .glyph-label {
     font-size: 10px;
     stroke: none;
     fill: #ebebeb;
+}
+
+.glyph-label.hidden {
+    display: none;
 }
 
 /*.node.expandable {

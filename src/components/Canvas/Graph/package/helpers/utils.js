@@ -30,28 +30,23 @@ export function getNewCoord(x, translate, scale) {
 }
 
 export function isExpandable(d) {
-    let links = d.totalLinks;
-    if (d.totalLinks && d.linkTypes) {
-        links = d.linkTypes.AKA ? links - d.linkTypes.AKA : links;
-        links = d.linkTypes.SANCTIONED_ON ? links - d.linkTypes.SANCTIONED_ON : links;
-        links = d.linkTypes.HAS_KNOWN_LOCATION ? links - d.linkTypes.HAS_KNOWN_LOCATION : links;
-        // links = d.linkTypes.HAS_ID_DOC ? links - d.linkTypes.HAS_ID_DOC : links;
-    }
+    if (!d.totalLinks || !d.weight) return false;
+    if (!d.linkTypes) return d.totalLinks > d.weight;
 
+    let links = d.totalLinks;
+    links = d.linkTypes.AKA ? links - d.linkTypes.AKA : links;
+    links = d.linkTypes.SANCTIONED_ON ? links - d.linkTypes.SANCTIONED_ON : links;
+    links = d.linkTypes.HAS_KNOWN_LOCATION ? links - d.linkTypes.HAS_KNOWN_LOCATION : links;
     return (links > d.weight);
 }
 
 export function getNumLinksToExpand(d) {
-    if (d.totalLinks && d.linkTypes) {
-        return Math.max(
-            d.totalLinks 
-            - (d.linkTypes.AKA ? d.linkTypes.AKA : 0) 
-            - (d.linkTypes.SANCTIONED_ON ? d.linkTypes.SANCTIONED_ON : 0) 
-            - (d.linkTypes.HAS_KNOWN_LOCATION ? d.linkTypes.HAS_KNOWN_LOCATION : 0) 
-            - d.weight, 0);
-    }
-
-    return 0;
+    if (!isExpandable(d)) return 0;
+    return Math.max(d.totalLinks 
+        - (d.linkTypes.AKA ? d.linkTypes.AKA : 0) 
+        - (d.linkTypes.SANCTIONED_ON ? d.linkTypes.SANCTIONED_ON : 0) 
+        - (d.linkTypes.HAS_KNOWN_LOCATION ? d.linkTypes.HAS_KNOWN_LOCATION : 0) 
+        - d.weight, 0);
 }
 
 export function addRowColumn(matrix) {
@@ -64,7 +59,7 @@ export function addRowColumn(matrix) {
         matrix[matrix.length - 1][i] = {state: NONEXISTENT, data: null};
     }
 
-    return matrix
+    return matrix;
 }
 
 export function removeColumn(matrix, index) {
@@ -106,20 +101,13 @@ export function createSVGImage(targetSVG, x1, x2, y1, y2, width = null, height =
     const svgString = createSVGString(targetSVG, x1, x2, y1, y2, width, height);
     const blob = new Blob([svgString], {type: 'image/svg+xml'});
     const url = URL.createObjectURL(blob);
-
     return url;
 }
 
 export function createSVGString(targetSVG, x1, x2, y1, y2, width = null, height = null) {
     let svgClone = targetSVG.cloneNode(true);
-
-    if (!width) {
-        width = Math.abs(x2 - x1);
-    }
-
-    if (!height) {
-        height = Math.abs(y2 - y1);
-    }
+    if (!width) { width = Math.abs(x2 - x1); }
+    if (!height) { height = Math.abs(y2 - y1); }
 
     svgClone.setAttribute('viewBox', `${x1} ${y1} ${width} ${height}`);
 
@@ -201,13 +189,8 @@ export function findEntryById(dictList, id) {
 // Normalize node text to same casing conventions and length
 // printFull states - 0: abbrev, 1: none, 2: full
 export function processNodeName(str, printFull) {
-    if (!str) {
-        return 'Document';
-    }
-
-    if (printFull === 1) {
-        return '';
-    }
+    if (!str) { return 'Document'; }
+    if (printFull === 1) { return ''; }
 
     const delims = [' ', '.', '('];
     for (let i = 0; i < delims.length; i++) {

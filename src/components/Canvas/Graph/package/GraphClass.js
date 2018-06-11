@@ -674,7 +674,6 @@ class Graph {
     // Updates nodes and links according to current data
     update = (event = null, ticks = null, minimap = true) => {
         var self = this;
-
         this.resetGraphOpacity();
         this.force.stop();
         this.matrixToGraph();
@@ -726,22 +725,17 @@ class Graph {
         this.nodeEnter.append('circle')
             .attr('class', 'node-circle');
 
-        this.nodeEnter
-            .filter((d) => { return !d.group && utils.isExpandable(d); })
-            .append('circle')
-                .attr('class', 'node-glyph')
-                .attr('r', 8)
-                .attr('cx', 17)
-                .attr('cy', 17);
+        this.nodeEnter.append('circle')
+            .attr('class', 'node-glyph')
+            .attr('r', 8)
+            .attr('cx', 17)
+            .attr('cy', 17);
 
-        this.nodeEnter
-            .filter((d) => { return !d.group && utils.isExpandable(d); })
-            .append('text')
-                .attr('class', 'glyph-label')
-                .attr('dx', 17)
-                .attr('dy', 20)
-                .attr('text-anchor', 'middle')
-                .text((d) => { console.log(d); return utils.getNumLinksToExpand(d); });
+        this.nodeEnter.append('text')
+            .attr('class', 'glyph-label')
+            .attr('dx', 17)
+            .attr('dy', 20)
+            .attr('text-anchor', 'middle');
 
         this.nodeEnter.append('text')
             .attr('class', 'icon')
@@ -771,6 +765,14 @@ class Graph {
         this.node.call(this.styleNode)
         this.node.exit().remove();
 
+        // Update node glyphs
+        this.node.select('.node-glyph')
+            .classed('hidden', (d) => { return d.group || !utils.isExpandable(d); });
+
+        this.node.select('.glyph-label')
+            .text((d) => { return utils.getNumLinksToExpand(d); })
+            .classed('hidden', (d) => { return d.group || !utils.isExpandable(d); });
+
         // Update hulls
         this.hull = this.hull.data(this.hulls);
         this.hull
@@ -785,11 +787,9 @@ class Graph {
 
         this.hull.exit().remove();
 
-        this.force.start();
         // Avoid initial chaos and skip the wait for graph to drift back onscreen
-        if (ticks) {
-            for (let i = ticks; i > 0; --i) this.force.tick();
-        }
+        this.force.start();
+        if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }
 
         if (minimap) {
             this.toRenderMinimap = true;
@@ -801,8 +801,6 @@ class Graph {
                 d.fixed = d.fixedTransition = false;
             }
         });
-
-        this.classExpandableNodes();
     }
 
     // Occurs each tick of simulation

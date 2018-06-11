@@ -144,9 +144,7 @@ export function wrapNodeText(textSelection, printFull, width = 100) {
 export function updateLinkText(selection) {
     // const self = this;
     const linkEnter = this.linkContainer.selectAll('.link-text')
-    .data(selection, (l) => {
-        return l.id;
-    });
+        .data(selection, (l) => { return l.id; });
 
     this.linkText = linkEnter.enter()
         .append('text')
