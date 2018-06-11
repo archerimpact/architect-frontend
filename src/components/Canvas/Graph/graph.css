@@ -130,34 +130,9 @@ path.link.selected {
     stroke-width: 2.4px;
 }
 
-.node.fixed circle {
+.node.fixed circle.node-circle {
     fill: #bbbbbb !important;
 }
-
-.node-glyph.hidden {
-    display: none;
-}
-
-.glyph-label {
-    font-size: 10px;
-    stroke: none;
-    fill: #ebebeb;
-}
-
-.glyph-label.hidden {
-    display: none;
-}
-
-/*.node.expandable {
-    fill: #0d77e2;
-}
-
-.node.expandable circle {
-    fill: #7cbdff !important;
-}
-
-.node.expandable.fixed circle {
-}*/
 
 .node.selected circle {
     stroke: #0d77e2 !important;
@@ -170,6 +145,28 @@ path.link.selected {
 
 .node.selected .icon {
     fill: #0d77e2 !important;
+}
+
+.node-glyph.hidden {
+    display: none;
+}
+
+.node.selected circle.node-glyph {
+    fill: #0d77e2 !important;
+}
+
+.glyph-label {
+    font-size: 10px;
+    stroke: none;
+    fill: #ebebeb;
+}
+
+.glyph-label.hidden {
+    display: none;
+}
+
+.node.fixed text.glyph-label {
+    fill: #bbbbbb !important;
 }
 
 .hull, path {
@@ -240,23 +237,6 @@ path.link.selected {
     cursor: pointer;
     display: flex;
     justify-content: space-between;
-}
-
-i.fa-close {
-    left: auto;
-    font-size: 16px;
-    padding: 1px;
-}
-
-.content-entry {
-    border-bottom: 1px solid #cccccc;
-    display: flex;
-    justify-content: space-between;
-    padding: 5px;
-}
-
-.content-entry:last-child {
-    border-bottom: none;
 }
 
 .tooltip-left {
