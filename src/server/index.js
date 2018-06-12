@@ -5,7 +5,7 @@ import * as constants from "./settingsConstants.js";
 
 let api_inst = axios.create({
     baseURL: configData.backend_url,
-    timeout: 2000,
+    timeout: 10000,
     headers: {},
     withCredentials: true
 });
@@ -24,6 +24,23 @@ export async function getProject(id) {
     return response.data;
 }
 
+export async function createProject(title, description=null) {
+  const response = await api_inst.post('/projects/create', {
+    name: title,
+    description: description,
+    data: JSON.stringify({nodes: [], links: []})
+  });
+  return response.data;
+}
+
+export async function deleteProject(id) {
+  const response = await api_inst.delete('/projects/delete', {
+    params: {
+      projectid: id
+    }
+  });
+  return response.data;
+}
 
 export async function updateProject(data) {
     data.d3Data = JSON.stringify(data.d3Data);

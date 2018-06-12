@@ -1,0 +1,25 @@
+.investigation-card-title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  height: 20px;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.card-img-top {
+  max-width:250px;
+  height:200px;
+  width: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.preview-img-sm {
+  margin: 0 auto;
+  max-width:250px;
+  height:200px;
+  width: auto;
+}

@@ -12,6 +12,30 @@ export function toggleSidebar() {
 
 /* =============================================================================================  */
 
+export function createProject(title, description=null) {
+  return (dispatch) => {
+
+    server.createProject(title, description)
+      .then((data) => {
+        dispatch(getProjects());
+      })
+      .catch((error) =>  console.log(error));
+  }
+}
+
+/* =============================================================================================  */
+
+export function deleteProject(id) {
+  return (dispatch) => {
+    server.deleteProject(id)
+      .then((data) => {
+        dispatch(getProjects());
+      })
+      .catch((error) =>  console.log(error));
+  } 
+}
+/* =============================================================================================  */
+
 
 function fetchProjectDispatch(project) {
     return {
@@ -52,7 +76,23 @@ export function getProjects() {
     return (dispatch) => {
         server.getProjects()
         .then((data) => {
-            dispatch(getProjectsDispatch(data.message));
+          let projects = data.message;
+          projects.map((project, i) => {
+            let graphData;
+            try {
+                graphData = JSON.parse(project.data)
+            }
+            catch (err) {
+                graphData = null
+            }
+            projects[i] = {...projects[i], data: graphData};
+            if (projects[i].img) {
+              projects[i].preview_img = "data:image/svg+xml;charset=utf-8," + project.img;
+            } else {
+              projects[i].preview_img = "";
+            }
+          });
+          dispatch(getProjectsDispatch(projects));
         })
         .catch((err) => console.log(err.message));
     }

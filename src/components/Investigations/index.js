@@ -1,59 +1,74 @@
-import React, {Component} from "react";
-import {connect} from "react-redux";
-import {getProjects} from "../../redux/actions/projectActions";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { getProjects, deleteProject } from "../../redux/actions/projectActions";
 
-import {Link, withRouter} from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
+
+import Spaces from './Spaces';
+import Data from './Data';
+import SpacesPreview from './SpacesPreview';
+
+import InlineSVG from 'svg-inline-react';
 
 import "./style.css";
 
 class Investigations extends Component {
 
+    constructor(props) {
+      super(props);
+
+      this.state = {
+        data: [
+          { name: "OFAC SDN", favorited: true, lastUpdated: "5 min ago", dataset: "OFAC SDN List", published: true },
+          { name: "UN Sanctions", favorited: true, lastUpdated: "25 May 2018", dataset: "Open Sanctions", published: true },
+          { name: "Czech Registry", favorited: false, lastUpdated: "2 hrs ago", published: false},
+          { name: "UK Business Registry", favorited: false, lastUpdated: "5 min ago" },
+          { name: "European Parliament Vote Data", favorited: false, lastUpdated: "25 May 2018" },
+          { name: "FARA USA", favorited: false, lastUpdated: "2 hrs ago"}
+        ],
+        selectedProject: null
+      }; // this is initial data to populate the spaces preview sidebar; we will probably scrap it later
+        // as we redesign the page so it's not worth spending time on putting it in redux right now.
+    }
+
     componentDidMount() {
-        this.props.dispatch(getProjects());
+      this.props.dispatch(getProjects());
+    }
+
+    componentWillReceiveProps(nextprops) {
+      this.setState({ selectedProject: nextprops.project_list[0]});
+    }
+
+    handleSpaceClick = (project) => {
+      this.setState({ selectedProject: project })
+    }
+
+    handleSpaceDoubleClick = (project) => {
+      this.props.history.push('/build/' + project._id);
+    }
+
+    handleDelete = (project) => {
+      this.props.dispatch(deleteProject(project._id));
     }
 
     render() {
         return (
-            <div className="container y-scrollable">
-                <h2 className="investigations-page-header">My Investigations</h2>
-                {/*<p>{"All projects as JSON: " + JSON.stringify(this.state.projects)}</p>*/}
-                <div className="row investigations-grid">
-                    {this.props.project_list.map((proj) => {
-                        // let image_blob;
-                        //
-                        // if (proj.img) {
-                        //     image_blob = proj.img;
-                        // }
-                        // else {
-                        //     image_blob = "no image provided";
-                        // }
-
-                        return (
-                            <div key={proj._id} className='col-md-3'>
-                                <div className="card investigation-card">
-                                    {/* <img className="card-img-top" src={image_blob} alt={"investigation-" + proj.name1}></img>*/}
-
-                                    <div className="card-body investigation-card-body">
-                                        <h5 className="card-title investigation-card-title text-center">{proj.name}</h5>
-                                        <p className="card-text investigation-card-text">{proj.description}</p>
-                                        <div className="text-center">
-                                            <Link to={`/build/${proj._id}`}>
-                                                <button className="btn btn-primary">
-                                                    Launch Investigation
-                                                </button>
-                                            </Link>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )
-                    })}
-                </div>
+          <div className="page y-scrollable">
+            <div className="page-body col-md-8">
+              <div className="spaces">
+                <Spaces projects={this.props.project_list} 
+                  onSpaceClick={this.handleSpaceClick} 
+                  onSpaceDoubleClick={this.handleSpaceDoubleClick} 
+                  selectedProject={this.state.selectedProject}
+                />
+              </div>
+            </div>     
+            <div className="upload-data col-md-4">
+              <SpacesPreview project={this.state.selectedProject} data={this.state.data} onDelete={this.handleDelete}/>
             </div>
+          </div>
         );
     }
-
-
 }
 
 function mapDispatchToProps(dispatch) {
