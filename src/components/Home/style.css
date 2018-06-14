@@ -1,19 +1,97 @@
-.search-main {
-    margin-top: 40px;
+.home-cover {
+  position: absolute;
+/*  height: 0vh;
+  width: 92vw;
+  border-top: 92vw solid #252525;
+  border-right: 15vw solid transparent;*/
+  background-color: transparent;
+  height: 100%;
+  width: 92vw;
+  z-index: 1;
+  text-align: center;
 }
 
-.home-container {
-    margin-top: 60px;
-    text-align: center;
+.home-cover:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #252525;
+  -webkit-transform-origin: 100% 0;
+  -ms-transform-origin: 100% 0;
+  transform-origin: 100% 0;
+  -webkit-transform: skew(-4deg);
+  -ms-transform: skew(-4deg);
+  transform: skew(-4deg);
+  z-index: -1;
+  -webkit-box-shadow: 10px 0px 15px -1px rgba(0, 0, 0, 0.3);
+  box-shadow: 10px 0px 15px -1px rgba(0, 0, 0, 0.3);
 }
 
-.home-header {
-    font-size: 90px;
-    letter-spacing: 2px;
-    color: #555555
+.center {
+  position: relative;
+  top: 21.94%;
 }
 
-.home-subheader {
-    margin-top: 15px;
-    font-family: 'Courier New', Courier, monospace;
+.logo {
+  position: relative;
+  max-width: 800px;
+  width: 50%;
+}
+
+#home-search-container {
+  position: relative;
+  width: 60%;
+  max-width: 800px;
+  background: #e1e1e1;
+  margin-top: 15px;
+}
+
+#home-search-input {
+  background: #e1e1e1;
+  color: #595959;
+}
+
+#home-search-input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+  color: #9c9c9c;
+}
+
+#home-search-input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+  color: #9c9c9c;
+  opacity: 1;
+}
+
+#home-search-input::-moz-placeholder { /* Mozilla Firefox 19+ */
+  color: #9c9c9c;
+  opacity: 1;
+}
+
+#home-search-input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #9c9c9c;
+}
+
+#home-search-input::-ms-input-placeholder { /* Microsoft Edge */
+  color: #9c9c9c;
+}
+
+#home-search-input::placeholder { /* Most modern browsers support this now. */
+  color: #9c9c9c;
+}
+
+.decal-container {
+  position: absolute;
+  display: flex;
+  left: 0px;
+  bottom: -70px;
+  width: calc(92vw - 7vh);
+  overflow: hidden;
+}
+
+.decal {
+  width: 640px;
+  opacity: .5;
+  -webkit-filter: contrast(200%);  
+    filter: contrast(200%);
 }
