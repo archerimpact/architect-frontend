@@ -8,6 +8,7 @@ export const USER_LOGOUT = 'USER_LOGOUT';
 export const TOGGLE_SIDEBAR = "TOGGLE_SIDEBAR";
 export const GET_PROJECTS = "GET_PROJECTS";
 export const LOAD_PROJECT = "LOAD_PROJECT"; // Also triggers graph actions
+export const FETCH_TYPES = "FETCH_TYPES";
 
 /* ============================ GRAPH ACTIONS ============================ */
 

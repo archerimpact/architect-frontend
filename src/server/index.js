@@ -3,12 +3,20 @@ import {configData} from "../config.js";
 import axios from "axios";
 import * as constants from "./settingsConstants.js";
 
+import entityTypes from '../data/entityTypes';
+
 let api_inst = axios.create({
     baseURL: configData.backend_url,
     timeout: 2000,
     headers: {},
     withCredentials: true
 });
+
+export async function getTypes() {
+    return entityTypes;
+    // const response = await api_inst.get('/projects/entity_types');
+    // return response.data
+}
 
 export async function getProjects() {
     const response = await api_inst.get('/projects/all');
@@ -23,7 +31,6 @@ export async function getProject(id) {
     });
     return response.data;
 }
-
 
 export async function updateProject(data) {
     data.d3Data = JSON.stringify(data.d3Data);

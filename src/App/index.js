@@ -6,8 +6,6 @@ import {Redirect, Route, withRouter} from "react-router-dom";
 import PrivateRoute from "./PrivateRoute/";
 
 import NavBar from "../components/navBar/";
-
-import ModalDataUpload from "../components/modalDataUpload"
 import Login from "../components/Login/";
 import CreateAccount from "../components/CreateAccount/";
 import Home from "../components/Home/";
@@ -62,7 +60,7 @@ class App extends Component {
                 }
                 <div className={"main " + (this.state.navbarVisible ? "show-nav" : "no-nav")}>
                     <PrivateRoute exact path="/" component={Home}/>
-                    <Route path="/login" component={ModalDataUpload}/>
+                    <Route path="/login" component={Login}/>
                     <Route path="/create_account" component={CreateAccount}/>
                     <PrivateRoute path="/explore/:sidebarState?" component={Canvas}/>
                     <PrivateRoute path="/build/:investigationId/:sidebarState?/:query?" component={Canvas}/>

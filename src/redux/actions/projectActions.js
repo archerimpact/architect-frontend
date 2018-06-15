@@ -1,6 +1,31 @@
-import {GET_PROJECTS, LOAD_PROJECT, TOGGLE_SIDEBAR} from "./actionTypes";
+import {GET_PROJECTS, LOAD_PROJECT, TOGGLE_SIDEBAR, FETCH_TYPES} from "./actionTypes";
 
 import * as server from "../../server";
+
+/* =============================================================================================  */
+
+
+function fetchTypesDispatch(type_list) {
+    return {
+        type: FETCH_TYPES,
+        payload: type_list
+    };
+}
+
+export function fetchTypes() { // first check if it's already in reducer
+    return (dispatch, getState) => {
+        let state = getState();
+        if (state.project.entityTypes.length) {
+            return state.project.entityTypes;
+        } else {
+            server.getTypes()
+                .then((type_list) => {
+                    dispatch(fetchTypesDispatch(type_list));
+                })
+                .catch((error) => console.log(error));
+        }
+    }
+}
 
 /* =============================================================================================  */
 
@@ -41,10 +66,10 @@ export function fetchProject(id) {
 
 /* =============================================================================================  */
 
-function getProjectsDispatch(project_list) {
+function getProjectsDispatch(projectList) {
     return {
         type: GET_PROJECTS,
-        payload: project_list
+        payload: projectList
     };
 }
 

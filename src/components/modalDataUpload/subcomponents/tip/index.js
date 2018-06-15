@@ -1,14 +1,25 @@
 import React, { Component } from "react";
+import { Select } from 'antd';
+import {fetchTypes} from '../../../../redux/actions/projectActions';
+import {connect} from 'react-redux';
 
 import "./style.css";
 
 class Tip extends Component {
     state = {
         compact: true,
+        type: null,
         text: "",
-        emoji: ""
+        types: []
     };
 
+    componentDidMount() {
+        const { dispatch } = this.props;
+
+        dispatch(fetchTypes()).then((typeList) => {
+            this.setState({types: typeList})
+        })
+    }
 
     // for TipContainer
     componentDidUpdate(nextProps, nextState) {
@@ -19,9 +30,13 @@ class Tip extends Component {
         }
     }
 
+    handleTypeChange = (type) => {
+        this.setState({type});
+    };
+
     render() {
         const { onConfirm, onOpen } = this.props;
-        const { compact, text, emoji } = this.state;
+        const { compact, text, types } = this.state;
 
         return (
             <div className="Tip">
@@ -40,10 +55,23 @@ class Tip extends Component {
                         className="Tip__card"
                         onSubmit={event => {
                             event.preventDefault();
-                            onConfirm({ text, emoji });
+                            onConfirm({ text });
                         }}
                     >
                         <div>
+                          <Select
+                              mode="tags"
+                              style={{ width: '100%' }}
+                              placeholder="Type"
+                              onChange={this.handleTypeChange}
+                              maxTagCount={1}
+                          >
+                              {types.map((entity_type) => {
+                                  return (
+                                      <Select.Option>{entity_type}</Select.Option>
+                                  )
+                              })}
+                          </Select>
                           <textarea
                               width="100%"
                               placeholder="Your comment"
@@ -56,22 +84,6 @@ class Tip extends Component {
                                   }
                               }}
                           />
-                            <div>
-                                {["💩", "😱", "😍", "🔥", "😳", "⚠️"].map(_emoji => (
-                                    <label key={_emoji}>
-                                        <input
-                                            checked={emoji === _emoji}
-                                            type="radio"
-                                            name="emoji"
-                                            value={_emoji}
-                                            onChange={event =>
-                                                this.setState({ emoji: event.target.value })
-                                            }
-                                        />
-                                        {_emoji}
-                                    </label>
-                                ))}
-                            </div>
                         </div>
                         <div>
                             <input type="submit" value="Save" />
@@ -83,4 +95,10 @@ class Tip extends Component {
     }
 }
 
-export default Tip;
+function mapDispatchToProps(dispatch) {
+    return {
+        dispatch: dispatch,
+    };
+}
+
+export default connect(mapDispatchToProps)(Tip);

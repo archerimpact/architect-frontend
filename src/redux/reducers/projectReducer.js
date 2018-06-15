@@ -1,8 +1,10 @@
-import {GET_PROJECTS, LOAD_PROJECT, TOGGLE_SIDEBAR} from "../actions/actionTypes";
+import {GET_PROJECTS, LOAD_PROJECT, TOGGLE_SIDEBAR, FETCH_TYPES} from "../actions/actionTypes";
 
 const initialState = {
     sidebarVisible: true,
-    project_list: []
+    projectList: [],
+    currentProject: null,
+    entityTypes: []
 };
 
 export default function (state = initialState, action) {
@@ -15,7 +17,7 @@ export default function (state = initialState, action) {
         case GET_PROJECTS:
             return {
                 ...state,
-                project_list: action.payload
+                projectList: action.payload
             };
         case LOAD_PROJECT:
             return {
@@ -26,6 +28,11 @@ export default function (state = initialState, action) {
                     users: action.payload.users,
                     _id: action.payload._id,
                 }
+            };
+        case FETCH_TYPES:
+            return {
+                ...state,
+                entityTypes: action.payload
             };
         default:
             return state;

@@ -18,7 +18,7 @@ class Investigations extends Component {
                 <h2 className="investigations-page-header">My Investigations</h2>
                 {/*<p>{"All projects as JSON: " + JSON.stringify(this.state.projects)}</p>*/}
                 <div className="row investigations-grid">
-                    {this.props.project_list.map((proj) => {
+                    {this.props.projectList.map((proj) => {
                         // let image_blob;
                         //
                         // if (proj.img) {
@@ -66,7 +66,7 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
     return {
         isAuthenticated: state.user.isAuthenticated,
-        project_list: state.project.project_list
+        projectList: state.project.projectList
     };
 }
 
