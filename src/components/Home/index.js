@@ -29,14 +29,13 @@ export default class Home extends Component {
                         <img id="right-decal" className="decal" src={decal} alt="decal"></img>
                     </div>
                 </div>
-                <Canvas onMouseOver={this.toggleCoverHidden.bind(this)} />
+                <Canvas onMouseOver={this.hideCover.bind(this)} />
             </div>
         );
     }
 
-    toggleCoverHidden (e) {
-        const isHidden = this.state.isCoverHidden;
-        this.setState({ isCoverHidden: !isHidden });
-        console.log('damn')
+    hideCover (e) {
+        this.setState({ isCoverHidden: true });
+        setTimeout(function() { this.props.history.push('/explore'); }.bind(this), 1000);
     }
 }
