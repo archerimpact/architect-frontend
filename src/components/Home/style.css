@@ -1,3 +1,13 @@
+@keyframes slide-out {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+}
+
+@-webkit-keyframes slide-out {
+    0% { -webkit-transform: translateX(0%); }
+    100% { -webkit-transform: translateX(-100%); }
+}
+
 .home-cover {
   position: absolute;
 /*  height: 0vh;
@@ -28,6 +38,13 @@
   z-index: -1;
   -webkit-box-shadow: 10px 0px 15px -1px rgba(0, 0, 0, 0.3);
   box-shadow: 10px 0px 15px -1px rgba(0, 0, 0, 0.3);
+}
+
+.home-cover.hidden {
+  transform: translateX(-100%);
+    -webkit-transform: translateX(-100%);
+  animation: slide-out 0.5s forwards;
+    -webkit-animation: slide-out 0.5s forwards;
 }
 
 .center {

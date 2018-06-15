@@ -8,10 +8,17 @@ import decal from "../../images/decal-up-gradient-blue.png";
 import decalFlipped from "../../images/decal-up-gradient-blue-flipped.png";
 
 export default class Home extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isCoverHidden: false
+        };
+    }
+
     render() {
         return (
             <div className="home">
-                <div className="home-cover">
+                <div className={ this.state.isCoverHidden ? "home-cover hidden" : "home-cover" }>
                     <div className="center">
                         <img className="logo" src={logo} alt="logo"></img>
                         <DatabaseSearchBar homeSearchContainerId="home-search-container" homeSearchInputId="home-search-input" showSettings={false}/>
@@ -22,8 +29,14 @@ export default class Home extends Component {
                         <img id="right-decal" className="decal" src={decal} alt="decal"></img>
                     </div>
                 </div>
-                <Canvas />
+                <Canvas onMouseOver={this.toggleCoverHidden.bind(this)} />
             </div>
         );
+    }
+
+    toggleCoverHidden (e) {
+        const isHidden = this.state.isCoverHidden;
+        this.setState({ isCoverHidden: !isHidden });
+        console.log('damn')
     }
 }
