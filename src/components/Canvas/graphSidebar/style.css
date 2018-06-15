@@ -15,6 +15,10 @@
     height: 100%;
 }
 
+.sidebar.hidden {
+    display: none;
+}
+
 .tabs {
     width: 30px;
     margin-top: auto;

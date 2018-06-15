@@ -10,10 +10,6 @@
 
 .home-cover {
   position: absolute;
-/*  height: 0vh;
-  width: 92vw;
-  border-top: 92vw solid #252525;
-  border-right: 15vw solid transparent;*/
   background-color: transparent;
   height: 100%;
   width: 92vw;
@@ -49,21 +45,21 @@
 
 .center {
   position: relative;
-  top: 21.94%;
+  top: 25.94%;
 }
 
 .logo {
   position: relative;
-  max-width: 800px;
+  max-width: 650px;
   width: 50%;
 }
 
 #home-search-container {
   position: relative;
   width: 60%;
-  max-width: 800px;
+  max-width: 750px;
   background: #e1e1e1;
-  margin-top: 15px;
+  margin-top: 25px;
 }
 
 #home-search-input {

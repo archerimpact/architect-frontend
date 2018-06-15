@@ -29,7 +29,7 @@ export default class Home extends Component {
                         <img id="right-decal" className="decal" src={decal} alt="decal"></img>
                     </div>
                 </div>
-                <Canvas onMouseOver={this.hideCover.bind(this)} />
+                <Canvas isCovered={!this.state.isCoverHidden} onMouseOver={this.hideCover.bind(this)} />
             </div>
         );
     }

@@ -57,7 +57,7 @@ class SearchBar extends Component {
                                    className="search-input"
                                    ref="query"
                                    type="text"
-                                   placeholder="Search our connected data..."
+                                   placeholder="Search across 500+ connected public datasets..."
                             />
                         </form>
                         <i id="search-icon" className="searchbar-icon mr-auto material-icons"
