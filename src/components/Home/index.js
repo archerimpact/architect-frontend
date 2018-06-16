@@ -20,7 +20,7 @@ export default class Home extends Component {
         return (
             <div className="home">
                 <div className={ this.state.isCoverHidden ? "home-cover hidden" : "home-cover" }>
-                    <nav className="transparent-navbar">
+                    <nav className="transparent-navbar unselectable">
                         <div className="nav-item-container">
                             <NavLink className="nav-item" to="/wiki">
                                 <span className="nav-text">WIKI</span>
@@ -36,7 +36,7 @@ export default class Home extends Component {
                             </NavLink>
                         </div>
                     </nav>
-                    <div className="center">
+                    <div className="center unselectable">
                         <img className="logo" src={logo} alt="logo"></img>
                         <DatabaseSearchBar homeSearchContainerId="home-search-container" homeSearchInputId="home-search-input" showSettings={false}/>
                     </div>
