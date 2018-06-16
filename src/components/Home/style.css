@@ -74,14 +74,23 @@ nav.transparent-navbar {
   text-align: center;
 }
 
+.nav-item:hover .nav-text {
+  color: #cccccc;
+}
+
+.nav-item:active .nav-text {
+  color: #aaaaaa;
+}
+
 #nav-item-login {
   background: #0d77e2;
   margin-left: 10px;
   width: 115px;
+  /*outline: 2px dashed white;*/
 }
 
 #nav-item-login:before { 
-  background-image: linear-gradient(to bottom, rgba(255, 255, 255, .7) 0%, rgba(13, 119, 226, .6) 25%, rgba(13, 119, 226, 1) 100%);
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, .7) 0%, rgba(13, 119, 226, .6) 36%, rgba(13, 119, 226, 1) 100%);
   position: absolute;
   content: "";
   left: 0;
@@ -101,8 +110,8 @@ nav.transparent-navbar {
   border-top: 25px solid #0d77e2;
   bottom: -25px;
   left: 0px;
-  /*-webkit-box-shadow: 10px 0px 15px -1px rgba(0, 0, 0, 0.3);
-  box-shadow: 10px 10px 15px -1px rgba(0, 0, 0, 0.3);*/
+    /*-webkit-filter: drop-shadow(1px 1px 1px rgba(0,0,0,1));*/
+  filter: drop-shadow(2px 4.5px 2px rgba(0,0,0,1));
 }
 
 .nav-text {

@@ -40,9 +40,6 @@ export default class Home extends Component {
                         <img className="logo" src={logo} alt="logo"></img>
                         <DatabaseSearchBar homeSearchContainerId="home-search-container" homeSearchInputId="home-search-input" showSettings={false}/>
                     </div>
-                    <div className="decal-container">
-               
-                    </div>
                 </div>
                 <Canvas isCovered={!this.state.isCoverHidden} onMouseOver={this.hideCover.bind(this)} />
             </div>
@@ -51,6 +48,6 @@ export default class Home extends Component {
 
     hideCover (e) {
         this.setState({ isCoverHidden: true });
-        setTimeout(function() { this.props.history.push('/explore'); }.bind(this), 1000);
+        setTimeout(function() { this.props.history.push('/explore'); }.bind(this), 500);
     }
 }
