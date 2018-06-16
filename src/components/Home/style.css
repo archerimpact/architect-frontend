@@ -8,11 +8,15 @@
     100% { -webkit-transform: translateX(-100%); }
 }
 
+a:active, a:hover {
+  text-decoration: none;
+}
+
 .home-cover {
   position: absolute;
   background-color: transparent;
   height: 100%;
-  width: 92vw;
+  width: 93vw;
   z-index: 1;
   text-align: center;
 }
@@ -24,16 +28,18 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: #252525;
   -webkit-transform-origin: 100% 0;
   -ms-transform-origin: 100% 0;
   transform-origin: 100% 0;
-  -webkit-transform: skew(-4deg);
-  -ms-transform: skew(-4deg);
-  transform: skew(-4deg);
+  -webkit-transform: skew(-5deg);
+  -ms-transform: skew(-5deg);
+  transform: skew(-5deg);
   z-index: -1;
   -webkit-box-shadow: 10px 0px 15px -1px rgba(0, 0, 0, 0.3);
   box-shadow: 10px 0px 15px -1px rgba(0, 0, 0, 0.3);
+  /* Background pattern from Toptal Subtle Patterns */
+  background-image: url('../../images/padded-light.png');
+  background-repeat: repeat;
 }
 
 .home-cover.hidden {
@@ -43,9 +49,75 @@
     -webkit-animation: slide-out 0.5s forwards;
 }
 
+nav.transparent-navbar {
+  width: 100%;
+  height: 10%;
+  max-height: 80px;
+  background: transparent;
+}
+
+.nav-item-container {
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 75px;
+}
+
+.nav-item {
+  position: relative;
+  height: 100%;
+  margin: auto 5px;
+  padding: 0px 12px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+#nav-item-login {
+  background: #0d77e2;
+  margin-left: 10px;
+  width: 115px;
+}
+
+#nav-item-login:before { 
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, .7) 0%, rgba(13, 119, 226, .6) 25%, rgba(13, 119, 226, 1) 100%);
+  position: absolute;
+  content: "";
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 20%;
+  top: 0;
+}
+
+#nav-item-login:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 57.5px solid transparent;
+  border-right: 57.5px solid transparent;
+  border-top: 25px solid #0d77e2;
+  bottom: -25px;
+  left: 0px;
+  /*-webkit-box-shadow: 10px 0px 15px -1px rgba(0, 0, 0, 0.3);
+  box-shadow: 10px 10px 15px -1px rgba(0, 0, 0, 0.3);*/
+}
+
+.nav-text {
+  font-size: 1.5em;
+  color: #e1e1e1;
+  margin: 0 auto;
+  letter-spacing: 2.5px;
+  font-size: 22px;
+  font-family: Calibri;
+  font-weight: bold;
+}
+
 .center {
   position: relative;
-  top: 25.94%;
+  top: 16.94%;
 }
 
 .logo {
@@ -59,7 +131,7 @@
   width: 60%;
   max-width: 750px;
   background: #e1e1e1;
-  margin-top: 25px;
+  margin-top: 40px;
 }
 
 #home-search-input {
@@ -98,7 +170,7 @@
   display: flex;
   left: 0px;
   bottom: -70px;
-  width: calc(92vw - 7vh);
+  width: calc(93vw - 12.25vh);
   overflow: hidden;
 }
 

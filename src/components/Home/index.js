@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import DatabaseSearchBar from "../databaseSearchBar";
 import Canvas from "../Canvas";
+import {Link, NavLink, withRouter} from "react-router-dom";
 
 import "./style.css";
 import logo from "../../images/architect-logo-light-transparent-cropped.png";
@@ -19,14 +20,28 @@ export default class Home extends Component {
         return (
             <div className="home">
                 <div className={ this.state.isCoverHidden ? "home-cover hidden" : "home-cover" }>
+                    <nav className="transparent-navbar">
+                        <div className="nav-item-container">
+                            <NavLink className="nav-item" to="/wiki">
+                                <span className="nav-text">WIKI</span>
+                            </NavLink>
+                            <NavLink className="nav-item" to="/applications">
+                                <span className="nav-text">EXAMPLES</span>
+                            </NavLink>
+                            <NavLink className="nav-item" to="/about">
+                                <span className="nav-text">ABOUT</span>
+                            </NavLink>
+                            <NavLink id="nav-item-login" className="nav-item" to="/login">
+                                <span className="nav-text">LOGIN</span>
+                            </NavLink>
+                        </div>
+                    </nav>
                     <div className="center">
                         <img className="logo" src={logo} alt="logo"></img>
                         <DatabaseSearchBar homeSearchContainerId="home-search-container" homeSearchInputId="home-search-input" showSettings={false}/>
                     </div>
                     <div className="decal-container">
-                        <img className="decal" src={decal} alt="decal"></img>
-                        <img id="right-decal" className="decal" src={decalFlipped} alt="decal"></img>
-                        <img id="right-decal" className="decal" src={decal} alt="decal"></img>
+               
                     </div>
                 </div>
                 <Canvas isCovered={!this.state.isCoverHidden} onMouseOver={this.hideCover.bind(this)} />
