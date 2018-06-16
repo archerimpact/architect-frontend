@@ -2,7 +2,7 @@ import {GET_PROJECTS, LOAD_PROJECT, TOGGLE_SIDEBAR} from "../actions/actionTypes
 
 const initialState = {
     sidebarVisible: true,
-    project_list: []
+    project_list: [],
 };
 
 export default function (state = initialState, action) {

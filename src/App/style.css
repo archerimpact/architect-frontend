@@ -1,34 +1,36 @@
 @import url('https://fonts.googleapis.com/css?family=Open Sans');
 
 body {
-    font-family: 'Open Sans', sans-serif;
-    color: #1a1a1a;
+	font-family: 'Open Sans', sans-serif;
+  color: #1a1a1a;
+  overflow-y: auto;
 }
 
 .main {
-    margin-left: 0px;
-    width: calc(100%);
-    position: absolute;
+  height: 100%;
+  margin-left: 0px;
 }
 
 .y-scrollable {
-    overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .show-nav {
-    height: calc(100% - 46px);
+  height: calc(100% - 46px);
 }
 
 .no-nav {
-    height: 100%;
+  height: 100%;
 }
 
 a {
-    color: #4f4844;
-    /*color: #f48942;*/
+  color: #4f4844;
 }
 
 a:hover {
-    color: #222;
-    text-decoration: underline;
+  color: #0D77E2;
+}
+
+a:link {
+  text-decoration: none;
 }
