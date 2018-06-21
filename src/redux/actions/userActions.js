@@ -11,13 +11,13 @@ function userLogInDispatch() {
 export function userLogIn(username, password) {
     return function (dispatch) {
         return authenticateAccount({username, password})
-        .then(res => {
+        .then((res) => {
             dispatch(userLogInDispatch());
-            return res
+            return res;
         })
-        .catch(err => {
+        .catch((err) => {
             console.log(err);
-            return err
+            return err;
         });
     };
 }
@@ -34,10 +34,10 @@ function userLogOutDispatch() {
 export function userLogOut() {
     return function (dispatch) {
         return logoutAccount()
-        .then(res => {
+        .then((res) => {
             dispatch(userLogOutDispatch());
         })
-        .catch(err => {
+        .catch((err) => {
             console.log(err);
         });
     };

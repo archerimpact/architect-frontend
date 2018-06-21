@@ -93,6 +93,7 @@ function fetchSearchResultsDispatch(data) {
 
 export function fetchSearchResults(query) {
     return (dispatch) => {
+        return;
         server.searchBackendText(query)
         .then((data) => {
             dispatch(fetchSearchResultsDispatch(data.hits.hits));
@@ -112,6 +113,7 @@ function fetchEntityDispatch(entity) {
 
 export function fetchEntity(id) {
     return (dispatch) => {
+        return;
         server.getNode(id)
         .then(data => {
             dispatch(fetchEntityDispatch(data))

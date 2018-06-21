@@ -20,21 +20,26 @@ export const registerAccount = async (dataObj) => {
 };
 
 export const authenticateAccount = async (dataObj) => {
+    if (true) return {success: true};
+
     let payload = {
         "username": dataObj.username,
         "password": dataObj.password
     };
+
     let responseData = await api_inst.post("/auth/login", payload);
-    console.log(responseData);
+    console.log('response data', responseData);
     return responseData.data;
 };
 
 export const isAuthenticated = async () => {
+    if (true) { return true; }
     let responseData = await api_inst.get('/auth/verify')
     return responseData.data.success;
 };
 
 export function isAuthedBool() {
+    if (true) { return true; }
     isAuthenticated().then(function (response) {
         return response.data.success;
     }).catch(function (err) {

@@ -1,6 +1,9 @@
 import {GET_PROJECTS, LOAD_PROJECT, TOGGLE_SIDEBAR} from "./actionTypes";
 
 import * as server from "../../server";
+import * as d3 from "d3";
+
+import offlineData from "../../data/well_connected_3.json";
 
 /* =============================================================================================  */
 
@@ -46,14 +49,27 @@ function fetchProjectDispatch(project) {
 
 export function fetchProject(id) {
     return (dispatch) => {
+      let graphData;
+                // d3.json(offlineData, function(json) {
+                //     graphData = json;
+                // });
+        console.log(offlineData)
+      offlineData.centerid = 18210;
+      console.log('jEllo', offlineData)
+      let proj = {image: null, id: id, data: offlineData, centerid: 18210};
+      dispatch(fetchProjectDispatch(proj));
+
+    }
+    return (dispatch) => {
         server.getProject(id)
         .then((data) => {
             let graphData;
             try {
-                graphData = JSON.parse(data.message.data)
+
+                graphData = JSON.parse(true ? data.data : data.message.data);
             }
             catch (err) {
-                graphData = null
+                graphData = null;
             }
             let proj = {...data.message, data: graphData};
 
@@ -76,6 +92,7 @@ export function getProjects() {
     return (dispatch) => {
         server.getProjects()
         .then((data) => {
+          return;
           let projects = data.message;
           projects.map((project, i) => {
             let graphData;
