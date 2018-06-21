@@ -38,7 +38,7 @@ a:active, a:hover {
   -webkit-box-shadow: 10px 0px 15px -1px rgba(0, 0, 0, 0.3);
   box-shadow: 10px 0px 15px -1px rgba(0, 0, 0, 0.3);
   /* Background pattern from Toptal Subtle Patterns */
-  background-image: url('../../images/padded-light.png');
+  background-image: url('../../images/nami.png');
   background-repeat: repeat;
 }
 
@@ -125,7 +125,7 @@ nav.transparent-navbar {
 
 .center {
   position: relative;
-  top: 16.94%;
+  top: 18.94%;
 }
 
 .logo {

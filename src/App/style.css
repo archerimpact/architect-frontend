@@ -3,7 +3,7 @@
 body {
 	font-family: 'Open Sans', sans-serif;
   color: #1a1a1a;
-  overflow-y: hidden;
+  overflow: hidden;
 }
 
 .main {
