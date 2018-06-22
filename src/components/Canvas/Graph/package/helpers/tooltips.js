@@ -36,7 +36,7 @@ export function moveTooltip(d) {
     const xPos = d.x * this.zoomScale + this.zoomTranslate[0] + offset;
     const yPos = d.y * this.zoomScale + this.zoomTranslate[1] + offset;
     $('#node-tooltip').css('left', `${xPos}px`)
-    .css('top', `${yPos}px`);
+        .css('top', `${yPos}px`);
 }
 
 export function hideTooltip() {

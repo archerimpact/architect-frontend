@@ -15,15 +15,15 @@ export function brushing() {
     if (isRightClick()) {
         const extent = this.brush.extent();
         this.svg.selectAll('.node')
-        .classed('selected', function (d) {
-            const xPos = self.brushX.invert(d.x * self.zoomScale + self.zoomTranslate[0]);
-            const yPos = self.brushY.invert(d.y * self.zoomScale + self.zoomTranslate[1]);
-            const selected = (extent[0][0] <= xPos && xPos <= extent[1][0]
-                && extent[0][1] <= yPos && yPos <= extent[1][1])
-                || (this.classList.contains('selected') && d3.event.sourceEvent.ctrlKey);
-            self.nodeSelection[d.index] = selected;
-            return selected;
-        });
+            .classed('selected', function (d) {
+                const xPos = self.brushX.invert(d.x * self.zoomScale + self.zoomTranslate[0]);
+                const yPos = self.brushY.invert(d.y * self.zoomScale + self.zoomTranslate[1]);
+                const selected = (extent[0][0] <= xPos && xPos <= extent[1][0]
+                    && extent[0][1] <= yPos && yPos <= extent[1][1])
+                    || (this.classList.contains('selected') && d3.event.sourceEvent.ctrlKey);
+                self.nodeSelection[d.index] = selected;
+                return selected;
+            });
 
         this.highlightLinksFromAllNodes();
     }
@@ -46,23 +46,12 @@ export function clicked(d, self, i) {
 }
 
 export function rightclicked(node, d) {
-    // const fixed = node.attr('dragfix') === 'true';
-    // const selected = !(node.attr('dragselect') === 'true');
-    // node.classed('fixed', d.fixed = fixed)
-    //   .classed('selected', this.nodeSelection[d.index] = selected);
-    // this.highlightLinksFromNode(node[0]);
     this.force.resume();
 }
 
 export function dblclicked(d) {
-    if (isGroup(d)) {
-        this.toggleGroupView(d.id);
-    }
-
-    if (utils.isExpandable(d)) {
-        this.expandNodeFromData(d);
-    }
-
+    if (isGroup(d)) { this.toggleGroupView(d.id); }
+    if (utils.isExpandable(d)) { this.expandNodeFromData(d); }
     d3.event.stopPropagation();
 }
 
@@ -78,17 +67,17 @@ export function dragstart(d, self) {
     this.displayNodeInfo(d);
     const node = d3.select(self);
     node
-    .attr('dragfix', node.classed('fixed'))
-    .attr('dragselect', node.classed('selected'))
-    .attr('dragdistance', 0);
+        .attr('dragfix', node.classed('fixed'))
+        .attr('dragselect', node.classed('selected'))
+        .attr('dragdistance', 0);
 }
 
 export function dragging(d, self) {
     const node = d3.select(self);
     node
-    .attr('cx', d.px = d.x = d3.event.x)
-    .attr('cy', d.py = d.y = d3.event.y)
-    .attr('dragdistance', parseInt(node.attr('dragdistance'), 10) + 1);
+        .attr('cx', d.px = d.x = d3.event.x)
+        .attr('cy', d.py = d.y = d3.event.y)
+        .attr('dragdistance', parseInt(node.attr('dragdistance'), 10) + 1);
 }
 
 export function dragend(d, self) {
@@ -112,26 +101,19 @@ export function mousedown(d, self) {
     d3.event.stopPropagation();
     // Disable drag for right clicks (all drag disabled in edit mode)
     if (!isLeftClick() && !this.editMode) {
-        if (!this.dragCallback) {
-            this.dragCallback = this.node.property('__onmousedown.drag')['_']
-        }
-        ;
+        if (!this.dragCallback) { this.dragCallback = this.node.property('__onmousedown.drag')['_']; }
         this.node.on('mousedown.drag', null);
     }
 
-    if (isLeftClick()) {
-        this.link.call(this.styleLink, false);
-    }
+    this.dragDistance = 0;
+    if (isLeftClick()) { this.link.call(this.styleLink, false); }
     if (this.editMode) {
         this.mousedownNode = d;
-    }
-    this.dragDistance = 0;
-    if (this.editMode) {
         this.dragLink
-        .attr('tx1', d.x)
-        .attr('ty1', d.y)
-        .attr('tx2', d.x)
-        .attr('ty2', d.y);
+            .attr('tx1', d.x)
+            .attr('ty1', d.y)
+            .attr('tx2', d.x)
+            .attr('ty2', d.y);
     }
 }
 
@@ -141,7 +123,7 @@ export function mouseup(d, self) {
     if (this.editMode && this.mousedownNode && d !== this.mousedownNode) {
         const currNode = d3.select(self);
         currNode.select('circle')
-        .attr('transform', '');
+            .attr('transform', '');
 
         const source = d,
             target = this.mousedownNode,
@@ -154,10 +136,8 @@ export function mouseup(d, self) {
             // If link exists in opposite direction, make it bidirectional and select it
             const currLink = findEntryById(this.links, bwdLinkId);
             currLink.bidirectional = true;
-            this.link.filter((o) => {
-                return o.id === bwdLinkId;
-            })
-            .call(this.styleLink, true);
+            this.link.filter((o) => { return o.id === bwdLinkId; })
+                .call(this.styleLink, true);
         } else {
             // If link doesn't exist, create and select it
             this.addLink(source, target);
@@ -173,7 +153,7 @@ export function mouseover(d, self) {
     if (this.editMode && this.mousedownNode) {
         if (d !== this.mousedownNode) {
             d3.select(self).select('circle')
-            .attr('transform', 'scale(1.1)');
+                .attr('transform', 'scale(1.1)');
         } else {
             this.dragLink.style('visibility', 'hidden');
         }
@@ -192,9 +172,9 @@ export function mouseover(d, self) {
         // Text elongation
         if (this.printFull === 0) {
             d3.select(self)
-            .select('.node-name')
-            .text(utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull), 2)
-            .call(this.wrapNodeText, 2);
+                .select('.node-name')
+                .text(utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull), 2)
+                .call(this.wrapNodeText, 2);
         }
     }
 
@@ -209,7 +189,7 @@ export function mouseout(d, self) {
     // Reduce size of focused node
     if (this.editMode && this.mousedownNode && d !== this.mousedownNode) {
         d3.select(self).select('circle')
-        .attr('transform', '');
+            .attr('transform', '');
     }
 
     // Show drag link
@@ -262,9 +242,9 @@ export function mousemoveCanvas(self) {
         // const currNode = this.node.filter(function(o) { return classThis.mousedownNode.id === o.id; });
         this.dragDistance++;
         this.dragLink
-        .style('visibility', 'visible')
-        .attr('tx2', e.x)
-        .attr('ty2', e.y);
+            .style('visibility', 'visible')
+            .attr('tx2', e.x)
+            .attr('ty2', e.y);
     }
 }
 
@@ -355,8 +335,8 @@ export function zoomButton(zoom_in) {
               interpolate_trans = d3.interpolate(translate, [x, y]);
         return function (t) {
             self.zoom
-            .scale(interpolate_scale(t))
-            .translate(interpolate_trans(t));
+                .scale(interpolate_scale(t))
+                .translate(interpolate_trans(t));
             self.zoomTranslate = self.zoom.translate();
             self.zoomScale = self.zoom.scale();
             self.manualZoom();
@@ -386,7 +366,7 @@ export function translateGraphAroundNode(d) {
         let interpolateTranslate = d3.interpolate(translate, [x, y]);
         return function (t) {
             self.zoom
-            .translate(interpolateTranslate(t));
+                .translate(interpolateTranslate(t));
             self.zoomTranslate = self.zoom.translate();
             self.zoomScale = self.zoom.scale();
             self.manualZoom();
@@ -400,8 +380,8 @@ export function translateGraphAroundId(id) {
     // Center each vector, stretch, then put back
     let d;
     this.node.classed("selected", false)
-    .filter(node => node.id)
-    .classed("selected", true);
+        .filter(node => node.id)
+        .classed("selected", true);
     if (d === null) {
         return;
     }
@@ -414,10 +394,7 @@ export function translateGraphAroundId(id) {
     // const centerY = this.center[1];
     let x = utils.getNewCoord(d.x, this.zoomTranslate[0], this.zoomScale);
     let y = utils.getNewCoord(d.y, this.zoomTranslate[1], this.zoomScale);
-    // let x = d.x;
-    // let y = d.y;
 
-    console.log("centerX: ", centerX, " centerY: ", centerY, " d.x: ", x, " d.y: ", y);
     x = centerX > x ? (centerX - x) : (x - centerX);
     y = centerY > y ? (centerY - y) : (y - centerY);
 
@@ -434,7 +411,7 @@ export function translateGraphAroundId(id) {
         const interpolateTranslate = d3.interpolate(translate, [x, y]);
         return function (t) {
             self.zoom
-            .translate(interpolateTranslate(t));
+                .translate(interpolateTranslate(t));
             self.zoomTranslate = self.zoom.translate();
             self.zoomScale = self.zoom.scale();
             self.manualZoom();
@@ -453,7 +430,7 @@ export function manualZoom() {
 
 export function disableZoom() {
     this.svg.on("mousedown.zoom", null)
-    .on("touchstart.zoom", null)
-    .on("touchmove.zoom", null)
-    .on("touchend.zoom", null);
+        .on("touchstart.zoom", null)
+        .on("touchmove.zoom", null)
+        .on("touchend.zoom", null);
 }

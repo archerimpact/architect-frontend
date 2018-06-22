@@ -72,6 +72,7 @@ export function addToGraphFromId(graph, id) {
             console.log("data", data);
             graph.addData(data.centerid, makeDeepCopy(data.nodes), makeDeepCopy(data.links));
             console.log("graph", graph)
+            graph.update();
             dispatch(saveCurrentProjectData(graph))
             // dispatch(updateGraphDispatch(data)); // right here change to saveCurrentProjectData
         })

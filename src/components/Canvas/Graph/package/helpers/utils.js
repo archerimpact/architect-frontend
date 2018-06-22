@@ -4,27 +4,13 @@ import {BELONGS_TO, DISPLAYED, GROUP_MEMBER, HIDDEN, NONEXISTENT} from "./matrix
 import {GROUP, GROUP_HULL} from "./constants.js";
 
 export function isMorePreferredState(val1, val2) {
-    if (val1 === GROUP_MEMBER) {
-        return false;
-    }
-    else if (val2 === GROUP_MEMBER) {
-        return false;
-    }
-    else if (val1 === BELONGS_TO) {
-        return true;
-    }
-    else if (val2 === BELONGS_TO) {
-        return false;
-    }
-    else if (val1 === DISPLAYED) {
-        return true;
-    }
-    else if (val2 === DISPLAYED) {
-        return false;
-    }
-    else if (val1 === HIDDEN) {
-        return true;
-    }
+    if (val1 === GROUP_MEMBER) { return false; }
+    else if (val2 === GROUP_MEMBER) { return false; }
+    else if (val1 === BELONGS_TO) { return true; }
+    else if (val2 === BELONGS_TO) { return false; }
+    else if (val1 === DISPLAYED) { return true; }
+    else if (val2 === DISPLAYED) { return false; }
+    else if (val1 === HIDDEN) { return true; }
 }
 
 export function isPossibleLink(val) {
@@ -44,14 +30,23 @@ export function getNewCoord(x, translate, scale) {
 }
 
 export function isExpandable(d) {
+    if (!d.totalLinks || !d.weight) return false;
+    if (!d.linkTypes) return d.totalLinks > d.weight;
+
     let links = d.totalLinks;
-    if (d.totalLinks && d.linkTypes) {
-        links = d.linkTypes.AKA ? links - d.linkTypes.AKA : links;
-        links = d.linkTypes.SANCTIONED_ON ? links - d.linkTypes.SANCTIONED_ON : links;
-        links = d.linkTypes.HAS_KNOWN_LOCATION ? links - d.linkTypes.HAS_KNOWN_LOCATION : links;
-        // links = d.linkTypes.HAS_ID_DOC ? links - d.linkTypes.HAS_ID_DOC : links;
-    }
+    links = d.linkTypes.AKA ? links - d.linkTypes.AKA : links;
+    links = d.linkTypes.SANCTIONED_ON ? links - d.linkTypes.SANCTIONED_ON : links;
+    links = d.linkTypes.HAS_KNOWN_LOCATION ? links - d.linkTypes.HAS_KNOWN_LOCATION : links;
     return (links > d.weight);
+}
+
+export function getNumLinksToExpand(d) {
+    if (!isExpandable(d)) return 0;
+    return Math.max(d.totalLinks 
+        - (d.linkTypes.AKA ? d.linkTypes.AKA : 0) 
+        - (d.linkTypes.SANCTIONED_ON ? d.linkTypes.SANCTIONED_ON : 0) 
+        - (d.linkTypes.HAS_KNOWN_LOCATION ? d.linkTypes.HAS_KNOWN_LOCATION : 0) 
+        - d.weight, 0);
 }
 
 export function addRowColumn(matrix) {
@@ -63,13 +58,15 @@ export function addRowColumn(matrix) {
     for (let i = 0; i < matrix.length; i++) {
         matrix[matrix.length - 1][i] = {state: NONEXISTENT, data: null};
     }
-    return matrix
+
+    return matrix;
 }
 
 export function removeColumn(matrix, index) {
     for (let i = 0; i < matrix.length; i++) {
         matrix[i].splice(index, 1);
     }
+
     matrix.splice(index, 1);
 }
 // =================
@@ -104,25 +101,21 @@ export function createSVGImage(targetSVG, x1, x2, y1, y2, width = null, height =
     const svgString = createSVGString(targetSVG, x1, x2, y1, y2, width, height);
     const blob = new Blob([svgString], {type: 'image/svg+xml'});
     const url = URL.createObjectURL(blob);
-
     return url;
 }
 
 export function createSVGString(targetSVG, x1, x2, y1, y2, width = null, height = null) {
     let svgClone = targetSVG.cloneNode(true);
+    if (!width) { width = Math.abs(x2 - x1); }
+    if (!height) { height = Math.abs(y2 - y1); }
 
-    if (!width) {
-        width = Math.abs(x2 - x1);
-    }
-    if (!height) {
-        height = Math.abs(y2 - y1);
-    }
     svgClone.setAttribute('viewBox', `${x1} ${y1} ${width} ${height}`);
 
     Array.from(svgClone.childNodes).forEach((e) => {
         if (e.classList[0] !== "graph-items") {
             svgClone.removeChild(e);
         }
+
         Array.from(e.childNodes).forEach((e) => {
             if (e.classList[0] === "svg-grid") {
                 e.parentNode.removeChild(e);
@@ -196,12 +189,8 @@ export function findEntryById(dictList, id) {
 // Normalize node text to same casing conventions and length
 // printFull states - 0: abbrev, 1: none, 2: full
 export function processNodeName(str, printFull) {
-    if (!str) {
-        return 'Document';
-    }
-    if (printFull === 1) {
-        return '';
-    }
+    if (!str) { return 'Document'; }
+    if (printFull === 1) { return ''; }
 
     const delims = [' ', '.', '('];
     for (let i = 0; i < delims.length; i++) {
@@ -237,28 +226,18 @@ export function getD3Event() {
 // Execute callback after transition has completed for EVERY element in a selection
 export function then(transition, callback) {
     if (typeof callback !== "function") throw new Error("Invalid callback in then");
-    if (transition.size() === 0) {
-        callback();
-    }
+    if (transition.size() === 0) { callback(); }
     let n = 0;
     transition
-    .each(function () {
-        ++n;
-    })
-    .each("end", function () {
-        if (!--n) callback.apply(this, arguments);
-    });
+        .each(function () { ++n; })
+        .each("end", function () { if (!--n) callback.apply(this, arguments); });
 }
 
 export function atan2(y, x) {
     const a = Math.min(Math.abs(x), Math.abs(y)) / Math.max(Math.abs(x), Math.abs(y));
     const s = a * a;
     let r = ((-0.0464964749 * s + 0.15931422) * s - 0.327622764) * s * a + a;
-    if (Math.abs(y) > Math.abs(x)) {
-        r = 1.57079637 - r;
-    }
-    if (x < 0) {
-        r = Math.PI - r;
-    }
+    if (Math.abs(y) > Math.abs(x)) { r = 1.57079637 - r; }
+    if (x < 0) { r = Math.PI - r; }
     return ((y < 0) ? -r : r) * 180 / Math.PI;
 }
