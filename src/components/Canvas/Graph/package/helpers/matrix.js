@@ -36,7 +36,7 @@ export function setMatrix(nodes, links, byIndex = false) {
             links[i].target = target = this.idToIndex[links[i].target];
         }
 
-        if (source === undefined || target === undefined) continue; //TODO: hack
+        if (source === undefined || target === undefined) continue; //TODO: offline mode hack
         this.adjacencyMatrix[source][target] = {state: DISPLAYED, data: links[i]};
     }
 }

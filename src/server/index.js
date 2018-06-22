@@ -16,14 +16,11 @@ export async function getProjects() {
 }
 
 export async function getProject(id) {
-    return;
-
     const response = await api_inst.get('/projects/get', {
         params: {
             projectid: id
         }
     });
-
     return response.data;
 }
 
