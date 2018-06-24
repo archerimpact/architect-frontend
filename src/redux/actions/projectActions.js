@@ -1,8 +1,6 @@
 import {GET_PROJECTS, LOAD_PROJECT, TOGGLE_SIDEBAR, OFFLINE_ACTIONS} from "./actionTypes";
 
 import * as server from "../../server";
-import * as d3 from "d3";
-
 import offlineData from "../../data/well_connected_3.json";
 
 /* =============================================================================================  */
@@ -83,17 +81,18 @@ function getProjectsDispatch(project_list) {
 export function getProjects() {
     return (dispatch) => {
       // TODO: figure out getProjects response format and create OFFLINE_ACTIONS equivalent
+      // TODO: modifying projects inside map?
       server.getProjects()
         .then((data) => {
           let projects = data.message;
           projects.map((project, i) => {
             let graphData;
             try {
-              graphData = JSON.parse(project.data)
+              graphData = JSON.parse(project.data);
+            } catch (err) {
+              graphData = null;
             }
-            catch (err) {
-              graphData = null
-            }
+
             projects[i] = {...projects[i], data: graphData};
             if (projects[i].img) {
               projects[i].preview_img = "data:image/svg+xml;charset=utf-8," + project.img;
@@ -101,6 +100,7 @@ export function getProjects() {
               projects[i].preview_img = "";
             }
           });
+
           dispatch(getProjectsDispatch(projects));
         })
         .catch((err) => console.log(err.message));
