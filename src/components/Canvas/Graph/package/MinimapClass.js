@@ -115,10 +115,10 @@ class Minimap {
 
         this.clip = this.container.append('clipPath')
                 .attr('id', 'minimap-select');
-                
+
         this.box = this.clip.append('rect')
-                .attr('width', this.width)
-                .attr('height', this.height)
+                .attr('width', this.boxWidth)
+                .attr('height', this.boxHeight)
                 .attr('x', 0)
                 .attr('y', 0);
 
@@ -223,7 +223,6 @@ class Minimap {
 
         this.box
             .attr('transform', 'translate(' + translate + ')scale(' + 1 + ')')
-            .select('#minimap-selection')
             .attr('width', this.boxWidth / this.scale > this.width ? this.width : this.boxWidth / this.scale)
             .attr('height', this.boxHeight / this.scale > this.height ? this.height : this.boxHeight / this.scale);
     }
@@ -291,7 +290,6 @@ class Minimap {
 
         const initialTranslate = [Math.max(0, Math.min(DEFAULT_MINIMAP_SIZE - this.boxWidth, this.boxX)), Math.max(0, Math.min(DEFAULT_MINIMAP_SIZE - this.boxHeight, this.boxY))]
         this.box
-            .select('#minimap-selection')
             .attr('transform', 'translate(' + initialTranslate + ')scale(' + 1 + ')')
             .attr('width', this.boxWidth)
             .attr('height', this.boxHeight);

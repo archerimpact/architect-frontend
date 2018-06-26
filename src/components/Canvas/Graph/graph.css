@@ -277,6 +277,10 @@ path.link.selected {
     opacity: 0.4;
 }
 
+#minimap-select {
+    cursor: move;
+}
+
 /*#minimap-selection {
     fill: #b1b1b1;
     stroke: #545454;
