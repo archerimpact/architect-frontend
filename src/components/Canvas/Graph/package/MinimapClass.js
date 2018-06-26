@@ -15,7 +15,6 @@ class Minimap {
         this.fill = null;
         this.image = null; // contains the actual svg image
         this.isVisible = false;
-        this.isDragging = false;
 
         // minimap settings
         this.width = DEFAULT_MINIMAP_SIZE;
@@ -189,11 +188,10 @@ class Minimap {
         d3.select('.context-menu').style('display', 'none');
 
         // Get the starting translate
-        const boxTranslate = utils.getXYFromTranslate(this.box.attr('transform'));
-        this.boxX = boxTranslate[0];
-        this.boxY = boxTranslate[1];
+        // const boxTranslate = utils.getXYFromTranslate(this.box.attr('transform'));
+        // this.boxX = 0;
+        // this.boxY = 0;
 
-        this.isDragging = true;
         this.graph.zoomstart(null, null);
     }
 
@@ -204,11 +202,14 @@ class Minimap {
         // Move box to fit the drag
         // this.boxX = this.getBoundingPositionX(this.boxX + e.dx);
         // this.boxY = this.getBoundingPositionY(this.boxY + e.dy);
-        this.boxX += e.dx;
-        this.boxY += e.dy;
+        console.log(e)
+        this.boxX += e.dx / this.scale;
+        this.boxY += e.dy / this.scale;
+        console.log('before', this.box.attr('x'), this.box.attr('y'))
         this.box
             .attr('x', this.boxX)
             .attr('y', this.boxY);
+        console.log('after', this.box.attr('x'), this.box.attr('y'))
         //this.box.attr('transform', 'translate(' + this.boxX + ',' + this.boxY + ')scale(' + 1 + ')');
 
         // Update clip
@@ -216,17 +217,18 @@ class Minimap {
         // clip.attr('x', parseFloat(clip.attr('x')) + e.dx);
         // clip.attr('y', parseFloat(clip.attr('y')) + e.dy);
 
-        const translate = [-this.boxX * this.boxScale * this.scale, -this.boxY * this.boxScale * this.scale];
+        // Calculate translate using ((this.width - this.boxWidth)/2, (this.height - this.boxHeight)/2) as origin
+        const translate = [((this.width - this.boxWidth) / 2 - this.boxX) * this.boxScale * this.scale, ((this.height - this.boxHeight) / 2 - this.boxY) * this.boxScale * this.scale];
         this.graph.performZoom(translate, this.scale);
         this.zoom.translate(translate);
     }
 
     dragend = () => {
-        this.isDragging = false;
         this.graph.zoomend(null, null);
     }
 
     zooming = () => {
+        console.log('JOOMING')
         this.scale = (d3.event && !utils.isRightClick()) ? d3.event.scale : utils.getScaleFromZoom(this.target.attr('transform'))[0];
         this.zoomMinimap();
     }
@@ -234,8 +236,8 @@ class Minimap {
     zoomMinimap = () => {
         const targetTransform = utils.getXYFromTranslate(this.target.attr('transform'));
 
-        this.boxX = targetTransform[0];
-        this.boxY = targetTransform[1];
+        this.boxX += -targetTransform[0] / (this.scale * this.boxScale);
+        this.boxY += -targetTransform[1] / (this.scale * this.boxScale);
 
         //const translate = [-targetTransform[0] / (this.scale * this.boxScale), -targetTransform[1] / (this.scale * this.boxScale)];
 
@@ -307,11 +309,13 @@ class Minimap {
 
         this.boxScale = Math.sqrt((this.viewportWidth * this.viewportHeight) / (this.boxWidth * this.boxHeight));
 
-        const initialTranslate = [Math.max(0, Math.min(DEFAULT_MINIMAP_SIZE - this.boxWidth, this.boxX)), Math.max(0, Math.min(DEFAULT_MINIMAP_SIZE - this.boxHeight, this.boxY))]
+        //const initialTranslate = [Math.max(0, Math.min(DEFAULT_MINIMAP_SIZE - this.boxWidth, this.boxX)), Math.max(0, Math.min(DEFAULT_MINIMAP_SIZE - this.boxHeight, this.boxY))]
         this.box
-            .attr('transform', 'translate(' + initialTranslate + ')scale(' + 1 + ')')
+            // .attr('transform', 'translate(' + initialTranslate + ')scale(' + 1 + ')')
             .attr('width', this.boxWidth)
-            .attr('height', this.boxHeight);
+            .attr('height', this.boxHeight)
+            .attr('x', this.boxX)
+            .attr('y', this.boxY);
 
         const image_url = utils.createSVGImage(targetSVG, x1, x2, y1, y2, svgWidth, svgHeight);
         this.image.attr('xlink:href', image_url);
