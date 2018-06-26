@@ -83,56 +83,78 @@ class Minimap {
 
         this.container = this.svg.append('g')
             .attr('class', 'minimap')
-            .call(this.zoom);
-
-        // Image container
-        this.image = this.container.append('g')
-        .attr('id', 'svg-image')
-        .on('click', () => {
-            d3.select('.context-menu').style('display', 'none');
-            stopPropagation();
-        })
-        .on('dblclick', stopPropagation)
-        .call(d3.behavior.drag()
-            .on('dragstart', stopPropagation)
-            .on('drag', stopPropagation)
-            .on('dragend', stopPropagation)
-        )
-        .call(d3.behavior.zoom()
-            .on('zoomstart', stopPropagation)
-            .on('zoom', stopPropagation)
-            .on('zoomend', stopPropagation)
-        );
-
-        // Raster image snapshot of the SVG
-        this.image.append('rect')
-            .attr('id', 'minimap-box')
             .attr('width', this.width)
             .attr('height', this.height)
-            .attr('fill', 'white')
-            .attr('stroke', '#545454')
-            .attr('stroke-width', 1.5);
+            .call(this.zoom);
 
-        // Image currently is blank and contains no href
-        this.image.append('svg:image')
+        this.container.append('rect')
+            .attr('id', 'minimap-frame')
             .attr('width', this.width)
             .attr('height', this.height);
 
-        // Contains the box showing which part of the minimap you're hovering over
-        this.box = this.container.append('g')
-            .attr('class', 'minimap-box')
-            .on('click', stopPropagation)
+        // Image container
+        this.image = this.container.append('svg:image')
+            .attr('id', 'svg-image')
+            .attr('width', this.width)
+            .attr('height', this.height)
+            .on('click', () => {
+                d3.select('.context-menu').style('display', 'none');
+                stopPropagation();
+            })
             .on('dblclick', stopPropagation)
+            .call(d3.behavior.drag()
+                .on('dragstart', stopPropagation)
+                .on('drag', stopPropagation)
+                .on('dragend', stopPropagation)
+            )
             .call(d3.behavior.zoom()
                 .on('zoomstart', stopPropagation)
                 .on('zoom', stopPropagation)
                 .on('zoomend', stopPropagation)
-            );
+            );  
 
-        this.box.append('rect')
-            .attr('id', 'minimap-box-square')
-            .attr('width', this.boxWidth)
-            .attr('height', this.boxHeight);
+        this.clip = this.container.append('clipPath')
+                .attr('id', 'minimap-select');
+                
+        this.box = this.clip.append('rect')
+                .attr('width', this.width)
+                .attr('height', this.height)
+                .attr('x', 0)
+                .attr('y', 0);
+
+        this.container.append('rect')
+            .attr('id', 'minimap-select-fill')
+            .attr('clip-path', 'url(#minimap-select)')
+            .attr('width', this.width)
+            .attr('height', this.height);   
+
+
+        // this.clip = this.container.append('clipPath')
+        //         .attr('id', 'minimap-clip')
+        //     .append('rect')
+        //         .attr('width', this.width)
+        //         .attr('height', this.height)
+        //         .attr('x', 0)
+        //         .attr('y', 0)
+        //         // .attr('x', this.positionX)
+        //         // .attr('y', this.positionY);
+
+        // // Contains the box showing which part of the minimap you're hovering over
+        // this.box = this.container.append('g')
+        //     .attr('id', 'minimap-selection-container')
+        //     .attr('clip-path', 'url(#minimap-clip)')
+        //     .on('click', stopPropagation)
+        //     .on('dblclick', stopPropagation)
+        //     .call(d3.behavior.zoom()
+        //         .on('zoomstart', stopPropagation)
+        //         .on('zoom', stopPropagation)
+        //         .on('zoomend', stopPropagation)
+        //     );
+
+        // this.box.append('rect')
+        //     .attr('id', 'minimap-selection')
+        //     .attr('width', this.boxWidth)
+        //     .attr('height', this.boxHeight);
 
         const drag = d3.behavior.drag()
             .on('dragstart', this.dragstart)
@@ -166,11 +188,16 @@ class Minimap {
     dragging = () => {
         const e = d3.event;
         e.sourceEvent.stopPropagation();
-        // move box to fit the drag
+
+        // Move box to fit the drag
         this.boxX = this.getBoundingPositionX(this.boxX + e.dx);
         this.boxY = this.getBoundingPositionY(this.boxY + e.dy);
-
         this.box.attr('transform', 'translate(' + this.boxX + ',' + this.boxY + ')scale(' + 1 + ')');
+
+        // Update clip
+        // const clip = d3.select('#minimap-clip rect');
+        // clip.attr('x', parseFloat(clip.attr('x')) + e.dx);
+        // clip.attr('y', parseFloat(clip.attr('y')) + e.dy);
 
         const translate = [-this.boxX * this.boxScale * this.scale, -this.boxY * this.boxScale * this.scale];
         this.graph.performZoom(translate, this.scale);
@@ -196,7 +223,7 @@ class Minimap {
 
         this.box
             .attr('transform', 'translate(' + translate + ')scale(' + 1 + ')')
-            .select('#minimap-box-square')
+            .select('#minimap-selection')
             .attr('width', this.boxWidth / this.scale > this.width ? this.width : this.boxWidth / this.scale)
             .attr('height', this.boxHeight / this.scale > this.height ? this.height : this.boxHeight / this.scale);
     }
@@ -222,7 +249,7 @@ class Minimap {
         let svgHeight = y2 > y1 ? y2 - y1 : 0;
 
         const image_url = utils.createSVGImage(targetSVG, x1, x2, y1, y2, svgWidth, svgHeight);
-        this.image.select('image').attr('xlink:href', image_url);
+        this.image.attr('xlink:href', image_url);
     }
 
     initializeBoxToCenter = (targetSVG, x1, x2, y1, y2) => {
@@ -264,13 +291,13 @@ class Minimap {
 
         const initialTranslate = [Math.max(0, Math.min(DEFAULT_MINIMAP_SIZE - this.boxWidth, this.boxX)), Math.max(0, Math.min(DEFAULT_MINIMAP_SIZE - this.boxHeight, this.boxY))]
         this.box
-            .select('#minimap-box-square')
+            .select('#minimap-selection')
             .attr('transform', 'translate(' + initialTranslate + ')scale(' + 1 + ')')
             .attr('width', this.boxWidth)
             .attr('height', this.boxHeight);
 
         const image_url = utils.createSVGImage(targetSVG, x1, x2, y1, y2, svgWidth, svgHeight);
-        this.image.select('image').attr('xlink:href', image_url);
+        this.image.attr('xlink:href', image_url);
 
         this.widthOffset = (this.width - (this.boxWidth / this.scale)) / 2;
         this.heightOffset = (this.height - (this.boxHeight / this.scale)) / 2;
