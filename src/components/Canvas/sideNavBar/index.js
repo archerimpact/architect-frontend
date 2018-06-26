@@ -44,6 +44,11 @@ class SideNavBar extends Component {
                         <i className="material-icons">account_box</i>
                     </div>
                 </Link>
+                <Link to='/upload'>
+                    <div className="side-nav-button" data-tip="Data Upload">
+                        <i className="material-icons">cloud_upload</i>
+                    </div>
+                </Link>
                 <div className="bottom">
                     <Link to='/settings'>
                         <div className="side-nav-button" data-tip="Settings">
