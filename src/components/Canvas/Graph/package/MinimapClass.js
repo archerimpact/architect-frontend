@@ -10,9 +10,12 @@ class Minimap {
         this.zoom = null;
         this.target = null;
         this.container = null; // container for entire minimap
+        this.clip = null;
         this.box = null; // gray box for snippet into the graph
+        this.fill = null;
         this.image = null; // contains the actual svg image
         this.isVisible = false;
+        this.isDragging = false;
 
         // minimap settings
         this.width = DEFAULT_MINIMAP_SIZE;
@@ -114,15 +117,24 @@ class Minimap {
             );  
 
         this.clip = this.container.append('clipPath')
-                .attr('id', 'minimap-select');
+            .attr('id', 'minimap-select')
+            .on('click', stopPropagation)
+            .on('dblclick', stopPropagation)
+            .call(d3.behavior.zoom()
+                .on('zoomstart', stopPropagation)
+                .on('zoom', stopPropagation)
+                .on('zoomend', stopPropagation)
+            );
 
         this.box = this.clip.append('rect')
-                .attr('width', this.boxWidth)
-                .attr('height', this.boxHeight)
-                .attr('x', 0)
-                .attr('y', 0);
+            .attr('width', this.boxWidth)
+            .attr('height', this.boxHeight)
+            .attr('x', 0)
+            .attr('y', 0)
+            .on('click', stopPropagation)
+            .on('dblclick', stopPropagation);
 
-        this.container.append('rect')
+        this.fill = this.container.append('rect')
             .attr('id', 'minimap-select-fill')
             .attr('clip-path', 'url(#minimap-select)')
             .attr('width', this.width)
@@ -161,10 +173,9 @@ class Minimap {
             .on('drag', this.dragging)
             .on('dragend', this.dragend);
 
-        this.box.call(drag);
+        this.fill.call(drag);
 
         this.container.attr('transform', 'translate(' + this.positionX + ',' + this.positionY + ')scale(' + 1 + ')');
-
     }
 
     toggleMinimapVisibility = () => {
@@ -182,6 +193,7 @@ class Minimap {
         this.boxX = boxTranslate[0];
         this.boxY = boxTranslate[1];
 
+        this.isDragging = true;
         this.graph.zoomstart(null, null);
     }
 
@@ -190,9 +202,14 @@ class Minimap {
         e.sourceEvent.stopPropagation();
 
         // Move box to fit the drag
-        this.boxX = this.getBoundingPositionX(this.boxX + e.dx);
-        this.boxY = this.getBoundingPositionY(this.boxY + e.dy);
-        this.box.attr('transform', 'translate(' + this.boxX + ',' + this.boxY + ')scale(' + 1 + ')');
+        // this.boxX = this.getBoundingPositionX(this.boxX + e.dx);
+        // this.boxY = this.getBoundingPositionY(this.boxY + e.dy);
+        this.boxX += e.dx;
+        this.boxY += e.dy;
+        this.box
+            .attr('x', this.boxX)
+            .attr('y', this.boxY);
+        //this.box.attr('transform', 'translate(' + this.boxX + ',' + this.boxY + ')scale(' + 1 + ')');
 
         // Update clip
         // const clip = d3.select('#minimap-clip rect');
@@ -205,26 +222,28 @@ class Minimap {
     }
 
     dragend = () => {
+        this.isDragging = false;
         this.graph.zoomend(null, null);
     }
 
     zooming = () => {
         this.scale = (d3.event && !utils.isRightClick()) ? d3.event.scale : utils.getScaleFromZoom(this.target.attr('transform'))[0];
-        this.zoomMinimap(this.scale);
+        this.zoomMinimap();
     }
 
-    zoomMinimap = (scale) => {
+    zoomMinimap = () => {
         const targetTransform = utils.getXYFromTranslate(this.target.attr('transform'));
 
-        this.boxX += -targetTransform[0] / (this.scale * this.boxScale);
-        this.boxY += -targetTransform[1] / (this.scale * this.boxScale);
+        this.boxX = targetTransform[0];
+        this.boxY = targetTransform[1];
 
-        const translate = [-targetTransform[0] / (this.scale * this.boxScale), -targetTransform[1] / (this.scale * this.boxScale)];
+        //const translate = [-targetTransform[0] / (this.scale * this.boxScale), -targetTransform[1] / (this.scale * this.boxScale)];
 
         this.box
-            .attr('transform', 'translate(' + translate + ')scale(' + 1 + ')')
-            .attr('width', this.boxWidth / this.scale > this.width ? this.width : this.boxWidth / this.scale)
-            .attr('height', this.boxHeight / this.scale > this.height ? this.height : this.boxHeight / this.scale);
+            //.attr('transform', 'translate(' + translate + ')scale(' + 1 + ')')
+            .attr('x', this.boxX).attr('y', this.boxY)
+            .attr('width', this.boxWidth / this.scale)
+            .attr('height', this.boxHeight / this.scale);
     }
 
     /** RENDER **/
@@ -299,6 +318,7 @@ class Minimap {
 
         this.widthOffset = (this.width - (this.boxWidth / this.scale)) / 2;
         this.heightOffset = (this.height - (this.boxHeight / this.scale)) / 2;
+        console.log(this.boxX, this.boxY)
     }
 
     getBoundingPositionX = (position) => {

@@ -279,6 +279,8 @@ path.link.selected {
 
 #minimap-select {
     cursor: move;
+    stroke: #545454;
+    stroke-width: 1.5px;
 }
 
 /*#minimap-selection {
