@@ -90,7 +90,7 @@ function mapStateToProps(state) {
     }
     return {
         height: window.innerHeight,
-        width: Math.max(window.innerWidth - sidebarSize),
+        width: Math.max(window.innerWidth),
         project: state.project.currentProject,
         graphData: graphData
     };
