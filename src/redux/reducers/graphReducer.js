@@ -4,11 +4,22 @@ import {
     STORE_CURRENT_NODE,
     STORE_ENTITY,
     STORE_SEARCH_RESULTS,
-    UPDATE_GRAPH_DATA
+    UPDATE_GRAPH_DATA,
+    TOGGLE_SIDEBAR
 } from "../actions/actionTypes";
 
-export default function (state = {}, action) {
+const initialState = {
+    sidebarVisible: true
+}
+
+
+export default function (state = initialState, action) {
     switch (action.type) {
+        case TOGGLE_SIDEBAR:
+            return {
+                ...state,
+                sidebarVisible: !state.sidebarVisible
+            };
         case RESET_GRAPH:
             return {
                 ...state,
