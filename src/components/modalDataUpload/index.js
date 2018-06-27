@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import URLSearchParams from "url-search-params";
+import { Modal, Button } from 'antd';
 import {
     PdfLoader,
     PdfAnnotator,
@@ -32,6 +33,7 @@ const searchParams = new URLSearchParams(window.location.search);
 const url = searchParams.get("url") || "http://www.nber.org/papers/w20625.pdf";
 // CHANGE HERE TO ACTUAL PDF (modal first takes URL or drags to upload CHANGE DIS
 // ALSO DEAL WITH CORS CHANGE DIS
+// TODO add search to sidebar
 
 /* =============================================================================================== */
 
@@ -39,7 +41,8 @@ class ModalDataUpload extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            highlights: []
+            highlights: [],
+            modalVisible: false
         }
     }
 
@@ -105,11 +108,42 @@ class ModalDataUpload extends Component {
         });
     }
 
+    showCreateEntityModal = () => {
+        console.log(this.state.modalVisible)
+        this.setState({
+            modalVisible: true,
+        });
+    };
+
+    handleCreateEntityOk = (e) => {
+        console.log(e);
+        this.setState({
+            modalVisible: false,
+        });
+    };
+
+    handleCreateEntityCancel = (e) => {
+        console.log(e);
+        this.setState({
+            modalVisible: false,
+        });
+    };
+
     render() {
         const { handleClose, show } = this.props; // change the true to show CHANGE DIS
         const { highlights } = this.state;
         return (
             <div className={true ? "modal display-block" : "modal display-none"}>
+                <Modal
+                    title="Create Entity Modal"
+                    visible={this.state.modalVisible}
+                    onOk={this.handleCreateEntityOk}
+                    onCancel={this.handleCreateEntityCancel}
+                >
+                    <p>Some contents...</p>
+                    <p>Some contents...</p>
+                    <p>Some contents...</p>
+                </Modal>
                 <section className="modal-main">
                     {/*<button className="close-modal-button" onClick={handleClose}>close</button>*/}
                     <div style={{display: "flex"}}>
@@ -117,6 +151,7 @@ class ModalDataUpload extends Component {
                             highlights={highlights}
                             resetHighlights={this.resetHighlights}
                             removeHighlightByIndex={this.removeHighlightByIndex}
+                            showModal={this.showCreateEntityModal}
                         />
                         <div
                             style={{
@@ -126,63 +161,63 @@ class ModalDataUpload extends Component {
                                 position: "relative"
                             }}
                         >
-                            <PdfLoader url={url} beforeLoad={<Spinner />}>
-                                {pdfDocument => (
-                                    <PdfAnnotator
-                                        pdfDocument={pdfDocument}
-                                        enableAreaSelection={event => event.altKey}
-                                        onScrollChange={resetHash}
-                                        scrollRef={scrollTo => {this.scrollViewerTo = scrollTo; this.scrollToHighlightFromHash();}}
-                                        url={url}
-                                        highlights={highlights}
-                                        onSelectionFinished={(position, content, hideTipAndSelection, transformSelection) => (
-                                            <Tip
-                                                onOpen={transformSelection}
-                                                onConfirm={comment => {
-                                                    this.addHighlight({ content, position, comment });
-                                                    hideTipAndSelection();
-                                                }}
-                                            />
-                                        )}
-                                        highlightTransform={(highlight, index, setTip, hideTip, viewportToScaled, screenshot, isScrolledTo) => {
-                                            const isTextHighlight = !Boolean(
-                                                highlight.content && highlight.content.image
-                                            );
+                            {/*<PdfLoader url={url} beforeLoad={<Spinner />}>*/}
+                                {/*{pdfDocument => (*/}
+                                    {/*<PdfAnnotator*/}
+                                        {/*pdfDocument={pdfDocument}*/}
+                                        {/*enableAreaSelection={event => event.altKey}*/}
+                                        {/*onScrollChange={resetHash}*/}
+                                        {/*scrollRef={scrollTo => {this.scrollViewerTo = scrollTo; this.scrollToHighlightFromHash();}}*/}
+                                        {/*url={url}*/}
+                                        {/*highlights={highlights}*/}
+                                        {/*onSelectionFinished={(position, content, hideTipAndSelection, transformSelection) => (*/}
+                                            {/*<Tip*/}
+                                                {/*onOpen={transformSelection}*/}
+                                                {/*onConfirm={comment => {*/}
+                                                    {/*this.addHighlight({ content, position, comment });*/}
+                                                    {/*hideTipAndSelection();*/}
+                                                {/*}}*/}
+                                            {/*/>*/}
+                                        {/*)}*/}
+                                        {/*highlightTransform={(highlight, index, setTip, hideTip, viewportToScaled, screenshot, isScrolledTo) => {*/}
+                                            {/*const isTextHighlight = !Boolean(*/}
+                                                {/*highlight.content && highlight.content.image*/}
+                                            {/*);*/}
 
-                                            const component = isTextHighlight ? (
-                                                    <Highlight
-                                                        isScrolledTo={isScrolledTo}
-                                                        position={highlight.position}
-                                                        comment={highlight.comment}
-                                                    />
-                                                ) : (
-                                                    <AreaHighlight
-                                                        highlight={highlight}
-                                                        onChange={boundingRect => {
-                                                            this.updateHighlight(
-                                                                highlight.id,
-                                                                { boundingRect: viewportToScaled(boundingRect) },
-                                                                { image: screenshot(boundingRect) }
-                                                            );
-                                                        }}
-                                                    />
-                                                );
+                                            {/*const component = isTextHighlight ? (*/}
+                                                    {/*<Highlight*/}
+                                                        {/*isScrolledTo={isScrolledTo}*/}
+                                                        {/*position={highlight.position}*/}
+                                                        {/*comment={highlight.comment}*/}
+                                                    {/*/>*/}
+                                                {/*) : (*/}
+                                                    {/*<AreaHighlight*/}
+                                                        {/*highlight={highlight}*/}
+                                                        {/*onChange={boundingRect => {*/}
+                                                            {/*this.updateHighlight(*/}
+                                                                {/*highlight.id,*/}
+                                                                {/*{ boundingRect: viewportToScaled(boundingRect) },*/}
+                                                                {/*{ image: screenshot(boundingRect) }*/}
+                                                            {/*);*/}
+                                                        {/*}}*/}
+                                                    {/*/>*/}
+                                                {/*);*/}
 
-                                            return (
-                                                <Popup
-                                                    popupContent={<HighlightPopup {...highlight} />}
-                                                    onMouseOver={popupContent =>
-                                                        setTip(highlight, highlight => popupContent)
-                                                    }
-                                                    onMouseOut={hideTip}
-                                                    key={index}
-                                                    children={component}
-                                                />
-                                            );
-                                        }}
-                                    />
-                                )}
-                            </PdfLoader>
+                                            {/*return (*/}
+                                                {/*<Popup*/}
+                                                    {/*popupContent={<HighlightPopup {...highlight} />}*/}
+                                                    {/*onMouseOver={popupContent =>*/}
+                                                        {/*setTip(highlight, highlight => popupContent)*/}
+                                                    {/*}*/}
+                                                    {/*onMouseOut={hideTip}*/}
+                                                    {/*key={index}*/}
+                                                    {/*children={component}*/}
+                                                {/*/>*/}
+                                            {/*);*/}
+                                        {/*}}*/}
+                                    {/*/>*/}
+                                {/*)}*/}
+                            {/*</PdfLoader>*/}
                         </div>
                     </div>
                 </section>

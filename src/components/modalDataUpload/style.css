@@ -46,14 +46,17 @@ body {
 
 .pdf-sidebar {
     overflow: auto;
-    color: rgb(119, 119, 119);
-    background: linear-gradient(
-        rgb(249, 248, 247),
-        rgb(251, 250, 248) 46px,
-        rgb(251, 251, 249) 120px,
-        rgb(248, 247, 245) 35%,
-        rgb(249, 248, 246)
-    );
+    font-family: Montserrat, sans-serif;
+    color: white;
+    background: #2D5D8D;
+    opacity: 0.56;
+    /*background: linear-gradient(*/
+        /*rgb(249, 248, 247),*/
+        /*rgb(251, 250, 248) 46px,*/
+        /*rgb(251, 251, 249) 120px,*/
+        /*rgb(248, 247, 245) 35%,*/
+        /*rgb(249, 248, 246)*/
+    /*);*/
 }
 
 .sidebar__highlights {
