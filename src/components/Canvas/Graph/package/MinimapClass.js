@@ -202,7 +202,7 @@ class Minimap {
         // Move box to fit the drag
         // this.boxX = this.getBoundingPositionX(this.boxX + e.dx);
         // this.boxY = this.getBoundingPositionY(this.boxY + e.dy);
-        console.log(e)
+        console.log(this.boxScale)
         this.boxX += e.dx / this.scale;
         this.boxY += e.dy / this.scale;
         console.log('before', this.box.attr('x'), this.box.attr('y'))
@@ -234,10 +234,15 @@ class Minimap {
     }
 
     zoomMinimap = () => {
-        const targetTransform = utils.getXYFromTranslate(this.target.attr('transform'));
+        // const targetTransform = utils.getXYFromTranslate(this.target.attr('transform'));
 
-        this.boxX += -targetTransform[0] / (this.scale * this.boxScale);
-        this.boxY += -targetTransform[1] / (this.scale * this.boxScale);
+        // this.boxX += -targetTransform[0] / (this.scale * this.boxScale);
+        // this.boxY += -targetTransform[1] / (this.scale * this.boxScale);
+
+        // Calculate translate from graph to minimap by scaling down graph translate and offsetting by origin
+        const e = d3.event;
+        this.boxX = -e.translate[0] / (this.scale * this.boxScale) + (this.width - this.boxWidth) / 2;
+        this.boxY = -e.translate[1] / (this.scale * this.boxScale) + (this.height - this.boxHeight) / 2;
 
         //const translate = [-targetTransform[0] / (this.scale * this.boxScale), -targetTransform[1] / (this.scale * this.boxScale)];
 
