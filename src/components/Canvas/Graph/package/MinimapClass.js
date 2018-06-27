@@ -109,9 +109,9 @@ class Minimap {
                     .attr('x', this.boxX)
                     .attr('y', this.boxY);
 
-                const translate = [0, 0];
-                this.graph.performZoom(translate, this.scale);
-                this.zoom.translate(translate);
+                this.graph.performZoom([0, 0], 1);
+                this.zoom.translate([0, 0]);
+                this.zoom.scale(1);
             })
             .on('dblclick', stopPropagation)
             .call(d3.behavior.drag()
