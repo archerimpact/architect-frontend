@@ -19,4 +19,4 @@ export const STORE_ENTITY = "STORE_ENTITY";
 
 /* ============================ OFFLINE ACTIONS ============================ */
 // This MUST be set to false for production. Do not push to remote with this set to true.
-export const OFFLINE_ACTIONS = true;
+export const OFFLINE_ACTIONS = false;
