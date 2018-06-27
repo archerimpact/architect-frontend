@@ -69,7 +69,7 @@ class Minimap {
         return this
     }
 
-    initializeMinimap = (svg, width, height) => { // svg is the target SVG containing the graph    this.svg = svg;
+    initializeMinimap = (svg, width, height) => {
         this.viewportWidth = width;
         this.viewportHeight = height;
         this.svg = svg;
@@ -99,6 +99,19 @@ class Minimap {
             .on('click', () => {
                 d3.select('.context-menu').style('display', 'none');
                 stopPropagation();
+
+                // Reset minimap box and graph on click
+                this.boxX = (this.width - this.boxWidth) / 2;
+                this.boxY = (this.height - this.boxHeight) / 2;
+                this.box
+                    .attr('width', this.boxWidth)
+                    .attr('height', this.boxHeight)
+                    .attr('x', this.boxX)
+                    .attr('y', this.boxY);
+
+                const translate = [0, 0];
+                this.graph.performZoom(translate, this.scale);
+                this.zoom.translate(translate);
             })
             .on('dblclick', stopPropagation)
             .call(d3.behavior.drag()
@@ -242,7 +255,7 @@ class Minimap {
             svgHeight = this.viewportHeight;
         }
 
-        // Scale by the proportion of the actual SVG to the minimap, which is 300 px
+        // Scale by the proportion of the actual SVG to the minimap, which is 300px
         this.boxWidth = (this.viewportWidth / svgWidth) * this.width;
         this.boxHeight = (this.viewportHeight / svgHeight) * this.height;
         this.boxX = (this.width - this.boxWidth) / 2;
