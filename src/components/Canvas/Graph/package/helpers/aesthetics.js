@@ -136,7 +136,7 @@ export function wrapNodeText(textSelection, printFull, width = 100) {
         }
 
         let finalLine = line.join(' ');
-        finalLine = (printFull === 0 && i < tokens.length) ? `${finalLine.trim()}...` : finalLine;
+        finalLine = (printFull === 0 && i < tokens.length-1) ? `${finalLine.trim()}...` : finalLine;
         tspan.text(finalLine);
     });
 }
