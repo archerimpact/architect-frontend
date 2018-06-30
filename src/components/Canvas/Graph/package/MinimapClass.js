@@ -190,7 +190,8 @@ class Minimap {
     }
 
     zooming = () => {
-        this.scale = (d3.event && !utils.isRightClick()) ? d3.event.scale : utils.getScaleFromZoom(this.target.attr('transform'))[0];
+        if (utils.isRightClick()) return;
+        this.scale = d3.event ? d3.event.scale : utils.getScaleFromZoom(this.target.attr('transform'))[0];
         this.zoomMinimap();
     }
 

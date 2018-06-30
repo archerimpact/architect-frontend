@@ -859,9 +859,8 @@ class Graph {
         this.linkText
             .attr('transform', function (l) {
                 if (l.sourceX < l.targetX) return '';
-                const bbox = this.getBBox();
-                const centerX = bbox.x + bbox.width / 2;
-                const centerY = bbox.y + bbox.height / 2;
+                const centerX = l.sourceX + (l.targetX - l.sourceX)/2;
+                const centerY = l.sourceY + (l.targetY - l.sourceY)/2;
                 return `rotate(180 ${centerX} ${centerY})`;
             });
 
