@@ -58,17 +58,11 @@ svg line {
     paint-order: stroke;
     font-size: 14px;
     font-weight: bolder;
-    letter-spacing: 1.5px;
+    letter-spacing: 1.2px;
+}
 
-
-/*    line-height: 1.35;
-    display: inline;
-    -webkit-box-decoration-break: clone;
-            box-decoration-break: clone;
-    background: green;
-    padding: 1rem 2rem;*/
-  /*  -webkit-filter: url('#link-text-filter');
-            filter: url('#link-text-filter');*/
+.link-text textPath.hidden {
+    visibility: hidden;
 }
 
 .link.dynamic {

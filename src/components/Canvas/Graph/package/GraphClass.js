@@ -647,7 +647,7 @@ class Graph {
 
         // Create selectors
         this.linkContainer = this.container.append('g').attr('class', 'link-items');
-        this.linkText = this.linkContainer.selectAll('.link-text');
+        this.linkText = this.linkContainer.selectAll('.link-text > textPath');
         this.link = this.linkContainer.selectAll('.link');
         this.hull = this.container.append('g').attr('class', 'hull-items').selectAll('.hull');
         this.node = this.container.append('g').attr('class', 'node-items').selectAll('.node');
@@ -878,14 +878,14 @@ class Graph {
         }
 
         this.link
-            .each(function (l) {
+            .each((l) => {
                 const x1 = l.source.x,
-                    y1 = l.source.y,
-                    x2 = l.target.x,
-                    y2 = l.target.y;
+                      y1 = l.source.y,
+                      x2 = l.target.x,
+                      y2 = l.target.y;
                 l.distance = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
                 const sourcePadding = l.target.radius + (l.bidirectional ? constants.MARKER_PADDING : 0),
-                    targetPadding = l.source.radius + constants.MARKER_PADDING;
+                      targetPadding = l.source.radius + constants.MARKER_PADDING;
                 l.sourceX = x1 + (x2 - x1) * (l.distance - sourcePadding) / l.distance;
                 l.sourceY = y1 + (y2 - y1) * (l.distance - sourcePadding) / l.distance;
                 l.targetX = x2 - (x2 - x1) * (l.distance - targetPadding) / l.distance;
@@ -894,19 +894,27 @@ class Graph {
             .attr('d', (l) => { return 'M' + l.sourceX + ',' + l.sourceY + 'L' + l.targetX + ',' + l.targetY; })
             .attr('stroke-dasharray', (l) => {
                 const textPath = d3.select(`#text-${l.id}`);
-                if (textPath[0][0] === null) return 'none';
+                if (textPath[0][0] === null || textPath.text() === "") return 'none';
                 const spaceLength = textPath.node().getComputedTextLength() + textPath.node().getNumberOfChars() * 2 - 10;
                 const lineLength = Math.sqrt(Math.pow(l.sourceX-l.targetX, 2) + Math.pow(l.sourceY-l.targetY, 2)) - spaceLength;
-                return `${lineLength/2-10} ${spaceLength+20}`
+                return `${lineLength/2-8} ${spaceLength+16}`;
             });
 
         this.linkText
-            .attr('transform', function (l) {
-                if (l.sourceX < l.targetX) return '';
-                const centerX = l.sourceX + (l.targetX - l.sourceX)/2;
-                const centerY = l.sourceY + (l.targetY - l.sourceY)/2;
-                return `rotate(180 ${centerX} ${centerY})`;
-            });
+                .attr('transform', (l) => {
+                    if (l.sourceX < l.targetX) return '';
+                    const centerX = l.sourceX + (l.targetX - l.sourceX)/2;
+                    const centerY = l.sourceY + (l.targetY - l.sourceY)/2;
+                    return `rotate(180 ${centerX} ${centerY})`;
+                })
+            .select('textPath')
+                .each(function (l) {
+                    const textPath = d3.select(this); 
+                    const textLength = textPath.node().getComputedTextLength() + textPath.node().getNumberOfChars() * 2 - 10;
+                    const pathLength = Math.sqrt(Math.pow(l.sourceX-l.targetX, 2) + Math.pow(l.sourceY-l.targetY, 2));
+                    textPath.classed('hidden', textLength > pathLength - 16);
+                });
+            
 
         if (this.editMode && this.mousedownNode) {
             const x1 = this.mousedownNode.x * this.zoomScale + this.zoomTranslate[0],
