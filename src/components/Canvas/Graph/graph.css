@@ -51,13 +51,24 @@ svg line {
     transition-duration: 50ms;
 }
 
-.link-items text {
+.link-text {
     stroke: #fff;
     stroke-width: 2px;
     fill: #545454;
     paint-order: stroke;
     font-size: 14px;
     font-weight: bolder;
+    letter-spacing: 1.5px;
+
+
+/*    line-height: 1.35;
+    display: inline;
+    -webkit-box-decoration-break: clone;
+            box-decoration-break: clone;
+    background: green;
+    padding: 1rem 2rem;*/
+  /*  -webkit-filter: url('#link-text-filter');
+            filter: url('#link-text-filter');*/
 }
 
 .link.dynamic {

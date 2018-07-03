@@ -142,7 +142,8 @@ export function wrapNodeText(textSelection, printFull, width = 100) {
 }
 
 export function updateLinkText(selection) {
-    // const self = this;
+    this.link.attr('stroke-dasharray', 'none');
+
     const linkEnter = this.linkContainer.selectAll('.link-text')
         .data(selection, (l) => { return l.id; });
 
@@ -154,6 +155,7 @@ export function updateLinkText(selection) {
 
     this.linkText
         .append('textPath')
+        .attr('id', (l) => { return `text-${l.id}`; })
         .attr('startOffset', '50%')
         .attr('xlink:href', (l) => { return `#link-${l.id}`; })
         .attr('length', (l) => { return l.distance; })

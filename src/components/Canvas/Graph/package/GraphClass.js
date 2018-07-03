@@ -95,6 +95,7 @@ class Graph {
         this.svgGrid = null;
         this.force = null;
         this.drag = null;
+        this.defs = null;
 
         this.adjacencyMatrix = [];
         this.globalLinks = {};
@@ -182,7 +183,7 @@ class Graph {
 
         // Disable context menu from popping up on right click
         svg.on('contextmenu', function (d, i) {
-            d3.event.preventDefault();
+            //d3.event.preventDefault();
         });
 
         return svg;
@@ -363,9 +364,8 @@ class Graph {
             ['gray', 'blue']
         ];
         const markerList = this.deriveMarkerData(this.getMarkerIdPermutations(possibleAttrs));
-        const defs = this.svg.append('defs');
         for (let marker of markerList) {
-            defs
+            this.defs
                 .append('marker')
                     .attr('id', marker.id)
                     .attr('viewBox', '5 -5 10 10')
@@ -419,6 +419,41 @@ class Graph {
         }
 
         return markerList;
+    }
+
+    initializeFilters = () => {
+        const filter = this.defs.append('filter')
+            .attr('id', 'link-text-filter')
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", 1)
+            .attr("height", 1);
+
+        filter.append('feFlood')
+            .attr('flood-color', 'rgba(255, 255, 255, 1)')
+            .attr('result', 'text-background-fill');
+
+        const filterMerge = filter.append('feMerge');
+        filterMerge.append('feMergeNode')
+            .attr('in', 'text-background-fill');
+        filterMerge.append('feMergeNode')
+            .attr('in', 'SourceGraphic');
+
+        // filter.append('feGaussianBlur')
+        //     .attr('in', 'SourceGraphic')
+        //     .attr('stdDeviation', 3)
+        //     .attr('result', 'blur');
+
+        // filter.append('feColorMatrix')
+        //     .attr('in', 'blur')
+        //     .attr('mode', 'matrix')
+        //     .attr('values', '1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9')
+        //     .attr('result', 'color');
+
+        // filter.append('feComposite')
+        //     .attr('in', 'SourceGraphic')
+        //     .attr('in2', 'color')
+        //     .attr('operator', 'atop');
     }
 
     initializeDragLink = () => {
@@ -571,9 +606,11 @@ class Graph {
         this.force = this.initializeForce();
         this.drag = this.intitializeDrag();
         this.dragLink = this.initializeDragLink();
+        this.defs = this.svg.append('defs');
         this.initializeMenuActions();
         this.initializeContextMenu();
         this.initializeMarkers();
+        this.initializeFilters();
 
         // this.initializeToolbarButtons();
         // this.initializeZoomButtons();
@@ -708,7 +745,7 @@ class Graph {
             .on('mousedown', function (d) { self.mousedown(d, this); })
             .on('mouseover', function (d) { self.mouseover(d, this); })
             .on('mouseout', function (d) { self.mouseout(d, this); })
-            .on('contextmenu', this.contextMenu(this.menuActions))
+            //.on('contextmenu', this.contextMenu(this.menuActions))
             .classed('fixed', (d) => { return d.fixed; })
             .classed('faded', (d) => { return this.hoveredNode && !this.areNeighbors(this.hoveredNode, d); })
             .call(this.drag);
@@ -854,7 +891,14 @@ class Graph {
                 l.targetX = x2 - (x2 - x1) * (l.distance - targetPadding) / l.distance;
                 l.targetY = y2 - (y2 - y1) * (l.distance - targetPadding) / l.distance;
             })
-            .attr('d', (l) => { return 'M' + l.sourceX + ',' + l.sourceY + 'L' + l.targetX + ',' + l.targetY; });
+            .attr('d', (l) => { return 'M' + l.sourceX + ',' + l.sourceY + 'L' + l.targetX + ',' + l.targetY; })
+            .attr('stroke-dasharray', (l) => {
+                const textPath = d3.select(`#text-${l.id}`);
+                if (textPath[0][0] === null) return 'none';
+                const spaceLength = textPath.node().getComputedTextLength() + textPath.node().getNumberOfChars() * 2 - 10;
+                const lineLength = Math.sqrt(Math.pow(l.sourceX-l.targetX, 2) + Math.pow(l.sourceY-l.targetY, 2)) - spaceLength;
+                return `${lineLength/2-10} ${spaceLength+20}`
+            });
 
         this.linkText
             .attr('transform', function (l) {
