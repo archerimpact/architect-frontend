@@ -6,10 +6,11 @@ import {Redirect, Route, withRouter} from "react-router-dom";
 import PrivateRoute from "./PrivateRoute/";
 
 import NavBar from "../components/navBar/";
+import SideNavBar from '../components/Canvas/sideNavBar/'
 
 import Login from "../components/Login/";
 import CreateAccount from "../components/CreateAccount/";
-import Home from "../components/Home/";
+import HomeVignettes from "../components/HomeVignettes/";
 import Canvas from "../components/Canvas";
 import Investigations from "../components/Investigations";
 import "./style.css";
@@ -43,11 +44,12 @@ class App extends Component {
 
     isNavbarVisible(props) {
         // var exploreCanvasPath = RegExp('/explore/*');
-        var buildCanvasPath = new RegExp('/build/\\S+');
-        let currentPath = props.location.pathname;
-        if (buildCanvasPath.test(currentPath)) {
-            return false;
-        }
+        // var buildCanvasPath = new RegExp('/build/\\S+');
+        // let currentPath = props.location.pathname;
+        // if (buildCanvasPath.test(currentPath)) {
+        //     return false;
+        // }
+        // return true;
         return true;
     }
 
@@ -55,12 +57,15 @@ class App extends Component {
         return (
             <div>
                 {!this.state.navbarVisible ?
-                    null :
-                    <NavBar isAuthenticated={this.props.isAuthenticated} logOut={this.logOut.bind(this)}
-                            logIn={this.logIn.bind(this)}/>
+                    null : null
+                    
+
+                    /*<NavBar isAuthenticated={this.props.isAuthenticated} logOut={this.logOut.bind(this)}
+                            logIn={this.logIn.bind(this)}/>*/
                 }
-                <div className={"main " + (this.state.navbarVisible ? "show-nav" : "no-nav")}>
-                    <PrivateRoute exact path="/" component={Home}/>
+              {<SideNavBar />}
+                <div className={"main " + (this.state.navbarVisible ? "no-nav" : "no-nav")}>
+                    <PrivateRoute exact path="/" component={HomeVignettes}/>
                     <Route path="/login" component={Login}/>
                     <Route path="/create_account" component={CreateAccount}/>
                     <PrivateRoute path="/explore/:sidebarState?" component={Canvas}/>

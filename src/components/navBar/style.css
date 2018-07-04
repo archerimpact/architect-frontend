@@ -1,3 +1,129 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins:300,300italic,400,400italic,600,900");
+@import url("https://fonts.googleapis.com/css?family=Montserrat:300,300italic,400,400italic,600,900");
+
+#top {
+  color: #666;
+  font-family: "Poppins", Helvetica, sans-serif;
+  font-size: 16pt;
+  font-weight: 300;
+  line-height: 1.65em;
+}
+
+/* Navbar */
+
+#top {
+  position: sticky;
+  top: 0;
+  opacity: 1;
+  z-index: 9998;
+/*  border-bottom: 5px solid rgba(0,0,0,.2);
+*/}
+
+#top .main-header {
+  background: #fff;
+  width: 100%;
+  box-shadow: 0 5px 0 rgba(0,0,0,.2);
+  position: relative;
+  transition: all .3s ease-in-out;
+  padding: 15px 0;
+  height: 85px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#top .logo-header {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  margin: 0 auto;
+/*  padding: auto 0;
+*/  transform: translate(-50%,-50%);
+
+}
+
+#top .logo-image {
+  width: 150px;
+  margin-bottom: 0px !important;
+}
+
+#top .primary {
+  display: block;
+}
+
+#top #primary-navigation {
+  margin: 0 0 0 17px;
+}
+
+#top li {
+  list-style-type: none;
+  display: inline;
+}
+
+#top #primary-navigation a {
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+
+#top .menu-item {
+  font-size: 15px;
+  font-weight: 600;
+  padding: 13px 12px 13px 7px;
+}
+
+#top .secondary ul {
+  font-size: 15px;
+  font-weight: 600;
+/*  padding: 13px 12px 13px 7px;
+*/  margin: 0 !important;
+}
+
+#top .control {
+  margin-left: auto;
+  margin-right: -10px;
+  position: relative;
+}
+
+#top .menu-button {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+nav.secondary {
+  bottom: auto;
+  width: auto;
+  position: relative;
+  display: block;
+  transition: .45s;
+}
+
+nav.secondary ul {
+  box-shadow: 5px 5px 0 rgba(0,0,0,.2);
+  line-height: 59px;
+  height: 59px;
+  background: #ecc14a;
+  padding-left: 15px;
+}
+
+nav.secondary ul li {
+  padding-right: 1.5em;
+  height: 100%;
+}
+
+nav.secondary ul li a {
+  color: #000;
+  border-bottom: none !important;
+  text-decoration: none !important;
+  text-transform: uppercase;
+  line-height: 59px;
+}
+
+nav.secondary.menu-button-secondary {
+  background: #000;
+}
+
+
 /*
 .outerContainer{
   width: 100%;

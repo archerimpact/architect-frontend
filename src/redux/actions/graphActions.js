@@ -66,14 +66,16 @@ function updateGraphDispatch(data) {
 }
 
 export function addToGraphFromId(graph, id) {
+  debugger
     return (dispatch) => {
         server.getNode(id)
         .then(data => {
             console.log("data", data);
+            debugger
             graph.addData(data.centerid, makeDeepCopy(data.nodes), makeDeepCopy(data.links));
             console.log("graph", graph)
             graph.update();
-            dispatch(saveCurrentProjectData(graph))
+            // dispatch(saveCurrentProjectData(graph))
             // dispatch(updateGraphDispatch(data)); // right here change to saveCurrentProjectData
         })
         .catch(err => {

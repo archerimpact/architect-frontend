@@ -151,6 +151,12 @@ class Minimap {
         this.isVisible = !this.isVisible;
     }
 
+    hideMinimap = () => {
+      this.container
+          .style('display', 'none');
+      this.isVisible = false; 
+    }
+
     dragstart = () => {
         d3.event.sourceEvent.stopPropagation();
         d3.select('.context-menu').style('display', 'none');

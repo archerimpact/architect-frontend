@@ -28,19 +28,22 @@ class Graph extends Component {
     }
 
     componentDidMount() {
-        // this.props.dispatch(initializeCanvas(this.props.graph, this.props.width, this.props.height));
-        this.props.graph.generateCanvas(this.props.width, this.props.height);
-        this.props.graph.setData(0, [], []);
-        this.props.graph.bindDisplayFunctions({
-            expand: this.expandNodeFromData,
-            node: this.setCurrentNodeFunc,
-            save: this.saveCurrentProjectDataFunc
-        });
+      // this.props.dispatch(initializeCanvas(this.props.graph, this.props.width, this.props.height));
+      this.props.graph.generateCanvas(this.props.width ? this.props.width : this.props.windowWidth, this.props.height ? this.props.height: this.props.windowHeight, this.refs.graphContainer);
+      this.props.graph.setData(0, [], []);
+      this.props.graph.bindDisplayFunctions({
+        expand: this.expandNodeFromData,
+        node: this.setCurrentNodeFunc,
+        save: this.saveCurrentProjectDataFunc
+      });
 
-        if (this.props.graphData !== null) {
-            const graphData = {nodes: this.props.graphData.nodes, links: this.props.graphData.links};
-            this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));
-        }
+      if (this.props.graphData !== null) {
+        const graphData = {nodes: this.props.graphData.nodes, links: this.props.graphData.links};
+        this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));
+      }
+
+      if (this.props.displayMinimap === false) { this.props.graph.hideMinimap(); }
+
     }
 
     componentWillReceiveProps(nextprops) {
@@ -68,7 +71,7 @@ class Graph extends Component {
         return (
             <div>
                 {/* Note - this is used for graph injection */}
-                <div id="graph-container" style={{"height": this.props.height + "px", "width": this.props.width + "px"}}></div>
+                <div ref="graphContainer" style={{"height": this.props.height ? this.props.height : this.props.windowHeight + "px", "width": this.props.width ? this.props.width : this.props.windowWidth + "px"}}></div>
             </div>
         );
     }
@@ -89,8 +92,8 @@ function mapStateToProps(state) {
         graphData = state.graph.data;
     }
     return {
-        height: window.innerHeight,
-        width: Math.max(window.innerWidth),
+        windowHeight: window.innerHeight,
+        windowWidth: Math.max(window.innerWidth),
         project: state.project.currentProject,
         graphData: graphData
     };

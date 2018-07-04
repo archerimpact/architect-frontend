@@ -62,7 +62,36 @@ class NavBar extends Component {
 
     render() {
         const authenticated = (
-            <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div>
+          <div id="top">
+            <header className="main-header">
+              <nav className="primary">
+                <ul id="primary-navigation">
+                  <li className="menu-item">
+                    <a href="team">About</a>
+                  </li>
+                </ul>
+              </nav>
+              <span className="logo-header">
+                <a href="/">
+                  <img className="logo-image" src="logo.png" alt="" />
+                </a>
+              </span>
+              <div className="control">
+                {/* <nav class="secondary">
+                  <ul id="secondary-navigation">
+                    <li class="menu-button">
+                      <a>Archer Labs</a>
+                    </li>
+                    <li class="menu-button-secondary">
+                      <a>Merch</a>
+                    </li>
+                  </ul>
+                </nav> */}
+              </div>
+            </header>
+          </div>
+            {/*<nav className="navbar navbar-expand-lg navbar-dark bg-primary">
                 <Link className="navbar-brand" to="/">
                     <span className="architect">ARCHITECT</span>
                 </Link>
@@ -84,7 +113,8 @@ class NavBar extends Component {
                         </NavLink>
                     </ul>
                 </div>
-            </nav>
+            </nav>*/}
+          </div>
         );
 
         const unauthenticated = (
