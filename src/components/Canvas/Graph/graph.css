@@ -98,7 +98,7 @@ path.link.selected {
     transition-duration: 50ms;
 }
 
-.node tspan {
+.node-name tspan {
     stroke: #fff;
     stroke-width: 3px;
     font-size: 15px;
@@ -113,18 +113,13 @@ path.link.selected {
     fill: #545454;
 }
 
-.node circle {
-    cursor: pointer;
-    stroke-width: 3px;
-}
-
 .node.grouped circle {
     fill: #7cbdff;
 }
 
 .node circle {
     cursor: pointer;
-    stroke-width: 2.6px;
+    stroke-width: 4.5px;
 }
 
 .node.fixed circle.node-circle:not(.hull-node) {

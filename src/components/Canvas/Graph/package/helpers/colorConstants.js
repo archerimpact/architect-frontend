@@ -15,5 +15,3 @@ export const NODE_COLORS = {
     'group': '#008080',
     'same_as_group': '#008080'
 }
-
-//export const NODE_FILL_COLORS

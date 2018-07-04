@@ -282,18 +282,6 @@ class Graph {
                 action: (elm, d, i) => {
                     this.expandNodeFromData(d);
                 }
-                // subtype: 'checklist',
-                // children: [
-                //   {
-                //     title: 'hi'
-                //   },
-                //   {
-                //     title: 'hello'
-                //   },
-                //   {
-                //     title: 'world'
-                //   }
-                // ]
             }
 
         ]
@@ -421,39 +409,24 @@ class Graph {
         return markerList;
     }
 
-    initializeFilters = () => {
-        const filter = this.defs.append('filter')
-            .attr('id', 'link-text-filter')
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("width", 1)
-            .attr("height", 1);
+    useFilterFlood = (colorHex) => {
+        const filterId = `filter-flood-${colorHex}`;
+        if (this.defs.selectAll(`#${filterId}`).empty()) {
+            const filter = this.defs.append('filter')
+                .attr('id', filterId);
 
-        filter.append('feFlood')
-            .attr('flood-color', 'rgba(255, 255, 255, 1)')
-            .attr('result', 'text-background-fill');
+            filter.append('feFlood')
+                .attr('flood-color', `#${colorHex}`)
+                .attr('result', 'flood');
 
-        const filterMerge = filter.append('feMerge');
-        filterMerge.append('feMergeNode')
-            .attr('in', 'text-background-fill');
-        filterMerge.append('feMergeNode')
-            .attr('in', 'SourceGraphic');
+            const filterMerge = filter.append('feMerge');
+            filterMerge.append('feMergeNode')
+                .attr('in', 'flood');
+            filterMerge.append('feMergeNode')
+                .attr('in', 'SourceGraphic');
+        }
 
-        // filter.append('feGaussianBlur')
-        //     .attr('in', 'SourceGraphic')
-        //     .attr('stdDeviation', 3)
-        //     .attr('result', 'blur');
-
-        // filter.append('feColorMatrix')
-        //     .attr('in', 'blur')
-        //     .attr('mode', 'matrix')
-        //     .attr('values', '1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9')
-        //     .attr('result', 'color');
-
-        // filter.append('feComposite')
-        //     .attr('in', 'SourceGraphic')
-        //     .attr('in2', 'color')
-        //     .attr('operator', 'atop');
+        return `url(#${filterId})`;
     }
 
     initializeDragLink = () => {
@@ -610,7 +583,6 @@ class Graph {
         this.initializeMenuActions();
         this.initializeContextMenu();
         this.initializeMarkers();
-        this.initializeFilters();
 
         // this.initializeToolbarButtons();
         // this.initializeZoomButtons();

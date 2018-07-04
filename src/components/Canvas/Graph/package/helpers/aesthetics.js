@@ -98,7 +98,7 @@ export function resetDragLink(self) {
 }
 
 // Wrap text
-export function wrapNodeText(textSelection, printFull, width = 100) {
+export function wrapNodeText(textSelection, printFull, width=100) {
     textSelection.each(function (d) {
         const text = d3.select(this);
         const tokens = text.text().split(' ');
@@ -142,8 +142,6 @@ export function wrapNodeText(textSelection, printFull, width = 100) {
 }
 
 export function updateLinkText(selection) {
-    this.link.attr('stroke-dasharray', 'none');
-
     const linkEnter = this.linkContainer.selectAll('.link-text')
         .data(selection, (l) => { return l.id; });
 
