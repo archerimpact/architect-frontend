@@ -25,7 +25,6 @@ export function saveCurrentProjectData(graph) {
         } else {
           image_string = null
         }
-        debugger;
         server.updateProject({id: projid, d3Data: data, image: image_string})
         .then((res) => {
             if (res.success) {

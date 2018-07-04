@@ -10,11 +10,7 @@ import EntityCard from "../entityCard";
 import EntityAttributes from "../entityAttributes";
 import * as server from "../../../server";
 
-
-// const tab_style = {
-//   backgroundColor: '#FFFFFF',
-//   color: '#747474'
-// };
+const pageHeight = window.innerHeight;
 
 class Entity extends Component {
 
@@ -215,11 +211,11 @@ class Entity extends Component {
             ['incorporation_date', 'Incorporation Date']
         ];
         if (this.state.currentEntity === null) {
-            return <div className="sidebar-content-container"> Click a node to view information about it </div>
+            return <div className="sidebar-content-container" style={{paddingTop: pageHeight / 3}}> Click a node to view information about it </div>
         }
         let id = decodeURIComponent(this.props.match.params.query);
         return (
-            <div className="sidebar-content-container">
+            <div className="sidebar-content-container" style={{paddingTop: 20, paddingLeft: 20, paddingRight: 20}}>
                 {this.renderEntity(this.state.currentEntity.nodes.filter(n => n.id === id)[0], this.state.currentEntity.nodes, this.state.currentEntity.links, keys)}
             </div>
         );
@@ -235,7 +231,6 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, props) {
     return {
-        currentNode: state.project.currentProject.currentNode,
         currentEntity: state.graph.currentEntity
     };
 }

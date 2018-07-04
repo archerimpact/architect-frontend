@@ -9,7 +9,7 @@ import {
 } from "../actions/actionTypes";
 
 const initialState = {
-    sidebarVisible: true
+    sidebarVisible: false
 }
 
 
@@ -24,7 +24,7 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 data: null,
-                currentEntity: null,
+                // currentEntity: null,
                 currentNode: null
             };
         case STORE_SEARCH_RESULTS:
@@ -52,11 +52,11 @@ export default function (state = initialState, action) {
                 ...state,
                 data: action.payload.data
             };
-        case STORE_ENTITY:
-            return {
-                ...state,
-                currentEntity: action.payload
-            };
+        // case STORE_ENTITY:
+        //     return {
+        //         ...state,
+        //         currentEntity: action.payload
+        //     };
         default:
             return state;
     }
