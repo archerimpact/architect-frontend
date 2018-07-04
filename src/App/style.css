@@ -19,10 +19,6 @@ body {
   height: calc(100% - 46px);
 }
 
-.no-nav {
-  height: 100%;
-}
-
 a {
   color: #4f4844;
 }
