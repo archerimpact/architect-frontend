@@ -20,7 +20,12 @@ class Vignette extends Component {
 
     componentDidMount() {
       this.graph.flushData();
-
+      server.searchBackendText("Ma Xiaohong")
+        .then((data) => {
+          let neo4j_id = data.hits.hits[0]._id
+          this.props.dispatch(graphActions.addToGraphFromId(this.graph, neo4j_id));
+        })
+        .catch((err)=> {console.log(err)});
     }
 
     onEntityClick = (string) => {
@@ -44,7 +49,7 @@ class Vignette extends Component {
                   <p className="vignette-subheader">By the Archer Team</p>
                 </div>
                 <div className='vignette-text'>
-                  {/*<div>
+                  <div>
                     A search for “North Korea” on the SanctionsExplorer website returns 411 results.  On the OFAC website, the same search reveals only two listings (an exact name match). Even searching for the four most obvious North Korean sanctions programs together (DPRK, DPRK2, DPRK3, DPRK4) only give 355 entitities total.
 
                     <br/>Why the discrepancy? Key individuals like <button onClick={() => {this.onEntityClick("Ma Xiaohong")}}>Ma Xiaohong </button> were designated under the NPWMD program (with nationals of all countries) instead of a country-specific program. As a result, SanctionExplorer’s 411 results captures a fuller picture of the North Korean sanctions programs, identifying an additional 28 individuals and 28 entities.
@@ -57,7 +62,7 @@ class Vignette extends Component {
                     the year —  has already reached 87 listings, pointing to 
                     growing fears over North Korea’s rapidly expanding
                     nuclear capability. 
-                  </div>*/}
+                  </div>
 
                 {/*
                   <div>
@@ -81,7 +86,7 @@ class Vignette extends Component {
                     Korea Ryonbong was blacklisted in April 2009. The draft resolution says it is “a defense conglomerate specializing in acquisition for DPRK defense industries and support to ... military-related sales.”
                   </div>*/}
 
-                  <div>
+                  {/*<div>
 <button onClick={() => {this.onEntityClick("FELIX RAMON BAUTISTA ROSARIO")}}>FELIX RAMON BAUTISTA ROSARIO</button>
 <br/>Bautista is a Senator from the Dominican Republic who has engaged in significant acts of corruption in both the Dominican Republic and Haiti, and who has been publicly accused of money laundering and embezzlement. Bautista has reportedly engaged in bribery in relation to his position as a Senator, and is alleged to have engaged in corruption in Haiti, where he used his connections to win public works contracts to help rebuild Haiti following several natural disasters, including one case where his company was paid over $10 million for work it had not completed.
 
@@ -94,7 +99,7 @@ In a related action, OFAC designated five entities in the Dominican Republic tha
 <br/>As a result of these actions, any property, or interest in property, of those designated today within U.S. jurisdiction is blocked. Additionally, U.S. persons are generally prohibited from engaging in transactions with blocked persons, including entities 50 percent or more owned by designated persons.
 
 
-                  </div>
+                  </div>*/}
                 </div>
               </div>
               <div className='box-right'>

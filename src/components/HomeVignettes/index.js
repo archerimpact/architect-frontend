@@ -13,9 +13,9 @@ export default class HomeVignettes extends Component {
             <div className='logo-container'>
               <img className="logo-center" src="logo.png" />
             </div>
-            {/*<div className="search-main" style={{height: '100%'}}>
+            <div className="search-main" style={{height: '100%'}}>
                 <DatabaseSearchBar showSettings={false}/>
-            </div>*/}
+            </div>
             <div className='vignettes'>
               <Vignette key={1}/>
               <Vignette key={2}/>
