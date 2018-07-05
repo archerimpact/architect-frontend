@@ -44,13 +44,10 @@ class App extends Component {
 
     isNavbarVisible(props) {
         // var exploreCanvasPath = RegExp('/explore/*');
-        // var buildCanvasPath = new RegExp('/build/\\S+');
-        // let currentPath = props.location.pathname;
-        // if (buildCanvasPath.test(currentPath)) {
-        //     return false;
-        // }
-        // return true;
-        return true;
+      const buildCanvasPath = new RegExp('/build/\\S+');
+      const homePath = new RegExp('/'); 
+      let currentPath = props.location.pathname;
+      return !(buildCanvasPath.test(currentPath) || homePath.test(currentPath));
     }
 
     render() {
@@ -58,8 +55,6 @@ class App extends Component {
             <div>
                 {!this.state.navbarVisible ?
                     null : null
-                    
-
                     /*<NavBar isAuthenticated={this.props.isAuthenticated} logOut={this.logOut.bind(this)}
                             logIn={this.logIn.bind(this)}/>*/
                 }

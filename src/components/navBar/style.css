@@ -254,7 +254,7 @@ nav.secondary.menu-button-secondary {
 
 */
 
-.navbar-expand-lg .navbar-nav .nav-link {
+/*.navbar-expand-lg .navbar-nav .nav-link {
     padding: 0;
 }
 
@@ -266,10 +266,6 @@ nav.navbar {
 .active > .nav-link {
     color: #ff7700 !important;
 }
-
-/*.nav-item {
-    border-bottom: 3px solid transparent;
-}*/
 
 .nav-link:hover, .nav-link:focus {
     color: #ff7700 !important;
@@ -291,4 +287,4 @@ nav.navbar {
 
 .navbar-dark {
     background-color: #343a40 !important;
-}
+}*/

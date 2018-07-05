@@ -609,10 +609,10 @@ class Graph {
         this.setupKeycodes();
 
         // Create selectors
-        this.hull = this.container.append('g').attr('class', 'hull-items').selectAll('.hull');
         this.linkContainer = this.container.append('g').attr('class', 'link-items');
         this.linkText = this.linkContainer.selectAll('.link-text');
         this.link = this.linkContainer.selectAll('.link');
+        this.hull = this.container.append('g').attr('class', 'hull-items').selectAll('.hull');
         this.node = this.container.append('g').attr('class', 'node-items').selectAll('.node');
 
         this.force.on('tick', (e) => { this.ticked(e, this) });
@@ -919,7 +919,7 @@ class Graph {
                         })
                         .classed('fixed', false);
                 }
-
+          
                 // g: Group selected nodes
                 else if (d3.event.keyCode === 71) { this.groupSelectedNodes();}
 

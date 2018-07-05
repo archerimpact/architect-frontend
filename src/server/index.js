@@ -68,22 +68,10 @@ export function searchBackendText(searchQuery) {
      }]
      */
 
-    var url = configData.elastic_url + '/_search';
-    var query = {
-        query: {
-            match: {
-                "name": {
-                    query: searchQuery,
-                    fuzziness: 2
-                }
-            }
-        },
-        size: 50,
-    };
+    var url = configData.arch_url + '/?search=' + searchQuery;
     return new Promise(function (fulfill, reject) {
         axios.get(url, {
             params: {
-                source: JSON.stringify(query),
                 source_content_type: 'application/json'
             }
         })

@@ -22,7 +22,7 @@ class Vignette extends Component {
       this.graph.flushData();
       server.searchBackendText("Ma Xiaohong")
         .then((data) => {
-          let neo4j_id = data.hits.hits[0]._id
+          let neo4j_id = data[0].id
           this.props.dispatch(graphActions.addToGraphFromId(this.graph, neo4j_id));
         })
         .catch((err)=> {console.log(err)});
@@ -33,7 +33,7 @@ class Vignette extends Component {
       var graph = this.graph;
       server.searchBackendText(string)
         .then((data) => {
-          let neo4j_id = data.hits.hits[0]._id
+          let neo4j_id = data[0].id
           this.props.dispatch(graphActions.addToGraphFromId(graph, neo4j_id));
         })
         .catch((err)=> {console.log(err)})
