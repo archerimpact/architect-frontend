@@ -22,19 +22,23 @@ class Entity extends Component {
     }
 
     componentWillMount() {
-        server.getNode(decodeURIComponent(this.props.id), false)
-        .then(d => {
-            this.setState({currentEntity: d})
-        })
-        .catch(err => console.log(err));
+        if (this.props.id) {
+            server.getNode(decodeURIComponent(this.props.id), false)
+                .then(d => {
+                    this.setState({currentEntity: d})
+                })
+                .catch(err => console.log(err));
+        }
     }
 
     componentWillReceiveProps(nextprops) {
-        server.getNode(decodeURIComponent(this.props.id), false)
-        .then(d => {
-            this.setState({currentEntity: d})
-        })
-        .catch(err => console.log(err));
+        if (this.props.id) {
+            server.getNode(decodeURIComponent(this.props.id), false)
+                .then(d => {
+                    this.setState({currentEntity: d})
+                })
+                .catch(err => console.log(err));
+        }
     }
 
 
@@ -199,7 +203,7 @@ class Entity extends Component {
                 </div>
             </div>
         )
-    }
+    };
 
     render() {
         const keys = [
@@ -211,7 +215,7 @@ class Entity extends Component {
             ['incorporation_date', 'Incorporation Date']
         ];
         if (this.state.currentEntity === null) {
-            return <div className="sidebar-content-container" style={{paddingTop: pageHeight / 3}}> Click a node to view information about it </div>
+            return <div className="sidebar-content-container placeholder-text" style={{paddingTop: pageHeight / 3}}> Click a node to view information about it </div>
         }
         let id = decodeURIComponent(this.props.match.params.query);
         return (

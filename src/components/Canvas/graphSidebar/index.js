@@ -39,8 +39,6 @@ class GraphSidebar extends Component {
         }
     }
 
-
-
     toggleSidebar = (tabName) => {
         const doNothing = () => {};
         const toggleSidebar = () => this.props.dispatch(actions.toggleSidebar());
