@@ -13,7 +13,7 @@ const initialState = {
     canvas: {
         data: null,
         currentNode: null,
-        searchData: null
+        searchData: []
     }
 };
 

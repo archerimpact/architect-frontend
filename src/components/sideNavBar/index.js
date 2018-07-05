@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
-import { resetGraphDispatch } from '../../redux/actions/graphActions';
+import { resetGraphDispatch, toggleSidebar } from '../../redux/actions/graphActions';
 
 import './style.css'
 
@@ -10,12 +10,12 @@ const SideNavBar = ({ dispatch }) => {
   return (
     <div className="side-nav">
       <ReactTooltip place="right" effect="solid"/>
-      <Link to='/' onClick={() => { dispatch(resetGraphDispatch()); }}>
+      <Link to='/'>
         <div className="side-nav-button" data-tip="Home">
           <i className="material-icons">home</i>
         </div>
       </Link>
-      <Link to='/explore'>
+      <Link to='/explore/search'>
         <div className="side-nav-button" data-tip="Graph">
           <i className="material-icons">data_usage</i>
         </div>
@@ -48,8 +48,14 @@ const SideNavBar = ({ dispatch }) => {
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch: dispatch
+    dispatch: dispatch,
   };
 }
 
-export default withRouter(connect(mapDispatchToProps)(SideNavBar));
+function mapStateToProps(state) {
+  return {
+    sidebarVisible: state.graph.sidebarVisible
+  };
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SideNavBar));
