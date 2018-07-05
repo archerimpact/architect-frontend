@@ -3,31 +3,24 @@ import React, {Component} from "react";
 import "./style.css";
 
 import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
 import {withRouter} from "react-router-dom";
 import EntityCard from "../entityCard";
 import EntityAttributes from "../entityAttributes";
 import * as server from "../../../server";
-
-
-// const tab_style = {
-//   backgroundColor: '#FFFFFF',
-//   color: '#747474'
-// };
 
 class Entity extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            currentEntity: null,
+            currentEntityDegreeOne: null,
         };
     }
 
     componentWillMount() {
         server.getNode(decodeURIComponent(this.props.id), false)
         .then(d => {
-            this.setState({currentEntity: d})
+            this.setState({currentEntityDegreeOne: d})
         })
         .catch(err => console.log(err));
     }
@@ -35,7 +28,7 @@ class Entity extends Component {
     componentWillReceiveProps(nextprops) {
         server.getNode(decodeURIComponent(this.props.id), false)
         .then(d => {
-            this.setState({currentEntity: d})
+            this.setState({currentEntityDegreeOne: d})
         })
         .catch(err => console.log(err));
     }
@@ -205,6 +198,7 @@ class Entity extends Component {
     }
 
     render() {
+        console.log("this.state", this.state);
         const keys = [
             ['registered_in', 'Registered In'],
             ['birthdate', 'Date of Birth'],
@@ -213,13 +207,13 @@ class Entity extends Component {
             ['last_seen', 'Last Seen'],
             ['incorporation_date', 'Incorporation Date']
         ];
-        if (this.state.currentEntity === null) {
+        if (this.state.currentEntityDegreeOne === null) {
             return <div className="sidebar-content-container"> Click a node to view information about it </div>
         }
         let id = decodeURIComponent(this.props.match.params.query);
         return (
             <div className="sidebar-content-container">
-                {this.renderEntity(this.state.currentEntity.nodes.filter(n => n.id === id)[0], this.state.currentEntity.nodes, this.state.currentEntity.links, keys)}
+                {this.renderEntity(this.state.currentEntityDegreeOne.nodes.filter(n => n.id === id)[0], this.state.currentEntityDegreeOne.nodes, this.state.currentEntityDegreeOne.links, keys)}
             </div>
         );
     }
@@ -234,7 +228,7 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state, props) {
     return {
         currentNode: state.graph.currentNode,
-        currentEntity: state.graph.currentEntity
+        currentEntityDegreeOne: state.graph.currentEntityDegreeOne
     };
 }
 
