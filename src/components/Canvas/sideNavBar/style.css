@@ -1,5 +1,5 @@
 .side-nav {
-  position: absolute;
+  position: fixed;
   height: 100%;
   width: 55px;
   background: #252525;

@@ -7,7 +7,6 @@
 body {
     min-width: 900px;
     font: normal 16px arial, sans-serif;
-    height: 100vh;
     width: 100%;
     overflow: hidden;
 }
@@ -19,7 +18,7 @@ body {
     user-select: none; /* Standard */
 }
 
-#graph-container {
+.graph-container {
     height: 100%;
 }
 
@@ -33,13 +32,15 @@ svg {
 }
 
 svg rect.extent {
-    stroke: rgb(120, 120, 120, .3);
+    stroke: rgb(120, 120, 120);
+    stroke-opacity: .3;
     stroke-width: 2px;
     fill: rgb(190, 219, 243, .2);
 }
 
 svg line {
-    stroke: rgb(191, 191, 191, 0.3);
+    stroke: rgb(191, 191, 191);
+    stroke-opacity: .3;
     stroke-width: 1.5px;
 }
 

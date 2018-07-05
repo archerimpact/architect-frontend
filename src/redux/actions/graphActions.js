@@ -34,14 +34,16 @@ export function setCurrentNode(d) {
 export function addToGraphFromId(graph, id) {
     return (dispatch) => {
         server.getNode(id)
-        .then(data => {
-            graph.addData(data.centerid, makeDeepCopy(data.nodes), makeDeepCopy(data.links));
-            graph.update();
-        })
-        .catch(err => {
-            console.log(err);
-        });
-    }
+          .then(data => {
+              graph.addData(data.centerid, makeDeepCopy(data.nodes), makeDeepCopy(data.links));
+              graph.update();
+              // dispatch(saveCurrentProjectData(graph));
+              // dispatch(updateGraphDispatch(data)); // right here change to saveCurrentProjectData
+          })
+          .catch(err => {
+              console.log(err);
+          });
+    };
 }
 
 /* =============================================================================================  */
