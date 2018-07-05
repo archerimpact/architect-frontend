@@ -64,7 +64,7 @@ class NavBar extends Component {
         const authenticated = (
             <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
                 <Link className="navbar-brand" to="/">
-                    <span className="architect">ARCHITECT</span>
+                    <span className="architect">Archer</span>
                 </Link>
 
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02">
@@ -90,7 +90,7 @@ class NavBar extends Component {
         const unauthenticated = (
             <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
                 <Link className="navbar-brand" to="/">
-                    <span className="architect">ARCHITECT</span>
+                    <span className="architect">Archer</span>
                 </Link>
 
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02">
