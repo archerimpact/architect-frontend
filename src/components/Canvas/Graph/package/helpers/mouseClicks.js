@@ -265,12 +265,6 @@ export function stopPropagation() {
 
 // SVG zoom & pan
 export function zoomstart(d, self) {
-    // const e = d3.event;
-    if (isRightClick()) {
-        this.zoomTranslate = this.zoom.translate();
-        this.zoomScale = this.zoom.scale();
-    }
-
     this.isZooming = true;
     this.zoomTranslate = this.zoom.translate();
     this.zoomScale = this.zoom.scale();
