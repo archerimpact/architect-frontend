@@ -9,8 +9,13 @@ import {
 } from "../actions/actionTypes";
 
 const initialState = {
-    sidebarVisible: true
-}
+    sidebarVisible: true,
+    canvas: {
+        data: null,
+        currentNode: null,
+        searchData: null
+    }
+};
 
 
 export default function (state = initialState, action) {
