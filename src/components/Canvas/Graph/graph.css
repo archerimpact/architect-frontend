@@ -173,6 +173,54 @@ path.link.selected {
     fill: #bbbbbb !important;
 }
 
+.node circle {
+    cursor: pointer;
+    stroke-width: 2.6px;
+}
+
+.node circle.hull-node {
+    stroke-width: 2.4px;
+}
+
+.node.fixed circle.node-circle {
+    fill: #bbbbbb !important;
+}
+
+.node.selected circle {
+    stroke: #0d77e2 !important;
+}
+
+.node.selected circle.hull-node {
+    stroke: #fff !important;;
+    fill: #0d77e2 !important;
+}
+
+.node.selected .icon {
+    fill: #0d77e2 !important;
+}
+
+.node-glyph.hidden {
+    display: none;
+}
+
+.node.selected circle.node-glyph {
+    fill: #0d77e2 !important;
+}
+
+.glyph-label {
+    font-size: 10px;
+    stroke: none;
+    fill: #ebebeb;
+}
+
+.glyph-label.hidden {
+    display: none;
+}
+
+.node.fixed text.glyph-label {
+    fill: #bbbbbb !important;
+}
+
 .hull, path {
     fill: #0d77e2;
     stroke-opacity: 1;

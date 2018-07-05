@@ -134,7 +134,7 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
     return {
-        sidebarVisible: state.project.sidebarVisible
+        sidebarVisible: state.graph.sidebarVisible
     };
 }
 
