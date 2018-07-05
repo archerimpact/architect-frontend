@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import Data from '../Data';
 
 import './style.css';
 
 class SpacesPreview extends Component {
-
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     if (this.props.project) {
       let nodesLength = this.props.project.data && this.props.project.data.nodes ? this.props.project.data.nodes.length : 0;
@@ -58,7 +53,7 @@ class SpacesPreview extends Component {
               <div className="card-header image-header toaster-button">Go to Space</div>
             </Link>
             <div className="card-body">
-              <img className="image-full" src={this.props.project.preview_img}></img>
+              <img className="image-full" src={this.props.project.preview_img} alt="Project preview"></img>
             </div>
           </div>
           <div className="card card-header data-section delete-button" onClick={() => {this.props.onDelete(this.props.project)}}>Delete Space</div>

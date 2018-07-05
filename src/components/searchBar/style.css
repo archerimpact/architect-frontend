@@ -19,11 +19,9 @@
     max-height: 48px;
     font-size: 16px;
     width: 100%;
-    padding-left: 20px;
-    padding-right: 20px;
     border: none;
     display: inline-block;
-    padding: 14px;
+    padding: 20px 10px;
 }
 
 .search-form {
@@ -57,18 +55,18 @@
 }
 
 #search-icon {
-    padding-right: 20px;
+    padding-left: 10px;
+    -moz-transform: scaleX(-1);
+        -o-transform: scaleX(-1);
+        -webkit-transform: scaleX(-1);
+        transform: scaleX(-1);
+        filter: FlipH;
+        -ms-filter: "FlipH";
 }
 
 /* filter bar */
 .settings-collapsed {
-    height: 0px;
-    -webkit-transition: height, 0.5s linear;
-    -moz-transition: height, 0.5s linear;
-    -ms-transition: height, 0.5s linear;
-    -o-transition: height, 0.5s linear;
-    transition: height, 0.5s linear;
-    background-color: aliceblue;
+    display: none;
 }
 
 .sexy-select {

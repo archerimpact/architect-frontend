@@ -4,8 +4,8 @@ import "./style.css";
 
 class SearchBar extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             settingsExpanded: false
         };
@@ -44,7 +44,7 @@ class SearchBar extends Component {
     render() {
         return (
             <div>
-                <div className="search-input-container">
+                <div id={this.props.homeSearchContainerId} className="search-input-container">
                     <div className="d-flex flex-row full-height">
                         { !this.props.showSettings ?
                             null :
@@ -53,10 +53,11 @@ class SearchBar extends Component {
                             }}>sort</i>
                         }
                         <form className="search-form" onSubmit={(e) => this.submitSearch(e)}>
-                            <input className="search-input"
+                            <input id={this.props.homeSearchInputId}
+                                   className="search-input"
                                    ref="query"
                                    type="text"
-                                   placeholder="Search our connected data"
+                                   placeholder="Search across 500+ connected public datasets..."
                             />
                         </form>
                         <i id="search-icon" className="searchbar-icon mr-auto material-icons"

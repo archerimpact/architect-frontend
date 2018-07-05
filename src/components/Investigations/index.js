@@ -2,13 +2,10 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { getProjects, deleteProject } from "../../redux/actions/projectActions";
 
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 import Spaces from './Spaces';
-import Data from './Data';
 import SpacesPreview from './SpacesPreview';
-
-import InlineSVG from 'svg-inline-react';
 
 import "./style.css";
 

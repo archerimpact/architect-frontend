@@ -34,12 +34,11 @@ class BackendSearch extends Component {
         } else {
             return (
                 <div className="search-results">
-                    { !this.props.searchData ?
-                        null :
+                    {
                         this.props.searchData.map((entity) => {
                             return (
                                 // <EntityCard data={entity} addToGraph={this.addToGraph} />
-                                <SearchCard key={entity._id} id={entity._id} data={entity} graph={this.props.graph}/>
+                                <SearchCard key={entity.id} id={entity.id} data={entity} graph={this.props.graph}/>
                             );
                         })
                     }
@@ -56,14 +55,9 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state) {
-    if (state.graph.canvas) {
-        return {
-            searchData: state.graph.canvas.searchData
-        }
-    }
     return {
-        searchData: null
-    };
+        searchData: state.graph.canvas.searchData
+    }
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(BackendSearch));
