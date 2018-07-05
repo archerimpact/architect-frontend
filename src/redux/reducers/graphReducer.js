@@ -9,13 +9,12 @@ import {
 } from "../actions/actionTypes";
 
 const initialState = {
+    sidebarVisible: true,
     canvas: {
         data: null,
-        currentEntity: null,
         currentNode: null,
-        searchData: null
-    },
-    sidebarVisible: false
+        searchData: []
+    }
 };
 
 export default function (state = initialState, action) {
@@ -29,7 +28,6 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 data: null,
-                currentEntity: null,
                 currentNode: null
             };
         case STORE_SEARCH_RESULTS:
@@ -60,7 +58,7 @@ export default function (state = initialState, action) {
         case STORE_ENTITY:
             return {
                 ...state,
-                currentEntity: action.payload
+                currentEntityDegreeOne: action.payload
             };
         default:
             return state;
