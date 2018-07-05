@@ -103,7 +103,7 @@ In a related action, OFAC designated five entities in the Dominican Republic tha
                 </div>
               </div>
               <div className='box-right'>
-                <Graph graph={this.graph} height={480} width={600} displayMinimap={false} />
+                <Graph graph={this.graph} height={480} width={600} displayMinimap={false} allowKeycodes={false} />
               </div>
             </div>
         );

@@ -29,7 +29,7 @@ class Graph extends Component {
 
     componentDidMount() {
       // this.props.dispatch(initializeCanvas(this.props.graph, this.props.width, this.props.height));
-      this.props.graph.generateCanvas(this.props.width ? this.props.width : this.props.windowWidth, this.props.height ? this.props.height: this.props.windowHeight, this.refs.graphContainer);
+      this.props.graph.generateCanvas(this.props.width ? this.props.width : this.props.windowWidth, this.props.height ? this.props.height: this.props.windowHeight, this.refs.graphContainer, this.props.allowKeycodes);
       this.props.graph.setData(0, [], []);
       this.props.graph.bindDisplayFunctions({
         expand: this.expandNodeFromData,
@@ -43,7 +43,6 @@ class Graph extends Component {
       }
 
       if (this.props.displayMinimap === false) { this.props.graph.hideMinimap(); }
-
     }
 
     componentWillReceiveProps(nextprops) {

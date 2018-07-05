@@ -549,7 +549,7 @@ class Graph {
     //     .classed('selected', isSelected);
     // }
 
-    generateCanvas = (width, height, graphRef) => {
+    generateCanvas = (width, height, graphRef, allowKeycodes=true) => {
         this.width = width;
         this.height = height;
         this.center = [this.width / 2, this.height / 2];
@@ -605,8 +605,7 @@ class Graph {
         // this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => {
         //     this.saveAllData()
         // }); // Placeholder method
-
-        this.setupKeycodes();
+        if (this.setupKeycodes === true) { this.setupKeycodes(); }
 
         // Create selectors
         this.linkContainer = this.container.append('g').attr('class', 'link-items');
