@@ -97,7 +97,8 @@ export function fetchSearchResults(query) {
     return (dispatch) => {
         server.searchBackendText(query)
         .then((data) => {
-            dispatch(fetchSearchResultsDispatch(data.hits.hits));
+          debugger
+            dispatch(fetchSearchResultsDispatch(data));
         })
         .catch((error) => console.log(error));
     }

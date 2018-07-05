@@ -95,21 +95,21 @@ class SearchCard extends Component {
                 <div className="card-header result-card-header flex-row d-flex">
                     {this.renderButtons()}
                     <span className="collapse-link" onClick={this.toggleCollapse}>
-            {this.state.data._source.name || this.state.data._source.combined || this.state.data._source.number || this.state.data.description}
+            {this.state.data.name || this.state.data.combined || this.state.data.number || this.state.description}
           </span>
 
 
                     <div className="ml-auto card-program">
                         {this.props.data._type}
                         <small className="card-sdn-type">
-                            {this.props.data._source.dataset}
+                            {this.props.data.dataset}
                         </small>
                     </div>
 
                 </div>
                 <div className={this.state.collapsed ? 'collapse' : null}>
                     <div className="card-body result-card-body">
-                        <EntityAttributes node={this.state.data._source}/>
+                        <EntityAttributes node={this.state.data}/>
                     </div>
                 </div>
             </div>
