@@ -53,7 +53,7 @@ svg line {
 
 .link-text {
     stroke: #fff;
-    stroke-width: 2px;
+    stroke-width: 3px;
     fill: #545454;
     paint-order: stroke;
     font-size: 14px;

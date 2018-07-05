@@ -97,6 +97,33 @@ export function resetDragLink(self) {
     self.dragLink.style('visibility', 'hidden');
 }
 
+// Normalize node text to same casing conventions and length
+// printFull states - 0: abbrev, 1: none, 2: full
+export function processNodeName(str, printFull) {
+    if (!str) { return 'Document'; }
+    if (printFull === 1) { return ''; }
+
+    const delims = [' ', '.', '('];
+    for (let i = 0; i < delims.length; i++) {
+        str = splitAndCapitalize(str, delims[i]);
+    }
+
+    return str;
+}
+
+export function splitAndCapitalize(str, splitChar) {
+    let tokens = str.toString().split(splitChar);
+    tokens = tokens.map(function (token, idx) {
+        return capitalize(token, splitChar === ' ');
+    });
+
+    return tokens.join(splitChar);
+}
+
+export function capitalize(str, first) {
+    return str.charAt(0).toUpperCase() + (first ? str.slice(1).toLowerCase() : str.slice(1));
+}
+
 // Wrap text
 export function wrapNodeText(textSelection, printFull, width=100) {
     textSelection.each(function (d) {
@@ -141,6 +168,11 @@ export function wrapNodeText(textSelection, printFull, width=100) {
     });
 }
 
+// Assumes link relationships are all uppercase, separated by undescores
+export function processLinkText(str) {
+    return str.toLowerCase().split('_').join(' ');
+}
+
 export function updateLinkText(selection) {
     const linkEnter = this.linkContainer.selectAll('.link-text')
         .data(selection, (l) => { return l.id; });
@@ -157,13 +189,8 @@ export function updateLinkText(selection) {
         .attr('startOffset', '50%')
         .attr('xlink:href', (l) => { return `#link-${utils.hash(l.id)}`; })
         .attr('length', (l) => { return l.distance; })
-        .text((l) => { return l.type; });
+        .text((l) => { return processLinkText(l.type); });
 
     linkEnter.exit().remove();
     this.force.resume();
-}
-
-export function wrapLinkText(selection) {
-    if (!selection) return;
-    // TODO: Implement later
 }

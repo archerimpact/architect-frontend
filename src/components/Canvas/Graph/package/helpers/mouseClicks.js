@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import * as utils from "./utils.js";
+import * as aesthetics from "./aesthetics.js";
 import {findEntryById, getD3Event, isGroup, isLeftClick, isRightClick, then} from "./utils.js";
 
 import {GRID_LENGTH} from "./constants.js";
@@ -173,7 +174,7 @@ export function mouseover(d, self) {
         if (this.printFull === 0) {
             d3.select(self)
                 .select('.node-name')
-                .text(utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull), 2)
+                .text(aesthetics.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull), 2)
                 .call(this.wrapNodeText, 2);
         }
     }
@@ -205,7 +206,7 @@ export function mouseout(d, self) {
         d3.select(self)
         .select('.node-name')
         .text((d) => {
-            return d.group ? '' : utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull);
+            return d.group ? '' : aesthetics.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull);
         })
         .call(this.wrapNodeText, this.printFull);
     }

@@ -186,33 +186,6 @@ export function findEntryById(dictList, id) {
     return null;
 }
 
-// Normalize node text to same casing conventions and length
-// printFull states - 0: abbrev, 1: none, 2: full
-export function processNodeName(str, printFull) {
-    if (!str) { return 'Document'; }
-    if (printFull === 1) { return ''; }
-
-    const delims = [' ', '.', '('];
-    for (let i = 0; i < delims.length; i++) {
-        str = splitAndCapitalize(str, delims[i]);
-    }
-
-    return str;
-}
-
-export function splitAndCapitalize(str, splitChar) {
-    let tokens = str.toString().split(splitChar);
-    tokens = tokens.map(function (token, idx) {
-        return capitalize(token, splitChar === ' ');
-    });
-
-    return tokens.join(splitChar);
-}
-
-export function capitalize(str, first) {
-    return str.charAt(0).toUpperCase() + (first ? str.slice(1).toLowerCase() : str.slice(1));
-}
-
 // Wrapper to get d3 event without worrying about event vs sourceEvent
 export function getD3Event() {
     if (d3.event) {

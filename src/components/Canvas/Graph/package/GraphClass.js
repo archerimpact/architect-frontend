@@ -758,7 +758,7 @@ class Graph {
             .attr('text-anchor', 'middle')
             .attr('dy', '40px')
             .classed('unselectable', true)
-            .text((d) => { return d.group ? '' : utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
+            .text((d) => { return d.group ? '' : aesthetics.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
             .call(this.wrapNodeText, this.printFull)
             .on('click', function (d) { self.stopPropagation(); })
             .on('mouseover', function (d) { self.stopPropagation(); })
@@ -869,7 +869,7 @@ class Graph {
                 if (textPath[0][0] === null || textPath.text() === "") return 'none';
                 const spaceLength = textPath.node().getComputedTextLength() + textPath.node().getNumberOfChars() * 2 - 10;
                 const lineLength = Math.sqrt(Math.pow(l.sourceX-l.targetX, 2) + Math.pow(l.sourceY-l.targetY, 2)) - spaceLength;
-                return `${lineLength/2-8} ${spaceLength+16}`;
+                return `${lineLength/2-7.5} ${spaceLength+15}`;
             });
 
         this.linkText
@@ -966,7 +966,7 @@ class Graph {
                 else if (d3.event.keyCode === 80) {
                     this.printFull = (this.printFull + 1) % 3;
                     this.selectAllNodeNames()
-                        .text((d) => { return utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
+                        .text((d) => { return aesthetics.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
                         .call(this.wrapNodeText, this.printFull);
                 }
 
@@ -1086,7 +1086,6 @@ Graph.prototype.resetGraphOpacity = aesthetics.resetGraphOpacity;
 Graph.prototype.resetDragLink = aesthetics.resetDragLink;
 Graph.prototype.wrapNodeText = aesthetics.wrapNodeText;
 Graph.prototype.updateLinkText = aesthetics.updateLinkText;
-Graph.prototype.wrapLinkText = aesthetics.wrapLinkText;
 
 // From mouseClicks.js
 Graph.prototype.brushstart = mouseClicks.brushstart;
