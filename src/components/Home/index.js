@@ -1,12 +1,10 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import DatabaseSearchBar from "../databaseSearchBar";
 import Canvas from "../Canvas";
-import {Link, NavLink, withRouter} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import "./style.css";
 import logo from "../../images/architect-logo-light-transparent-cropped.png";
-import decal from "../../images/decal-up-gradient-blue.png";
-import decalFlipped from "../../images/decal-up-gradient-blue-flipped.png";
 
 export default class Home extends Component {
     constructor(props) {

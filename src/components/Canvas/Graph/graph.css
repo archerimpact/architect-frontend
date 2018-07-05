@@ -173,54 +173,6 @@ path.link.selected {
     fill: #bbbbbb !important;
 }
 
-.node circle {
-    cursor: pointer;
-    stroke-width: 2.6px;
-}
-
-.node circle.hull-node {
-    stroke-width: 2.4px;
-}
-
-.node.fixed circle.node-circle {
-    fill: #bbbbbb !important;
-}
-
-.node.selected circle {
-    stroke: #0d77e2 !important;
-}
-
-.node.selected circle.hull-node {
-    stroke: #fff !important;;
-    fill: #0d77e2 !important;
-}
-
-.node.selected .icon {
-    fill: #0d77e2 !important;
-}
-
-.node-glyph.hidden {
-    display: none;
-}
-
-.node.selected circle.node-glyph {
-    fill: #0d77e2 !important;
-}
-
-.glyph-label {
-    font-size: 10px;
-    stroke: none;
-    fill: #ebebeb;
-}
-
-.glyph-label.hidden {
-    display: none;
-}
-
-.node.fixed text.glyph-label {
-    fill: #bbbbbb !important;
-}
-
 .hull, path {
     fill: #0d77e2;
     stroke-opacity: 1;
@@ -308,23 +260,36 @@ path.link.selected {
     color: #545454;
 }
 
+#minimap-frame {
+    fill: #fff;
+    stroke: #545454;
+    stroke-width: 1.5px;
+    opacity: 0.8;
+}
+
 #svg-image {
     border: none;
     cursor: default;
 }
 
-#minimap-box {
-    fill: #fff;
-    opacity: 0.8;
+#minimap-select-fill {
+    fill: #b1b1b1;
+    opacity: 0.4;
 }
 
-#minimap-box-square {
+#minimap-select {
+    cursor: move;
+    stroke: #545454;
+    stroke-width: 1.5px;
+}
+
+/*#minimap-selection {
     fill: #b1b1b1;
     stroke: #545454;
     stroke-width: 1.5px;
     opacity: 0.4;
     cursor: move;
-}
+}*/
 
 .context-menu {
     position: absolute;

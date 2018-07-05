@@ -9,9 +9,14 @@ import {
 } from "../actions/actionTypes";
 
 const initialState = {
-    sidebarVisible: true
-}
-
+    canvas: {
+        data: null,
+        currentEntity: null,
+        currentNode: null,
+        searchData: null
+    }
+    sidebarVisible: false
+};
 
 export default function (state = initialState, action) {
     switch (action.type) {
