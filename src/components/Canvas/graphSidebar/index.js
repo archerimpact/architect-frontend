@@ -20,7 +20,7 @@ class GraphSidebar extends Component {
         };
     }
 
-    componentDidMount() {
+    componentWillMount() {
         let listener = this.props.history.listen((location, action) => {
             this.setState({history: [...this.state.history, location]});
         })
