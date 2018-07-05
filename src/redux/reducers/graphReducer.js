@@ -14,7 +14,7 @@ const initialState = {
         currentEntity: null,
         currentNode: null,
         searchData: null
-    }
+    },
     sidebarVisible: false
 };
 
