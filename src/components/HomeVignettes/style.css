@@ -1,0 +1,39 @@
+.search-main {
+  margin-top: 40px;
+}
+
+.logo-container {
+  margin-top: 30px;
+  height: 40px;
+}
+
+.logo-center {
+  height: 100%;
+  width: auto;
+}
+
+.home-header {
+    font-size: 90px;
+    letter-spacing: 2px;
+    color: #555555
+}
+
+.home-body {
+  text-align: center;
+  padding-left: 145px;
+  padding-right: 90px;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-subheader {
+  margin-top: 15px;
+/*  font-family: 'Courier New', Courier, monospace;
+*/}
+
+.vignettes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content:center;
+}

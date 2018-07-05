@@ -6,10 +6,11 @@ import {Redirect, Route, withRouter} from "react-router-dom";
 import PrivateRoute from "./PrivateRoute/";
 
 import NavBar from "../components/navBar/";
+import SideNavBar from '../components/Canvas/sideNavBar/'
 
 import Login from "../components/Login/";
 import CreateAccount from "../components/CreateAccount/";
-import Home from "../components/Home/";
+import HomeVignettes from "../components/HomeVignettes/";
 import Canvas from "../components/Canvas";
 import Investigations from "../components/Investigations";
 import "./style.css";
@@ -43,22 +44,18 @@ class App extends Component {
 
     isNavbarVisible(props) {
         // var exploreCanvasPath = RegExp('/explore/*');
-        const buildCanvasPath = new RegExp('/build/\\S+');
-        const homePath = new RegExp('/'); 
-        let currentPath = props.location.pathname;
-        return !(buildCanvasPath.test(currentPath) || homePath.test(currentPath));
+      const buildCanvasPath = new RegExp('/build/\\S+');
+      const homePath = new RegExp('/'); 
+      let currentPath = props.location.pathname;
+      return !(buildCanvasPath.test(currentPath) || homePath.test(currentPath));
     }
 
     render() {
         return (
             <div>
-                {!this.state.navbarVisible ?
-                    null :
-                    <NavBar isAuthenticated={this.props.isAuthenticated} logOut={this.logOut.bind(this)}
-                            logIn={this.logIn.bind(this)}/>
-                }
-                <div className={"main " + (this.state.navbarVisible ? "show-nav" : "no-nav")}>
-                    <PrivateRoute exact path="/" component={Home}/>
+                <SideNavBar />
+                <div className={"main " + (this.state.navbarVisible ? "no-nav" : "no-nav")}>
+                    <PrivateRoute exact path="/" component={HomeVignettes}/>
                     <Route path="/login" component={Login}/>
                     <Route path="/create_account" component={CreateAccount}/>
                     <PrivateRoute path="/explore/:sidebarState?" component={Canvas}/>

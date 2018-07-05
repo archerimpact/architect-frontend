@@ -69,15 +69,15 @@ function updateGraphDispatch(data) {
 export function addToGraphFromId(graph, id) {
     return (dispatch) => {
         server.getNode(id)
-            .then(data => {
-                graph.addData(data.centerid, makeDeepCopy(data.nodes), makeDeepCopy(data.links));
-                graph.update();
-                dispatch(saveCurrentProjectData(graph));
-                // dispatch(updateGraphDispatch(data)); // right here change to saveCurrentProjectData
-            })
-            .catch(err => {
-                console.log(err);
-            });
+          .then(data => {
+              graph.addData(data.centerid, makeDeepCopy(data.nodes), makeDeepCopy(data.links));
+              graph.update();
+              // dispatch(saveCurrentProjectData(graph));
+              // dispatch(updateGraphDispatch(data)); // right here change to saveCurrentProjectData
+          })
+          .catch(err => {
+              console.log(err);
+          });
     };
 }
 
@@ -94,10 +94,10 @@ export function fetchSearchResults(query) {
     return (dispatch) => {
         if (OFFLINE_ACTIONS) return;
         server.searchBackendText(query)
-            .then((data) => {
-                dispatch(fetchSearchResultsDispatch(data));
-            })
-            .catch((error) => console.log(error));
+        .then((data) => {
+            dispatch(fetchSearchResultsDispatch(data));
+        })
+        .catch((error) => console.log(error));
     }
 }
 
