@@ -9,7 +9,7 @@ import {
 } from "../actions/actionTypes";
 
 const initialState = {
-    sidebarVisible: false,
+    sidebarVisible: true,
     canvas: {
         data: null,
         currentNode: null,

@@ -9,7 +9,6 @@ export default class App extends Component {
     render() {
         return (
           <div>
-            <SideNavBar />
             <div className="main">
                 <Route exact path="/" component={HomeVignettes}/>
                 <Route path="/explore/:sidebarState?/:query?" component={Canvas}/>

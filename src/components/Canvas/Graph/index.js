@@ -79,7 +79,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state) {
-    let sidebarSize = state.graph.sidebarVisible ? 600 : 0;
     let graphData = null;
     // if (state.project.currentProject != null && state.graph.data != null) {
     //     // TODO this is called a lot
@@ -88,7 +87,6 @@ function mapStateToProps(state) {
     return {
         windowHeight: window.innerHeight,
         windowWidth: Math.max(window.innerWidth),
-        project: state.project.currentProject,
         graphData: graphData
     };
 }

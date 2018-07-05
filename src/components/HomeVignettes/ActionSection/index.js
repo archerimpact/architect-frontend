@@ -7,7 +7,7 @@ export default class ActionSection extends Component {
 
     render() {
         return (
-          <Link to="/build/5b19a2bbc2e0c920679dfbec">
+          <Link to="/explore">
             <div className='action-body'>
               <div className='action-inner'>
                 Go to the graph sandbox to search OFAC data and explore your own networks.
