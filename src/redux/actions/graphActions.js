@@ -1,4 +1,4 @@
-import {TOGGLE_SIDEBAR, RESET_GRAPH, STORE_CURRENT_NODE, STORE_ENTITY, STORE_SEARCH_RESULTS, UPDATE_GRAPH_DATA} from "./actionTypes";
+import {TOGGLE_SIDEBAR, RESET_GRAPH, STORE_CURRENT_NODE, STORE_ENTITY, STORE_SEARCH_RESULTS} from "./actionTypes";
 
 import * as server from "../../server/index";
 
@@ -19,13 +19,14 @@ export function storeCurrentNodeDispatch(id) {
     return {
         type: STORE_CURRENT_NODE,
         payload: id
-    }
+    };
 }
 
 export function setCurrentNode(d) {
     return (dispatch) => {
+        if (OFFLINE_ACTIONS) return;
         dispatch(storeCurrentNodeDispatch(d.id));
-    }
+    };
 }
 
 /* =============================================================================================  */
@@ -49,11 +50,12 @@ function fetchSearchResultsDispatch(data) {
     return {
         type: STORE_SEARCH_RESULTS,
         payload: data
-    }
+    };
 }
 
 export function fetchSearchResults(query) {
     return (dispatch) => {
+        if (OFFLINE_ACTIONS) return;
         server.searchBackendText(query)
         .then((data) => {
             dispatch(fetchSearchResultsDispatch(data));
@@ -68,17 +70,18 @@ function fetchEntityDispatch(entity) {
     return {
         type: STORE_ENTITY,
         payload: entity
-    }
+    };
 }
 
 export function fetchEntity(id) {
     return (dispatch) => {
+        if (OFFLINE_ACTIONS) return;
         server.getNode(id)
-        .then(data => {
-            dispatch(fetchEntityDispatch(data))
-        })
-        .catch(err => console.log(err))
-    }
+            .then(data => {
+                dispatch(fetchEntityDispatch(data));
+            })
+            .catch(err => console.log(err));
+    };
 }
 
 

@@ -9,14 +9,13 @@ import {
 } from "../actions/actionTypes";
 
 const initialState = {
-    sidebarVisible: true,
+    sidebarVisible: false,
     canvas: {
         data: null,
         currentNode: null,
         searchData: null
     }
 };
-
 
 export default function (state = initialState, action) {
     switch (action.type) {

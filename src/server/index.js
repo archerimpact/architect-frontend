@@ -26,7 +26,7 @@ export function searchBackendText(searchQuery) {
      }]
      */
 
-    let url = configData.elastic_url + searchQuery;
+    let url = configData.arch_url + '/?search=' + searchQuery;
     return new Promise(function (fulfill, reject) {
         axios.get(url, {
             params: {

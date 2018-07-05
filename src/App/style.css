@@ -3,7 +3,7 @@
 body {
 	font-family: 'Open Sans', sans-serif;
   color: #1a1a1a;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .main {
@@ -29,4 +29,11 @@ a:hover {
 
 a:link {
   text-decoration: none;
+}
+
+.unselectable {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
 }

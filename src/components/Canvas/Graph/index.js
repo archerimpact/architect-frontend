@@ -61,10 +61,7 @@ class Graph extends Component {
 
     render() {
         return (
-            <div>
-                {/* Note - this is used for graph injection */}
-                <div id="graph-container" style={{"height": this.props.height + "px", "width": this.props.width + "px"}}></div>
-            </div>
+            <div id="graph-container" style={{"height": this.props.height + "px", "width": this.props.width + "px"}} onMouseOver={this.props.onMouseOver}></div>
         );
     }
 }

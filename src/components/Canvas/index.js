@@ -54,8 +54,8 @@ class Canvas extends Component {
         return (
             <div className="canvas">
                 <SideNavBar />
-                <Graph graph={this.graph}/>
-                <GraphSidebar graph={this.graph}/>
+                <Graph graph={this.graph} onMouseOver={this.props.onMouseOver}/>
+                <GraphSidebar isCovered={this.props.isCovered} graph={this.graph}/>
             </div>
         )
     }

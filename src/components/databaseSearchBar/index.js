@@ -13,7 +13,7 @@ class DatabaseSearchBar extends Component {
 
     render() {
         return (
-            <SearchBar onSubmit={this.goToSearchPage} value={this.props.search} showSettings={this.props.showSettings}/>
+            <SearchBar homeSearchContainerId={this.props.homeSearchContainerId} homeSearchInputId={this.props.homeSearchInputId} onSubmit={this.goToSearchPage} value={this.props.search} showSettings={this.props.showSettings}/>
         );
     }
 }
