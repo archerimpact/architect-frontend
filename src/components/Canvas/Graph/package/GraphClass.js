@@ -699,7 +699,7 @@ class Graph {
         this.linkEnter = this.link.enter()
             .append('path')
             .attr('class', 'link')
-            .attr('id', (l) => { return `link-${l.id}`; })
+            .attr('id', (l) => { return `link-${utils.hash(l.id)}`; })
             .classed('same-as', (l) => { return utils.isPossibleLink(l.type); })
             .classed('faded', (l) => { return this.hoveredNode && !(l.source === this.hoveredNode || l.target === this.hoveredNode); })
             .on('mouseover', this.mouseoverLink);
@@ -865,7 +865,7 @@ class Graph {
             })
             .attr('d', (l) => { return 'M' + l.sourceX + ',' + l.sourceY + 'L' + l.targetX + ',' + l.targetY; })
             .attr('stroke-dasharray', (l) => {
-                const textPath = d3.select(`#text-${l.id}`);
+                const textPath = d3.select(`#text-${utils.hash(l.id)}`);
                 if (textPath[0][0] === null || textPath.text() === "") return 'none';
                 const spaceLength = textPath.node().getComputedTextLength() + textPath.node().getNumberOfChars() * 2 - 10;
                 const lineLength = Math.sqrt(Math.pow(l.sourceX-l.targetX, 2) + Math.pow(l.sourceY-l.targetY, 2)) - spaceLength;

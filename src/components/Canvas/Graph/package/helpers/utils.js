@@ -241,3 +241,16 @@ export function atan2(y, x) {
     if (x < 0) { r = Math.PI - r; }
     return ((y < 0) ? -r : r) * 180 / Math.PI;
 }
+
+// Non-secure hash function
+export function hash(str) {
+    let char, hash = 0;
+    if (str.length == 0) return hash;
+    for (let i = 0; i < str.length; i++) {
+        char = str.charCodeAt(i);
+        hash = ((hash<<5)-hash)+char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+
+    return hash;
+}

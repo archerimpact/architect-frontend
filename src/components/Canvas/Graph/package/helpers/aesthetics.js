@@ -153,9 +153,9 @@ export function updateLinkText(selection) {
 
     this.linkText
         .append('textPath')
-        .attr('id', (l) => { return `text-${l.id}`; })
+        .attr('id', (l) => { return `text-${utils.hash(l.id)}`; })
         .attr('startOffset', '50%')
-        .attr('xlink:href', (l) => { return `#link-${l.id}`; })
+        .attr('xlink:href', (l) => { return `#link-${utils.hash(l.id)}`; })
         .attr('length', (l) => { return l.distance; })
         .text((l) => { return l.type; });
 
