@@ -19,20 +19,16 @@
 }
 
 .home-body {
-/*  margin-top: calc(30px);
-*/  text-align: center;
+  text-align: center;
   padding-left: 145px;
   padding-right: 90px;
-/*  align-items: center;
-*//*  justify-content: center;
-*/
   display: flex;
   flex-direction: column;
 }
 
 .home-subheader {
-    margin-top: 15px;
-/*    font-family: 'Courier New', Courier, monospace;
+  margin-top: 15px;
+/*  font-family: 'Courier New', Courier, monospace;
 */}
 
 .vignettes {

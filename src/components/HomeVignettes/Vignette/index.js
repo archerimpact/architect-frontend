@@ -20,7 +20,7 @@ class Vignette extends Component {
 
     componentDidMount() {
       this.graph.flushData();
-      server.searchBackendText("Ma Xiaohong")
+      server.searchBackendText("Ma Xiaohong") // hardcoded for now, don't worry too much about it until we decide this way of doing the narratives is conceptually best
         .then((data) => {
           let neo4j_id = data[0].id
           this.props.dispatch(graphActions.addToGraphFromId(this.graph, neo4j_id));

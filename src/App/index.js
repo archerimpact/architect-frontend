@@ -53,12 +53,7 @@ class App extends Component {
     render() {
         return (
             <div>
-                {!this.state.navbarVisible ?
-                    null : null
-                    /*<NavBar isAuthenticated={this.props.isAuthenticated} logOut={this.logOut.bind(this)}
-                            logIn={this.logIn.bind(this)}/>*/
-                }
-              {<SideNavBar />}
+                <SideNavBar />
                 <div className={"main " + (this.state.navbarVisible ? "no-nav" : "no-nav")}>
                     <PrivateRoute exact path="/" component={HomeVignettes}/>
                     <Route path="/login" component={Login}/>
