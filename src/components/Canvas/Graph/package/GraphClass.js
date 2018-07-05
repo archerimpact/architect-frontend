@@ -911,7 +911,7 @@ class Graph {
                         })
                         .classed('fixed', false);
                 }
-
+          
                 // g: Group selected nodes
                 else if (d3.event.keyCode === 71) { this.groupSelectedNodes();}
 

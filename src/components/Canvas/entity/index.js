@@ -235,7 +235,7 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, props) {
     return {
-        currentNode: state.project.currentProject.currentNode,
+        currentNode: state.graph.currentNode,
         currentEntity: state.graph.currentEntity
     };
 }
