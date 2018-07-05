@@ -7,7 +7,16 @@ import {
     UPDATE_GRAPH_DATA
 } from "../actions/actionTypes";
 
-export default function (state = {}, action) {
+const initialState = {
+    canvas: {
+        data: null,
+        currentEntity: null,
+        currentNode: null,
+        searchData: null
+    }
+};
+
+export default function (state = initialState, action) {
     switch (action.type) {
         case RESET_GRAPH:
             return {
