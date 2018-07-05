@@ -23,7 +23,7 @@ class GraphSidebar extends Component {
     componentWillMount() {
         let listener = this.props.history.listen((location, action) => {
             this.setState({history: [...this.state.history, location]});
-        })
+        });
         this.setState({listener: listener})
     }
 
@@ -134,7 +134,7 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
     return {
-        sidebarVisible: state.project.sidebarVisible
+        sidebarVisible: state.graph.sidebarVisible
     };
 }
 
