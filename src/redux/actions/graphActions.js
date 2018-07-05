@@ -95,7 +95,7 @@ export function fetchSearchResults(query) {
         if (OFFLINE_ACTIONS) return;
         server.searchBackendText(query)
             .then((data) => {
-                dispatch(fetchSearchResultsDispatch(data.hits.hits));
+                dispatch(fetchSearchResultsDispatch(data));
             })
             .catch((error) => console.log(error));
     }
