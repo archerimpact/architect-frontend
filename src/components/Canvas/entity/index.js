@@ -4,7 +4,6 @@ import "./style.css";
 
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
-import * as actions from "../../../redux/actions/userActions";
 import {withRouter} from "react-router-dom";
 import EntityCard from "../entityCard";
 import EntityAttributes from "../entityAttributes";
@@ -228,14 +227,13 @@ class Entity extends Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(actions, dispatch),
         dispatch: dispatch,
     };
 }
 
 function mapStateToProps(state, props) {
     return {
-        currentNode: state.project.currentProject.currentNode,
+        currentNode: state.graph.currentNode,
         currentEntity: state.graph.currentEntity
     };
 }

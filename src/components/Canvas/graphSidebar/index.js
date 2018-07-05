@@ -1,12 +1,12 @@
 import React, {Component} from "react";
 import Entity from "../entity";
 import SearchResults from "../searchResults";
-import ProjectData from "../projectData";
+import ListData from "../listData";
 import DatabaseSearchBar from "../../../components/databaseSearchBar";
 import {Link,withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import "./style.css";
-import * as actions from "../../../redux/actions/projectActions";
+import { toggleSidebar } from "../../../redux/actions/graphActions";
 
 
 class GraphSidebar extends Component {
@@ -41,7 +41,7 @@ class GraphSidebar extends Component {
     }
 
     renderTabs = () => {
-        let baseUrl = '/build/' + this.props.match.params.investigationId;
+        let baseUrl = '/explore';
         const activeState = this.props.match.params.sidebarState;
 
         return (
@@ -74,7 +74,7 @@ class GraphSidebar extends Component {
                         </div>
                     </Link>
                 </div>
-                <div className="tab" onClick={() => this.props.dispatch(actions.toggleSidebar())}>
+                <div className="tab" onClick={() => this.props.dispatch(toggleSidebar())}>
                     <i className="tab-icon material-icons">{this.props.sidebarVisible ? "chevron_right" : "chevron_left"}</i>
                 </div>
             </div>
@@ -103,7 +103,7 @@ class GraphSidebar extends Component {
             case "entity":
                 return <Entity graph={this.props.graph} id={this.props.match.params.query}/>
             case "list":
-                return <ProjectData graph={this.props.graph}/>
+                return <ListData graph={this.props.graph}/>
             case "settings":
                 return this.renderSettings();
             default:

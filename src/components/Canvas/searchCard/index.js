@@ -62,7 +62,7 @@ class SearchCard extends Component {
 
     renderButtons = () => {
         let action, actionFunc;
-        const url = '/build/' + this.props.match.params.investigationId + '/entity/' + encodeURIComponent(this.props.id);
+        const url = '/explore/entity/' + encodeURIComponent(this.props.id);
         if (this.props.currentProject && this.props.currentProject.graphData && this.props.currentProject.graphData.nodes && this.props.currentProject.graphData.nodes.some(e => e.id === this.props.id)) {
             action = "link";
             actionFunc = () => this.props.graph.translateGraphAroundId(this.props.id);

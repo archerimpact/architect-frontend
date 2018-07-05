@@ -8,7 +8,7 @@ export default class App extends Component {
     render() {
         return (
             <div className="main">
-                <Route exact path="/" component={Home}/>s
+                <Route exact path="/" component={Home}/>
                 <Route path="/explore/:sidebarState?/:query?" component={Canvas}/>
             </div>
         );
