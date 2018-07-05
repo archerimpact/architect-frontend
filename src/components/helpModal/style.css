@@ -1,0 +1,51 @@
+table {
+  width: 100%;
+}
+
+.modal-content {
+  border: none;
+}
+
+.modal-content h1 {
+  color: #0d77e2;
+  border-bottom: 1px solid #545454;
+  margin-bottom: 0;
+  padding-bottom: 7px;
+  font-size: 2rem;
+}
+
+.modal-content tr {
+  border-bottom: 1px solid #ddd;
+}
+
+.modal-content td {
+  padding: 8px 0px;
+}
+
+.modal-content tr .rule {
+  /*border-right: 1px solid #545454;*/
+  padding-right: 15px;
+  letter-spacing: .75px;
+  color: #545454;
+}
+
+.modal-content tr .hotkey {
+  padding-left: 15px;
+  display: inline-flex;
+  float: right;
+}
+
+.modal-content tr p {
+  margin: 0px;
+}
+
+.modal-content tr p.code {
+  font-family: 'source-code-pro', monospace;
+  color: #000;
+  font-size: 13px;
+  padding: 0px 5px;
+  background-color: #F0F0F0;
+  border-radius: 5px;
+  margin: 0px;
+  text-align: right;
+}

@@ -1,4 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Open Sans');
+@font-face {
+  font-family: 'source-code-pro';
+  src: url('../fonts/sourcecodepro-regular-webfont.woff2') format('woff2'),
+       url('../fonts/sourcecodepro-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
 
 body {
 	font-family: 'Open Sans', sans-serif;
