@@ -67,7 +67,7 @@ function updateGraphDispatch(data) {
 
 export function addToGraphFromId(graph, id) {
     return (dispatch) => {
-        server.getNode(id)
+        server.getNode(id, 1)
             .then(data => {
                 graph.addData(data.centerid, makeDeepCopy(data.nodes), makeDeepCopy(data.links));
                 graph.update();
@@ -109,16 +109,31 @@ function fetchEntityDispatch(entity) {
     };
 }
 
+function fetchEntityDataFormatter(data) {
+    console.log("fetchEntityDataFormat", data);
+    let nodes = data.nodes;
+    let linksLength = data.links.length;
+    for (let i=0; i < linksLength; i++) {
+        // nodes[i]
+    }
+
+    return [data]
+}
+
 export function fetchEntity(id) {
     return (dispatch) => {
         if (OFFLINE_ACTIONS) return;
-        server.getNode(id)
+        server.getNode(id, 1)
             .then(data => {
-                dispatch(fetchEntityDispatch(data));
+                let formattedResponse = fetchEntityDataFormatter(data);
+                dispatch(fetchEntityDispatch(formattedResponse));
             })
             .catch(err => console.log(err));
     };
-}
+} // refactor so the data formatting goes on here (and a node itself is actually selected rather than saving 1 degree. 1) Why are we
+// even getting 1 degree, shouldn't the selection happen on backend? Is it at all useful
+// 2) for search results, can we augment with the necessary field so we don't have to bombard the server everytime we
+// search with additional getNode calls
 
 /* =============================================================================================  */
 
@@ -127,6 +142,22 @@ export function resetProjectDispatch() {
         type: RESET_GRAPH,
     };
 }
+
+/* =============================================================================================  */
+
+// function fetchNodeDispatch(node) {
+//     return {
+//         type: STORE_NODE,
+//         payload: node
+//     }
+// }
+//
+// export function fetchNode(id) {
+//     return (dispatch) => {
+//         if (OFFLINE_ACTIONS) return;
+//         server.getNode(id)
+//     }
+// }
 
 /* ===================================== ACTIONS THAT ARE NOT IN USE ========================================  */
 

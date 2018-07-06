@@ -12,7 +12,7 @@ const initialState = {
     canvas: {
         searchData: null
     },
-    currentEntity: null,
+    entityCache: [],
     data: null,
     currentNode: null,
     sidebarVisible: false
@@ -57,11 +57,11 @@ export default function (state = initialState, action) {
                 ...state,
                 data: action.payload.data
             };
-        // case STORE_ENTITY:
-        //     return {
-        //         ...state,
-        //         currentEntity: action.payload
-        //     };
+        case STORE_ENTITY:
+            return {
+                ...state,
+                entityCache: action.payload.concat(state.entityCache)
+            };
         default:
             return state;
     }
