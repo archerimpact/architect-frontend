@@ -1,0 +1,28 @@
+.footer {
+	width: 100%;
+	background-color: rgb(35, 35, 35);
+	height: 200px;
+}
+
+.footer-layout-container {
+	display: flex;
+	justify-content: space-between;
+}
+
+.archer-plug {
+	display: flex;
+
+}
+
+.footer-logo {
+	color: white;
+}
+
+.footer-tagline {
+	color: white;
+}
+
+.social-media-links {
+	display: flex;
+	justify-content: space-between;
+}
