@@ -3,6 +3,7 @@ import DatabaseSearchBar from "../databaseSearchBar";
 import SideNavBar from "../sideNavBar";
 import Vignette from './Vignette/';
 import Footer from './Footer';
+import ParticleBackground from './ParticleBackground';
 
 import "./style.css";
 
@@ -12,6 +13,7 @@ export default class Home extends Component {
         return (
             <div>
                 <div id="interactive-banner">
+                    <ParticleBackground />
                     <img className="interactive-banner-logo" src="logo.png" />
                     <h3 className="interactive-banner-title">
                         Exploring insights derived from public sanctions data.
