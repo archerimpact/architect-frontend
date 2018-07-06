@@ -10,11 +10,11 @@ import {
 
 const initialState = {
     canvas: {
-        data: null,
-        currentEntity: null,
-        currentNode: null,
         searchData: null
     },
+    currentEntity: null,
+    data: null,
+    currentNode: null,
     sidebarVisible: false
 };
 
