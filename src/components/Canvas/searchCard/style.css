@@ -25,6 +25,8 @@ small.card-sdn-type {
     font-size: 12px;
     color: #aaaaaa;
     margin-left: 1em;
+    background: #eeee;
+    padding: 5px;
 }
 
 h5.card-detail-header {
