@@ -71,7 +71,6 @@ svg line {
 
 path.link {
     stroke: #545454;
-    opacity: 0.7;
     transition-property: opacity;
     transition-delay: 0ms;
     transition-duration: 50ms;
