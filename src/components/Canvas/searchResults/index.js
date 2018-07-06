@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import SearchCard from "../searchCard";
+import EntityCard from "../entityCard";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import {addToGraphFromId, saveCurrentProjectData} from "../../../redux/actions/graphActions";
@@ -37,8 +37,7 @@ class BackendSearch extends Component {
                     {
                         this.props.searchData.map((entity) => {
                             return (
-                                // <EntityCard data={entity} addToGraph={this.addToGraph} />
-                                <SearchCard key={entity.id} id={entity.id} data={entity} graph={this.props.graph}/>
+                                <EntityCard key={entity.id} data={entity} graph={this.props.graph}/>
                             );
                         })
                     }

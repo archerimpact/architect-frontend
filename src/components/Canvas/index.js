@@ -47,6 +47,9 @@ class Canvas extends Component {
             // this.props.actions.fetchProject(nextprops.match.params.investigationId);
             let nextQuery = nextprops.match.params.query;
             if (nextprops.match.params.sidebarState === 'search') {
+                console.log("nextprops.match.params.sidebarState === 'search'", nextprops.match.params.sidebarState === 'search')
+                console.log("nextQuery != null", nextQuery != null)
+                console.log("this.props.match.params.query !== nextQuery", this.props.match.params.query !== nextQuery)
                 if (nextQuery != null && this.props.match.params.query !== nextQuery) {
                     this.props.dispatch(fetchSearchResults(nextQuery));
                 }

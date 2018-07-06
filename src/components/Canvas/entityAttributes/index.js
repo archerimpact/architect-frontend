@@ -22,7 +22,7 @@ export default (args) => {
                     <p className="info-key">{k[1]}:</p>
                     { (!(val instanceof Array))
                         ? <p className="info-value">{val}</p>
-                        : <div className="info-value-list"> {val.map(v => <div className="info-value">{v}</div>)} </div>
+                        : <div className="info-value-list"> {val.map(v => <div className="info-value" key={v}>{v}</div>)} </div>
                     }
                 </div>
             )

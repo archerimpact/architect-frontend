@@ -23,7 +23,7 @@ class Entity extends Component {
 
     componentWillMount() {
         if (this.props.id) {
-            server.getNode(decodeURIComponent(this.props.id), false)
+            server.getNode(decodeURIComponent(this.props.id), 1, false)
                 .then(d => {
                     this.setState({currentEntity: d})
                 })
@@ -33,7 +33,7 @@ class Entity extends Component {
 
     componentWillReceiveProps(nextprops) {
         if (this.props.id) {
-            server.getNode(decodeURIComponent(this.props.id), false)
+            server.getNode(decodeURIComponent(this.props.id), 1, false)
                 .then(d => {
                     this.setState({currentEntity: d})
                 })
@@ -43,6 +43,7 @@ class Entity extends Component {
 
 
     renderEntity = (node, nodes, links, keys) => {
+        console.log("YO", node);
         const nodeMap = {};
         if (node === null || node === undefined) {
             return null
@@ -188,18 +189,18 @@ class Entity extends Component {
 
                     <h5 className="">Attributes</h5>
                     { attrs }
-
-                    { Object.keys(linktypes).filter(l => linktypes[l].extracted.length !== 0).map((l, idx) => {
-                        const t = linktypes[l];
-                        return (
-                            <div key={idx}>
-                                <h5 className="subheader" key={`h5-${idx}`}>{l}</h5>
-                                { t.extracted.map(i => <EntityCard key={i[t.chooseDisplay]} data={i} id={i[t.chooseDisplay]} shouldFetch
-                                                                   graph={this.props.graph}/>) }
-                            </div>
-                        );
-                    })}
-
+                    <div>
+                        {
+                            Object.keys(linktypes).filter(l => linktypes[l].extracted.length !== 0).map((linktype, idx) => {
+                                return (
+                                    <div>
+                                        <h5 className="subheader" key={`h5-${idx}`}>{linktype}</h5>
+                                        <EntityCard key={node.id} data={node} id={node.id} shouldFetch graph={this.props.graph}/>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
                 </div>
             </div>
         )
@@ -235,7 +236,9 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, props) {
     return {
-        currentEntity: state.graph.currentEntity
+        currentNode: state.graph.currentNode
+        // should add currentNode here... but let me first see if that's first actually being used.
+        // if not being used, then should only track when sidebar is visible. If it is being used, then always track regardless
     };
 }
 
