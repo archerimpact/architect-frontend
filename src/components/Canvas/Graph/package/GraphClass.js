@@ -168,9 +168,9 @@ class Graph {
     }
 
     // Create canvas
-    initializeSVG = () => {
+    initializeSVG = (graphRef) => {
         const self = this;
-        const svg = d3.select('#graph-container').append('svg')
+        const svg = d3.select(graphRef).append('svg')
             .attr('id', 'canvas')
             .attr('pointer-events', 'all')
             .classed('svg-content', true)
@@ -549,7 +549,7 @@ class Graph {
     //     .classed('selected', isSelected);
     // }
 
-    generateCanvas = (width, height) => {
+    generateCanvas = (width, height, graphRef, allowKeycodes=true) => {
         this.width = width;
         this.height = height;
         this.center = [this.width / 2, this.height / 2];
@@ -563,7 +563,7 @@ class Graph {
 
         this.zoom = this.initializeZoom();
         this.brush = this.initializeBrush();
-        this.svg = this.initializeSVG();
+        this.svg = this.initializeSVG(graphRef);
         this.svgBrush = this.initializeSVGBrush();
         this.container = this.initializeContainer();
         this.svgGrid = this.initializeSVGgrid();
@@ -605,8 +605,7 @@ class Graph {
         // this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => {
         //     this.saveAllData()
         // }); // Placeholder method
-
-        this.setupKeycodes();
+        if (this.setupKeycodes === true) { this.setupKeycodes(); }
 
         // Create selectors
         this.linkContainer = this.container.append('g').attr('class', 'link-items');
@@ -658,6 +657,14 @@ class Graph {
 
     fetchData = () => {
         return {nodes: this.nodes, links: this.links};
+    }
+
+    hideMinimap = () => {
+      this.minimap.hideMinimap();
+    }
+
+    flushData = () => {
+      this.setData(0, [], [], true);
     }
 
     bindDisplayFunctions = (displayFunctions) => {

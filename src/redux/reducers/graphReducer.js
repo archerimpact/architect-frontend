@@ -9,13 +9,13 @@ import {
 } from "../actions/actionTypes";
 
 const initialState = {
+    sidebarVisible: true,
     canvas: {
-        searchData: null
+        searchData: []
     },
     entityCache: [],
     data: null,
-    currentNode: null,
-    sidebarVisible: false
+    currentNode: null
 };
 
 export default function (state = initialState, action) {
@@ -29,7 +29,6 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 data: null,
-                // currentEntity: null,
                 currentNode: null
             };
         case STORE_SEARCH_RESULTS:

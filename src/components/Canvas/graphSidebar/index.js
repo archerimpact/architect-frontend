@@ -3,7 +3,6 @@ import SearchResults from "../searchResults";
 import DatabaseSearchBar from "../../../components/databaseSearchBar";
 import {Link,withRouter} from "react-router-dom";
 import {connect} from "react-redux";
-import * as actions from "../../../redux/actions/projectActions";
 import { Radio } from 'antd';
 
 import "./style.css";

@@ -6,7 +6,6 @@ import {withRouter} from "react-router-dom";
 import * as graphActions from "../../../redux/actions/graphActions";
 import {
     addToGraphFromId,
-    saveCurrentProjectData,
     setCurrentNode
 } from "../../../redux/actions/graphActions";
 
@@ -23,34 +22,32 @@ class Graph extends Component {
         this.props.dispatch(addToGraphFromId(this.props.graph, d.id));
     }
 
-    saveCurrentProjectDataFunc = () => {
-        this.props.dispatch(saveCurrentProjectData(this.props.graph));
-    }
-
     componentDidMount() {
         // this.props.dispatch(initializeCanvas(this.props.graph, this.props.width, this.props.height));
-        this.props.graph.generateCanvas(this.props.width, this.props.height);
+        this.props.graph.generateCanvas(this.props.width ? this.props.width : this.props.windowWidth, this.props.height ? this.props.height: this.props.windowHeight, this.refs.graphContainer, this.props.allowKeycodes);
         this.props.graph.setData(0, [], []);
         this.props.graph.bindDisplayFunctions({
             expand: this.expandNodeFromData,
             node: this.setCurrentNodeFunc,
-            save: this.saveCurrentProjectDataFunc
+            save: null
         });
 
-        if (this.props.graphData !== null) {
-            const graphData = {nodes: this.props.graphData.nodes, links: this.props.graphData.links};
-            this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));
-        }
+      if (this.props.graphData !== null) {
+        const graphData = {nodes: this.props.graphData.nodes, links: this.props.graphData.links};
+        this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));
+      }
+
+      if (this.props.displayMinimap === false) { this.props.graph.hideMinimap(); }
     }
 
     componentWillReceiveProps(nextprops) {
         this.props.graph.bindDisplayFunctions({
             expand: this.expandNodeFromData,
             node: this.setCurrentNodeFunc,
-            save: this.saveCurrentProjectDataFunc
+            save: null
         });
 
-        if (this.props.project && nextprops.graphData && nextprops.project && nextprops.project._id !== this.props.project._id) {
+        if (nextprops.graphData) {
             const graphData = {nodes: nextprops.graphData.nodes, links: nextprops.graphData.links};
             this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));
         }
@@ -66,7 +63,10 @@ class Graph extends Component {
 
     render() {
         return (
-            <div id="graph-container" style={{"height": this.props.height + "px", "width": this.props.width + "px"}} onMouseOver={this.props.onMouseOver}></div>
+            <div>
+                {/* Note - this is used for graph injection */}
+                <div ref="graphContainer" style={{"height": this.props.height ? this.props.height : this.props.windowHeight + "px", "width": this.props.width ? this.props.width : this.props.windowWidth + "px"}} onMouseOver={this.props.onMouseOver}></div>
+            </div>
         );
     }
 }
@@ -79,16 +79,14 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state) {
-    let sidebarSize = state.graph.sidebarVisible ? 600 : 0;
     let graphData = null;
-    if (state.project.currentProject != null && state.graph.data != null) {
-        // TODO this is called a lot
-        graphData = state.graph.data;
-    }
+    // if (state.project.currentProject != null && state.graph.data != null) {
+    //     // TODO this is called a lot
+    //     graphData = state.graph.data;
+    // }
     return {
-        height: window.innerHeight,
-        width: Math.max(window.innerWidth),
-        project: state.project.currentProject,
+        windowHeight: window.innerHeight,
+        windowWidth: Math.max(window.innerWidth),
         graphData: graphData
     };
 }

@@ -1,15 +1,11 @@
 import React, {Component} from "react";
-
 import Graph from "./Graph";
 import ArcherGraph from "./Graph/package/GraphClass";
 import GraphSidebar from "./graphSidebar";
-import SideNavBar from "./sideNavBar";
-
+import SideNavBar from "../sideNavBar";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {withRouter} from "react-router-dom";
-import * as actions from "../../redux/actions/projectActions";
-import {fetchProject} from "../../redux/actions/projectActions";
 import {fetchEntity, fetchSearchResults} from "../../redux/actions/graphActions";
 
 import './style.css';
@@ -19,14 +15,10 @@ class Canvas extends Component {
     constructor(props) {
         super(props);
         this.graph = new ArcherGraph();
-        this.baseUrl = '/build/' + (this.props.match.params ? this.props.match.params.investigationId : null);
+        this.baseUrl = '/explore';
     }
 
     componentDidMount() {
-        if (this.props.match.params && this.props.match.params.investigationId) {
-            this.props.dispatch(fetchProject(this.props.match.params.investigationId));
-        }
-
         if (this.props.currentNode != null) {
             this.props.history.push(this.baseUrl + '/entity/' + encodeURIComponent(this.props.currentNode.id))
         }
@@ -64,7 +56,7 @@ class Canvas extends Component {
     render() {
         return (
             <div className="canvas">
-                <SideNavBar />
+                <SideNavBar/>
                 <Graph graph={this.graph} onMouseOver={this.props.onMouseOver}/>
                 <GraphSidebar isCovered={this.props.isCovered} graph={this.graph}/>
             </div>
@@ -74,7 +66,6 @@ class Canvas extends Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({...actions}, dispatch),
         dispatch: dispatch,
     };
 }
@@ -82,7 +73,6 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
     return {
         sidebarVisible: state.graph.sidebarVisible,
-        currentProject: state.project.currentProject,
         currentNode: state.graph.currentNode,
     };
 }

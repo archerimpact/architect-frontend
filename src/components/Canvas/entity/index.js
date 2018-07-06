@@ -1,14 +1,11 @@
 import React, {Component} from "react";
-
-import "./style.css";
-
 import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import * as actions from "../../../redux/actions/userActions";
 import {withRouter} from "react-router-dom";
 import EntityCard from "../entityCard";
 import EntityAttributes from "../entityAttributes";
 import * as server from "../../../server";
+
+import "./style.css";
 
 const pageHeight = window.innerHeight;
 
@@ -17,7 +14,7 @@ class Entity extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentEntity: null,
+            currentEntityDegreeOne: null,
         };
     }
 
@@ -207,6 +204,7 @@ class Entity extends Component {
     };
 
     render() {
+        console.log("this.state", this.state);
         const keys = [
             ['registered_in', 'Registered In'],
             ['birthdate', 'Date of Birth'],
@@ -229,7 +227,6 @@ class Entity extends Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(actions, dispatch),
         dispatch: dispatch,
     };
 }
