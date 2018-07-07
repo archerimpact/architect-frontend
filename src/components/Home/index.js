@@ -38,9 +38,13 @@ export default class Home extends Component {
                 </div>
 
                 <div className="vignettes-section">
-                    <div className="vignettes">
-                      <Vignette key={1}/>
-                      <Vignette key={2}/>
+                    <div className="container">
+                        <div className="vignette-holder">
+                            <Vignette key={1}/>
+                        </div>
+                        <div className="vignette-holder">
+                            <Vignette key={1}/>
+                        </div>
                     </div>
                 </div>
 
