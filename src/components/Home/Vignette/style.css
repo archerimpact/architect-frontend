@@ -17,7 +17,8 @@
 .vignette-card-left-col {
   width: 50%;
   border-right: 1px solid #cccccc;
-  background-color: #f2f2f2;
+  background-color: #ffffff;
+  overflow-y: scroll;
 }
 
 .vignette-card-right-col {
@@ -27,28 +28,24 @@
 
 .vignette-card-header {
   padding: 20px 20px 0 20px;
-  background-color: #ebebeb;
-  border-bottom: 1px solid #cccccc;
-}
-
-.vignette-date, .vignette-author, .vignette-title {
-  font-family: 'Montserrat', sans-serif;
-}
-
-.vignette-date {
-  font-weight: 300;
-  opacity: 0.3;
 }
 
 .vignette-author {
-  margin-bottom: 15px;
+  font-family: 'Georgia', serif;
   font-weight: 300;
+  color: #aaaaaa;
 }
 
 .vignette-title {
+  font-family: 'Montserrat', sans-serif;
   text-transform: uppercase;
   font-weight: 700;
   margin-bottom: 0;
+}
+
+hr.vignette-divider {
+  margin-top: 0;
+
 }
 
 p.vignette-content {
@@ -58,9 +55,7 @@ p.vignette-content {
 }
 
 .vignette-card-left-col-body {
-  padding: 20px;
-  overflow-y: scroll;
-  background-color: #fafafa;
+  padding: 0 20px;
 }
 
 .vignette-link-action {
