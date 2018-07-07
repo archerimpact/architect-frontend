@@ -29,7 +29,7 @@
 }
 
 .interactive-banner-sublogo {
-  color: #0d77e2;
+  color: #7c00ff;
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
   font-size: 75px;
@@ -51,11 +51,12 @@
 }
 
 .text-emphasis {
-  color: #0d77e2;
+  color: #7c00ff;
+  font-weight: 500;
 }
 
 .beta-section {
-  background-color: #0d77e2;
+  background-color: #7c00ff;
   color: #fafafa;
   font-family: 'Montserrat', sans-serif;
   padding: 20px 0;
