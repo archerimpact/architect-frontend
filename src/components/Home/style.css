@@ -1,32 +1,41 @@
-* { box-sizing:border-box; }
+* { 
+  box-sizing: border-box; 
+}
 
-#interactive-banner {
-  background-color: transparent;
+#header {
   width: 100%;
-  height: 400px;
+  height: 350px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
   color: #fafafa;
+}
 
+#header .container {
+  pointer-events: none;
+  z-index: 1;
 }
 
 .interactive-banner-logo {
   width: 200px;
   filter: invert(100%);
-  z-index: 1;
+  margin-right: auto;
 }
 
 .interactive-banner-title {
   font-size: 30px;
   font-family: 'Montserrat', sans-serif;
-  z-index: 1;
+  margin-top: 30px;
+  font-weight: 700;
 }
 
 .interactive-banner-subtitle {
   font-family: 'Montserrat', sans-serif;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 300;
-  z-index: 1;
+  margin-top: 15px;
 }
 
 .beta-section {

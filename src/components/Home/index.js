@@ -7,20 +7,23 @@ import ParticleBackground from './ParticleBackground';
 import UnderlinedTextInput from './UnderlinedTextInput';
 
 import "./style.css";
+import "../../App/montserrat.css";
 
 export default class Home extends Component {
 
     render() {
         return (
             <div>
-                <div id="interactive-banner">
-                    <img className="interactive-banner-logo" src="logo.png" />
-                    <h3 className="interactive-banner-title">
-                        Exploring insights derived from public sanctions data.
-                    </h3>
-                    <p className="interactive-banner-subtitle">
-                        Featured stories showcasing the power of graph visualizations for narrative and analysis.
-                    </p>
+                <div id="header">
+                    <div className="container">
+                        <img className="interactive-banner-logo" src="logo.png" />
+                        <h3 className="interactive-banner-title">
+                            Exploring insights derived from public sanctions data.
+                        </h3>
+                        <p className="interactive-banner-subtitle">
+                            Featured stories showcasing the power of graph visualizations for narrative and analysis.
+                        </p>
+                    </div>
                 </div>
                 <ParticleBackground />
 
