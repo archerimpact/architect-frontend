@@ -37,7 +37,12 @@ class Vignette extends Component {
               </div>
 
               <div className="vignette-card-col vignette-card-right-col">
+                <div className="vignette-card-graph">
+                  <p>I am a graph</p>
+                </div>
+                <div className="vignette-card-footer">
 
+                </div>
               </div>
             </div>
           </div>

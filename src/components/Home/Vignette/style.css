@@ -1,5 +1,5 @@
 .vignette-card {
-  border: 1px solid black;
+  border: 1px solid #cccccc;
   height: 500px;
   width: 100%;
 }
@@ -17,6 +17,7 @@
 .vignette-card-left-col {
   width: 50%;
   border-right: 1px solid #cccccc;
+  background-color: #f2f2f2;
 }
 
 .vignette-card-right-col {
@@ -48,4 +49,11 @@
   padding: 20px;
   overflow-y: scroll;
   background-color: #fafafa;
+}
+
+.vignette-card-footer {
+  align-self: flex-end;
+  background-color: red;
+  height: 30px;
+  width: 100%;
 }
