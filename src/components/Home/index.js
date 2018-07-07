@@ -16,12 +16,15 @@ export default class Home extends Component {
             <div>
                 <div id="header">
                     <div className="container">
-                        <img className="interactive-banner-logo" src="logo.png" />
+                        <div className="interactive-banner-logo-container">
+                            <img className="interactive-banner-logo" src="logo.png" />
+                            <h1 className="interactive-banner-sublogo">VIZ</h1>
+                        </div>
                         <h3 className="interactive-banner-title">
                             Exploring insights derived from public sanctions data.
                         </h3>
                         <p className="interactive-banner-subtitle">
-                            Featured stories showcasing the power of graph visualizations for narrative and analysis.
+                            Featured stories showcasing the power of <span className="text-emphasis">graph visualizations</span> for narrative and analysis.
                         </p>
                     </div>
                 </div>

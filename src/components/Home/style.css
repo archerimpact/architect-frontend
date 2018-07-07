@@ -18,16 +18,28 @@
   z-index: 1;
 }
 
+.interactive-banner-logo-container {
+  display: flex;
+  flex-direction: row;
+}
+
 .interactive-banner-logo {
-  width: 200px;
+  height: 65px;
   filter: invert(100%);
-  margin-right: auto;
+}
+
+.interactive-banner-sublogo {
+  color: #0d77e2;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 75px;
+  margin-top: -14px;
 }
 
 .interactive-banner-title {
   font-size: 30px;
   font-family: 'Montserrat', sans-serif;
-  margin-top: 30px;
+  margin-top: 20px;
   font-weight: 700;
 }
 
@@ -36,6 +48,10 @@
   font-size: 22px;
   font-weight: 300;
   margin-top: 15px;
+}
+
+.text-emphasis {
+  color: #0d77e2;
 }
 
 .beta-section {
