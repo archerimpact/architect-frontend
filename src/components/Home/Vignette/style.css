@@ -30,17 +30,26 @@
   padding: 20px 20px 0 20px;
 }
 
-.vignette-author {
+.vignette-date {
   font-family: 'Georgia', serif;
   font-weight: 300;
   color: #aaaaaa;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  word-spacing: 2px;
+}
+
+.vignette-author {
+  font-family: 'Georgia', serif;
+  font-weight: 300;
+  color: #1a1a1a;   /* same as body */
 }
 
 .vignette-title {
   font-family: 'Montserrat', sans-serif;
   text-transform: uppercase;
   font-weight: 700;
-  margin-bottom: 0;
+  margin-bottom: 5px;
 }
 
 hr.vignette-divider {
@@ -50,8 +59,8 @@ hr.vignette-divider {
 
 p.vignette-content {
   font-family: 'Georgia', serif;
-  letter-spacing: 0.3px;
   line-height: 140%;
+  text-align: justify;
 }
 
 .vignette-card-left-col-body {
