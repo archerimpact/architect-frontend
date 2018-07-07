@@ -1,6 +1,4 @@
 import React, {Component} from "react";
-import DatabaseSearchBar from "../databaseSearchBar";
-import SideNavBar from "../sideNavBar";
 import Vignette from './Vignette/';
 import Footer from './Footer';
 import ParticleBackground from './ParticleBackground';

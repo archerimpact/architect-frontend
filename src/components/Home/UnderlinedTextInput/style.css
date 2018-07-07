@@ -1,7 +1,8 @@
 /* form starting stylings ------------------------------- */
-.group { 
-  position:relative; 
+.underlined-text-input-group { 
+  position: relative; 
 }
+
 input.underlined-text-input {
   font-size:18px;
   padding:10px 10px 10px 5px;

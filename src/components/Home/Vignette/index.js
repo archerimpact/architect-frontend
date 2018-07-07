@@ -40,8 +40,13 @@ class Vignette extends Component {
                 <div className="vignette-card-graph">
                   <p>I am a graph</p>
                 </div>
-                <div className="vignette-card-footer">
+                <div className="vignette-card-footer flex-row">
+                  <div className="vignette-share-icons">
+                    <span className="vignette-twitter-action material-icons">share</span>
+                    <span className="vignette-link-action material-icons">link</span>
+                  </div>
 
+                  <button className="btn btn-primary vignette-explore-button ml-auto">Explore In Depth</button>
                 </div>
               </div>
             </div>

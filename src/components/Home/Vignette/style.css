@@ -51,9 +51,22 @@
   background-color: #fafafa;
 }
 
+.vignette-link-action {
+  margin-left: 15px;
+}
+
 .vignette-card-footer {
-  align-self: flex-end;
-  background-color: red;
-  height: 30px;
+  border-top: 1px solid #ebebeb;
+  height: 50px;
   width: 100%;
+  margin-top: auto;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.vignette-explore-button {
+  border-radius: 2px;
+  background-color: #0d77e2;
+  border: 0;
+  font-family: 'Montserrat', sans-serif;
 }

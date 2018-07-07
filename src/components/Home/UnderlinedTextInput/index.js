@@ -6,7 +6,7 @@ export default class UnderlinedTextInput extends Component {
 
 	render() {
 		return (
-		    <div className="group">      
+		    <div className="underlined-text-input-group">      
 		      <input className="underlined-text-input" type="text" required />
 		      <span className="highlight"></span>
 		      <span className="bar"></span>
