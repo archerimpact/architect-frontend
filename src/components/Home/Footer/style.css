@@ -20,9 +20,10 @@
 	color: white;
 }
 
-.social-media-links {
+.social-media-links-container {
 	display: flex;
 	justify-content: space-between;
+	color: white;
 }
 
 img.social-icons {

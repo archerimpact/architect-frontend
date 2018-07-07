@@ -16,7 +16,7 @@
 
 .vignette-card-left-col {
   width: 50%;
-  background-color: #eeeeee;
+  border-right: 1px solid #cccccc;
 }
 
 .vignette-card-right-col {
@@ -26,6 +26,8 @@
 
 .vignette-card-header {
   padding: 20px 20px 0 20px;
+  background-color: #ebebeb;
+  border-bottom: 1px solid #cccccc;
 }
 
 .vignette-date, .vignette-author, .vignette-title {
@@ -33,7 +35,7 @@
 }
 
 .vignette-author {
-
+  margin-bottom: 15px;
 }
 
 .vignette-title {
@@ -42,11 +44,8 @@
   font-size: 
 }
 
-.vignette-divider {
-  margin-bottom: 0;
-}
-
 .vignette-card-left-col-body {
   padding: 20px;
   overflow-y: scroll;
+  background-color: #fafafa;
 }

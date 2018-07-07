@@ -21,7 +21,6 @@ class Vignette extends Component {
                   <h6 className="vignette-date">published July 6, 2018</h6>
                   <h4 className="vignette-title">How to Evade OFAC Sanctions</h4>
                   <h6 className="vignette-author">by Archer Team</h6>
-                  <hr className="vignette-divider" />
                 </div>
 
                 <div className="vignette-card-left-col-body">
