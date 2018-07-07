@@ -10,21 +10,10 @@ export default class Footer extends Component {
           <div className="footer">
             <div className="container">
               <div className="footer-layout-container">
-
-                <div className="archer-plug">
-                  <div className="footer-logo">
-                    <p>hi</p>
-                  </div>
-
-                  <div>
-                    <p className="footer-tagline">
-                      Powering data-driven investigations at a global scale.
-                    </p>
-                  </div>
-                </div>
+                <img className="footer-logo" src="full-footer.png" />
 
                 <div className="social-media-links">
-                  <p>yo</p>
+                  <img className="social-icons" src="social-icons.png" />
                 </div>
 
               </div>

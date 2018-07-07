@@ -1,21 +1,19 @@
 .footer {
-	width: 100%;
 	background-color: rgb(35, 35, 35);
-	height: 200px;
+}
+
+.footer, .footer-layout-container {
+	height: 140px;
 }
 
 .footer-layout-container {
 	display: flex;
 	justify-content: space-between;
-}
-
-.archer-plug {
-	display: flex;
-
+	align-items: center;
 }
 
 .footer-logo {
-	color: white;
+	height: 80px;
 }
 
 .footer-tagline {
@@ -25,4 +23,8 @@
 .social-media-links {
 	display: flex;
 	justify-content: space-between;
+}
+
+img.social-icons {
+	height: 40px;
 }

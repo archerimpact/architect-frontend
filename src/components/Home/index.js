@@ -4,6 +4,7 @@ import SideNavBar from "../sideNavBar";
 import Vignette from './Vignette/';
 import Footer from './Footer';
 import ParticleBackground from './ParticleBackground';
+import UnderlinedTextInput from './UnderlinedTextInput';
 
 import "./style.css";
 
@@ -24,7 +25,16 @@ export default class Home extends Component {
                 </div>
 
                 <div className="beta-section">
-
+                    <div className="container">
+                        <div className="sign-up-row flex-row">
+                            <p className="sign-up-tagline">
+                                We're just getting started &mdash; sign up for beta access.
+                            </p>
+                            <div className="sign-up-formm">
+                                <UnderlinedTextInput />
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="vignettes-section">
