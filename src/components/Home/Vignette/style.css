@@ -35,14 +35,26 @@
   font-family: 'Montserrat', sans-serif;
 }
 
+.vignette-date {
+  font-weight: 300;
+  opacity: 0.3;
+}
+
 .vignette-author {
   margin-bottom: 15px;
+  font-weight: 300;
 }
 
 .vignette-title {
   text-transform: uppercase;
   font-weight: 700;
-  font-size: 
+  margin-bottom: 0;
+}
+
+p.vignette-content {
+  font-family: 'Georgia', serif;
+  letter-spacing: 0.3px;
+  line-height: 140%;
 }
 
 .vignette-card-left-col-body {
