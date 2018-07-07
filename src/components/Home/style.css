@@ -95,3 +95,28 @@
 .vignette-holder {
   margin-bottom: 30px;
 }
+
+#find-out-more-section {
+  background-color: #7c00ff;
+  font-family: 'Montserrat', sans-serif;
+  color: #fafafa;
+  padding: 50px 0;
+  text-align: center;
+}
+
+#find-out-container {
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+
+#main-website-link {
+  color: #fafafa;
+  text-decoration: underline;
+  /*margin-left: 5px;*/
+}
+
+#main-website-link:hover {
+  color: #fafafa;
+}

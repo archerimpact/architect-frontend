@@ -52,8 +52,16 @@ export default class Home extends Component {
                     </div>
                 </div>
 
-                <div className="find-out-more-section">
-
+                <div id="find-out-more-section">
+                    <h3>And there's so much more on the horizon.</h3>
+                    <div className="container" id="find-out-container">
+                        <p className="lead">
+                            Harness the power of crowdsourced insight and effortless collaboration to supercharge your investigations.&nbsp;
+                            <a id="main-website-link" href="https://archer.cloud">
+                                Find out more >
+                            </a>
+                        </p>
+                    </div>
                 </div>
 
                 <Footer />
