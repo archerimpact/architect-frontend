@@ -14,7 +14,48 @@ export default class Home extends Component {
     render() {
         return (
             <div>
-                <div id="header">
+                <div className="beta-section">
+                    <div className="container">
+                        <div className="sign-up-row flex-row">
+                            <p className="sign-up-tagline">
+                                We're just getting started &mdash; sign up for beta access.
+                            </p>
+                            {/*
+                            <div className="sign-up-formm">
+                                <UnderlinedTextInput />
+                            </div> */}
+                        </div>
+                    </div>
+                </div>
+                    <div id="top">
+            <header className="main-header">
+              <nav className="primary">
+                <ul id="primary-navigation">
+                  <li className="menu-item">
+                    <a href="team">Team</a>
+                  </li>
+                </ul>
+              </nav>
+              <span className="logo-header">
+                <a href="/">
+                  <img className="logo-image" src="logo.png" alt="" />
+                </a>
+              </span>
+              <div className="control">
+      {/*}           <nav class="secondary">
+                  <ul id="secondary-navigation">
+                    <li class="menu-button">
+                      <a>Archer Labs</a>
+                    </li>
+                    <li class="menu-button-secondary">
+                      <a>Merch</a>
+                    </li>
+                  </ul>
+                </nav> */}
+              </div>
+            </header>
+          </div>
+                {/*<div id="header">
                     <div className="container">
                         <div className="interactive-banner-logo-container">
                             <img className="interactive-banner-logo" src="logo.png" />
@@ -27,21 +68,8 @@ export default class Home extends Component {
                             Featured stories showcasing the power of <span className="text-emphasis">graph visualizations</span> for narrative and analysis.
                         </p>
                     </div>
-                </div>
-                <ParticleBackground />
-
-                <div className="beta-section">
-                    <div className="container">
-                        <div className="sign-up-row flex-row">
-                            <p className="sign-up-tagline">
-                                We're just getting started &mdash; sign up for beta access.
-                            </p>
-                            <div className="sign-up-formm">
-                                <UnderlinedTextInput />
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </div>*/}
+                {/*<ParticleBackground />*/}
 
                 <div className="vignettes-section">
                     <div className="container">
