@@ -14,7 +14,6 @@ export default class Home extends Component {
         return (
             <div>
                 <div id="interactive-banner">
-                    <ParticleBackground />
                     <img className="interactive-banner-logo" src="logo.png" />
                     <h3 className="interactive-banner-title">
                         Exploring insights derived from public sanctions data.
@@ -23,6 +22,7 @@ export default class Home extends Component {
                         Featured stories showcasing the power of graph visualizations for narrative and analysis.
                     </p>
                 </div>
+                <ParticleBackground />
 
                 <div className="beta-section">
                     <div className="container">
