@@ -1,4 +1,4 @@
-import {OFFLINE_ACTIONS, TOGGLE_SIDEBAR, RESET_GRAPH, STORE_CURRENT_NODE, STORE_ENTITY, STORE_SEARCH_RESULTS} from "./actionTypes";
+import {UPDATE_GRAPH_DATA, OFFLINE_ACTIONS, TOGGLE_SIDEBAR, RESET_GRAPH, STORE_CURRENT_NODE, STORE_ENTITY, STORE_SEARCH_RESULTS} from "./actionTypes";
 
 import * as server from "../../server/index";
 
@@ -31,14 +31,20 @@ export function setCurrentNode(d) {
 
 /* =============================================================================================  */
 
+function updateGraphDispatch(data) {
+    return {
+        type: UPDATE_GRAPH_DATA,
+        payload: data
+    };
+}
+
 export function addToGraphFromId(graph, id) {
     return (dispatch) => {
-        server.getNode(id)
+        server.getNode(id, 1)
           .then(data => {
               graph.addData(data.centerid, makeDeepCopy(data.nodes), makeDeepCopy(data.links));
               graph.update();
-              // dispatch(saveCurrentProjectData(graph));
-              // dispatch(updateGraphDispatch(data)); // right here change to saveCurrentProjectData
+              dispatch(updateGraphDispatch(data));
           })
           .catch(err => {
               console.log(err);
@@ -115,3 +121,4 @@ export function toggleSidebar() {
         type: TOGGLE_SIDEBAR
     }
 }
+

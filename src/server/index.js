@@ -27,7 +27,6 @@ export function searchBackendText(searchQuery) {
             }
         })
         .then(function (response) {
-            console.log("search results", response.data)
             fulfill(response.data);
         })
         .catch(function (error) {
@@ -52,7 +51,6 @@ export function getNode(neo4j_id, degree=0, useExclude=true) {
     return new Promise(function (fulfill, reject) {
         axios.get(url)
         .then(function (response) {
-            console.log("getting Node", response.data);
             fulfill(response.data);
         })
         .catch(function (error) {

@@ -1,6 +1,7 @@
 import {persistCombineReducers} from "redux-persist";
 import storage from "redux-persist/es/storage";
 import graph from "./graphReducer";
+import home from "./homeReducer";
 
 const config = {
     key: 'root',
@@ -9,7 +10,8 @@ const config = {
 
 config.debug = true;
 const reducers = {
-    graph
+    graph,
+    home
 };
 
 const reducer = persistCombineReducers(config, reducers);
