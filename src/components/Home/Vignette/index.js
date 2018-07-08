@@ -1,8 +1,8 @@
 import React, {Component} from "react";
 import Graph from '../../Canvas/Graph/'
 import ArcherGraph from "../../Canvas/Graph/package/GraphClass";
-import * as server from '../../../server/'
-import * as graphActions from '../../../redux/actions/graphActions'
+import * as server from '../../../server/';
+import * as homeActions from '../../../redux/actions/homeActions';
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 
@@ -30,7 +30,7 @@ class Vignette extends Component {
       server.searchBackendText("Dan Gertler") // hardcoded for now, don't worry too much about it until we decide this way of doing the narratives is conceptually best
         .then((data) => {
           let neo4j_id = data[0].id
-          this.props.dispatch(graphActions.addToGraphFromId(this.graph, neo4j_id));
+          this.props.dispatch(homeActions.addToVignetteFromId(this.graph, neo4j_id));
         })
         .catch((err)=> {console.log(err)});
     }
@@ -42,7 +42,7 @@ class Vignette extends Component {
       server.searchBackendText(string)
         .then((data) => {
           let neo4j_id = data[0].id
-          this.props.dispatch(graphActions.addToGraphFromId(graph, neo4j_id));
+          this.props.dispatch(homeActions.addToVignetteFromId(graph, neo4j_id));
         })
         .catch((err)=> {console.log(err)})
     }

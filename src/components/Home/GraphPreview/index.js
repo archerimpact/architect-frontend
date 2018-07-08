@@ -37,7 +37,7 @@ class GraphPreview extends Component {
     render() {
         return (
           <div className="vignette-card-graph">
-            <Graph graph={this.graph} height={480} width={600} displayMinimap={false} allowKeycodes={false} data={this.state.data}/>
+            <Graph graph={this.graph} height={400} width={1100} displayMinimap={false} allowKeycodes={false} data={this.state.data}/>
           </div>
         );
     }
