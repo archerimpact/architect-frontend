@@ -39,9 +39,6 @@ class Canvas extends Component {
             // this.props.actions.fetchProject(nextprops.match.params.investigationId);
             let nextQuery = nextprops.match.params.query;
             if (nextprops.match.params.sidebarState === 'search') {
-                console.log("nextprops.match.params.sidebarState === 'search'", nextprops.match.params.sidebarState === 'search')
-                console.log("nextQuery != null", nextQuery != null)
-                console.log("this.props.match.params.query !== nextQuery", this.props.match.params.query !== nextQuery)
                 if (nextQuery != null && this.props.match.params.query !== nextQuery) {
                     this.props.dispatch(fetchSearchResults(nextQuery));
                 }
@@ -54,11 +51,12 @@ class Canvas extends Component {
     }
 
     render() {
+        const { data, isCovered, onMouseOver } = this.props;
         return (
             <div className="canvas">
                 <SideNavBar/>
-                <Graph graph={this.graph} onMouseOver={this.props.onMouseOver}/>
-                <GraphSidebar isCovered={this.props.isCovered} graph={this.graph}/>
+                <Graph graph={this.graph} onMouseOver={onMouseOver} data={data}/>
+                <GraphSidebar isCovered={isCovered} graph={this.graph} data={data}/>
             </div>
         )
     }
@@ -74,6 +72,7 @@ function mapStateToProps(state) {
     return {
         sidebarVisible: state.graph.sidebarVisible,
         currentNode: state.graph.currentNode,
+        data: state.graph.data
     };
 }
 
