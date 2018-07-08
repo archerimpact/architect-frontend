@@ -19,9 +19,10 @@ class Canvas extends Component {
     }
 
     componentDidMount() {
-        if (this.props.currentNode != null) {
-            this.props.history.push(this.baseUrl + '/entity/' + encodeURIComponent(this.props.currentNode.id))
-        }
+        // if (this.props.currentNode != null) {
+        //   debugger;
+        //     this.props.history.push(this.baseUrl + '/entity/' + encodeURIComponent(this.props.currentNode.id))
+        // }
         
         if (this.props.match.params && this.props.match.params.sidebarState === 'search' && this.props.match.params.query != null) {
             this.props.dispatch(fetchSearchResults(this.props.match.params.query));

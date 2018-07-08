@@ -24,7 +24,7 @@ class SearchBar extends Component {
     submitSearch = (e) => {
         e.preventDefault();
         this.props.onSubmit(this.refs.query.value);
-    };
+    }
 
     getDataSources = () => {
         /* TODO can later be replaced with an actual call to the server to get the datasets */
@@ -37,7 +37,7 @@ class SearchBar extends Component {
 
     render() {
         return (
-            <div>
+            <div className="search-container">
                 <div id={this.props.homeSearchContainerId} className="search-input-container">
                     <div className="d-flex flex-row full-height">
                         <form className="search-form" onSubmit={(e) => this.submitSearch(e)}>

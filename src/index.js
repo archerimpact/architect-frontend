@@ -7,6 +7,7 @@ import registerServiceWorker from "./registerServiceWorker";
 const {persistor, store} = configureStore({})
 registerServiceWorker();
 
+
 ReactDOM.render(
     <Root store={store} persistor={persistor}/>,
     document.getElementById('root')
