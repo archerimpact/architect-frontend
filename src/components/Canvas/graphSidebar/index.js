@@ -33,7 +33,7 @@ class GraphSidebar extends Component {
     componentWillReceiveProps(nextprops) {
         if (this.props.location.pathname !== nextprops.location.pathname) {
             this.setState({
-                renderSearch: nextprops.match.params ? nextprops.match.params.sidebarState === "search" : null,
+                renderList: nextprops.match.params ? nextprops.match.params.sidebarState === "list" : false,
             })
         }
     }
@@ -57,6 +57,8 @@ class GraphSidebar extends Component {
     }
 
     render() {
+        console.log("this.state.renderList", this.state.renderList)
+        console.log("this.props.match.params.sidebarState", this.props.match.params.sidebarState)
         const { sidebarVisible, isCovered, graph, data } = this.props;
         return (
             <div className={"sidebar " + (sidebarVisible ? "slide-out" : "slide-in") + (isCovered ? " hidden" : "")}>
