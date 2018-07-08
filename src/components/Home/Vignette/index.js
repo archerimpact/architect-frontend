@@ -41,7 +41,8 @@ class Vignette extends Component {
                   <p>I am a graph</p>
                 </div>
                 <div className="vignette-card-footer">
-
+                </div>
+                <div className="vignette-card-footer-2">
                 </div>
               </div>
             </div>

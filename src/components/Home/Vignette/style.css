@@ -53,7 +53,14 @@
 
 .vignette-card-footer {
   align-self: flex-end;
-  background-color: red;
+  background-color: #2bc6c8; /* #d34d42 */
   height: 30px;
   width: 100%;
+}
+
+.vignette-card-footer-2 {
+  align-self: flex-end;
+  background-color: #d34d42; /* #d34d42 */
+  height: 30px;
+  width: 100%; 
 }

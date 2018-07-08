@@ -26,7 +26,7 @@
   position: relative;
   transition: all .3s ease-in-out;
   padding: 15px 0;
-  height: 65px;
+  height: 85px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -212,6 +212,21 @@ nav.secondary.menu-button-secondary {
 .sign-up-row {
   justify-content: space-between;
   align-items: center;
+}
+
+.search-section {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 200px 0;
+}
+
+.search-holder {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
 .vignettes-section {
