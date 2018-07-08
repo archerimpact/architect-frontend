@@ -50,6 +50,10 @@ class GraphSidebar extends Component {
                     <SearchBarDatabase graphid={graphid}
                                        search={(match.params.sidebarState === "search" && match.params.query ? match.params.query : "")}
                                        showSettings={true}/>
+                    <div className="tab-container">
+                        <button className="tab">Search</button>
+                        <button className="tab">List</button>
+                    </div>
                 </div>
                 <SearchResults graph={graph} entity data={data}/>
             </div>

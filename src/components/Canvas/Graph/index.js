@@ -30,7 +30,6 @@ class Graph extends Component {
         // this.props.dispatch(initializeCanvas(this.props.graph, this.props.width, this.props.height));
         graph.generateCanvas(width ? width : windowWidth, height ? height: windowHeight, this.refs.graphContainer, allowKeycodes);
         if (data.nodes.length !== 0) {
-            console.log("updating graph when there are already nodes there", data);
             graph.setData(0, this.makeDeepCopy(data.nodes), this.makeDeepCopy(data.links));
         } else {
             graph.setData(0, [], []);
@@ -45,7 +44,7 @@ class Graph extends Component {
     }
 
     componentWillReceiveProps(nextprops) {
-        const { data, graph } = this.props;
+        const { graph } = this.props;
         graph.bindDisplayFunctions({
             expand: this.expandNodeFromData,
             node: this.setCurrentNodeFunc,

@@ -1,5 +1,5 @@
 import {UPDATE_GRAPH_DATA, OFFLINE_ACTIONS, TOGGLE_SIDEBAR, RESET_GRAPH, STORE_CURRENT_NODE, STORE_ENTITY, STORE_SEARCH_RESULTS} from "./actionTypes";
-
+import _ from 'lodash';
 import * as server from "../../server/index";
 
 /* =========================================== HELPERS ==========================================  */
@@ -39,12 +39,17 @@ function updateGraphDispatch(data) {
 }
 
 export function addToGraphFromId(graph, id) {
-    return (dispatch) => {
+    return (dispatch, getState) => {
         server.getNode(id, 1)
           .then(data => {
-              graph.addData(data.centerid, makeDeepCopy(data.nodes), makeDeepCopy(data.links));
+              let state = getState()
+              let allNodes = state.graph.data.nodes.concat(data.nodes);
+              let allLinks = state.graph.data.links.concat(data.links);
+              let dataNodes = _.uniqBy(allNodes, (obj) => {return obj.id});
+              let dataLinks = _.uniqBy(allLinks, (obj) => {return obj.id});
+              graph.addData(data.centerid, makeDeepCopy(dataNodes), makeDeepCopy(dataLinks));
               graph.update();
-              dispatch(updateGraphDispatch(data));
+              dispatch(updateGraphDispatch({nodes: dataNodes, links: dataLinks}));
           })
           .catch(err => {
               console.log(err);

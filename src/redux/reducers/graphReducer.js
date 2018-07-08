@@ -56,8 +56,8 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 data: {
-                    nodes: action.payload.nodes.concat(state.data.nodes),
-                    links: action.payload.links.concat(state.data.links)
+                    nodes: action.payload.nodes,
+                    links: action.payload.links
                 }
             };
         case STORE_ENTITY:
