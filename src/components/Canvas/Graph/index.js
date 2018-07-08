@@ -12,49 +12,49 @@ import {
 import "./graph.css";
 import "./style.css";
 
+const windowHeight = window.innerHeight;
+const windowWidth = Math.max(window.innerWidth);
+
 class Graph extends Component {
 
     setCurrentNodeFunc = (d) => {
         this.props.dispatch(setCurrentNode(d));
-    }
+    };
 
     expandNodeFromData = (d) => {
         this.props.dispatch(addToGraphFromId(this.props.graph, d.id));
-    }
+    };
 
     componentDidMount() {
+        const { data, graph, width, height, allowKeycodes, displayMinimap } = this.props;
         // this.props.dispatch(initializeCanvas(this.props.graph, this.props.width, this.props.height));
-        this.props.graph.generateCanvas(this.props.width ? this.props.width : this.props.windowWidth, this.props.height ? this.props.height: this.props.windowHeight, this.refs.graphContainer, this.props.allowKeycodes);
-        this.props.graph.setData(0, [], []);
-        this.props.graph.bindDisplayFunctions({
+        graph.generateCanvas(width ? width : windowWidth, height ? height: windowHeight, this.refs.graphContainer, allowKeycodes);
+        if (data.nodes.length !== 0) {
+            console.log("updating graph when there are already nodes there", data);
+            graph.setData(0, this.makeDeepCopy(data.nodes), this.makeDeepCopy(data.links));
+        } else {
+            graph.setData(0, [], []);
+        }
+        graph.bindDisplayFunctions({
             expand: this.expandNodeFromData,
             node: this.setCurrentNodeFunc,
             save: null
         });
 
-      if (this.props.graphData !== null) {
-        const graphData = {nodes: this.props.graphData.nodes, links: this.props.graphData.links};
-        this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));
-      }
-
-      if (this.props.displayMinimap === false) { this.props.graph.hideMinimap(); }
+      if (displayMinimap === false) { graph.hideMinimap(); }
     }
 
     componentWillReceiveProps(nextprops) {
-        this.props.graph.bindDisplayFunctions({
+        const { data, graph } = this.props;
+        graph.bindDisplayFunctions({
             expand: this.expandNodeFromData,
             node: this.setCurrentNodeFunc,
             save: null
         });
-
-        if (nextprops.graphData) {
-            const graphData = {nodes: nextprops.graphData.nodes, links: nextprops.graphData.links};
-            this.props.graph.setData(graphData.centerid, this.makeDeepCopy(graphData.nodes), this.makeDeepCopy(graphData.links));
-        }
     }
 
     makeDeepCopy(array) {
-        var newArray = [];
+        let newArray = [];
         array.map((object) => {
             return newArray.push(Object.assign({}, object));
         });
@@ -62,10 +62,10 @@ class Graph extends Component {
     }
 
     render() {
+        const { height, width, onMouseOver } = this.props;
         return (
             <div>
-                {/* Note - this is used for graph injection */}
-                <div ref="graphContainer" style={{"height": this.props.height ? this.props.height : this.props.windowHeight + "px", "width": this.props.width ? this.props.width : this.props.windowWidth + "px"}} onMouseOver={this.props.onMouseOver}></div>
+                <div ref="graphContainer" style={{"height": height ? height : windowHeight + "px", "width": width ? width : windowWidth + "px"}} onMouseOver={onMouseOver}></div>
             </div>
         );
     }
@@ -74,20 +74,8 @@ class Graph extends Component {
 function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators(graphActions, dispatch),
-        dispatch: dispatch,
+        dispatch: dispatch
     };
 }
 
-function mapStateToProps(state) {
-    let graphData = null;
-    // if (state.project.currentProject != null && state.graph.data != null) {
-    //     // TODO this is called a lot
-    //     graphData = state.graph.data;
-    // }
-    return {
-        windowHeight: window.innerHeight,
-        windowWidth: Math.max(window.innerWidth),
-        graphData: graphData
-    };
-}
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Graph));
+export default withRouter(connect(mapDispatchToProps)(Graph));

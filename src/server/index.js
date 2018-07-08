@@ -3,13 +3,6 @@ import {configData} from "../config.js";
 import axios from "axios";
 import * as constants from "./settingsConstants.js";
 
-let api_inst = axios.create({
-    baseURL: configData.backend_url,
-    timeout: 10000,
-    headers: {},
-    withCredentials: true
-});
-
 export function searchBackendText(searchQuery) {
     /* Takes in a searchQuery parameter and sends a query directly to the hosted elastic
      search instance. Query format below is the standard for elastic. Matches only if the
@@ -42,7 +35,7 @@ export function searchBackendText(searchQuery) {
     });
 }
 
-export function getNode(neo4j_id, useExclude = true) {
+export function getNode(neo4j_id, degree=0, useExclude=true) {
     let exclude = '';
     constants.EXPANSION_DEFAULT.exclude.forEach((type) => {
         exclude += type + ','
@@ -53,7 +46,7 @@ export function getNode(neo4j_id, useExclude = true) {
         exclude = '*';
     }
 
-    let url = `https://arch1234.archer.cloud/?id=${neo4j_id}&degrees=1&expandby=*&exclude=${exclude}&attr=*&attrVal=*`;
+    let url = configData.arch_url + `/?id=${neo4j_id}&degrees=${degree}&expandby=*&exclude=${exclude}&attr=*&attrVal=*`;
 
     return new Promise(function (fulfill, reject) {
         axios.get(url)

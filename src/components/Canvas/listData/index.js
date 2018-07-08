@@ -11,25 +11,17 @@ import "./style.css";
 class ListData extends Component {
 
     render() {
-        if (this.props.data === null) {
-            return (
-                <div> Loading... </div>
-            );
-        } else {
-            return (
-                <div className="sidebar-content-container">
-                    <h5 className="text-center">Entities</h5>
-                    <div className="searchResults">
-                        { !this.props.data || !this.props.data.nodes ?
-                            null :
-                            this.props.data.nodes.map(node => <EntityCard key={node.id} data={node} id={node.id}
-                                                                                      shouldFetch
-                                                                                      graph={this.props.graph}/>)
-                        }
-                    </div>
+        const { graph, data } = this.props;
+        return (
+            <div className="sidebar-content-container">
+                <h5 className="text-center">Graph Entities</h5>
+                <div className="searchResults">
+                    {
+                        data.nodes.map(node => <EntityCard key={node.id} node={node} graph={graph} data={data}/>)
+                    }
                 </div>
-            );
-        }
+            </div>
+        );
     }
 }
 
@@ -40,10 +32,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-function mapStateToProps(state) {
-    return {
-        data: state.graph.data,
-    }
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListData));
+export default withRouter(connect(mapDispatchToProps)(ListData));

@@ -26,7 +26,7 @@ class Canvas extends Component {
         if (this.props.match.params && this.props.match.params.sidebarState === 'search' && this.props.match.params.query != null) {
             this.props.dispatch(fetchSearchResults(this.props.match.params.query));
         } else if (this.props.match.params && this.props.match.params.sidebarState === 'entity') {
-            this.props.dispatch(fetchEntity(decodeURIComponent(this.props.match.params.query)));
+            // this.props.dispatch(fetchEntity(decodeURIComponent(this.props.match.params.query)));
         }
     }
 
@@ -44,18 +44,19 @@ class Canvas extends Component {
                 }
             } else if (nextprops.match.params.sidebarState === 'entity') {
                 if (nextQuery != null && this.props.match.params.query !== nextQuery) {
-                    this.props.dispatch(fetchEntity(decodeURIComponent(nextprops.match.params.query)));
+                    // this.props.dispatch(fetchEntity(decodeURIComponent(nextprops.match.params.query)));
                 }
             }
         }
     }
 
     render() {
+        const { data, isCovered, onMouseOver,  } = this.props;
         return (
             <div className="canvas">
                 <SideNavBar/>
-                <Graph graph={this.graph} onMouseOver={this.props.onMouseOver}/>
-                <GraphSidebar isCovered={this.props.isCovered} graph={this.graph}/>
+                <Graph graph={this.graph} onMouseOver={onMouseOver} data={data} displayMinimap={false}/>
+                <GraphSidebar isCovered={isCovered} graph={this.graph} data={data}/>
             </div>
         )
     }
@@ -71,6 +72,7 @@ function mapStateToProps(state) {
     return {
         sidebarVisible: state.graph.sidebarVisible,
         currentNode: state.graph.currentNode,
+        data: state.graph.data
     };
 }
 

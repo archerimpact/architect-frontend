@@ -1,18 +1,18 @@
 .search-input-container {
-    display: block;
     position: relative;
     margin: 0 auto;
     background: #ffffff;
-    max-width: 650px;
+    max-width: 550px;
     width: 100%;
-    -webkit-box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.3);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
-    display: inline-flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    border-top: 1px solid #eee;
-    border-radius: 2px;
+
+    font-family: 'Lato';
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    outline: none;
+    border: 1.25px solid #1A237E;
+    font-size: 16px;
 }
 
 .search-input {
@@ -81,7 +81,7 @@
 }
 
 .sexy-select, .sexy-select:focus {
-    background-color: #ff5d4c;
+    background-color: #0d77e2;
     outline: none;
     box-shadow: none;
     color: #4a0700;

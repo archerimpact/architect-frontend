@@ -9,10 +9,11 @@
 
 .sidebar {
     position: absolute;
-    right: 0;
+    left: 0;
     top: 0;
-    width: 630px;
+    width: 550px;
     height: 100%;
+    margin-left: 55px;
 }
 
 .sidebar.hidden {
@@ -22,7 +23,7 @@
 .tabs {
     width: 30px;
     margin-top: auto;
-    margin-bottom: auto;
+    margin-bottom: 50px;
     z-index: 100;
     box-shadow: -10px 4px 20px -7px rgba(0, 0, 0, 0.3);
     -webkit-box-shadow: -10px 4px 20px -7px rgba(0, 0, 0, 0.3);
@@ -80,7 +81,7 @@
     padding-top: 10px;
     padding: 10px 12px 10px 12px;
     width: 100%;
-    background-color: #ff5d4c;
+    background-color: #0d77e2;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
     -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
 }
@@ -105,8 +106,9 @@
 
 .sidebar-content-container {
     width: 100%;
-    padding: 20px 20px 0 20px;
     overflow-y: scroll;
+    display: flex;
+    justify-content: center;
 }
 
 .full-width {
