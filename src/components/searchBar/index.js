@@ -45,7 +45,7 @@ class SearchBar extends Component {
                                    className="search-input"
                                    ref="query"
                                    type="text"
-                                   placeholder='Search Entities (e.g. "Russia", "Kony", or "DPRK2")'
+                                   placeholder={this.props.placeholder}
                             />
                         </form>
                         <i id="search-icon" className="searchbar-icon mr-auto material-icons"

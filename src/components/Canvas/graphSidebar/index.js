@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import SearchResults from "../searchResults";
-import DatabaseSearchBar from "../../../components/databaseSearchBar";
+import SearchBarDatabase from "../../searchBarDatabase";
 import ListData from "../listData"
 import {Link,withRouter} from "react-router-dom";
 import {connect} from "react-redux";
@@ -47,7 +47,7 @@ class GraphSidebar extends Component {
         return (
             <div>
                 <div className="searchbar-container">
-                    <DatabaseSearchBar graphid={graphid}
+                    <SearchBarDatabase graphid={graphid}
                                        search={(match.params.sidebarState === "search" && match.params.query ? match.params.query : "")}
                                        showSettings={true}/>
                 </div>
@@ -57,17 +57,10 @@ class GraphSidebar extends Component {
     }
 
     render() {
-        console.log("this.state.renderList", this.state.renderList)
-        console.log("this.props.match.params.sidebarState", this.props.match.params.sidebarState)
         const { sidebarVisible, isCovered, graph, data } = this.props;
         return (
             <div className={"sidebar " + (sidebarVisible ? "slide-out" : "slide-in") + (isCovered ? " hidden" : "")}>
                 <div className="flex-row d-flex full-height">
-                    <div className="tabs" key="tabs">
-                        <div className="tab" onClick={() => this.toggleSidebarFunc()}>
-                            <i className="tab-icon material-icons">{sidebarVisible ? "chevron_right" : "chevron_left"}</i>
-                        </div>
-                    </div>
                     <div className="sidebar-container" key="sidebar-container">
                         <Radio.Group defaultValue="a" size="large">
                             <Link to={'/explore/search'}>

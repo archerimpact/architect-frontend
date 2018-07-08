@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import DatabaseSearchBar from "../databaseSearchBar";
+import SearchBarDatabase from "../searchBarDatabase";
 import SideNavBar from "../sideNavBar";
 import Vignette from './Vignette/';
 import ActionSection from './ActionSection';
@@ -17,7 +17,7 @@ export default class HomeVignettes extends Component {
                       <img className="logo-center" src="logo.png" />
                     </div>
                     <div className="search-main" style={{height: '100%'}}>
-                        <DatabaseSearchBar showSettings={false}/>
+                        <SearchBarDatabase showSettings={false}/>
                     </div>
                     <div className='vignettes'>
                       <Vignette key={1}/>
