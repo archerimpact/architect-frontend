@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
-import SettingsModal from '../../settingsModal';
 import HelpModal from '../../helpModal';
 import { resetProjectDispatch } from '../../../redux/actions/graphActions';
 
@@ -12,14 +11,13 @@ class SideNavBar extends Component {
   constructor(props) {
     super(props);
     this.state = { 
-      isSettingsModalOpen: false,
       isHelpModalOpen: false 
     };
   }
 
-  handleClick = (isSettings) => this.setState(isSettings ? { isSettingsModalOpen: true } : { isHelpModalOpen: true });
-  handleClose = (isSettings) => this.setState(isSettings ? { isSettingsModalOpen: false } : { isHelpModalOpen: false });
-  toggleModal = (isSettings) => this.setState(isSettings ? { isSettingsModalOpen: !this.state.isSettingsModalOpen } : { isHelpModalOpen: !this.state.isHelpModalOpen });
+  handleClick = () => this.setState({ isHelpModalOpen: true });
+  handleClose = () => this.setState({ isHelpModalOpen: false });
+  toggleModal = () => this.setState({ isHelpModalOpen: !this.state.isHelpModalOpen });
 
   render() {
     return (
@@ -46,17 +44,13 @@ class SideNavBar extends Component {
           </div>
         </Link>
         <div className="bottom">
-          <div className="side-nav-button" onClick={ this.toggleModal.bind(this, true) } data-tip="Settings">
+          <div className="side-nav-button" data-tip="Settings">
             <i className="material-icons">settings</i>
           </div>
           <div className="side-nav-button" onClick={ this.toggleModal.bind(this, false) } data-tip="Help">
             <i className="material-icons">help</i>
           </div>
         </div>
-        {
-          this.state.isSettingsModalOpen && 
-          <SettingsModal handleClick={ this.handleClick.bind(this, true) } handleClose={ this.handleClose.bind(this, true) } />
-        }
         {
           this.state.isHelpModalOpen &&
           <HelpModal handleClick={ this.handleClick.bind(this, false) } handleClose={ this.handleClose.bind(this, false) } />
