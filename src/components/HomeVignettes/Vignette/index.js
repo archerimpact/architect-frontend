@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import Graph from '../../Canvas/Graph/'
 import ArcherGraph from "../../Canvas/Graph/package/GraphClass";
 import * as server from '../../../server/'
-import * as graphActions from '../../../redux/actions/graphActions'
+import * as homeActions from '../../../redux/actions/homeActions'
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 
@@ -18,26 +18,26 @@ class Vignette extends Component {
 
     }
 
-    componentDidMount() {
-      this.graph.flushData();
-      server.searchBackendText("Ma Xiaohong") // hardcoded for now, don't worry too much about it until we decide this way of doing the narratives is conceptually best
-        .then((data) => {
-          let neo4j_id = data[0].id
-          this.props.dispatch(graphActions.addToGraphFromId(this.graph, neo4j_id));
-        })
-        .catch((err)=> {console.log(err)});
-    }
-
-    onEntityClick = (string) => {
-      // this.graph.flushData();
-      var graph = this.graph;
-      server.searchBackendText(string)
-        .then((data) => {
-          let neo4j_id = data[0].id
-          this.props.dispatch(graphActions.addToGraphFromId(graph, neo4j_id));
-        })
-        .catch((err)=> {console.log(err)})
-    }
+    // componentDidMount() {
+    //   // this.graph.flushData();
+    //   server.searchBackendText("Ma Xiaohong") // hardcoded for now, don't worry too much about it until we decide this way of doing the narratives is conceptually best
+    //     .then((data) => {
+    //       let neo4j_id = data[0].id
+    //       this.props.dispatch(homeActions.addToVignetteFromId(this.graph, neo4j_id));
+    //     })
+    //     .catch((err)=> {console.log(err)});
+    // }
+    //
+    // onEntityClick = (string) => {
+    //   // this.graph.flushData();
+    //   var graph = this.graph;
+    //   server.searchBackendText(string)
+    //     .then((data) => {
+    //       let neo4j_id = data[0].id
+    //       this.props.dispatch(homeActions.addToVignetteFromId(graph, neo4j_id));
+    //     })
+    //     .catch((err)=> {console.log(err)})
+    // };
 
     render() {
         return (
@@ -103,7 +103,8 @@ In a related action, OFAC designated five entities in the Dominican Republic tha
                 </div>
               </div>
               <div className='box-right'>
-                <Graph graph={this.graph} height={480} width={600} displayMinimap={false} allowKeycodes={false} />
+                {/*<Graph graph={this.graph} height={480} width={600} displayMinimap={false} allowKeycodes={false} data={{nodes: [], links: []}} />*/}
+                  {/* wait i thought each graph added some random shit... */}
               </div>
             </div>
         );
@@ -118,6 +119,7 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
     return {
+
     };
 }
 
