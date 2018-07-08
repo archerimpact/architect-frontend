@@ -90,7 +90,7 @@ export default class Home extends Component {
                       US Treasury Sanctions data contains over 3,000 links. Explore how your favorite sanctioned individuals, companies, and vessels are connected.
                     </div>
                   </div>
-
+                  <GraphPreview />
                 </div>
               </div>
             </div>
