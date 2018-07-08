@@ -51,7 +51,7 @@ class Canvas extends Component {
     }
 
     render() {
-        const { data, isCovered, onMouseOver } = this.props;
+        const { data, isCovered, onMouseOver,  } = this.props;
         return (
             <div className="canvas">
                 <SideNavBar/>

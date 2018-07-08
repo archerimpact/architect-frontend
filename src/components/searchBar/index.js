@@ -24,16 +24,16 @@ class SearchBar extends Component {
     submitSearch = (e) => {
         e.preventDefault();
         this.props.onSubmit(this.refs.query.value);
-    }
+    };
 
     getDataSources = () => {
         /* TODO can later be replaced with an actual call to the server to get the datasets */
         return ['All datasets', 'OFAC sanctions', 'OpenCorporate records', 'UK Corporate Registry records'];
-    }
+    };
 
     getEntityTypes = () => {
         return ['All types', 'Individual', 'Organization', 'Vessel', 'Aircraft'];
-    }
+    };
 
     render() {
         return (

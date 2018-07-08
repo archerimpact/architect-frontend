@@ -13,7 +13,7 @@ class GraphSidebar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            renderSearch: props.match.params ? props.match.params.sidebarState === "search" || props.match.params.sidebarState === "entity" : null,
+            renderList: props.match.params ? props.match.params.sidebarState === "list" : false,
             history: [],
             listener: null
         };
@@ -48,7 +48,7 @@ class GraphSidebar extends Component {
             <div>
                 <div className="searchbar-container">
                     <DatabaseSearchBar graphid={graphid}
-                                       search={(match.params ? match.params.query : null)}
+                                       search={(match.params.sidebarState === "search" ? match.params.query : "")}
                                        showSettings={true}/>
                 </div>
                 <SearchResults graph={graph} entity data={data}/>
@@ -57,8 +57,6 @@ class GraphSidebar extends Component {
     }
 
     render() {
-        console.log("params.sidebarState", this.props.match.params.sidebarState === "entity" || this.props.match.params.sidebarState === "search");
-        console.log("params.sidebarState", this.props.match.params.sidebarState);
         const { sidebarVisible, isCovered, graph, data } = this.props;
         return (
             <div className={"sidebar " + (sidebarVisible ? "slide-out" : "slide-in") + (isCovered ? " hidden" : "")}>
@@ -69,21 +67,21 @@ class GraphSidebar extends Component {
                         </div>
                     </div>
                     <div className="sidebar-container" key="sidebar-container">
+                        <Radio.Group defaultValue="a" size="large">
+                            <Link to={'/explore/search'}>
+                                <Radio.Button value="a">
+                                    Search
+                                </Radio.Button>
+                            </Link>
+                            <Link to={'/explore/list'}>
+                                <Radio.Button value="b">
+                                    List
+                                </Radio.Button>
+                            </Link>
+                        </Radio.Group>
                         <div className="full-width full-height flex-column">
-                            <Radio.Group defaultValue="a" size="large">
-                                <Link to={'/explore/search'}>
-                                    <Radio.Button value="a">
-                                        Search
-                                    </Radio.Button>
-                                </Link>
-                                <Link to={'/explore/list'}>
-                                    <Radio.Button value="b">
-                                        List
-                                    </Radio.Button>
-                                </Link>
-                            </Radio.Group>
                             {
-                                this.state.renderSearch ?
+                                !this.state.renderList ?
                                     this.renderSearch()
                                     :
                                     <ListData graph={graph} data={data}/>
