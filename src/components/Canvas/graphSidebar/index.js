@@ -1,8 +1,10 @@
 import React, {Component} from "react";
 import SearchResults from "../searchResults";
 import DatabaseSearchBar from "../../../components/databaseSearchBar";
+import ListData from "../listData"
 import {Link,withRouter} from "react-router-dom";
 import {connect} from "react-redux";
+import { toggleSidebar } from "../../../redux/actions/graphActions"
 import { Radio } from 'antd';
 
 import "./style.css";
@@ -37,40 +39,54 @@ class GraphSidebar extends Component {
     }
 
     toggleSidebarFunc = () => {
-        this.props.dispatch(actions.toggleSidebar());
+        this.props.dispatch(toggleSidebar());
     };
 
-    render() {
-        console.log("this.props.match.params", this.props.match.params);
-        console.log("this.props.match.params.query", this.props.match.params.query);
+    renderSearch() {
+        const { graphid, match, graph, data } = this.props;
         return (
-            <div className={"sidebar " + (this.props.sidebarVisible ? "slide-out" : "slide-in") + (this.props.isCovered ? " hidden" : "")}>
+            <div>
+                <div className="searchbar-container">
+                    <DatabaseSearchBar graphid={graphid}
+                                       search={(match.params ? match.params.query : null)}
+                                       showSettings={true}/>
+                </div>
+                <SearchResults graph={graph} entity data={data}/>
+            </div>
+        )
+    }
+
+    render() {
+        const { sidebarVisible, isCovered, graph, data } = this.props;
+        return (
+            <div className={"sidebar " + (sidebarVisible ? "slide-out" : "slide-in") + (isCovered ? " hidden" : "")}>
                 <div className="flex-row d-flex full-height">
                     <div className="tabs" key="tabs">
                         <div className="tab" onClick={() => this.toggleSidebarFunc()}>
-                            <i className="tab-icon material-icons">{this.props.sidebarVisible ? "chevron_right" : "chevron_left"}</i>
+                            <i className="tab-icon material-icons">{sidebarVisible ? "chevron_right" : "chevron_left"}</i>
                         </div>
                     </div>
                     <div className="sidebar-container" key="sidebar-container">
                         <div className="full-width full-height flex-column">
-                            <div className="searchbar-container">
-                                <Radio.Group defaultValue="a" size="large">
-                                    <Link to={'/explore/search'}>
-                                        <Radio.Button value="a">
-                                            Search
-                                        </Radio.Button>
-                                    </Link>
-                                    <Link to={'/explore/list'}>
-                                        <Radio.Button value="b">
-                                            List
-                                        </Radio.Button>
-                                    </Link>
-                                </Radio.Group>
-                                <DatabaseSearchBar graphid={this.props.graphid}
-                                                   search={(this.props.match.params ? this.props.match.params.query : null)}
-                                                   showSettings={true}/>
-                            </div>
-                            <SearchResults graph={this.props.graph} entity/>
+                            <Radio.Group defaultValue="a" size="large">
+                                <Link to={'/explore/search'}>
+                                    <Radio.Button value="a">
+                                        Search
+                                    </Radio.Button>
+                                </Link>
+                                <Link to={'/explore/list'}>
+                                    <Radio.Button value="b">
+                                        List
+                                    </Radio.Button>
+                                </Link>
+                            </Radio.Group>
+                            {
+                                this.state.renderSearch ?
+                                    this.renderSearch()
+                                    :
+                                    <ListData graph={graph} data={data}/>
+
+                            }
                         </div>
                     </div>
                 </div>

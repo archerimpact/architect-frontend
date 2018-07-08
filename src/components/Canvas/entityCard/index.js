@@ -22,34 +22,36 @@ class EntityCard extends Component {
     };
 
     addToGraphFromIdFunc = (graph, id) => {
-        this.dispatch(addToGraphFromId(graph, id))
+        if (!this.props.data.nodes.some(e => e.id === this.props.id)) {
+            this.dispatch(addToGraphFromId(graph, id))
+        }
     };
 
     render() {
-        const { data, graph } = this.props;
+        const { node, graph } = this.props;
         return (
-            <div className="card result-card" key={data.id}>
+            <div className="card result-card" key={node.id}>
                 <div className="card-header result-card-header flex-row d-flex">
                     <div className="d-flex">
                         <div className="icon-div">
                             <i className="entity-icon add-to-graph-icon material-icons"
-                               onClick={() => this.addToGraphFromIdFunc(graph, data.id)}>
+                               onClick={() => this.addToGraphFromIdFunc(graph, node.id)}>
                                add
                             </i>
                         </div>
                     </div>
                     <span className="collapse-link" onClick={this.toggleCollapse}>
-                        {data.name || data.combined || data.number || data.description}
+                        {node.name || node.combined || node.number || node.description}
                     </span>
                     <div className="ml-auto card-program">
                         <small className="card-sdn-type">
-                            {data.dataset}
+                            {node.dataset}
                         </small>
                     </div>
                 </div>
                 <div className={this.state.collapsed ? 'collapse' : null}>
                     <div className="card-body result-card-body">
-                        <EntityAttributes node={data}/>
+                        <EntityAttributes node={node}/>
                     </div>
                 </div>
             </div>

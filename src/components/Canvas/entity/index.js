@@ -40,7 +40,6 @@ class Entity extends Component {
 
 
     renderEntity = (node, nodes, links, keys) => {
-        console.log("YO", node);
         const nodeMap = {};
         if (node === null || node === undefined) {
             return null
@@ -192,7 +191,7 @@ class Entity extends Component {
                                 return (
                                     <div>
                                         <h5 className="subheader" key={`h5-${idx}`}>{linktype}</h5>
-                                        <EntityCard key={node.id} data={node} id={node.id} shouldFetch graph={this.props.graph}/>
+                                        <EntityCard key={node.id} node={node} id={node.id} shouldFetch graph={this.props.graph}/>
                                     </div>
                                 )
                             })
@@ -204,7 +203,6 @@ class Entity extends Component {
     };
 
     render() {
-        console.log("this.state", this.state);
         const keys = [
             ['registered_in', 'Registered In'],
             ['birthdate', 'Date of Birth'],

@@ -16,7 +16,7 @@ class BackendSearch extends Component {
                     {
                         this.props.searchData.map((entity) => {
                             return (
-                                <EntityCard key={entity.id} data={entity} graph={this.props.graph}/>
+                                <EntityCard key={entity.id} node={entity} data={this.props.data} graph={this.props.graph}/>
                             );
                         })
                     }
@@ -28,7 +28,7 @@ class BackendSearch extends Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        dispatch: dispatch,
+        dispatch: dispatch
     };
 }
 
