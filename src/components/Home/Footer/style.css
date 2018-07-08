@@ -4,6 +4,7 @@
 
 .footer, .footer-layout-container {
 	height: 140px;
+	margin-left: -20px; 	/* TODO: temporary until we replace the image with a proper one */
 }
 
 .footer-layout-container {

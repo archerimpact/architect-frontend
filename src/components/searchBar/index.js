@@ -24,6 +24,7 @@ class SearchBar extends Component {
     submitSearch = (e) => {
         e.preventDefault();
         this.props.onSubmit(this.refs.query.value);
+        debugger;
     }
 
     toggleSettings = (e) => {
@@ -43,7 +44,7 @@ class SearchBar extends Component {
 
     render() {
         return (
-            <div>
+            <div className="search-container">
                 <div id={this.props.homeSearchContainerId} className="search-input-container">
                     <div className="d-flex flex-row full-height">
                         { !this.props.showSettings ?
