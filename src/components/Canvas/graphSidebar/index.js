@@ -48,7 +48,7 @@ class GraphSidebar extends Component {
             <div>
                 <div className="searchbar-container">
                     <DatabaseSearchBar graphid={graphid}
-                                       search={(match.params.sidebarState === "search" ? match.params.query : "")}
+                                       search={(match.params.sidebarState === "search" && match.params.query ? match.params.query : "")}
                                        showSettings={true}/>
                 </div>
                 <SearchResults graph={graph} entity data={data}/>
