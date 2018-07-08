@@ -394,7 +394,7 @@ class Graph {
         }
 
         const colorNameToHex = {
-            'gray': colors.HEX_DARK_GRAY,
+            'gray': colors.HEX_GRAY,
             'blue': colors.HEX_BLUE
         };
 

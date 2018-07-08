@@ -43,14 +43,6 @@ svg line {
     stroke-width: 1.5px;
 }
 
-.link {
-    stroke: #545454;
-    opacity: 1;
-    transition-property: opacity;
-    transition-delay: 0ms;
-    transition-duration: 50ms;
-}
-
 .link-text {
     stroke: #fff;
     stroke-width: 3px;
@@ -70,7 +62,8 @@ svg line {
 }
 
 path.link {
-    stroke: #545454;
+    stroke: #999;
+    opacity: 1;
     transition-property: opacity;
     transition-delay: 0ms;
     transition-duration: 50ms;
@@ -89,8 +82,8 @@ path.link.selected {
 }
 
 .node {
-    fill: #ebebeb;
-    stroke: #545454;
+    /*fill: #ebebeb;
+    stroke: #545454;*/
     opacity: 1;
     transition-property: stroke-opacity, fill-opacity;
     transition-delay: 0ms;
@@ -130,7 +123,7 @@ path.link.selected {
 }
 
 .node.fixed circle.hull-node {
-    stroke: #bbbbbb !important;
+    stroke: #dddddd !important;
 }
 
 .node.selected circle {
@@ -148,7 +141,7 @@ path.link.selected {
 }
 
 .node.fixed .icon {
-    fill: #bbbbbb !important;
+    fill: #dddddd !important;
 }
 
 .node circle.node-glyph {
@@ -166,7 +159,7 @@ path.link.selected {
 }
 
 .node.fixed circle.node-glyph {
-    fill: #bbbbbb !important;
+    fill: #dddddd !important;
 }
 
 .glyph-label {
@@ -200,7 +193,7 @@ path.link.selected {
 }
 
 .node.faded {
-    stroke-opacity: 0.1 !important;
+    stroke-opacity: 0 !important;
     fill-opacity: 0.1 !important;
     transition-property: stroke-opacity, fill-opacity;
 }
