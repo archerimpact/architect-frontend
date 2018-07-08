@@ -25,6 +25,8 @@ small.card-sdn-type {
     font-size: 12px;
     color: #aaaaaa;
     margin-left: 1em;
+    background: #eeee;
+    padding: 5px;
 }
 
 h5.card-detail-header {
@@ -39,7 +41,7 @@ li.no-bullet {
 
 .entity-icon {
     cursor: pointer;
-    color: #ff5d4c;
+    color: #0d77e2;
     margin: auto 10px auto 0;
     font-size: 20px;
 }

@@ -16,6 +16,12 @@ class Vignette extends Component {
     constructor(props) {
       super(props);
       this.graph = new ArcherGraph();
+      this.state = {
+        data: {
+          links: [],
+          nodes: []
+        }
+      }
 
     }
 
@@ -32,6 +38,7 @@ class Vignette extends Component {
     onEntityClick = (string) => {
       // this.graph.flushData();
       var graph = this.graph;
+      debugger;
       server.searchBackendText(string)
         .then((data) => {
           let neo4j_id = data[0].id
@@ -67,7 +74,7 @@ class Vignette extends Component {
 
               <div className="vignette-card-col vignette-card-right-col">
                 <div className="vignette-card-graph">
-                  <Graph graph={this.graph} height={480} width={600} displayMinimap={false} allowKeycodes={false} />
+                  <Graph graph={this.graph} height={480} width={600} displayMinimap={false} allowKeycodes={false} data={this.state.data}/>
                 </div>
                 <div className="vignette-card-footer"></div>
                 <div className="vignette-card-footer-2"></div>

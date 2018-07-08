@@ -5,7 +5,7 @@ import Footer from './Footer';
 import ParticleBackground from './ParticleBackground';
 import UnderlinedTextInput from './UnderlinedTextInput';
 import SearchBar from '../searchBar'
-import DatabaseSearchBar from '../databaseSearchBar'
+import SearchBarDatabase from '../searchBarDatabase'
 
 import "./style.css";
 import "../../App/montserrat.css";
@@ -47,7 +47,7 @@ export default class Home extends Component {
                   </a>
                 </span>
                     <div className="search-holder">
-                      <DatabaseSearchBar homeSearchContainerId="home-search-container" homeSearchInputId="home-search-input" showSettings={false}/>
+                      <SearchBarDatabase homeSearchContainerId="home-search-container" homeSearchInputId="home-search-input" showSettings={false}/>
 
                     </div>
               </div>

@@ -1,12 +1,13 @@
 import React, {Component} from "react";
-
-import "./style.css";
-
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import EntityCard from "../entityCard";
 import EntityAttributes from "../entityAttributes";
 import * as server from "../../../server";
+
+import "./style.css";
+
+const pageHeight = window.innerHeight;
 
 class Entity extends Component {
 
@@ -18,19 +19,23 @@ class Entity extends Component {
     }
 
     componentWillMount() {
-        server.getNode(decodeURIComponent(this.props.id), false)
-        .then(d => {
-            this.setState({currentEntityDegreeOne: d})
-        })
-        .catch(err => console.log(err));
+        if (this.props.id) {
+            server.getNode(decodeURIComponent(this.props.id), 1, false)
+                .then(d => {
+                    this.setState({currentEntity: d})
+                })
+                .catch(err => console.log(err));
+        }
     }
 
     componentWillReceiveProps(nextprops) {
-        server.getNode(decodeURIComponent(this.props.id), false)
-        .then(d => {
-            this.setState({currentEntityDegreeOne: d})
-        })
-        .catch(err => console.log(err));
+        if (this.props.id) {
+            server.getNode(decodeURIComponent(this.props.id), 1, false)
+                .then(d => {
+                    this.setState({currentEntity: d})
+                })
+                .catch(err => console.log(err));
+        }
     }
 
 
@@ -180,25 +185,24 @@ class Entity extends Component {
 
                     <h5 className="">Attributes</h5>
                     { attrs }
-
-                    { Object.keys(linktypes).filter(l => linktypes[l].extracted.length !== 0).map((l, idx) => {
-                        const t = linktypes[l];
-                        return (
-                            <div key={idx}>
-                                <h5 className="subheader" key={`h5-${idx}`}>{l}</h5>
-                                { t.extracted.map(i => <EntityCard key={i[t.chooseDisplay]} data={i} id={i[t.chooseDisplay]} shouldFetch
-                                                                   graph={this.props.graph}/>) }
-                            </div>
-                        );
-                    })}
-
+                    <div>
+                        {
+                            Object.keys(linktypes).filter(l => linktypes[l].extracted.length !== 0).map((linktype, idx) => {
+                                return (
+                                    <div>
+                                        <h5 className="subheader" key={`h5-${idx}`}>{linktype}</h5>
+                                        <EntityCard key={node.id} node={node} id={node.id} shouldFetch graph={this.props.graph}/>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
                 </div>
             </div>
         )
-    }
+    };
 
     render() {
-        console.log("this.state", this.state);
         const keys = [
             ['registered_in', 'Registered In'],
             ['birthdate', 'Date of Birth'],
@@ -207,13 +211,13 @@ class Entity extends Component {
             ['last_seen', 'Last Seen'],
             ['incorporation_date', 'Incorporation Date']
         ];
-        if (this.state.currentEntityDegreeOne === null) {
-            return <div className="sidebar-content-container"> Click a node to view information about it </div>
+        if (this.state.currentEntity === null) {
+            return <div className="sidebar-content-container placeholder-text" style={{paddingTop: pageHeight / 3}}> Click a node to view information about it </div>
         }
         let id = decodeURIComponent(this.props.match.params.query);
         return (
-            <div className="sidebar-content-container">
-                {this.renderEntity(this.state.currentEntityDegreeOne.nodes.filter(n => n.id === id)[0], this.state.currentEntityDegreeOne.nodes, this.state.currentEntityDegreeOne.links, keys)}
+            <div className="sidebar-content-container" style={{paddingTop: 20, paddingLeft: 20, paddingRight: 20}}>
+                {this.renderEntity(this.state.currentEntity.nodes.filter(n => n.id === id)[0], this.state.currentEntity.nodes, this.state.currentEntity.links, keys)}
             </div>
         );
     }
@@ -227,8 +231,9 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, props) {
     return {
-        currentNode: state.graph.currentNode,
-        currentEntityDegreeOne: state.graph.currentEntityDegreeOne
+        currentNode: state.graph.currentNode
+        // should add currentNode here... but let me first see if that's first actually being used.
+        // if not being used, then should only track when sidebar is visible. If it is being used, then always track regardless
     };
 }
 

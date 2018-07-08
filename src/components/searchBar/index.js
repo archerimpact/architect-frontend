@@ -24,41 +24,28 @@ class SearchBar extends Component {
     submitSearch = (e) => {
         e.preventDefault();
         this.props.onSubmit(this.refs.query.value);
-        debugger;
-    }
-
-    toggleSettings = (e) => {
-        e.preventDefault();
-        const current = this.state.settingsExpanded;
-        this.setState({settingsExpanded: !current});
     }
 
     getDataSources = () => {
         /* TODO can later be replaced with an actual call to the server to get the datasets */
         return ['All datasets', 'OFAC sanctions', 'OpenCorporate records', 'UK Corporate Registry records'];
-    }
+    };
 
     getEntityTypes = () => {
         return ['All types', 'Individual', 'Organization', 'Vessel', 'Aircraft'];
-    }
+    };
 
     render() {
         return (
             <div className="search-container">
                 <div id={this.props.homeSearchContainerId} className="search-input-container">
                     <div className="d-flex flex-row full-height">
-                        { !this.props.showSettings ?
-                            null :
-                            <i id="sort-icon" className="searchbar-icon material-icons" onClick={(e) => {
-                                this.toggleSettings(e)
-                            }}>sort</i>
-                        }
                         <form className="search-form" onSubmit={(e) => this.submitSearch(e)}>
                             <input id={this.props.homeSearchInputId}
                                    className="search-input"
                                    ref="query"
                                    type="text"
-                                   placeholder="Search across 500+ connected public datasets..."
+                                   placeholder={this.props.placeholder}
                             />
                         </form>
                         <i id="search-icon" className="searchbar-icon mr-auto material-icons"

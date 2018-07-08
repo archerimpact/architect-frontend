@@ -6,7 +6,10 @@ export const STORE_SEARCH_RESULTS = "STORE_SEARCH_RESULTS";
 export const STORE_CURRENT_NODE = "STORE_CURRENT_NODE";
 export const RESET_GRAPH = "RESET_GRAPH";
 export const STORE_ENTITY = "STORE_ENTITY";
-export const LOAD_PROJECT = "LOAD_PROJECT";
+
+/* ============================ HOME ACTIONS ============================ */
+
+export const UPDATE_VIGNETTE = "UPDATE_VIGNETTE";
 
 /* ============================ OFFLINE ACTIONS ============================ */
 // This MUST be set to false for production. Do not push to remote with this set to true.

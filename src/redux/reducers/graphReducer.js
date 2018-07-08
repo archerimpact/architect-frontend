@@ -1,5 +1,5 @@
 import {
-    LOAD_PROJECT,
+    LOAD_DATA,
     RESET_GRAPH,
     STORE_CURRENT_NODE,
     STORE_ENTITY,
@@ -11,10 +11,14 @@ import {
 const initialState = {
     sidebarVisible: true,
     canvas: {
-        data: null,
-        currentNode: null,
         searchData: []
-    }
+    },
+    entityCache: [],
+    data: {
+        nodes: [],
+        links: []
+    },
+    currentNode: null
 };
 
 export default function (state = initialState, action) {
@@ -27,7 +31,10 @@ export default function (state = initialState, action) {
         case RESET_GRAPH:
             return {
                 ...state,
-                data: null,
+                data: {
+                    nodes: [],
+                    links: []
+                },
                 currentNode: null
             };
         case STORE_SEARCH_RESULTS:
@@ -45,20 +52,18 @@ export default function (state = initialState, action) {
                     id: action.payload
                 }
             };
-        case LOAD_PROJECT:
-            return {
-                ...state,
-                data: action.payload.data
-            };
         case UPDATE_GRAPH_DATA:
             return {
                 ...state,
-                data: action.payload.data
+                data: {
+                    nodes: action.payload.nodes.concat(state.data.nodes),
+                    links: action.payload.links.concat(state.data.links)
+                }
             };
         case STORE_ENTITY:
             return {
                 ...state,
-                currentEntityDegreeOne: action.payload
+                entityCache: action.payload.concat(state.entityCache)
             };
         default:
             return state;
