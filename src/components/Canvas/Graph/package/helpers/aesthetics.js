@@ -28,14 +28,19 @@ export function styleNode(selection) {
         .attr('r', (d) => { return d.radius = (d.group ? constants.GROUP_NODE_RADIUS : constants.NODE_RADIUS); })
         .classed('hull-node', (d) => { return d.group; })
         .style('stroke', (d) => { return d.group ? colors.HEX_WHITE : getNodeColor(d); })
-        .style('fill', (d) => { return d.group ? getNodeColor(d) : colors.HEX_LIGHT_GRAY; });
+        .style('fill', (d) => { return getNodeColor(d); });
+        // .style('fill', (d) => { return d.group ? getNodeColor(d) : colors.HEX_LIGHT_GRAY; });
 
     selection.select('.node-glyph')
-        .style('stroke', (d) => { return getNodeColor(d); })
-        .style('fill', (d) => { return getNodeColor(d); });
+        .style('stroke', (d) => { return getNodeColor(d); });
+        // .style('fill', (d) => { return getNodeColor(d); });
 
-    selection.select('.icon')
-        .style('fill', (d) => { return getNodeColor(d); });
+    selection.select('.glyph-label')
+        .style('fill', (d) => { return getNodeColor(d); })
+        .style('stroke', (d) => { return getNodeColor(d); });
+
+    // selection.select('.icon')
+    //     .style('fill', (d) => { return getNodeColor(d); });
 }
 
 export function getNodeColor(d) {

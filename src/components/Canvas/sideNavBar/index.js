@@ -47,13 +47,13 @@ class SideNavBar extends Component {
           <div className="side-nav-button" data-tip="Settings">
             <i className="material-icons">settings</i>
           </div>
-          <div className="side-nav-button" onClick={ this.toggleModal.bind(this, false) } data-tip="Help">
+          <div className="side-nav-button" onClick={ this.toggleModal } data-tip="Help">
             <i className="material-icons">help</i>
           </div>
         </div>
         {
           this.state.isHelpModalOpen &&
-          <HelpModal handleClick={ this.handleClick.bind(this, false) } handleClose={ this.handleClose.bind(this, false) } />
+          <HelpModal handleClick={ this.handleClick } handleClose={ this.handleClose } />
         }
       </div>
     )
