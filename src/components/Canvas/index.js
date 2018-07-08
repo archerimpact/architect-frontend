@@ -3,6 +3,7 @@ import Graph from "./Graph";
 import ArcherGraph from "./Graph/package/GraphClass";
 import GraphSidebar from "./graphSidebar";
 import SideNavBar from "../sideNavBar";
+import BottomBar from "../bottomBar";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {withRouter} from "react-router-dom";
@@ -58,6 +59,7 @@ class Canvas extends Component {
                 <SideNavBar/>
                 <Graph graph={this.graph} onMouseOver={onMouseOver} data={data} displayMinimap={false}/>
                 <GraphSidebar isCovered={isCovered} graph={this.graph} data={data}/>
+                <BottomBar/>
             </div>
         )
     }
