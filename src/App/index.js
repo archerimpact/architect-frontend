@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Route} from "react-router-dom";
-import HomeVignettes from "../components/HomeVignettes/";
+import Home from "../components/Home/";
 import Canvas from "../components/Canvas";
 
 import "./style.css";
@@ -10,7 +10,7 @@ export default class App extends Component {
         return (
           <div>
             <div className="main">
-                <Route exact path="/" component={HomeVignettes}/>
+                <Route exact path="/" component={Home}/>
                 <Route path="/explore/:sidebarState?/:query?" component={Canvas}/>
             </div>
           </div>
