@@ -15,7 +15,6 @@
 
 .vignette-card-left-col {
   width: 50%;
-  border-right: 1px solid #cccccc;
   background-color: #ffffff;
   overflow-y: scroll;
   padding: 0 30px 0 10px;
@@ -44,7 +43,8 @@ border: 0;
 .vignette-card-right-col {
   width: 50%;
   background-color: #ffffff;
-  padding: 0 10px 0 0;
+  margin: 0 10px 0 0;
+  border: 1px solid #ebebeb;
 }
 
 .vignette-date {
@@ -76,14 +76,21 @@ p.vignette-content {
   text-align: justify;
 }
 
+.vignette-share-icons {
+  margin-left: 20px;
+}
 
+.vignette-action {
+  font-size: 20px;
+  color: #0d77e2;
+}
 
-.vignette-link-action {
-  margin-left: 15px;
+.vignette-action:hover {
+  color: #1e1e1e;
 }
 
 .vignette-card-footer {
-  background-color: #2bc6c8; /* #d34d42 */
+  background-color: #fafafa;
   border-top: 1px solid #ebebeb;
   height: 50px;
   width: 100%;
@@ -94,15 +101,17 @@ p.vignette-content {
 
 .vignette-explore-button {
   border-radius: 2px;
-  background-color:  #ebebeb;
+  background-color:  #0d77e2;
   border: 0;
-  font-family: 'Montserrat', sans-serif;
-  color: black;
+  color: #fafafa;
+  display: flex;
+  align-items: center;
 }
 
-.vignette-card-footer-2 {
-  align-self: flex-end;
-  background-color: #d34d42; /* #d34d42 */
-  height: 30px;
-  width: 100%; 
+.explore-icon {
+  margin-left: 5px;
+}
+
+.fa-link {
+  margin-left: 15px;
 }

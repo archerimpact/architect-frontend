@@ -6,6 +6,7 @@ import * as homeActions from '../../../redux/actions/homeActions';
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+import GraphPreview from '../GraphPreview';
 
 import { Link } from "react-router-dom";
 
@@ -78,25 +79,18 @@ class VignetteModal extends Component {
 
                 <div className="vignette-card-col vignette-card-right-col">
                   <div className="vignette-card-graph">
-                    <Graph graph={this.graph} height={480} width={600} displayMinimap={false} allowKeycodes={false} data={this.state.data}/>
+                    <GraphPreview />
                   </div>
-                  <div className="vignette-card-footer"></div>
-                  <div className="vignette-card-footer-2"></div>
-                  {/*
                   <div className="vignette-card-footer flex-row">
                     <div className="vignette-share-icons">
-                      <span className="vignette-twitter-action material-icons">share</span>
-                      <span className="vignette-link-action material-icons">link</span>
+                      <i className="vignette-action twitter-action fab fa-twitter"></i>
+                      <i className="vignette-action link-action fas fa-link"></i>
                     </div>
-                    <button className="btn btn-primary vignette-explore-button ml-auto">Explore In Depth</button>
+                    <button className="btn btn-primary vignette-explore-button ml-auto">
+                      Explore In Depth
+                      <i className="explore-icon material-icons">launch</i>
+                    </button>
                   </div>
-                  <div className="vignette-card-footer-2 flex-row">
-                    <div className="vignette-share-icons">
-                      <span className="vignette-twitter-action material-icons">share</span>
-                      <span className="vignette-link-action material-icons">link</span>
-                    </div>
-                    <button className="btn btn-primary vignette-explore-button ml-auto">Explore In Depth</button>
-                  </div>*/}
                 </div>
               </div>
             </div>
