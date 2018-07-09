@@ -1,25 +1,25 @@
 .tint-color-0 {
-	background-color: rgb(37, 82, 170, 0.6);
+	background-color: rgba(37, 82, 170, 0.6);
 }
 
 .tint-color-0:hover {
-	background-color: rgb(37, 82, 170, 0.9);
+	background-color: rgba(37, 82, 170, 0.9);
 }
 
 .tint-color-1 {
-	background-color: rgb(21, 162, 138, 0.6);
+	background-color: rgba(21, 162, 138, 0.6);
 }
 
 .tint-color-1:hover {
-	background-color: rgb(21, 162, 138, 0.9);
+	background-color: rgba(21, 162, 138, 0.9);
 }
 
 .tint-color-2 {
-	background-color: rgb(197, 25, 137, 0.6);
+	background-color: rgba(197, 25, 137, 0.6);
 }
 
 .tint-color-2:hover {
-	background-color: rgb(197, 25, 137, 0.9);
+	background-color: rgba(197, 25, 137, 0.9);
 }
 
 .preview-box {
