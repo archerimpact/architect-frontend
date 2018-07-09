@@ -1,3 +1,143 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins:300,300italic,400,400italic,600,900");
+@import url("https://fonts.googleapis.com/css?family=Montserrat:300,300italic,400,400italic,600,900");
+
+#top {
+  color: #666;
+  font-family: "Poppins", Helvetica, sans-serif;
+  font-size: 16pt;
+  font-weight: 300;
+  line-height: 1.65em;
+}
+
+/* Navbar */
+
+#top {
+  position: sticky;
+  top: 0;
+  opacity: 1;
+  z-index: 2;
+/*  border-bottom: 5px solid rgba(0,0,0,.2);
+*/}
+
+#top .main-header {
+  background: #fff;
+  width: 100%;
+  box-shadow: 0 5px 0 rgba(0,0,0,.2);
+  position: relative;
+  transition: all .3s ease-in-out;
+  padding: 15px 0;
+  height: 85px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#top .logo-header {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  margin: 0 auto;
+/*  padding: auto 0;
+*/  transform: translate(-50%,-50%);
+
+}
+
+#top .logo-image {
+  width: 150px;
+  margin-bottom: 0px !important;
+}
+
+#top .primary {
+  display: block;
+}
+
+#top #primary-navigation {
+  margin: 0 0 0 17px;
+}
+
+#top li {
+  list-style-type: none;
+  display: inline;
+}
+
+#top #primary-navigation a {
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+
+#top .menu-item {
+  font-size: 15px;
+  font-weight: 600;
+  padding: 13px 12px 13px 7px;
+}
+
+#top .secondary ul {
+  font-size: 15px;
+  font-weight: 600;
+/*  padding: 13px 12px 13px 7px;
+*/  margin: 0 !important;
+}
+
+#top .control {
+  margin-left: auto;
+  margin-right: -10px;
+  position: relative;
+}
+
+#top .menu-button {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+nav.secondary {
+  bottom: auto;
+  width: auto;
+  position: relative;
+  display: block;
+  transition: .45s;
+}
+
+nav.secondary ul {
+  box-shadow: 5px 5px 0 rgba(0,0,0,.2);
+  line-height: 59px;
+  height: 59px;
+  background: #ecc14a;
+  padding-left: 15px;
+}
+
+nav.secondary ul li {
+  padding-right: 1.5em;
+  height: 100%;
+}
+
+nav.secondary ul li a {
+  color: #000;
+  border-bottom: none !important;
+  text-decoration: none !important;
+  text-transform: uppercase;
+  line-height: 59px;
+}
+
+nav.secondary.menu-button-secondary {
+  background: #000;
+}
+
+.center-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.centered-image {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+  margin-bottom: 15px;
+}
+
+
 * { 
   box-sizing: border-box; 
 }
@@ -56,40 +196,148 @@
 }
 
 .beta-section {
-  background-color: #7c00ff;
+  background-color: #FFB221;
   color: #fafafa;
   font-family: 'Montserrat', sans-serif;
-  padding: 20px 0;
+  padding: 0;
+  line-height: 20px;
+  padding: 5px 0;
+  height: 30px;
 }
 
 .sign-up-tagline {
   margin: 0;
-  font-size: 20px;
+  font-size: 0.6em;
   vertical-align: baseline;
-}
-
-.sign-up-form {
-  width: 150px;
-  display: flex;
-
+  color: black;
 }
 
 #sign-up-input {
   margin: 0;
-  background-color: transparent;
+  background-color: white;
   border: 0;
 }
 
 .sign-up-row {
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+}
+
+.search-section {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 200px 0;
+}
+
+.search-holder {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 500px;
+/*  padding-bottom: 10px;
+*/ 
+/*  box-shadow: 0 5px 0 rgba(0,0,0,.2);
+*/
+}
+
+.home-item {
+  padding-top: 30px;
+  background-color: white;
+}
+.content-section {
+  padding: 30px 0;
+}
+
+.content-container {
+
+}
+
+/*  background-color: #e8f5f7; alternate options from alice: #E8F3EC, #b4e7f8, #e8f5f7 */
+
+.release-preview-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.release-preview-title {
+
+}
+
+.release-preview-text {
+
+}
+
+
+.sign-up-form {
+  display: flex;
+  flex-grow: 10;
+}
+
+.sign-up-container {
+  margin-top: auto;
+  width: 100%;
+  background-color: #e8f5f7;
+  padding: 20px;
+  border-radius: 2px;
+  border: 1px solid #ebebeb;
+}
+
+.sign-up-form-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.sign-up-input {
+  border: 1px solid #eee;
+  border-radius: 2px;
+  line-height: 37px;
+  margin-right: 20px;
+  width: 100%;
+  padding: 3px;
+  padding-left: 10px;
+}
+
+.sign-up-input:focus {
+  outline: none;
+}
+
+.sign-up-input input {
+  overflow: hidden;
+}
+
+.sign-up-button {
+  background-color: rgba(0,0,0,.84);
+  color: rgba(255, 255, 255, .97);
+  line-height: 43px;
+  padding: 0 16px;
+  border: 1px solid rgba(0,0,0,.15);
+  border-radius: 3px;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.content-title-text {
+  font-family: "Poppins", Helvetica, sans-serif;
+  font-weight: 600;
+  font-size: 2em;
+  color: rgb(60, 60, 60);
+  margin-bottom: 0;
+}
+
+.content-title-underline {
+  border-top: 1px solid #cccccc;
+  margin: 0 0 40px 0;
 }
 
 .vignettes-section {
   padding: 30px 0;
   /* Background pattern from Toptal Subtle Patterns */
-  background-image: url('../../images/bright_squares.png');
-  background-repeat: repeat;
+/*  background-image: url('../../images/bright_squares.png');
+*/
 }
 
 .vignette-holder {
@@ -97,9 +345,13 @@
 }
 
 #find-out-more-section {
-  background-color: #7c00ff;
+  background-color: #FFB221;
+/*  background-image: url('../../images/footer-banner.png');
+*/  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center; 
   font-family: 'Montserrat', sans-serif;
-  color: #fafafa;
+  color: rgb(35, 35, 35);
   padding: 50px 0;
   text-align: center;
 }

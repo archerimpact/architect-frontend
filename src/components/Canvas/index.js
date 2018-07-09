@@ -3,6 +3,7 @@ import Graph from "./Graph";
 import ArcherGraph from "./Graph/package/GraphClass";
 import GraphSidebar from "./graphSidebar";
 import SideNavBar from "../sideNavBar";
+import BottomBar from "../bottomBar";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import {fetchSearchResults} from "../../redux/actions/graphActions";
@@ -18,9 +19,10 @@ class Canvas extends Component {
     }
 
     componentDidMount() {
-        if (this.props.currentNode != null) {
-            this.props.history.push(this.baseUrl + '/entity/' + encodeURIComponent(this.props.currentNode.id))
-        }
+        // if (this.props.currentNode != null) {
+        //   debugger;
+        //     this.props.history.push(this.baseUrl + '/entity/' + encodeURIComponent(this.props.currentNode.id))
+        // }
         
         if (this.props.match.params && this.props.match.params.sidebarState === 'search' && this.props.match.params.query != null) {
             this.props.dispatch(fetchSearchResults(this.props.match.params.query));
@@ -56,6 +58,7 @@ class Canvas extends Component {
                 <SideNavBar/>
                 <Graph graph={this.graph} onMouseOver={onMouseOver} data={data} displayMinimap={false}/>
                 <GraphSidebar isCovered={isCovered} graph={this.graph} data={data}/>
+                <BottomBar/>
             </div>
         )
     }

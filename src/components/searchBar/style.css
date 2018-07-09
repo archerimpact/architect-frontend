@@ -1,3 +1,7 @@
+.search-container {
+  width: 100%;
+}
+
 .search-input-container {
     position: relative;
     margin: 0 auto;
