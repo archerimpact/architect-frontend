@@ -27,7 +27,7 @@ export function searchBackendText(searchQuery) {
             }
         })
         .then(function (response) {
-            fulfill(response.data);
+            fulfill(response.data.results);
         })
         .catch(function (error) {
             console.log(error);
