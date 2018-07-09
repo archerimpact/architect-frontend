@@ -9,7 +9,7 @@ export default class VignettePreview extends Component {
     super(props);
     this.state = {
       isModalOpen: false,
-      colorProfile: 0,
+      colorProfile: props.colorProfile,
     }
   }
 

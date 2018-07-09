@@ -15,6 +15,7 @@
 
 .graph-preview-action:hover {
   color: #1e1e1e;
+  cursor: pointer;
 }
 
 .graph-preview-footer {

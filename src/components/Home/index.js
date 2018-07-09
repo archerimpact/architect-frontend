@@ -97,7 +97,7 @@ export default class Home extends Component {
                           <p>
                             OFAC SDN data contains over 3,000 links. Explore how your favorite sanctioned individuals, companies, and vessels are connected.
                           </p>
-                          <h5>Context</h5>
+                          <h6 className="release-preview-subheader">Context</h6>
                           <p>
                             The U.S. Treasury publishes a list of individuals, entities, and vessels with whom American citizens and businesses cannot transact with.   This list is critical for investigations and compliance.
                           </p>
@@ -133,9 +133,9 @@ export default class Home extends Component {
                   <hr className="content-title-underline" />
 
                   <div className="row">
-                    <VignettePreview key={"vp1"}/>
-                    <VignettePreview key={"vp2"}/>
-                    <VignettePreview key={"vp3"}/>
+                    <VignettePreview key={"vp1"} colorProfile='0' />
+                    <VignettePreview key={"vp2"} colorProfile='1' />
+                    <VignettePreview key={"vp3"} colorProfile='2' />
                   </div>
 
               </div>

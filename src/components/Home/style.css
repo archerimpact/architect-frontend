@@ -251,6 +251,10 @@ nav.secondary.menu-button-secondary {
   padding: 30px 0;
 }
 
+.release-preview-subheader {
+  text-transform: uppercase;
+}
+
 .release-preview-content {
   display: flex;
   flex-direction: column;
