@@ -1,8 +1,20 @@
 import React, {Component} from "react";
+import VignetteModal from "../VignetteModal";
 
 import './style.css'
 
 export default class VignettePreview extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      isModalOpen: false,
+    }
+  }
+
+  toggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
+  handleClick = () => this.setState({ isModalOpen: true });
+  handleClose = () => this.setState({ isModalOpen: false });
 
   render() {
     return (
@@ -16,12 +28,16 @@ export default class VignettePreview extends Component {
           <hr className="preview-divider" />
         </div>
         <div className="col-md preview-box">
-          <div className="tint"></div>
-          <div className="preview-summary-box">
+          <div className="tint" onClick={ this.toggleModal }>
             <p className="preview-summary-text">Investigating the corporate holdings of one shady Tyler Heintz.</p>
           </div>
           <img src="./graph-test.png" className="preview-image" />
         </div>
+        {
+          this.state.isModalOpen && 
+          <VignetteModal handleClick={this.handleClick} handleClose={this.handleClose} />
+          
+        }
       </div>
     );
   }

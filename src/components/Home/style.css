@@ -15,7 +15,7 @@
   position: sticky;
   top: 0;
   opacity: 1;
-  z-index: 9998;
+  z-index: 2;
 /*  border-bottom: 5px solid rgba(0,0,0,.2);
 */}
 
@@ -311,8 +311,14 @@ nav.secondary.menu-button-secondary {
 .content-title-text {
   font-family: "Poppins", Helvetica, sans-serif;
   font-weight: 600;
-  font-size: 1.5em;
-  color: rgb(35, 35, 35);
+  font-size: 2em;
+  color: rgb(60, 60, 60);
+  margin-bottom: 0;
+}
+
+.content-title-underline {
+  border-top: 1px solid #cccccc;
+  margin: 0 0 40px 0;
 }
 
 .vignettes-section {

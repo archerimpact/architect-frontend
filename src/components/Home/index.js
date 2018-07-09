@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import Vignette from './Vignette/';
+import VignetteModal from './VignetteModal/';
 import VignettePreview from './VignettePreview';
 import GraphPreview from './GraphPreview';
 import Footer from './Footer';
@@ -79,8 +79,9 @@ export default class Home extends Component {
               <div className="container">
                 <div className="content-title-section">
                   <div className="content-title-text">
-                    Latest Dataset Release
+                    What's New
                   </div>
+                  <hr className="content-title-underline" />
                 </div>
                 <div className="content-preview-section">
                   <div className="release-preview-card"> 
@@ -129,6 +130,7 @@ export default class Home extends Component {
                   <div className="content-title-text">
                     Featured Stories
                   </div>
+                  <hr className="content-title-underline" />
 
                   <div className="row">
                     <VignettePreview key={"vp1"}/>
