@@ -25,8 +25,13 @@
 	display: flex;
 	justify-content: space-between;
 	color: white;
+	width: 300px;
 }
 
-img.social-icons {
-	height: 40px;
+.social-media-icon {
+	color: #aaaaaa;
+}
+
+.social-media-icon:hover {
+	color: #fafafa;
 }
