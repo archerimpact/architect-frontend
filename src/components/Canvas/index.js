@@ -4,9 +4,8 @@ import ArcherGraph from "./Graph/package/GraphClass";
 import GraphSidebar from "./graphSidebar";
 import SideNavBar from "../sideNavBar";
 import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
 import {withRouter} from "react-router-dom";
-import {fetchEntity, fetchSearchResults} from "../../redux/actions/graphActions";
+import {fetchSearchResults} from "../../redux/actions/graphActions";
 
 import './style.css';
 

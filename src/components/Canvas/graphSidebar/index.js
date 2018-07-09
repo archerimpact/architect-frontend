@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import SearchResults from "../searchResults";
-import SearchBarDatabase from "../../searchBarDatabase";
+import SearchBar from "../../searchBar";
 import ListData from "../listData"
 import {Link,withRouter} from "react-router-dom";
 import {connect} from "react-redux";
@@ -38,47 +38,49 @@ class GraphSidebar extends Component {
         }
     }
 
-    toggleSidebarFunc = () => {
-        this.props.dispatch(toggleSidebar());
-    };
-
     renderSearch() {
-        const { graphid, match, graph, data } = this.props;
+        const { graph, data } = this.props;
         return (
             <div>
-                <div className="searchbar-container">
-                    <SearchBarDatabase graphid={graphid}
-                                       search={(match.params.sidebarState === "search" && match.params.query ? match.params.query : "")}
-                                       showSettings={true}/>
-                    <div className="tab-container">
-                        <button className="tab">Search</button>
-                        <button className="tab">List</button>
-                    </div>
-                </div>
                 <SearchResults graph={graph} entity data={data}/>
             </div>
         )
     }
 
+    goToSearchPage = (query) => {
+        let newPathname = '/explore/search/' + query;
+        this.props.history.push(newPathname);
+    };
+
+
+    goToListPage = (query) => {
+        let newPathname = '/explore/list/' + query;
+        this.props.history.push(newPathname);
+    };
+
     render() {
-        const { sidebarVisible, isCovered, graph, data } = this.props;
+        const { sidebarVisible, isCovered, graph, data, match } = this.props;
         return (
             <div className={"sidebar " + (sidebarVisible ? "slide-out" : "slide-in") + (isCovered ? " hidden" : "")}>
                 <div className="flex-row d-flex full-height">
                     <div className="sidebar-container" key="sidebar-container">
-                        <Radio.Group defaultValue="a" size="large">
-                            <Link to={'/explore/search'}>
-                                <Radio.Button value="a">
-                                    Search
-                                </Radio.Button>
+                        <div className="searchbar-container">
+                            {
+                                !this.state.renderList ?
+                                <SearchBar onSubmit={this.goToSearchPage} value={match.params.sidebarState === "search" && match.params.query ? match.params.query : ""} showSettings={true} placeholder={'Search Database (e.g. "Russia", "Kony", or "DPRK2")'}/>
+                                :
+                                <SearchBar onSubmit={this.goToListPage} value={match.params.sidebarState === "list" && match.params.query ? match.params.query : ""} showSettings={true} placeholder={'Search Entity List (e.g. "Russia", "Kony", or "DPRK2")'}/>
+                            }
+                        </div>
+                        <div className="tab-container">
+                            <Link to="/explore/search">
+                                <div className="tab">Search</div>
                             </Link>
-                            <Link to={'/explore/list'}>
-                                <Radio.Button value="b">
-                                    List
-                                </Radio.Button>
+                            <Link to="/explore/list">
+                                <div className="tab">List</div>
                             </Link>
-                        </Radio.Group>
-                        <div className="full-width full-height flex-column">
+                        </div>
+                        <div className="full-width flex-column">
                             {
                                 !this.state.renderList ?
                                     this.renderSearch()

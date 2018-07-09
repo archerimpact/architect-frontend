@@ -20,6 +20,7 @@
     display: flex;
     flex: 1;
     justify-content: center;
+    z-index: 20;
 }
 
 .sidebar.hidden {
@@ -28,7 +29,7 @@
 
 .tab {
     width: 100%;
-    background: inherit;
+    background: #0d77e2;
     padding: 5px;
     font-size: 15px;
     letter-spacing: 2px;
@@ -38,9 +39,15 @@
     outline: none;
 }
 
-.tab.active-tab {
-    background-color: #ffffff;
-    border-right: 0;
+.tab-selected {
+    width: 100%;
+    background: #FFFFFF;
+    padding: 5px;
+    font-size: 15px;
+    letter-spacing: 2px;
+    font-weight: 100;
+    border: 0;
+    color: white;
     outline: none;
 }
 
