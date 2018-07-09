@@ -251,25 +251,10 @@ nav.secondary.menu-button-secondary {
   padding: 30px 0;
 }
 
-.content-container {
-
-}
-
-/*  background-color: #e8f5f7; alternate options from alice: #E8F3EC, #b4e7f8, #e8f5f7 */
-
 .release-preview-content {
   display: flex;
   flex-direction: column;
 }
-
-.release-preview-title {
-
-}
-
-.release-preview-text {
-
-}
-
 
 .sign-up-form {
   display: flex;

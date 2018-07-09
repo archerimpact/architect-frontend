@@ -1,3 +1,45 @@
-.graph-preview-container {
-  height: 400px
+
+
+.graph-preview {
+  border: 1px solid #ebebeb;
+}
+
+.graph-preview-share-icons {
+  margin-left: 10px;
+}
+
+.graph-preview-action {
+  font-size: 20px;
+  color: #0d77e2;
+}
+
+.graph-preview-action:hover {
+  color: #1e1e1e;
+}
+
+.graph-preview-footer {
+  background-color: #fafafa;
+  border-top: 1px solid #ebebeb;
+  height: 50px;
+  width: 100%;
+  margin-top: auto;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.graph-preview-explore-button {
+  border-radius: 2px;
+  background-color:  #0d77e2;
+  border: 0;
+  color: #fafafa;
+  display: flex;
+  align-items: center;
+}
+
+.explore-icon {
+  margin-left: 5px;
+}
+
+.fa-link {
+  margin-left: 15px;
 }

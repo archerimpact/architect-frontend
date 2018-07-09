@@ -44,7 +44,6 @@ border: 0;
   width: 50%;
   background-color: #ffffff;
   margin: 0 10px 0 0;
-  border: 1px solid #ebebeb;
 }
 
 .vignette-date {
@@ -74,44 +73,4 @@ hr.vignette-divider {
 p.vignette-content {
   line-height: 140%;
   text-align: justify;
-}
-
-.vignette-share-icons {
-  margin-left: 20px;
-}
-
-.vignette-action {
-  font-size: 20px;
-  color: #0d77e2;
-}
-
-.vignette-action:hover {
-  color: #1e1e1e;
-}
-
-.vignette-card-footer {
-  background-color: #fafafa;
-  border-top: 1px solid #ebebeb;
-  height: 50px;
-  width: 100%;
-  margin-top: auto;
-  align-items: center;
-  padding: 0 10px;
-}
-
-.vignette-explore-button {
-  border-radius: 2px;
-  background-color:  #0d77e2;
-  border: 0;
-  color: #fafafa;
-  display: flex;
-  align-items: center;
-}
-
-.explore-icon {
-  margin-left: 5px;
-}
-
-.fa-link {
-  margin-left: 15px;
 }

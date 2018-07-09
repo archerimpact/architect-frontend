@@ -36,8 +36,20 @@ class GraphPreview extends Component {
 
     render() {
         return (
-          <div className="vignette-card-graph">
-            <Graph graph={this.graph} height={400} width={540} displayMinimap={false} allowKeycodes={false} data={this.state.data}/>
+          <div className="graph-preview">
+            <div className="graph-card">
+              <Graph graph={this.graph} height={400} width={540} displayMinimap={false} allowKeycodes={false} data={this.state.data}/>
+            </div>
+            <div className="graph-preview-footer flex-row">
+              <div className="graph-preview-share-icons">
+                <i className="graph-preview-action twitter-action fab fa-twitter"></i>
+                <i className="graph-preview-action link-action fas fa-link"></i>
+              </div>
+              <button className="btn btn-primary graph-preview-explore-button ml-auto">
+                Explore In Depth
+                <i className="explore-icon material-icons">launch</i>
+              </button>
+            </div>
           </div>
         );
     }

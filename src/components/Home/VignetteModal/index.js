@@ -78,19 +78,7 @@ class VignetteModal extends Component {
                 </div>
 
                 <div className="vignette-card-col vignette-card-right-col">
-                  <div className="vignette-card-graph">
                     <GraphPreview />
-                  </div>
-                  <div className="vignette-card-footer flex-row">
-                    <div className="vignette-share-icons">
-                      <i className="vignette-action twitter-action fab fa-twitter"></i>
-                      <i className="vignette-action link-action fas fa-link"></i>
-                    </div>
-                    <button className="btn btn-primary vignette-explore-button ml-auto">
-                      Explore In Depth
-                      <i className="explore-icon material-icons">launch</i>
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
