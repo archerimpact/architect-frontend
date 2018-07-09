@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import * as cola from "webcola";
 import * as aesthetics from "./helpers/aesthetics.js";
 import * as utils from "./helpers/utils.js";
 import * as mouseClicks from "./helpers/mouseClicks.js";
@@ -62,6 +63,7 @@ class Graph {
         this.xbound = [0, 0];
         this.ybound = [0, 0];
 
+        this.useCola = true;
         this.isDragging = false; // Keep track of dragging to disallow node emphasis on drag
         this.draggedNode = null; // Store reference to currently dragged node, null otherwise
         this.isBrushing = false;
@@ -248,18 +250,23 @@ class Graph {
     }
 
     initializeForce = () => {
+        if (this.useCola) {
+            return cola.d3adaptor()
+                .linkDistance(30)
+                .size([this.width, this.height]);
+        }
+
         return d3.layout.force()
             .size([this.width, this.height]);
     }
 
-    intitializeDrag = () => {
+    initializeDrag = () => {
         const self = this;
         const drag = this.force.drag()
             .origin((d) => { return d; })
             .on('dragstart', function (d) { self.dragstart(d, this) })
             .on('drag', function (d) { self.dragging(d, this) })
             .on('dragend', function (d) { self.dragend(d, this)});
-
         return drag;
     }
 
@@ -577,7 +584,7 @@ class Graph {
         this.svgGrid = this.initializeSVGgrid();
         this.curve = this.initializeCurve();
         this.force = this.initializeForce();
-        this.drag = this.intitializeDrag();
+        this.drag = this.initializeDrag();
         this.dragLink = this.initializeDragLink();
         this.defs = this.svg.append('defs');
         this.initializeMenuActions();
@@ -686,13 +693,21 @@ class Graph {
         this.matrixToGraph();
         this.reloadNeighbors();
 
-        this.force
-            .gravity(.33)
-            .charge((d) => { return d.group ? -7500 : -20000 })
-            .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
-            .alpha(.8)
-            .nodes(this.nodes)
-            .links(this.links);
+        if (this.useCola) {
+            this.force
+                .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE_COLA : constants.LINK_DISTANCE_COLA })
+                .avoidOverlaps(true)
+                .nodes(this.nodes)
+                .links(this.links);
+        } else {
+            this.force
+                .gravity(.33)
+                .charge((d) => { return d.group ? -7500 : -20000 })
+                .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
+                .alpha(.8)
+                .nodes(this.nodes)
+                .links(this.links);
+        }
 
         // Update links
         this.link = this.link.data(this.links, (l) => { return l.id; }); // Resetting the key is important because otherwise it maps the new data to the old data in order
@@ -864,28 +879,12 @@ class Graph {
                 l.targetY = y2 - (y2 - y1) * (l.distance - targetPadding) / l.distance;
             })
             .attr('d', (l) => { return 'M' + l.sourceX + ',' + l.sourceY + 'L' + l.targetX + ',' + l.targetY; })
-            .attr('stroke-dasharray', (l) => {
-                const textPath = d3.select(`#text-${utils.hash(l.id)}`);
-                if (textPath[0][0] === null || textPath.text() === "") return 'none';
-                const spaceLength = textPath.node().getComputedTextLength() + textPath.node().getNumberOfChars() * 2 - 10;
-                const lineLength = Math.sqrt(Math.pow(l.sourceX-l.targetX, 2) + Math.pow(l.sourceY-l.targetY, 2)) - spaceLength;
-                return `${lineLength/2-7.5} ${spaceLength+15}`;
-            });
+            .attr('stroke-dasharray', aesthetics.createLinkTextBackground);
 
         this.linkText
-                .attr('transform', (l) => {
-                    if (l.sourceX < l.targetX) return '';
-                    const centerX = l.sourceX + (l.targetX - l.sourceX)/2;
-                    const centerY = l.sourceY + (l.targetY - l.sourceY)/2;
-                    return `rotate(180 ${centerX} ${centerY})`;
-                })
+                .attr('transform', aesthetics.rotateLinkText)
             .select('textPath')
-                .each(function (l) {
-                    const textPath = d3.select(this); 
-                    const textLength = textPath.node().getComputedTextLength() + textPath.node().getNumberOfChars() * 2 - 10;
-                    const pathLength = Math.sqrt(Math.pow(l.sourceX-l.targetX, 2) + Math.pow(l.sourceY-l.targetY, 2));
-                    textPath.classed('hidden', textLength > pathLength - 16);
-                });
+                .each(aesthetics.hideLongLinkText);
             
 
         if (this.editMode && this.mousedownNode) {

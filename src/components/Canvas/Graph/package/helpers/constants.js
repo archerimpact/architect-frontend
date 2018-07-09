@@ -5,10 +5,12 @@ export const GRID_LENGTH = 80;
 
 export const NODE_RADIUS = 23;
 export const LINK_DISTANCE = 100;
+export const LINK_DISTANCE_COLA = 180;
 export const STROKE_WIDTH = 2.7;
 
 export const GROUP_NODE_RADIUS = 10;
 export const GROUP_LINK_DISTANCE = 40;
+export const GROUP_LINK_DISTANCE_COLA = 60;
 export const GROUP_STROKE_WIDTH = 2.4;
 
 export const MARKER_PADDING = 7;

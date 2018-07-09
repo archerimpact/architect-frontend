@@ -190,13 +190,38 @@ export function updateLinkText(selection) {
         .attr('dy', '.3em');
 
     this.linkText
+            .attr('transform', rotateLinkText)
         .append('textPath')
-        .attr('id', (l) => { return `text-${utils.hash(l.id)}`; })
-        .attr('startOffset', '50%')
-        .attr('xlink:href', (l) => { return `#link-${utils.hash(l.id)}`; })
-        .attr('length', (l) => { return l.distance; })
-        .text((l) => { return processLinkText(l.type); });
+            .attr('id', (l) => { return `text-${utils.hash(l.id)}`; })
+            .attr('startOffset', '50%')
+            .attr('xlink:href', (l) => { return `#link-${utils.hash(l.id)}`; })
+            .attr('length', (l) => { return l.distance; })
+            .text((l) => { return processLinkText(l.type); })
+            .each(hideLongLinkText);
 
     linkEnter.exit().remove();
+    this.link.attr('stroke-dasharray', createLinkTextBackground);
     this.force.resume();
+}
+
+export function createLinkTextBackground(link) {
+    const textPath = d3.select(`#text-${utils.hash(link.id)}`);
+    if (textPath[0][0] === null || textPath.text() === "") return 'none';
+    const spaceLength = textPath.node().getComputedTextLength() + textPath.node().getNumberOfChars() * 2 - 10;
+    const lineLength = Math.sqrt(Math.pow(link.sourceX-link.targetX, 2) + Math.pow(link.sourceY-link.targetY, 2)) - spaceLength;
+    return `${lineLength/2-7.5} ${spaceLength+15}`;
+}
+
+export function rotateLinkText(link) {
+    if (link.sourceX < link.targetX) return '';
+    const centerX = link.sourceX + (link.targetX - link.sourceX)/2;
+    const centerY = link.sourceY + (link.targetY - link.sourceY)/2;
+    return `rotate(180 ${centerX} ${centerY})`;
+}
+
+export function hideLongLinkText(link) {
+    const textPath = d3.select(this); 
+    const textLength = textPath.node().getComputedTextLength() + textPath.node().getNumberOfChars() * 2 - 10;
+    const pathLength = Math.sqrt(Math.pow(link.sourceX-link.targetX, 2) + Math.pow(link.sourceY-link.targetY, 2));
+    textPath.classed('hidden', textLength > pathLength - 16);
 }
