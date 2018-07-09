@@ -5,7 +5,8 @@ import {
     STORE_ENTITY,
     STORE_SEARCH_RESULTS,
     UPDATE_GRAPH_DATA,
-    TOGGLE_SIDEBAR
+    TOGGLE_SIDEBAR,
+    LOAD_DATA
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -69,6 +70,11 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 entityCache: action.payload
+            };
+        case LOAD_DATA:
+            return {
+                ...state,
+                data: action.payload
             };
         default:
             return state;

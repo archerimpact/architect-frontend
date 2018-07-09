@@ -3,6 +3,11 @@ import {configData} from "../config.js";
 import axios from "axios";
 import * as constants from "./settingsConstants.js";
 
+let api_inst = axios.create({
+    baseURL: configData.backend_url,
+    timeout: 1000
+});
+
 export function searchBackendText(searchQuery) {
     /* Takes in a searchQuery parameter and sends a query directly to the hosted elastic
      search instance. Query format below is the standard for elastic. Matches only if the
@@ -58,3 +63,25 @@ export function getNode(neo4j_id, degree=0, useExclude=true) {
         });
     });
 }
+
+export const createLink = async (name, author, description, data) => {
+    let stringifiedData = JSON.stringify(data);
+    const response = await api_inst.post('/projects/create', {
+        name,
+        author,
+        description,
+        data: stringifiedData
+    });
+    return response.data;
+};
+
+export const getLink = async (id) => {
+    console.log("making call in getLink in server", id)
+    const response = await api_inst.get('/projects/get', {
+        params: {
+            id
+        }
+    });
+    console.log("received response in server", response.data)
+    return response.data;
+};

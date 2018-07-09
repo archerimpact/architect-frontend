@@ -1,4 +1,4 @@
-import {REORDER_ENTITY_CACHE, UPDATE_GRAPH_DATA, OFFLINE_ACTIONS, TOGGLE_SIDEBAR, RESET_GRAPH, STORE_CURRENT_NODE, STORE_ENTITY, STORE_SEARCH_RESULTS} from "./actionTypes";
+import {LOAD_DATA, REORDER_ENTITY_CACHE, UPDATE_GRAPH_DATA, OFFLINE_ACTIONS, TOGGLE_SIDEBAR, RESET_GRAPH, STORE_CURRENT_NODE, STORE_ENTITY, STORE_SEARCH_RESULTS} from "./actionTypes";
 import _ from 'lodash';
 import * as server from "../../server/index";
 
@@ -165,3 +165,48 @@ export function toggleSidebar() {
     }
 }
 
+/* =============================================================================================  */
+
+export function saveLink(name, author, description, graph) {
+    let data = graph.fetchData();
+    server.createLink(name, author, description, data)
+        .then((res) => {
+            console.log("Res", res)
+            return res.success
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+}
+
+/* =============================================================================================  */
+
+function loadGraphDataDispatch(data) {
+    return {
+        type: LOAD_DATA,
+        payload: data
+    }
+}
+
+export function loadLink(projId) {
+    return (dispatch) => {
+        console.log("about to do server call in loadLink")
+        server.getLink(projId)
+            .then((res) => {
+                console.log("received response in action", res)
+                let graphData;
+                try {
+                    graphData = JSON.parse(res.message.data);
+                } catch (err) {
+                    graphData = null;
+                }
+                console.log("loading graph data", graphData)
+                dispatch(loadGraphDataDispatch(graphData));
+                console.log("sending things back", {name: res.message.name, author: res.message.author, description: res.message.description})
+                return {name: res.message.name, author: res.message.author, description: res.message.description}
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+}

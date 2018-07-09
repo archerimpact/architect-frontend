@@ -4,8 +4,8 @@ import SearchBar from "../../searchBar";
 import ListData from "../listData"
 import {Link,withRouter} from "react-router-dom";
 import {connect} from "react-redux";
-import { toggleSidebar } from "../../../redux/actions/graphActions"
-import { Radio } from 'antd';
+import { Input, Button } from 'antd';
+import { saveLink, loadLink } from "../../../redux/actions/graphActions"
 
 import "./style.css";
 
@@ -14,8 +14,13 @@ class GraphSidebar extends Component {
         super(props);
         this.state = {
             renderList: props.match.params ? props.match.params.sidebarState === "list" : false,
+            renderSearch: props.match.params ? props.match.params.sidebarState === "search" : false,
+            renderPublish: props.match.params ? props.match.params.sidebarState === "publish" : false,
             history: [],
-            listener: null
+            listener: null,
+            projectName: "",
+            author: "",
+            description: ""
         };
     }
 
@@ -26,6 +31,20 @@ class GraphSidebar extends Component {
         this.setState({listener: listener})
     }
 
+    componentDidMount() {
+        const { match } = this.props;
+        if (match.params && match.params.sidebarState === 'publish') {
+            console.log("recognized that in publish space")
+            let projId = match.params.query;
+            if (projId != null) {
+                console.log("recognized projId exists", projId);
+                let res = this.props.dispatch(loadLink(projId));
+                console.log("hi back in main", res)
+                // this.setState({projectName: res.name, author: res.author, description: res.description})
+            }
+        }
+    }
+
     componentWillUnmount() {
         this.state.listener();
     }
@@ -34,17 +53,10 @@ class GraphSidebar extends Component {
         if (this.props.location.pathname !== nextprops.location.pathname) {
             this.setState({
                 renderList: nextprops.match.params ? nextprops.match.params.sidebarState === "list" : false,
+                renderSearch: nextprops.match.params ? nextprops.match.params.sidebarState === "search" : false,
+                renderPublish: nextprops.match.params ? nextprops.match.params.sidebarState === "publish" : false
             })
         }
-    }
-
-    renderSearch() {
-        const { graph, data } = this.props;
-        return (
-            <div>
-                <SearchResults graph={graph} entity data={data}/>
-            </div>
-        )
     }
 
     goToSearchPage = (query) => {
@@ -58,8 +70,53 @@ class GraphSidebar extends Component {
         this.props.history.push(newPathname);
     };
 
+    renderSearch() {
+        const { graph, data } = this.props;
+        return (
+            <div>
+                <SearchResults graph={graph} entity data={data}/>
+            </div>
+        )
+    }
+
+    renderList() {
+        const { graph, data } = this.props;
+        return (<ListData graph={graph} data={data}/>)
+    }
+
+    handleProjectNameChange = (val) => {
+        this.setState({projectName: val})
+    }
+
+    handleAuthorChange = (val) => {
+        this.setState({author: val})
+    }
+
+    handleDescriptionChange = (val) => {
+        this.setState({description: val})
+    }
+
+    handlePublishSubmit = async () => {
+        const { projectName, author, description } = this.state;
+        const { graph } = this.props;
+        let res = await saveLink(projectName, author, description, graph)
+        // modal popbox saying something or the antd popup
+    };
+
+    renderPublish() {
+        const { projectName, author, description } = this.state
+        return (
+            <div>
+                <Input placeholder="Project Name" value={projectName} onChange={(e) => this.handleProjectNameChange(e.target.value)}/>
+                <Input placeholder="Author" value={author} onChange={(e) => this.handleAuthorChange(e.target.value)}/>
+                <Input placeholder="Description" value={description} onChange={(e) => this.handleDescriptionChange(e.target.value)}/>
+                <Button type="primary" onClick={() => this.handlePublishSubmit()}>Publish</Button>
+            </div>
+        )
+    }
+
     render() {
-        const { sidebarVisible, isCovered, graph, data, match } = this.props;
+        const { sidebarVisible, isCovered, match } = this.props;
         return (
             <div className={"sidebar " + (sidebarVisible ? "slide-out" : "slide-in") + (isCovered ? " hidden" : "")}>
                 <div className="flex-row d-flex full-height">
@@ -79,14 +136,25 @@ class GraphSidebar extends Component {
                             <Link to="/explore/list">
                                 <div className="tab">List</div>
                             </Link>
+                            <Link to="/explore/publish">
+                                <div className="tab">Publish</div>
+                            </Link>
                         </div>
                         <div className="full-width flex-column">
                             {
-                                !this.state.renderList ?
+                                this.state.renderSearch ?
                                     this.renderSearch()
-                                    :
-                                    <ListData graph={graph} data={data}/>
-
+                                    : null
+                            }
+                            {
+                                this.state.renderList ?
+                                    this.renderList()
+                                    : null
+                            }
+                            {
+                                this.state.renderPublish ?
+                                    this.renderPublish()
+                                    : null
                             }
                         </div>
                     </div>
