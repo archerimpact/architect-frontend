@@ -49,15 +49,19 @@ class EntityCard extends Component {
                         </small>
                     </div>
                 </div>
-                <div className={this.state.collapsed ? 'collapse' : null}>
+                <div>
                     <div className="card-body result-card-body">
-                        <EntityAttributes node={node}/>
+                        {
+                            this.state.collapsed ?
+                            null
+                                :
+                            <EntityAttributes node={node}/>
+                        }
                     </div>
                 </div>
             </div>
         );
     }
-
 }
 
 function mapDispatchToProps(dispatch) {

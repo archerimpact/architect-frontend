@@ -1,5 +1,5 @@
 import {
-    LOAD_DATA,
+    REORDER_ENTITY_CACHE,
     RESET_GRAPH,
     STORE_CURRENT_NODE,
     STORE_ENTITY,
@@ -64,6 +64,11 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 entityCache: action.payload.concat(state.entityCache)
+            };
+        case REORDER_ENTITY_CACHE:
+            return {
+                ...state,
+                entityCache: action.payload
             };
         default:
             return state;

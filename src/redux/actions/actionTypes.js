@@ -6,6 +6,7 @@ export const STORE_SEARCH_RESULTS = "STORE_SEARCH_RESULTS";
 export const STORE_CURRENT_NODE = "STORE_CURRENT_NODE";
 export const RESET_GRAPH = "RESET_GRAPH";
 export const STORE_ENTITY = "STORE_ENTITY";
+export const REORDER_ENTITY_CACHE = "REORDER_ENTITY_CACHE";
 
 /* ============================ HOME ACTIONS ============================ */
 

@@ -1,4 +1,4 @@
-import {UPDATE_GRAPH_DATA, OFFLINE_ACTIONS, TOGGLE_SIDEBAR, RESET_GRAPH, STORE_CURRENT_NODE, STORE_ENTITY, STORE_SEARCH_RESULTS} from "./actionTypes";
+import {REORDER_ENTITY_CACHE, UPDATE_GRAPH_DATA, OFFLINE_ACTIONS, TOGGLE_SIDEBAR, RESET_GRAPH, STORE_CURRENT_NODE, STORE_ENTITY, STORE_SEARCH_RESULTS} from "./actionTypes";
 import _ from 'lodash';
 import * as server from "../../server/index";
 
@@ -88,12 +88,13 @@ function fetchEntityDispatch(entity) {
 
 function fetchEntityDataFormatter(data) {
     console.log("fetchEntityDataFormat", data);
-    let nodes = data.nodes;
-    let linksLength = data.links.length;
-    for (let i=0; i < linksLength; i++) {
-        // nodes[i]
-    }
-
+    // let nodes = data.nodes;
+    // let linksLength = data.links.length;
+    // for (let i=0; i < linksLength; i++) {
+    //     // nodes[i]
+    // }
+    // we just need data to be node.id and then each possible link type or attr that matters "sanctioned on", etc here.
+    //
     return [data]
 }
 
@@ -107,10 +108,47 @@ export function fetchEntity(id) {
             })
             .catch(err => console.log(err));
     };
-} // refactor so the data formatting goes on here (and a node itself is actually selected rather than saving 1 degree. 1) Why are we
-// even getting 1 degree, shouldn't the selection happen on backend? Is it at all useful
-// 2) for search results, can we augment with the necessary field so we don't have to bombard the server everytime we
-// search with additional getNode calls
+}
+
+/* =============================================================================================  */
+
+function reorderEntityCacheDispatch(newEntityCache) {
+    return {
+        type: REORDER_ENTITY_CACHE,
+        payload: newEntityCache
+    }
+}
+
+function move(arr, from, to) {
+    let newArr = makeDeepCopy(arr);
+    newArr.splice(to, 0, this.splice(from, 1)[0]);
+    return newArr
+}
+
+export function reorderEntityCache(id, index=null) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let entityCache = state.graph.entityCache;
+        let newEntityCache = [];
+        if (index) {
+            newEntityCache = move(entityCache, index, 0);
+            dispatch(reorderEntityCacheDispatch(newEntityCache))
+        } else {
+            for (let i=0; i<entityCache.length; i++) {
+                if (entityCache[i].id === id) {
+                    newEntityCache = move(entityCache, i, 0);
+                    break;
+                }
+            }
+            if (newEntityCache.length !== 0) {
+                dispatch(reorderEntityCacheDispatch(newEntityCache))
+            }
+        }
+    }
+}
+
+/* =============================================================================================  */
+
 
 
 export function resetGraphDispatch() {
