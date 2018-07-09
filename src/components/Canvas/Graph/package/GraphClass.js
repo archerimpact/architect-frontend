@@ -799,7 +799,7 @@ class Graph {
         if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }
 
         if (minimap) {
-            this.toRenderMinimap = true;
+            this.toRenderMinimap = false; // TODO: Set to true when bringing minimap back
             this.tickCount = 0;
         }
 

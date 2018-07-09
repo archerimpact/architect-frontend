@@ -140,6 +140,10 @@ path.link.selected {
     fill: #dddddd !important;
 }
 
+.node.selected .icon {
+    stroke: #0d77e2 !important;
+}
+
 .node circle.node-glyph {
     /*stroke: #fff !important;*/
     fill: #fff !important;

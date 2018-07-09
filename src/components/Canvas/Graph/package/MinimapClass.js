@@ -275,6 +275,7 @@ class Minimap {
 
         this.widthOffset = (this.width - (this.boxWidth / this.scale)) / 2;
         this.heightOffset = (this.height - (this.boxHeight / this.scale)) / 2;
+        this.toggleMinimapVisibility();
     }
 
     getBoundingPositionX = (position) => {

@@ -117,9 +117,18 @@ export function createSVGString(targetSVG, x1, x2, y1, y2, width = null, height 
         }
 
         Array.from(e.childNodes).forEach((e) => {
-            if (e.classList[0] === "svg-grid") {
+            // console.log(e.childNodes)
+            if (e.classList[0] === "svg-grid" || e.classList.contains("icon")) {
                 e.parentNode.removeChild(e);
             }
+            
+            // Array.from(e.childNodes).forEach((e) => {
+            //     Array.from(e.childNodes).forEach((e) => {
+            //         if (e.classList[0] === "icon") {
+            //             e.parentNode.removeChild(e);
+            //         }
+            //     });
+            // });
         });
     });
 
