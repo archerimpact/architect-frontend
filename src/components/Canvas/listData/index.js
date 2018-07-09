@@ -70,15 +70,16 @@ class ListData extends Component {
                 }
             }
         }
-        console.log(searchResults);
         return searchResults
     };
 
     componentWillReceiveProps(nextprops) {
         if (this.props.location.pathname !== nextprops.location.pathname && nextprops.match.params) {
             let nextQuery = nextprops.match.params.query;
-            if (nextprops.match.params.sidebarState === 'list') {
-                if (nextQuery != null && this.props.match.params.query !== nextQuery) {
+            if (nextQuery == null) {
+                this.setState({listDataSearchResults: []})
+            } else if (nextprops.match.params.sidebarState === 'list') {
+                if (this.props.match.params.query !== nextQuery) {
                     this.setState({listDataSearchResults: this.fetchListResults(decodeURIComponent(nextprops.match.params.query))});
                 }
             }
@@ -89,8 +90,7 @@ class ListData extends Component {
         const { graph, data } = this.props;
         return (
             <div className="sidebar-content-container">
-                <h5 className="text-center">Graph Entities</h5>
-                <div className="searchResults">
+                <div className="search-results">
                     {
                         this.state.listDataSearchResults.length !== 0 ?
                         this.state.listDataSearchResults.map(nodeDict => <EntityCard key={nodeDict.node.id} node={nodeDict.node} graph={graph} data={data}/>)
