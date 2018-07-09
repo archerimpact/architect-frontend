@@ -1,3 +1,12 @@
+.tint-color-0 {
+	background-color: rgb(80, 150, 255, 0.6);
+}
+
+.tint-color-0:hover {
+	background-color: rgb(80, 150, 255, 0.9);
+}
+
+
 .preview-box {
 	border: 1px solid #ebebeb;
 	padding: 0;
@@ -35,7 +44,6 @@ hr.preview-divider {
 }
 
 .tint {
-	background-color: rgb(25, 84, 200, 0.4);
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -55,7 +63,6 @@ hr.preview-divider {
 }
 
 .tint:hover {
-	background-color: rgb(25, 84, 200, 0.8);
 	transition: background-color 200ms linear;
 	-webkit-transition: background-color 200ms linear;
 	-ms-transition: background-color 200ms linear;

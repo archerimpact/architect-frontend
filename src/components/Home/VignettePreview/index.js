@@ -9,6 +9,7 @@ export default class VignettePreview extends Component {
     super(props);
     this.state = {
       isModalOpen: false,
+      colorProfile: 0,
     }
   }
 
@@ -28,7 +29,7 @@ export default class VignettePreview extends Component {
           <hr className="preview-divider" />
         </div>
         <div className="col-md preview-box">
-          <div className="tint" onClick={ this.toggleModal }>
+          <div className={"tint " + "tint-color-" + this.state.colorProfile} onClick={ this.toggleModal }>
             <p className="preview-summary-text">Investigating the corporate holdings of one shady Tyler Heintz.</p>
           </div>
           <img src="./graph-test.png" className="preview-image" />
@@ -36,7 +37,6 @@ export default class VignettePreview extends Component {
         {
           this.state.isModalOpen && 
           <VignetteModal handleClick={this.handleClick} handleClose={this.handleClose} />
-          
         }
       </div>
     );

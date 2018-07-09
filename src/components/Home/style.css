@@ -255,30 +255,40 @@ nav.secondary.menu-button-secondary {
 
 }
 
-.treasury-release {
-/*  height: 300px;
-*/}
+/*  background-color: #e8f5f7; alternate options from alice: #E8F3EC, #b4e7f8, #e8f5f7 */
 
-.welcome-to-archer-section {
+.release-preview-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.release-preview-title {
 
 }
 
-.welcome-to-archer-section .container {
-  background-color: #e8f5f7; /*#E8F3EC, #b4e7f8, #e8f5f7*/
-  padding: 30px;
+.release-preview-text {
+
 }
+
 
 .sign-up-form {
-  width: 400px;
   display: flex;
+  flex-grow: 10;
+}
 
+.sign-up-container {
+  margin-top: auto;
+  width: 100%;
+  background-color: #e8f5f7;
+  padding: 20px;
+  border-radius: 2px;
+  border: 1px solid #ebebeb;
 }
 
 .sign-up-form-container {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  margin-top: 20px;
+  width: 100%;
 }
 
 .sign-up-input {
@@ -306,6 +316,8 @@ nav.secondary.menu-button-secondary {
   padding: 0 16px;
   border: 1px solid rgba(0,0,0,.15);
   border-radius: 3px;
+  align-self: flex-end;
+  margin-left: auto;
 }
 
 .content-title-text {

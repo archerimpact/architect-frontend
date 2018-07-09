@@ -85,46 +85,46 @@ export default class Home extends Component {
                 </div>
                 <div className="content-preview-section">
                   <div className="release-preview-card"> 
-                    <div className="release-preview-header">
-                      US Treasury Sanctions Data 
-                    </div>
-                    <div className="release-preview-summary">
-                      US Treasury Sanctions data contains over 3,000 links. Explore how your favorite sanctioned individuals, companies, and vessels are connected.
-                    </div>
-                  </div>
-                  <GraphPreview />
-                </div>
-              </div>
-            </div>
-
-            <div className="welcome-to-archer-section">
-           
-              <div className="container">
-                <div className="content-title-section">
-                  <div className="content-title-text">
-                    Welcome to Archer, where doing matters.
-                  </div>
-                <div className="content-preview-section">
-                  <div className="release-preview-card"> 
-                    <div className="release-preview-header">
-                      We'll keep you updated about our upcoming product releases and analytical tools.
-                    </div>
-                    <div className="sign-up-form-container">
-
-                      <div className="sign-up-form">
-                        <input className="sign-up-input">
-                        </input>
+                    <div className="row">
+                      <div className="col-md-6">
+                        <GraphPreview />
                       </div>
-                      <button className="sign-up-button">
-                        Sign up
-                      </button>
-                    </div>
-                  </div>
+                      <div className="col-md-6 release-preview-content">
+                        <h4 className="release-preview-header">
+                          Specially Designated Nationals List
+                        </h4>
+                        <div className="release-preview-summary">
+                          <p>
+                            OFAC SDN data contains over 3,000 links. Explore how your favorite sanctioned individuals, companies, and vessels are connected.
+                          </p>
+                          <h5>Context</h5>
+                          <p>
+                            The U.S. Treasury publishes a list of individuals, entities, and vessels with whom American citizens and businesses cannot transact with.   This list is critical for investigations and compliance.
+                          </p>
+                        </div>
 
+                        <div className="sign-up-container">
+                          <h4>There's more coming soon!</h4>
+                          <p>
+                            This is just a preview of how powerful graph visualization can be applied to critical investigative datasets.  Sign up to receive early 
+                          </p>
+                          <div className="sign-up-form-container">
+                            <div className="sign-up-form">
+                              <input className="sign-up-input" placeholder="Your email"/>
+                            </div>
+                            <button className="sign-up-button">
+                              Sign up
+                            </button>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
                 </div>
                 </div>
               </div>
             </div>
+
             <div className="content-section">
               <div className="container">
                   <div className="content-title-text">
