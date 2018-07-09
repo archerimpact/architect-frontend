@@ -106,11 +106,11 @@ export default class Home extends Component {
                         <div className="sign-up-container">
                           <h4>There's more coming soon!</h4>
                           <p>
-                            This is just a preview of how powerful graph visualization can be applied to critical investigative datasets.  Sign up to receive early 
+                            This is just a preview of how powerful graph visualization can be applied to critical datasets.  Sign up to receive early access to our full beta release when it's ready.
                           </p>
                           <div className="sign-up-form-container">
                             <div className="sign-up-form">
-                              <input className="sign-up-input" placeholder="Your email"/>
+                              <input className="sign-up-input" placeholder="Email address"/>
                             </div>
                             <button className="sign-up-button">
                               Sign up
