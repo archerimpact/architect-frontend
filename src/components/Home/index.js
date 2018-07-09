@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import Vignette from './Vignette/';
+import VignettePreview from './VignettePreview';
 import GraphPreview from './GraphPreview';
 import Footer from './Footer';
 import ParticleBackground from './ParticleBackground';
@@ -125,16 +126,19 @@ export default class Home extends Component {
             </div>
             <div className="content-section">
               <div className="container">
-                <div className="content-title-section">
                   <div className="content-title-text">
-                    See what people are doing with the graph
+                    Featured Stories
                   </div>
-                </div>
-                <div className="content-preview-section">
-                  <Vignette key={1}/>
-                </div>
+
+                  <div className="row">
+                    <VignettePreview key={"vp1"}/>
+                    <VignettePreview key={"vp2"}/>
+                    <VignettePreview key={"vp3"}/>
+                  </div>
+
               </div>
             </div>
+
             <div id="find-out-more-section">
                 <h3>And there's so much more on the horizon.</h3>
                 <div className="container" id="find-out-container">
@@ -148,8 +152,8 @@ export default class Home extends Component {
             </div>
           </div>
 
-                <Footer />
-            </div>
+          <Footer />
+        </div>
         );
     }
 }

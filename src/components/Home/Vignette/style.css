@@ -51,8 +51,7 @@ border: 0;
 }
 
 .vignette-date {
-/*  font-family: 'Georgia', serif;
-*/  font-weight: 300;
+  font-weight: 300;
   color: #aaaaaa;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -74,7 +73,6 @@ border: 0;
 
 hr.vignette-divider {
   margin-top: 0;
-
 }
 
 p.vignette-content {

@@ -1,0 +1,64 @@
+.preview-box {
+	border: 1px solid #ebebeb;
+	padding: 0;
+}
+
+.content-title-text {
+	margin-bottom: 20px;
+}
+
+.preview-date, .preview-author {
+  font-weight: 300;
+  color: #aaaaaa;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  word-spacing: 2px;
+  margin-bottom: 5px;
+}
+
+.preview-title {
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+hr.preview-divider {
+  margin-top: 0;
+}
+
+.preview-image {
+	width: 100%;
+	height: auto;
+	filter: blur(2px);
+	padding: 2px;		/* this value must match the blur value or else the image will bleed out of bounds */
+}
+
+.tint {
+	background-color: rgb(25, 84, 200, 0.4);
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 10;
+	height: 100%;
+	width: 100%;
+}
+
+.preview-summary-box {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	z-index: 100;
+	padding: 30px;
+}
+
+.preview-summary-text {
+	margin: auto;
+	color: #fafafa;
+	font-size: 30px;
+	text-align: center;
+	text-shadow: 1px 1px #222222;	
+}

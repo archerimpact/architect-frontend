@@ -53,7 +53,7 @@ class Vignette extends Component {
             <div className="vignette-card-row flex-row">
               <div className="vignette-card-col vignette-card-left-col">
                 <div className="vignette-card-header">
-                <p className="vignette-date">July 9, 2018</p>
+                  <p className="vignette-date">July 9, 2018</p>
                   <h4 className="vignette-title">How A MINING MOGUL FUELS THE DRC CIVIL WAR</h4>
                   <p className="vignette-author">by Archer Team</p>  
                   <hr className="vignette-divider" />

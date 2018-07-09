@@ -30,7 +30,7 @@ export default class BottomBar extends Component {
                 We're just getting started &mdash; sign up to access the full platform!
               </p>
               <input className="bottombar-input form-control" type="text" placeholder="Email address" />
-              <i className="bottombar-submit material-icons">check</i>
+              <i className="bottombar-submit material-icons">send</i>
             </div>
           )
           :
