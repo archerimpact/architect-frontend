@@ -16,10 +16,10 @@ const icons = {
     [constants.PERSON]: '',
     'Individual': '',
     'Document': '',
-    [constants.IDENTIFYING_DOCUMENT]: '',
+    [constants.IDENTIFYING_DOCUMENT]: '',
     'corporation': '',
     'Entity': '',
-    [constants.ORGANIZATION]: '',
+    [constants.ORGANIZATION]: '',
     'group': '',
     'same_as_group': '',
     [constants.BUTTON_ZOOM_IN_ID]: '',
@@ -679,7 +679,7 @@ class Graph {
     }
 
     // Updates nodes and links according to current data
-    update = (event = null, ticks = null, minimap = true) => {
+    update = (event=null, ticks=null, minimap=true) => {
         var self = this;
         this.resetGraphOpacity();
         this.force.stop();
@@ -734,14 +734,14 @@ class Graph {
 
         this.nodeEnter.append('circle')
             .attr('class', 'node-glyph')
-            .attr('r', 10)
-            .attr('cx', 17)
-            .attr('cy', 18);
+            .attr('r', 11)
+            .attr('cx', 18)
+            .attr('cy', -19);
 
         this.nodeEnter.append('text')
             .attr('class', 'glyph-label')
-            .attr('dx', 17)
-            .attr('dy', 22)
+            .attr('dx', 18)
+            .attr('dy', -14.5)
             .attr('text-anchor', 'middle');
 
         this.nodeEnter.append('text')
@@ -756,7 +756,7 @@ class Graph {
         this.nodeEnter.append('text')
             .attr('class', 'node-name')
             .attr('text-anchor', 'middle')
-            .attr('dy', '45px')
+            .attr('dy', '40px')
             .classed('unselectable', true)
             .text((d) => { return d.group ? '' : aesthetics.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
             .call(this.wrapNodeText, this.printFull)

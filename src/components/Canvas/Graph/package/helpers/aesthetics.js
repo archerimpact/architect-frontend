@@ -23,7 +23,7 @@ export function highlightLinksFromNode(node) {
         .call(this.styleLink, (d) => { return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index]; });
 }
 
-export function styleNode(selection) {
+export function styleNode(selection, colorBlind=false) {
     selection.select('circle')
         .attr('r', (d) => { return d.radius = (d.group ? constants.GROUP_NODE_RADIUS : constants.NODE_RADIUS); })
         .classed('hull-node', (d) => { return d.group; })
@@ -39,8 +39,9 @@ export function styleNode(selection) {
         .style('fill', (d) => { return getNodeColor(d); })
         .style('stroke', (d) => { return getNodeColor(d); });
 
-    // selection.select('.icon')
-    //     .style('fill', (d) => { return getNodeColor(d); });
+    selection.select('.icon')
+        .style('stroke', (d) => { return getNodeColor(d); });
+        // .style('fill', (d) => { return getNodeColor(d); });
 }
 
 export function getNodeColor(d) {

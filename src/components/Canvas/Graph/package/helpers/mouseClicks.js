@@ -65,7 +65,7 @@ export function dragstart(d, self) {
 
     this.isDragging = true;
     this.draggedNode = d;
-    this.displayNodeInfo(d);
+    //this.displayNodeInfo(d);
     const node = d3.select(self);
     node
         .attr('dragfix', node.classed('fixed'))
@@ -107,7 +107,6 @@ export function mousedown(d, self) {
     }
 
     this.dragDistance = 0;
-    if (isLeftClick()) { this.link.call(this.styleLink, false); }
     if (this.editMode) {
         this.mousedownNode = d;
         this.dragLink

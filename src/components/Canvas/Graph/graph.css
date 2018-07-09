@@ -101,7 +101,7 @@ path.link.selected {
 }
 
 .node text.icon {
-    stroke: none;
+    stroke-width: .5px;
     fill: #545454;
 }
 
@@ -112,10 +112,6 @@ path.link.selected {
 .node circle {
     cursor: pointer;
     stroke-width: 4.5px;
-}
-
-.node.fixed.grouped circle.node-circle {
-    fill: #000 !important;
 }
 
 .node circle.hull-node {
@@ -163,7 +159,7 @@ path.link.selected {
 }
 
 .glyph-label {
-    font-size: 12px;
+    font-size: 13px;
     /*stroke: none;
     fill: #ebebeb;*/
 }
@@ -194,12 +190,17 @@ path.link.selected {
 
 .node.faded {
     stroke-opacity: 0 !important;
-    fill-opacity: 0.1 !important;
+    fill-opacity: 0.15 !important;
     transition-property: stroke-opacity, fill-opacity;
 }
 
+.node.faded .glyph-label {
+    fill-opacity: 0 !important;
+    transition-property: fill-opacity;
+}
+
 .link.faded {
-    opacity: 0.1 !important;
+    opacity: 0.15 !important;
     transition-property: opacity;
 }
 
