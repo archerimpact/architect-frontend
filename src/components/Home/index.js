@@ -78,12 +78,12 @@ export default class Home extends Component {
                           <p className="bold">
                           Welcome to ArcherSpark, a bite-sized preview of a powerful investigative platform.
                           </p>
-                          <p>
+                          <p id="sign-up">
                             ArcherSpark applies our powerful investigative tool to the OFAC SDN list.  With over 3,000 official links, this data begs to be interacted with in a graph format. Experience a new way to investigate and share how your favorite sanctioned individuals, companies, and vessels are connected.
                           </p>
                         </div>
 
-                        <div className="sign-up-container">
+                        <div className="sign-up-container" id="subscribe">
                           <h4>There's more coming soon!</h4>
                           <p>
                             This is just a preview of how powerful graph visualization can be applied to critical datasets.  Sign up to receive early access to our full beta release when it's ready.
@@ -135,7 +135,7 @@ export default class Home extends Component {
                   <i className="beginning-icon material-icons">date_range</i>
                   <div>
                     <p className="content-title-summary lead">
-                      The summer is in full swing and so are we.  Between now and August 7th, we'll be releasing something new every Tuesday.  Don't want to miss out?  Catch us on <a href="https://twitter.com/archerimpact" className="real-link">Twitter</a> or <a href="mailto:team@archerimpact.com" className="real-link">subscribe</a> to our summer announcements. To learn more about what we do, check out our <a href="http://archer.cloud/" className="real-link"> website</a>.
+                      The summer is in full swing and so are we.  Between now and August 7th, we'll be releasing something new every Tuesday.  Don't want to miss out?  Catch us on <a href="https://twitter.com/archerimpact" className="real-link">Twitter</a> or <a href="#sign-up" className="real-link">subscribe</a> to our summer announcements. To learn more about what we do, check out our <a href="http://archer.cloud/" className="real-link"> website</a>.
                     </p>
                   </div>
                 </div>

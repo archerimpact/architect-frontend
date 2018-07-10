@@ -100,6 +100,7 @@ class GraphSidebar extends Component {
         const { projectName, author, description } = this.state;
         const { graph } = this.props;
         let res = await saveLink(projectName, author, description, graph)
+        console.log(res)
         // modal popbox saying something or the antd popup
     };
 
