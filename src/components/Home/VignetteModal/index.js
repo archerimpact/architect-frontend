@@ -18,23 +18,6 @@ class VignetteModal extends Component {
     constructor(props) {
       super(props);
       this.graph = new ArcherGraph();
-      this.state = {
-        data: {
-          links: [],
-          nodes: []
-        }
-      }
-
-    }
-
-    componentDidMount() {
-      // this.graph.flushData();
-      server.searchBackendText("Dan Gertler") // hardcoded for now, don't worry too much about it until we decide this way of doing the narratives is conceptually best
-        .then((data) => {
-          let neo4j_id = data[0].id
-          this.props.dispatch(homeActions.addToVignetteFromId(this.graph, neo4j_id));
-        })
-        .catch((err)=> {console.log(err)});
     }
 
     onEntityClick = (string) => {
@@ -44,10 +27,10 @@ class VignetteModal extends Component {
       server.searchBackendText(string)
         .then((data) => {
           let neo4j_id = data[0].id
-          this.props.dispatch(homeActions.addToVignetteFromId(graph, neo4j_id));
+          this.props.dispatch(homeActions.addToVignetteFromId(graph, neo4j_id, this.props.index));
         })
         .catch((err)=> {console.log(err)})
-    }
+    };
 
     render() {
         return (
@@ -78,7 +61,7 @@ class VignetteModal extends Component {
                 </div>
 
                 <div className="vignette-card-col vignette-card-right-col">
-                    <GraphPreview />
+                    <GraphPreview index={this.props.index} />
                 </div>
               </div>
             </div>

@@ -3,7 +3,24 @@ import {
 } from "../actions/actionTypes";
 
 const initialState = {
-    vignetteGraphData: []
+    vignetteGraphData: [
+        {
+            nodes: [],
+            links: []
+        },
+        {
+            nodes: [],
+            links: []
+        },
+        {
+            nodes: [],
+            links: []
+        },
+        {
+            nodes: [],
+            links: []
+        }
+    ]
 };
 
 export default function (state = initialState, action) {
@@ -11,7 +28,7 @@ export default function (state = initialState, action) {
         case UPDATE_VIGNETTE:
             return {
                 ...state,
-                vignetteGraphData: state.vignetteGraphData.concat(action.payload)
+                vignetteGraphData: action.payload
             };
         default:
             return state;

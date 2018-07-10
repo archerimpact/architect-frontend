@@ -1,4 +1,5 @@
 import {UPDATE_VIGNETTE} from "./actionTypes";
+import _ from 'lodash';
 
 import * as server from "../../server";
 
@@ -22,13 +23,20 @@ function updateVignetteDispatch(data) {
     };
 }
 
-export function addToVignetteFromId(graph, id) {
-    return (dispatch) => {
+export function addToVignetteFromId(graph, id, index) {
+    return (dispatch, getState) => {
         server.getNode(id, 1)
             .then(data => {
-                graph.addData(0, makeDeepCopy(data.nodes), makeDeepCopy(data.links));
+                let state = getState()
+                let allNodes = state.home.vignetteGraphData[index].nodes.concat(data.nodes);
+                let allLinks = state.home.vignetteGraphData[index].links.concat(data.links);
+                let dataNodes = _.uniqBy(allNodes, (obj) => {return obj.id});
+                let dataLinks = _.uniqBy(allLinks, (obj) => {return obj.id});
+                graph.addData(data.centerid, makeDeepCopy(dataNodes), makeDeepCopy(dataLinks));
                 graph.update();
-                dispatch(updateVignetteDispatch(data));
+                let newVignetteData = state.home.vignetteGraphData
+                newVignetteData.splice(index, 1, {nodes: dataNodes, links: dataLinks})
+                dispatch(updateVignetteDispatch(newVignetteData))
             })
             .catch(err => {
                 console.log(err);

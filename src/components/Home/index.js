@@ -53,7 +53,7 @@ export default class Home extends Component {
                     </div>
               </div>
               <div className="control">
-      {/*}           <nav class="secondary">
+                 <nav class="secondary">
                   <ul id="secondary-navigation">
                     <li class="menu-button">
                       <a>Archer Labs</a>
@@ -87,7 +87,7 @@ export default class Home extends Component {
                   <div className="release-preview-card"> 
                     <div className="row">
                       <div className="col-md-6">
-                        <GraphPreview />
+                        <GraphPreview index={3}/>
                       </div>
                       <div className="col-md-6 release-preview-content">
                         <h4 className="release-preview-header">
@@ -133,9 +133,9 @@ export default class Home extends Component {
                   <hr className="content-title-underline" />
 
                   <div className="row">
-                    <VignettePreview key={"vp1"} colorProfile='0' />
-                    <VignettePreview key={"vp2"} colorProfile='1' />
-                    <VignettePreview key={"vp3"} colorProfile='2' />
+                    <VignettePreview key={"vp1"} index={0} colorProfile='0' />
+                    <VignettePreview key={"vp2"} index={1} colorProfile='1' />
+                    <VignettePreview key={"vp3"} index={2} colorProfile='2' />
                   </div>
 
               </div>

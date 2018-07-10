@@ -36,7 +36,7 @@ export default class VignettePreview extends Component {
         </div>
         {
           this.state.isModalOpen && 
-          <VignetteModal handleClick={this.handleClick} handleClose={this.handleClose} />
+          <VignetteModal handleClick={this.handleClick} handleClose={this.handleClose} index={this.props.index} />
         }
       </div>
     );
