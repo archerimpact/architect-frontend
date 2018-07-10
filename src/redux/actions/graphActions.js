@@ -190,10 +190,8 @@ function loadGraphDataDispatch(data) {
 
 export function loadLink(projId) {
     return (dispatch) => {
-        console.log("about to do server call in loadLink")
         server.getLink(projId)
             .then((res) => {
-                console.log("received response in action", res)
                 let graphData;
                 try {
                     graphData = JSON.parse(res.message.data);
@@ -208,5 +206,11 @@ export function loadLink(projId) {
             .catch((err) => {
                 console.log(err);
             });
+    }
+}
+
+export function loadData(data) {
+    return (dispatch) => {
+        dispatch(loadGraphDataDispatch(data));
     }
 }
