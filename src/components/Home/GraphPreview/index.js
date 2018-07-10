@@ -46,12 +46,14 @@ class GraphPreview extends Component {
                 <i className="graph-preview-action twitter-action fab fa-twitter"></i>
                 <i className="graph-preview-action link-action fas fa-link"></i>
               </div>
-              <Link to="/explore">
-                  <button className="btn btn-primary graph-preview-explore-button ml-auto" onClick={() => this.loadDataToMainGraph()}>
-                      Explore In Depth
-                      <i className="explore-icon material-icons">launch</i>
-                  </button>
-              </Link>
+              <div className="ml-auto">
+                <Link to="/explore">
+                    <button className="btn btn-primary graph-preview-explore-button" onClick={() => this.loadDataToMainGraph()}>
+                        Explore In Depth
+                        <i className="explore-icon material-icons">launch</i>
+                    </button>
+                </Link>
+              </div>
             </div>
           </div>
         );
