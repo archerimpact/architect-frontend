@@ -18,11 +18,11 @@ class Entity extends Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         if (this.props.id) {
             server.getNode(decodeURIComponent(this.props.id), 1, false)
                 .then(d => {
-                    this.setState({currentEntity: d})
+                    this.setState({currentEntityDegreeOne: d})
                 })
                 .catch(err => console.log(err));
         }
@@ -32,7 +32,7 @@ class Entity extends Component {
         if (this.props.id) {
             server.getNode(decodeURIComponent(this.props.id), 1, false)
                 .then(d => {
-                    this.setState({currentEntity: d})
+                    this.setState({currentEntityDegreeOne: d})
                 })
                 .catch(err => console.log(err));
         }
@@ -168,7 +168,23 @@ class Entity extends Component {
             }
         };
 
-        const attrs = <EntityAttributes node={node}/>;
+        let empty = true;
+        const attrs = (<div>
+            { keys.filter(k => node[k[0]]).map(k => {
+                let n = node;
+                const val = n[k[0]];
+                empty = false;
+                return (
+                    <div className="info-row" key={k}>
+                        <p className="info-key">{k[1]}:</p>
+                        { (!(val instanceof Array))
+                            ? <p className="info-value">{val}</p>
+                            : <div className="info-value-list"> {val.map(v => <div className="info-value">{v}</div>)} </div>
+                        }
+                    </div>
+                )
+            }) }
+        </div>);
 
         return (
             <div className="full-width">
@@ -184,7 +200,7 @@ class Entity extends Component {
                 <div className="entity-body">
 
                     <h5 className="">Attributes</h5>
-                    { attrs }
+                    { empty ? null : attrs }
                     <div>
                         {
                             Object.keys(linktypes).filter(l => linktypes[l].extracted.length !== 0).map((linktype, idx) => {
@@ -203,6 +219,7 @@ class Entity extends Component {
     };
 
     render() {
+        console.log("this.state.currentEntityDegreeOne", this.state.currentEntityDegreeOne)
         const keys = [
             ['registered_in', 'Registered In'],
             ['birthdate', 'Date of Birth'],
@@ -211,13 +228,13 @@ class Entity extends Component {
             ['last_seen', 'Last Seen'],
             ['incorporation_date', 'Incorporation Date']
         ];
-        if (this.state.currentEntity === null) {
+        if (this.state.currentEntityDegreeOne === null) {
             return <div className="sidebar-content-container placeholder-text" style={{paddingTop: pageHeight / 3}}> Click a node to view information about it </div>
         }
         let id = decodeURIComponent(this.props.match.params.query);
         return (
             <div className="sidebar-content-container" style={{paddingTop: 20, paddingLeft: 20, paddingRight: 20}}>
-                {this.renderEntity(this.state.currentEntity.nodes.filter(n => n.id === id)[0], this.state.currentEntity.nodes, this.state.currentEntity.links, keys)}
+                {this.renderEntity(this.state.currentEntityDegreeOne.nodes.filter(n => n.id === id)[0], this.state.currentEntityDegreeOne.nodes, this.state.currentEntityDegreeOne.links, keys)}
             </div>
         );
     }

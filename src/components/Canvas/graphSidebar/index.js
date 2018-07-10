@@ -4,6 +4,7 @@ import SearchBar from "../../searchBar";
 import ListData from "../listData"
 import {Link,withRouter} from "react-router-dom";
 import {connect} from "react-redux";
+import Entity from "../entity";
 import { Input, Button } from 'antd';
 import { saveLink, loadLink } from "../../../redux/actions/graphActions"
 
@@ -15,12 +16,12 @@ class GraphSidebar extends Component {
         this.state = {
             renderList: props.match.params ? props.match.params.sidebarState === "list" : false,
             renderSearch: props.match.params ? props.match.params.sidebarState === "search" : false,
-            renderPublish: props.match.params ? props.match.params.sidebarState === "publish" : false,
+            renderEntity: props.match.params ? props.match.params.sidebarState === "entity" : false,
             history: [],
             listener: null,
-            projectName: "",
-            author: "",
-            description: ""
+            // projectName: "",
+            // author: "",
+            // description: ""
         };
     }
 
@@ -31,19 +32,19 @@ class GraphSidebar extends Component {
         this.setState({listener: listener})
     }
 
-    componentDidMount() {
-        const { match } = this.props;
-        if (match.params && match.params.sidebarState === 'publish') {
-            console.log("recognized that in publish space")
-            let projId = match.params.query;
-            if (projId != null) {
-                console.log("recognized projId exists", projId);
-                let res = this.props.dispatch(loadLink(projId));
-                console.log("hi back in main", res)
-                // this.setState({projectName: res.name, author: res.author, description: res.description})
-            }
-        }
-    }
+    // componentDidMount() {
+    //     const { match } = this.props;
+    //     if (match.params && match.params.sidebarState === 'publish') {
+    //         console.log("recognized that in publish space")
+    //         let projId = match.params.query;
+    //         if (projId != null) {
+    //             console.log("recognized projId exists", projId);
+    //             let res = this.props.dispatch(loadLink(projId));
+    //             console.log("hi back in main", res)
+    //             // this.setState({projectName: res.name, author: res.author, description: res.description})
+    //         }
+    //     }
+    // }
 
     componentWillUnmount() {
         this.state.listener();
@@ -54,7 +55,7 @@ class GraphSidebar extends Component {
             this.setState({
                 renderList: nextprops.match.params ? nextprops.match.params.sidebarState === "list" : false,
                 renderSearch: nextprops.match.params ? nextprops.match.params.sidebarState === "search" : false,
-                renderPublish: nextprops.match.params ? nextprops.match.params.sidebarState === "publish" : false
+                renderEntity: nextprops.match.params ? nextprops.match.params.sidebarState === "entity" : false
             })
         }
     }
@@ -84,34 +85,40 @@ class GraphSidebar extends Component {
         return (<ListData graph={graph} data={data}/>)
     }
 
-    handleProjectNameChange = (val) => {
-        this.setState({projectName: val})
-    }
+    // handleProjectNameChange = (val) => {
+    //     this.setState({projectName: val})
+    // }
+    //
+    // handleAuthorChange = (val) => {
+    //     this.setState({author: val})
+    // }
+    //
+    // handleDescriptionChange = (val) => {
+    //     this.setState({description: val})
+    // }
+    //
+    // handlePublishSubmit = async () => {
+    //     const { projectName, author, description } = this.state;
+    //     const { graph } = this.props;
+    //     let res = await saveLink(projectName, author, description, graph)
+    //     // modal popbox saying something or the antd popup
+    // };
+    //
+    // renderPublish() {
+    //     const { projectName, author, description } = this.state;
+    //     return (
+    //         <div>
+    //             <Input placeholder="Project Name" value={projectName} onChange={(e) => this.handleProjectNameChange(e.target.value)}/>
+    //             <Input placeholder="Author" value={author} onChange={(e) => this.handleAuthorChange(e.target.value)}/>
+    //             <Input placeholder="Description" value={description} onChange={(e) => this.handleDescriptionChange(e.target.value)}/>
+    //             <Button type="primary" onClick={() => this.handlePublishSubmit()}>Publish</Button>
+    //         </div>
+    //     )
+    // }
 
-    handleAuthorChange = (val) => {
-        this.setState({author: val})
-    }
-
-    handleDescriptionChange = (val) => {
-        this.setState({description: val})
-    }
-
-    handlePublishSubmit = async () => {
-        const { projectName, author, description } = this.state;
-        const { graph } = this.props;
-        let res = await saveLink(projectName, author, description, graph)
-        // modal popbox saying something or the antd popup
-    };
-
-    renderPublish() {
-        const { projectName, author, description } = this.state
+    renderEntity() {
         return (
-            <div>
-                <Input placeholder="Project Name" value={projectName} onChange={(e) => this.handleProjectNameChange(e.target.value)}/>
-                <Input placeholder="Author" value={author} onChange={(e) => this.handleAuthorChange(e.target.value)}/>
-                <Input placeholder="Description" value={description} onChange={(e) => this.handleDescriptionChange(e.target.value)}/>
-                <Button type="primary" onClick={() => this.handlePublishSubmit()}>Publish</Button>
-            </div>
+            <Entity graph={this.props.graph} id={this.props.match.params.query}/>
         )
     }
 
@@ -131,13 +138,13 @@ class GraphSidebar extends Component {
                         </div>
                         <div className="tab-container">
                             <Link to="/explore/search">
-                                <div className="tab">Search</div>
+                                <div className="tab">OFAC SDN</div>
+                            </Link>
+                            <Link to="/explore/entity">
+                                <div className="tab">Entity</div>
                             </Link>
                             <Link to="/explore/list">
                                 <div className="tab">List</div>
-                            </Link>
-                            <Link to="/explore/publish">
-                                <div className="tab">Publish</div>
                             </Link>
                         </div>
                         <div className="full-width flex-column">
@@ -147,13 +154,13 @@ class GraphSidebar extends Component {
                                     : null
                             }
                             {
-                                this.state.renderList ?
-                                    this.renderList()
+                                this.state.renderEntity ?
+                                    this.renderEntity()
                                     : null
                             }
                             {
-                                this.state.renderPublish ?
-                                    this.renderPublish()
+                                this.state.renderList ?
+                                    this.renderList()
                                     : null
                             }
                         </div>

@@ -19,7 +19,6 @@ class GraphPreview extends Component {
     }
 
     componentDidMount() {
-      // this.graph.flushData();
       server.searchBackendText("Dan Gertler") // hardcoded for now, don't worry too much about it until we decide this way of doing the narratives is conceptually best
         .then((data) => {
           let neo4j_id = data[0].id;
@@ -33,9 +32,6 @@ class GraphPreview extends Component {
     };
 
     render() {
-        console.log("passing into graph: index", this.props.index);
-        console.log("passing into graph: vignetteGraphData", this.props.vignetteGraphData);
-        console.log("passing into graph", this.props.vignetteGraphData[this.props.index]);
         return (
           <div className="graph-preview">
             <div className="graph-card">

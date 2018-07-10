@@ -41,6 +41,7 @@ export function searchBackendText(searchQuery) {
 }
 
 export function getNode(neo4j_id, degree=0, useExclude=true) {
+    console.log("in the server call")
     let exclude = '';
     constants.EXPANSION_DEFAULT.exclude.forEach((type) => {
         exclude += type + ','
@@ -56,6 +57,7 @@ export function getNode(neo4j_id, degree=0, useExclude=true) {
     return new Promise(function (fulfill, reject) {
         axios.get(url)
         .then(function (response) {
+            console.log("response.data from getNode", response.data)
             fulfill(response.data);
         })
         .catch(function (error) {
