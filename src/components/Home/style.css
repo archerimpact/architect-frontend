@@ -356,8 +356,8 @@ p.bold {
   font-weight: 700;
 }
 
-p.justified-text {
-  text-align: justify;
+a.real-link {
+  text-decoration: underline !important;
 }
 
 #find-out-container {
@@ -367,7 +367,7 @@ p.justified-text {
 .find-out-more-row {
   margin-top: 30px;
   width: 100%;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .beginning-icon {

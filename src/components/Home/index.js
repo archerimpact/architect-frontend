@@ -152,14 +152,15 @@ export default class Home extends Component {
                 
                 <div className="find-out-more-row flex-row">
                   <i className="beginning-icon material-icons">date_range</i>
-                  <p className="content-title-summary lead mb-0">
-                    The summer is in full swing and so are we.  Between now and August 7th, we'll be releasing something new every Tuesday.  Don't want to miss out?  Catch us on <a href="https://twitter.com/archerimpact">Twitter</a> or subscribe to our summer announcements.
-                  </p>
+                  <div>
+                    <p className="content-title-summary lead">
+                      The summer is in full swing and so are we.  Between now and August 7th, we'll be releasing something new every Tuesday.  Don't want to miss out?  Catch us on <a href="https://twitter.com/archerimpact" className="real-link">Twitter</a> or <a href="mailto:team@archerimpact.com" className="real-link">subscribe</a> to our summer announcements. To learn more about what we do, check out our <a href="http://archer.cloud/" className="real-link"> website</a>.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-
         <Footer />
       </div>
         );
