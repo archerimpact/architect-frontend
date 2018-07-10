@@ -11,9 +11,10 @@
     position: absolute;
     left: 0;
     top: 0;
-    width: 550px;
+    width: 450px;
     height: 100%;
     margin-left: 55px;
+    border-right: 1px solid #ebebeb;
 }
 
 .tab-container {
@@ -96,8 +97,10 @@
 }
 
 .sidebar-container {
+    /*
     box-shadow: -1px -1px 20px 0 rgba(0, 0, 0, 0.3);
     -webkit-box-shadow: -1px -1px 20px 0 rgba(0, 0, 0, 0.3);
+    */
     display: flex;
     flex-direction: column;
     align-items: flex-start;
