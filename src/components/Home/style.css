@@ -336,21 +336,10 @@ nav.secondary.menu-button-secondary {
 
 #find-out-more-section {
   background-color: #FFB221;
-/*  background-image: url('../../images/footer-banner.png');
-*/  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center; 
-  font-family: 'Montserrat', sans-serif;
-  color: rgb(35, 35, 35);
-  padding: 50px 0;
-  text-align: center;
 }
 
 #find-out-container {
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-
+  /*background-color: #FFB221;*/
 }
 
 #main-website-link {
@@ -365,4 +354,24 @@ nav.secondary.menu-button-secondary {
 
 p.bold {
   font-weight: 700;
+}
+
+p.justified-text {
+  text-align: justify;
+}
+
+#find-out-container {
+  padding: 30px 10vw;
+}
+
+.find-out-more-row {
+  margin-top: 30px;
+  width: 100%;
+  align-items: center;
+}
+
+.beginning-icon {
+  font-size: 5rem;
+  margin-right: 30px;
+  color: #1e1e1e;
 }

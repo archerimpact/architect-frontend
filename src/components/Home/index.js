@@ -144,21 +144,24 @@ export default class Home extends Component {
               </div>
             </div>
 
-            <div id="find-out-more-section">
-                <h3>And there's so much more on the horizon.</h3>
-                <div className="container" id="find-out-container">
-                    <p className="lead">
-                        Harness the power of crowdsourced insight and effortless collaboration to supercharge your investigations.&nbsp;
-                        <a id="main-website-link" href="https://archer.cloud">
-                            Find out more >
-                        </a>
-                    </p>
+            <div className="content-section" id="find-out-more-section">
+              <div className="container" id="find-out-container">
+                <div className="content-title-text text-center">
+                  Just the beginning.
                 </div>
+                
+                <div className="find-out-more-row flex-row">
+                  <i className="beginning-icon material-icons">date_range</i>
+                  <p className="content-title-summary lead mb-0">
+                    The summer is in full swing and so are we.  Between now and August 7th, we'll be releasing something new every Tuesday.  Don't want to miss out?  Catch us on <a href="https://twitter.com/archerimpact">Twitter</a> or subscribe to our summer announcements.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
-          <Footer />
-        </div>
+        <Footer />
+      </div>
         );
     }
 }
