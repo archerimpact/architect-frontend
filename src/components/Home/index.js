@@ -79,7 +79,7 @@ export default class Home extends Component {
               <div className="container">
                 <div className="content-title-section">
                   <div className="content-title-text">
-                    What's New
+                    The Latest
                   </div>
                   <hr className="content-title-underline" />
                 </div>
@@ -90,16 +90,15 @@ export default class Home extends Component {
                         <GraphPreview />
                       </div>
                       <div className="col-md-6 release-preview-content">
-                        <h4 className="release-preview-header">
-                          Specially Designated Nationals List
-                        </h4>
                         <div className="release-preview-summary">
                           <p>
-                            OFAC SDN data contains over 3,000 links. Explore how your favorite sanctioned individuals, companies, and vessels are connected.
+                            Earlier this year, Archer designed &amp; developed <a href="https://sanctionsexplorer.org/">SanctionsExplorer</a>, releasing it in April in partnership with C4ADS.  Now, the Archer team has gone one step further,  re-envisioning how our users interact with and derive insight from sanctions data.
                           </p>
-                          <h6 className="release-preview-subheader">Context</h6>
+                          <p className="bold">
+                          Welcome to ArcherSpark, a bite-sized preview of a powerful investigative platform.
+                          </p>
                           <p>
-                            The U.S. Treasury publishes a list of individuals, entities, and vessels with whom American citizens and businesses cannot transact with.   This list is critical for investigations and compliance.
+                            ArcherSpark applies our powerful investigative tool to the OFAC SDN list.  With over 3,000 official links, this data begs to be interacted with in a graph format. Experience a new way to investigate and share how your favorite sanctioned individuals, companies, and vessels are connected.
                           </p>
                         </div>
 
@@ -128,9 +127,13 @@ export default class Home extends Component {
             <div className="content-section">
               <div className="container">
                   <div className="content-title-text">
-                    Featured Stories
+                    Case Studies
                   </div>
                   <hr className="content-title-underline" />
+
+                  <p className="content-title-summary lead">
+                    Graph visualization can be a powerful tool for creating compelling narratives and conveying complex relationships.  Explore our featured case studies which illustrate the experience of supplementing text with a fully-interactive graph. 
+                  </p>
 
                   <div className="row">
                     <VignettePreview key={"vp1"} colorProfile='0' />
