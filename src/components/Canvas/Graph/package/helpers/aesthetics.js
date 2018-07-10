@@ -1,6 +1,5 @@
 import * as d3 from "d3";
 import * as utils from "./utils.js";
-import {isGroup} from "./utils.js";
 import * as constants from "./constants.js";
 import * as colors from "./colorConstants.js";
 
@@ -77,7 +76,7 @@ export function changeLinkDirectionality(selection, newDirection) {
 // Fill group nodes blue
 export function fillGroupNodes() {
     this.svg.selectAll('.node')
-        .classed('grouped', function (d) { return isGroup(d) || d.type === 'same_as_group'; });
+        .classed('grouped', function (d) { return utils.isGroup(d) || d.type === 'same_as_group'; });
 }
 
 export function fadeGraph(d) {

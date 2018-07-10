@@ -1,15 +1,18 @@
 import * as d3 from "d3";
 import * as cola from "webcola";
+
 import * as aesthetics from "./helpers/aesthetics.js";
-import * as utils from "./helpers/utils.js";
-import * as mouseClicks from "./helpers/mouseClicks.js";
-import * as tt from "./helpers/tooltips.js";
-import * as matrix from "./helpers/matrix.js";
 import * as d3Data from "./helpers/changeD3Data.js";
-import Minimap from "./MinimapClass.js";
+import * as keybinding from "./helpers/keybinding.js"
+import * as matrix from "./helpers/matrix.js";
+import * as mouseClicks from "./helpers/mouseClicks.js";
+import * as selection from "./helpers/selection.js";
+import * as tt from "./helpers/tooltips.js";
+import * as utils from "./helpers/utils.js";
+
 import * as constants from "./helpers/constants.js";
-import {DOCUMENT} from "./helpers/constants.js";
 import * as colors from "./helpers/colorConstants.js";
+import Minimap from "./MinimapClass.js";
 
 // FontAwesome icon unicode-to-node type dict
 // Use this to find codes for FA icons: https://fontawesome.com/cheatsheet
@@ -590,6 +593,8 @@ class Graph {
         this.initializeMenuActions();
         this.initializeContextMenu();
         this.initializeMarkers();
+        keybinding.initializeKeybinding();
+        this.initializeKeycodes();
 
         // this.initializeToolbarButtons();
         // this.initializeZoomButtons();
@@ -621,8 +626,6 @@ class Graph {
         // this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => {
         //     this.saveAllData()
         // }); // Placeholder method
-
-        this.setupKeycodes();
 
         // Create selectors
         this.linkContainer = this.container.append('g').attr('class', 'link-items');
@@ -695,8 +698,10 @@ class Graph {
 
         if (this.useCola) {
             this.force
-                .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE_COLA : constants.LINK_DISTANCE_COLA })
+                //.linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE_COLA : constants.LINK_DISTANCE_COLA })
                 .avoidOverlaps(true)
+                .jaccardLinkLengths(constants.LINK_DISTANCE_COLA, .75)
+                //.handleDisconnected(true)
                 .nodes(this.nodes)
                 .links(this.links);
         } else {
@@ -757,7 +762,8 @@ class Graph {
             .attr('class', 'glyph-label')
             .attr('dx', 18)
             .attr('dy', -14.5)
-            .attr('text-anchor', 'middle');
+            .attr('text-anchor', 'middle')
+            .classed('unselectable', true);
 
         this.nodeEnter.append('text')
             .attr('class', 'icon')
@@ -810,7 +816,7 @@ class Graph {
         this.hull.exit().remove();
 
         // Avoid initial chaos and skip the wait for graph to drift back onscreen
-        this.force.start();
+        this.force.start(15, 15, 15);
         if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }
 
         if (minimap) {
@@ -909,7 +915,7 @@ class Graph {
 
     // Custom force that takes the parent group position as the centroid to moves all contained nodes toward
     groupNodesForce = (alpha) => {
-        var self = this;
+        const self = this;
         // Only apply force on grouped nodes that aren't being dragged and aren't fixed
         return function (d) {
             if (d.group && (!self.isDragging || d.id !== self.draggedNode.id) && !d.fixed) {
@@ -920,74 +926,79 @@ class Graph {
     }
 
     // Graph manipulation keycodes
-    setupKeycodes = () => {
-        d3.select('body')
-            .on('keydown', () => {
-                if (d3.event.target.nodeName === 'INPUT') { return; }
+    initializeKeycodes = () => {
+        const self = this;
+        d3.select('body').call(d3.keybinding()
+            .on('a', () => { this.node.classed('selected', true); })
+            .on('f', keybinding.toggleFixSelectedNodes.bind(self))
+            
+        );
 
-                // u: Unpin selected nodes
-                if (d3.event.keyCode === 85) {
-                    this.svg.selectAll('.node.selected')
-                        .each(function (d) {
-                            d.fixed = false;
-                        })
-                        .classed('fixed', false);
-                }
+            //     // u: Unpin selected nodes
+            //     if (d3.event.keyCode === 85) {
+            //         this.svg.selectAll('.node.selected')
+            //             .each(function (d) {
+            //                 d.fixed = false;
+            //             })
+            //             .classed('fixed', false);
+            //     }
           
-                // g: Group selected nodes
-                else if (d3.event.keyCode === 71) { this.groupSelectedNodes();}
+            //     // g: Group selected nodes
+            //     else if (d3.event.keyCode === 71) { this.groupSelectedNodes();}
 
-                // h: Ungroup selected nodes
-                else if (d3.event.keyCode === 72) { this.ungroupSelectedGroups(); }
+            //     // h: Ungroup selected nodes
+            //     else if (d3.event.keyCode === 72) { this.ungroupSelectedGroups(); }
 
-                // c: Group all of the possibly same as's
-                else if (d3.event.keyCode === 67) { this.groupSame(); }
+            //     // c: Group all of the possibly same as's
+            //     else if (d3.event.keyCode === 67) { this.groupSame(); }
 
-                // e: Toggle edit mode
-                else if (d3.event.keyCode === 69) { this.toggleEditMode(); }
+            //     // e: Toggle edit mode
+            //     else if (d3.event.keyCode === 69) { this.toggleEditMode(); }
 
-                // r/del: Remove selected nodes/links
-                else if ((d3.event.keyCode === 82 || d3.event.keyCode === 46) && this.editMode) { this.deleteSelectedNodes(); }
+            //     // r/del: Remove selected nodes/links
+            //     else if ((d3.event.keyCode === 82 || d3.event.keyCode === 46) && this.editMode) { this.deleteSelectedNodes(); }
 
-                // l: remove selected links only
-                else if (d3.event.keyCode === 76 && this.editMode) { this.deleteSelectedLinks(); }
+            //     // l: remove selected links only
+            //     else if (d3.event.keyCode === 76 && this.editMode) { this.deleteSelectedLinks(); }
 
-                // a: Add node linked to selected
-                else if (d3.event.keyCode === 65 && this.editMode) {
-                    const selection = this.svg.selectAll('.node.selected');
-                    this.addNodeToSelected(selection);
-                }
+            //     // a: Add node linked to selected
+            //     else if (d3.event.keyCode === 65 && this.editMode) {
+            //         const selection = this.svg.selectAll('.node.selected');
+            //         this.addNodeToSelected(selection);
+            //     }
 
-                // d: Hide document nodes
-                else if (d3.event.keyCode === 68) { this.toggleTypeView(DOCUMENT); }
+            //     // d: Hide document nodes
+            //     else if (d3.event.keyCode === 68) { this.toggleTypeView(DOCUMENT); }
 
-                // p: Toggle btwn full/abbrev text
-                else if (d3.event.keyCode === 80) {
-                    this.printFull = (this.printFull + 1) % 3;
-                    this.selectAllNodeNames()
-                        .text((d) => { return aesthetics.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
-                        .call(this.wrapNodeText, this.printFull);
-                }
+            //     // p: Toggle btwn full/abbrev text
+            //     else if (d3.event.keyCode === 80) {
+            //         this.printFull = (this.printFull + 1) % 3;
+            //         this.selectAllNodeNames()
+            //             .text((d) => { return aesthetics.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
+            //             .call(this.wrapNodeText, this.printFull);
+            //     }
 
-                // t: expand by degree
-                else if (d3.event.keyCode === 84) {
-                    if (this.degreeExpanded === 0 && this.nodes.length !== 1) {
-                        return;
-                    }
+            //     // t: expand by degree
+            //     else if (d3.event.keyCode === 84) {
+            //         if (this.degreeExpanded === 0 && this.nodes.length !== 1) {
+            //             return;
+            //         }
 
-                    if (this.degreeExpanded === 0 && this.nodes.length === 1) {
-                        this.expandingNode = this.nodes[0];
-                    }
+            //         if (this.degreeExpanded === 0 && this.nodes.length === 1) {
+            //             this.expandingNode = this.nodes[0];
+            //         }
 
-                    this.degreeExpanded += 1;
+            //         this.degreeExpanded += 1;
 
-                    if (this.degreeExpanded <= 4) {
-                        d3.json(`/data/well_connected_${this.degreeExpanded}.json`, (json) => {
-                            this.addToMatrix(0, json.nodes, json.links);
-                        });
-                    }
-                }
-            });
+            //         if (this.degreeExpanded <= 4) {
+            //             d3.json(`/data/well_connected_${this.degreeExpanded}.json`, (json) => {
+            //                 this.addToMatrix(0, json.nodes, json.links);
+            //             });
+            //         }
+            //     }
+
+            //     this.force.resume();
+            // });
     };
 
     toggleFixedNodes = () => {
