@@ -7,7 +7,8 @@ import * as homeActions from '../../../redux/actions/homeActions';
 
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
-import {loadData} from "../../../redux/actions/graphActions"
+import {loadData} from "../../../redux/actions/graphActions";
+import Script from 'react-load-script';
 
 import './style.css';
 
@@ -34,20 +35,25 @@ class GraphPreview extends Component {
     render() {
         return (
           <div className="graph-preview">
+            <Script url="https://platform.twitter.com/widgets.js" />
             <div className="graph-card">
               <Graph graph={this.graph} height={400} width={540} displayMinimap={false} allowKeycodes={false} data={this.props.vignetteGraphData[this.props.index]}/>
             </div>
             <div className="graph-preview-footer flex-row">
               <div className="graph-preview-share-icons">
-                <i className="graph-preview-action twitter-action fab fa-twitter"></i>
+                <a href={"https://twitter.com/intent/tweet?text=" + encodeURIComponent(`${ this.props.title ? '"' + this.props.title + '" - Try out an interactive way to experience case studies like this' : 'Try out an interactive way to experience case studies' } (and explore your favorite sanctioned networks!) on #ArcherViz @archerimpact ${this.props.url || "https://viz.archerimpact.com"}`)} >
+                  <i className="graph-preview-action twitter-action fab fa-twitter"></i>
+                </a>
                 <i className="graph-preview-action link-action fas fa-link"></i>
               </div>
-              <Link to="/explore">
-                  <button className="btn btn-primary graph-preview-explore-button ml-auto" onClick={() => this.loadDataToMainGraph()}>
-                      Explore In Depth
-                      <i className="explore-icon material-icons">launch</i>
-                  </button>
-              </Link>
+              <div className="ml-auto">
+                <Link to="/explore">
+                    <button className="btn btn-primary graph-preview-explore-button" onClick={() => this.loadDataToMainGraph()}>
+                        Explore In Depth
+                        <i className="explore-icon material-icons">launch</i>
+                    </button>
+                </Link>
+              </div>
             </div>
           </div>
         );

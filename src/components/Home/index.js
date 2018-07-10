@@ -52,27 +52,8 @@ export default class Home extends Component {
 
                     </div>
               </div>
-              <div className="control">
-                 <nav class="secondary">
-                  <ul id="secondary-navigation">
-                    <li class="menu-button">
-                      <a>Archer Labs</a>
-                    </li>
-                    <li class="menu-button-secondary">
-                      <a>Merch</a>
-                    </li>
-                  </ul>
-                </nav> */}
-              </div>
             </header>
           </div>
-          {/*<div className="search-section">
-            <div className="container">
-              <div className="search-holder">
-                <SearchBar />
-              </div>
-            </div>
-          </div>*/}
 
           <div className="home-item">
             <div className="content-section treasury-release">
@@ -97,12 +78,12 @@ export default class Home extends Component {
                           <p className="bold">
                           Welcome to ArcherSpark, a bite-sized preview of a powerful investigative platform.
                           </p>
-                          <p>
+                          <p id="sign-up">
                             ArcherSpark applies our powerful investigative tool to the OFAC SDN list.  With over 3,000 official links, this data begs to be interacted with in a graph format. Experience a new way to investigate and share how your favorite sanctioned individuals, companies, and vessels are connected.
                           </p>
                         </div>
 
-                        <div className="sign-up-container">
+                        <div className="sign-up-container" id="subscribe">
                           <h4>There's more coming soon!</h4>
                           <p>
                             This is just a preview of how powerful graph visualization can be applied to critical datasets.  Sign up to receive early access to our full beta release when it's ready.
@@ -152,14 +133,15 @@ export default class Home extends Component {
                 
                 <div className="find-out-more-row flex-row">
                   <i className="beginning-icon material-icons">date_range</i>
-                  <p className="content-title-summary lead mb-0">
-                    The summer is in full swing and so are we.  Between now and August 7th, we'll be releasing something new every Tuesday.  Don't want to miss out?  Catch us on <a href="https://twitter.com/archerimpact">Twitter</a> or subscribe to our summer announcements.
-                  </p>
+                  <div>
+                    <p className="content-title-summary lead">
+                      The summer is in full swing and so are we.  Between now and August 7th, we'll be releasing something new every Tuesday.  Don't want to miss out?  Catch us on <a href="https://twitter.com/archerimpact" className="real-link">Twitter</a> or <a href="#sign-up" className="real-link">subscribe</a> to our summer announcements. To learn more about what we do, check out our <a href="http://archer.cloud/" className="real-link"> website</a>.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-
         <Footer />
       </div>
         );
