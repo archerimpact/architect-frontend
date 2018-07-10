@@ -128,6 +128,19 @@ class GraphSidebar extends Component {
             <div className={"sidebar " + (sidebarVisible ? "slide-out" : "slide-in") + (isCovered ? " hidden" : "")}>
                 <div className="flex-row d-flex full-height">
                     <div className="sidebar-container" key="sidebar-container">
+                        <div className="tab-container flex-row">
+                            <Link to="/explore/search"  className={"tab " + (this.state.renderSearch ? " active-tab" : "")}>
+                                <div className="tab-text">OFAC SDN</div>
+                            </Link>
+
+                            <Link to="/explore/entity" className={"tab " + (this.state.renderEntity ? " active-tab" : "")}>
+                                <div className="tab-text">Entity</div>
+                            </Link>
+
+                            <Link to="/explore/list" className={"tab " + (this.state.renderList ? " active-tab" : "")}>
+                                <div className="tab-text">List</div>
+                            </Link>
+                        </div>
                         <div className="searchbar-container">
                             {
                                 !this.state.renderList ?
@@ -136,18 +149,7 @@ class GraphSidebar extends Component {
                                 <SearchBar onSubmit={this.goToListPage} value={match.params.sidebarState === "list" && match.params.query ? match.params.query : ""} showSettings={true} placeholder={'Search Entity List (e.g. "Russia", "Kony", or "DPRK2")'}/>
                             }
                         </div>
-                        <div className="tab-container">
-                            <Link to="/explore/search">
-                                <div className="tab">OFAC SDN</div>
-                            </Link>
-                            <Link to="/explore/entity">
-                                <div className="tab">Entity</div>
-                            </Link>
-                            <Link to="/explore/list">
-                                <div className="tab">List</div>
-                            </Link>
-                        </div>
-                        <div className="full-width flex-column">
+                        <div className="full-width flex-column y-scrollable">
                             {
                                 this.state.renderSearch ?
                                     this.renderSearch()
