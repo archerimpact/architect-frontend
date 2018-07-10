@@ -52,27 +52,8 @@ export default class Home extends Component {
 
                     </div>
               </div>
-              <div className="control">
-                 <nav class="secondary">
-                  <ul id="secondary-navigation">
-                    <li class="menu-button">
-                      <a>Archer Labs</a>
-                    </li>
-                    <li class="menu-button-secondary">
-                      <a>Merch</a>
-                    </li>
-                  </ul>
-                </nav> */}
-              </div>
             </header>
           </div>
-          {/*<div className="search-section">
-            <div className="container">
-              <div className="search-holder">
-                <SearchBar />
-              </div>
-            </div>
-          </div>*/}
 
           <div className="home-item">
             <div className="content-section treasury-release">
