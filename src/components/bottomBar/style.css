@@ -1,6 +1,6 @@
 .bottombar {
 	background-color: #0d77e2;
-	width: calc(100% - 55px - 550px);
+	width: calc(100% - 55px - 450px);
 	position: absolute;
 	right: 0;		/* width of the side nav + sidebar */
 	bottom: 0;

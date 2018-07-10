@@ -23,7 +23,6 @@ export default class VignettePreview extends Component {
         <div className="preview-title-content">
           <div className="flex-row">
             <p className="preview-date">July 9, 2018</p>
-            <p className="preview-author ml-auto">by Archer</p>
           </div>
           <h5 className="preview-title">How A MINING MOGUL FUELS THE DRC CIVIL WAR</h5>
           <hr className="preview-divider" />
