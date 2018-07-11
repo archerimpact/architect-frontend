@@ -89,14 +89,12 @@ export default class Home extends Component {
                           <p>
                             This is just a preview of how powerful graph visualization can be applied to critical datasets.  Sign up to receive early access to our full beta release when it's ready.
                           </p>
-                          <div className="sign-up-form-container">
-                            <div className="sign-up-form">
-                              <input className="sign-up-input" placeholder="Email address"/>
-                            </div>
-                            <button className="sign-up-button">
-                              Sign up
+                          <form className="sign-up-form sign-up-container" action="https://archeratberkeley.us17.list-manage.com/subscribe/post?u=6f7abb9e526fd4f56b65d0305&amp;id=8399a2fbfc" method="post" id="subForm" data-error="Please fill all fields correctly." data-success="Thanks for signing up! Please check your inbox for confirmation email.">
+                            <input className="sign-up-input form-control validate-email" id="mce-EMAIL" name="EMAIL" type="email" placeholder="Email Address" required />
+                            <button type="submit" className="btn sign-up-button">
+                              Subscribe Now
                             </button>
-                          </div>
+                          </form>
                         </div>
 
                       </div>
