@@ -1,6 +1,6 @@
 .publish-button {
 	position: absolute;
-	right: 10px;
+	left: 65px;
 	top: 10px;
 	z-index: 1;
 	background-color: #0d77e2;
