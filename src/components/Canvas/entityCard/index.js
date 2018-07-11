@@ -43,10 +43,18 @@ class EntityCard extends Component {
                     <span className="collapse-link" onClick={this.toggleCollapse}>
                         {node.name || node.combined || node.number || node.description}
                     </span>
-                    <div className="ml-auto card-program">
-                        <small className="card-sdn-type">
-                            {node.programs.join('/')}
-                        </small>
+                    <div className="card-pills">
+                        <div className="card-sdn-type">
+                            <p className="sdn-type">
+                                8 links
+                            </p>
+                        </div>
+
+                        <div className="card-sdn-type">
+                            <p className="sdn-type">
+                                { node && node.programs && node.programs.join('/') }
+                            </p>
+                        </div>
                     </div>
                 </div>
                 <div>

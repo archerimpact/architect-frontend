@@ -129,8 +129,8 @@ class GraphSidebar extends Component {
                 <div className="flex-row d-flex full-height">
                     <div className="sidebar-container" key="sidebar-container">
                         <div className="tab-container flex-row">
-                            <Link to="/explore/search"  className={"tab " + (this.state.renderSearch ? " active-tab" : "")}>
-                                <div className="tab-text">OFAC SDN</div>
+                            <Link to="/explore/search" className={"tab " + (this.state.renderSearch ? " active-tab" : "")}>
+                                <div className="tab-text">Search SDN</div>
                             </Link>
 
                             <Link to="/explore/entity" className={"tab " + (this.state.renderEntity ? " active-tab" : "")}>
@@ -144,9 +144,9 @@ class GraphSidebar extends Component {
                         <div className="searchbar-container">
                             {
                                 !this.state.renderList ?
-                                <SearchBar onSubmit={this.goToSearchPage} value={match.params.sidebarState === "search" && match.params.query ? match.params.query : ""} showSettings={true} placeholder={'Search Database (e.g. "Russia", "Kony", or "DPRK2")'}/>
+                                <SearchBar onSubmit={this.goToSearchPage} value={match.params.sidebarState === "search" && match.params.query ? match.params.query : ""} showSettings={true} placeholder={'Search Archer\'s OFAC database (e.g. "Russia", "Kony", or "DPRK2")'}/>
                                 :
-                                <SearchBar onSubmit={this.goToListPage} value={match.params.sidebarState === "list" && match.params.query ? match.params.query : ""} showSettings={true} placeholder={'Search Entity List (e.g. "Russia", "Kony", or "DPRK2")'}/>
+                                <SearchBar onSubmit={this.goToListPage} value={match.params.sidebarState === "list" && match.params.query ? match.params.query : ""} showSettings={true} placeholder={'Search entities in this project'}/>
                             }
                         </div>
                         <div className="full-width flex-column y-scrollable">
