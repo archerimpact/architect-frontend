@@ -1,6 +1,7 @@
 import React, {Component} from "react";
-import VignetteModal from './VignetteModal/';
 import VignettePreview from './VignettePreview';
+import VignettePreview2 from './VignettePreview2';
+import VignettePreview3 from './VignettePreview3';
 import GraphPreview from './GraphPreview';
 import Footer from './Footer';
 import ParticleBackground from './ParticleBackground';
@@ -118,8 +119,8 @@ export default class Home extends Component {
 
                   <div className="row">
                     <VignettePreview key={"vp1"} index={0} colorProfile='0' />
-                    <VignettePreview key={"vp2"} index={1} colorProfile='1' />
-                    <VignettePreview key={"vp3"} index={2} colorProfile='2' />
+                    <VignettePreview2 key={"vp2"} index={1} colorProfile='1' />
+                    <VignettePreview3 key={"vp3"} index={2} colorProfile='2' />
                   </div>
 
               </div>

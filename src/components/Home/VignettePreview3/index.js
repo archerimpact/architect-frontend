@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import VignetteModal from "../VignetteModal";
+import VignetteModal3 from "../VignetteModal3";
 
 import './style.css'
 
@@ -24,18 +24,18 @@ export default class VignettePreview extends Component {
           <div className="flex-row">
             <p className="preview-date">July 9, 2018</p>
           </div>
-          <h5 className="preview-title">How A MINING MOGUL FUELS THE DRC CIVIL WAR</h5>
+          <h5 className="preview-title">Following Networks in South Sudan</h5>
           <hr className="preview-divider" />
         </div>
         <div className="col-md preview-box">
           <div className={"tint " + "tint-color-" + this.state.colorProfile} onClick={ this.toggleModal }>
-            <p className="preview-summary-text">View the network of a business mogul channeling money to the DRC.</p>
+            <p className="preview-summary-text">View the network that violates human rights in south sudan.</p>
           </div>
           <img src="./graph-test.png" className="preview-image" />
         </div>
         {
           this.state.isModalOpen && 
-          <VignetteModal handleClick={this.handleClick} handleClose={this.handleClose} index={this.props.index} />
+          <VignetteModal3 handleClick={this.handleClick} handleClose={this.handleClose} index={this.props.index} />
         }
       </div>
     );
