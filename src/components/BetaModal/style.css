@@ -11,6 +11,12 @@
 	margin-left: 10px;
 }
 
+#beta-email-submit:focus {
+	outline: none;
+	box-shadow: none;
+	-webkit-box-shadow: none;
+}
+
 .modal-form {
 	padding: 0 0px;
 }
