@@ -32,7 +32,7 @@ class EntityCard extends Component {
                             </i>
                         </div>
                     </div>
-                    <span className="collapse-link" onClick={this.toggleCollapse}>
+                    <span className="collapse-link" onClick={() => this.dispatch(fetchCurrentEntity(node))}>
                         {node.name || node.combined || node.label || node.description}
                     </span>
                     <div className="card-pills">
