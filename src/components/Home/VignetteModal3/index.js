@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 
 import './style.css'
 
-class VignetteModal extends Component {
+class VignetteModal3 extends Component {
 
 
     constructor(props) {
@@ -83,4 +83,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(VignetteModal));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(VignetteModal3));

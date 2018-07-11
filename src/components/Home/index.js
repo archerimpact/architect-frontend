@@ -1,6 +1,7 @@
 import React, {Component} from "react";
-import VignetteModal from './VignetteModal/';
 import VignettePreview from './VignettePreview';
+import VignettePreview2 from './VignettePreview2';
+import VignettePreview3 from './VignettePreview3';
 import GraphPreview from './GraphPreview';
 import Footer from './Footer';
 import ParticleBackground from './ParticleBackground';
@@ -88,14 +89,12 @@ export default class Home extends Component {
                           <p>
                             This is just a preview of how powerful graph visualization can be applied to critical datasets.  Sign up to receive early access to our full beta release when it's ready.
                           </p>
-                          <div className="sign-up-form-container">
-                            <div className="sign-up-form">
-                              <input className="sign-up-input" placeholder="Email address"/>
-                            </div>
-                            <button className="sign-up-button">
-                              Sign up
+                          <form className="sign-up-form sign-up-container" action="https://archeratberkeley.us17.list-manage.com/subscribe/post?u=6f7abb9e526fd4f56b65d0305&amp;id=8399a2fbfc" method="post" id="subForm" data-error="Please fill all fields correctly." data-success="Thanks for signing up! Please check your inbox for confirmation email.">
+                            <input className="sign-up-input form-control validate-email" id="mce-EMAIL" name="EMAIL" type="email" placeholder="Email Address" required />
+                            <button type="submit" className="btn sign-up-button">
+                              Subscribe Now
                             </button>
-                          </div>
+                          </form>
                         </div>
 
                       </div>
@@ -118,8 +117,8 @@ export default class Home extends Component {
 
                   <div className="row">
                     <VignettePreview key={"vp1"} index={0} colorProfile='0' />
-                    <VignettePreview key={"vp2"} index={1} colorProfile='1' />
-                    <VignettePreview key={"vp3"} index={2} colorProfile='2' />
+                    <VignettePreview2 key={"vp2"} index={1} colorProfile='1' />
+                    <VignettePreview3 key={"vp3"} index={2} colorProfile='2' />
                   </div>
 
               </div>
@@ -135,7 +134,7 @@ export default class Home extends Component {
                   <i className="beginning-icon material-icons">date_range</i>
                   <div>
                     <p className="content-title-summary lead">
-                      The summer is in full swing and so are we.  Between now and August 7th, we'll be releasing something new every Tuesday.  Don't want to miss out?  Catch us on <a href="https://twitter.com/archerimpact" className="real-link">Twitter</a> or <a href="#sign-up" className="real-link">subscribe</a> to our summer announcements. To learn more about what we do, check out our <a href="http://archer.cloud/" className="real-link"> website</a>.
+                      The summer is in full swing and so are we.  We have an exciting set of releases slated for the next few weeks.  Don't want to miss out?  Catch us on <a href="https://twitter.com/archerimpact" className="real-link bold">Twitter</a> or <a href="#sign-up" className="real-link bold">subscribe</a> to our summer announcements. To learn more about what we do, check out our <a href="http://archer.cloud/" className="real-link bold"> website</a>.
                     </p>
                   </div>
                 </div>

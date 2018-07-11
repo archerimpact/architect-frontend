@@ -37,6 +37,10 @@
   align-items: center;
 }
 
+.graph-card {
+  height: 400px;
+}
+
 .explore-icon {
   margin-left: 5px;
 }

@@ -167,16 +167,10 @@ export function toggleSidebar() {
 
 /* =============================================================================================  */
 
-export function saveLink(name, author, description, graph) {
-    let data = graph.fetchData();
-    server.createLink(name, author, description, data)
-        .then((res) => {
-            console.log("Res", res)
-            return res.success
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+export async function saveLink(name, author, description, graph) {
+    const data = graph.fetchData();
+    const r = await server.createLink(name, author, description, data)
+    return r.message
 }
 
 /* =============================================================================================  */

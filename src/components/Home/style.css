@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Poppins:300,300italic,400,400italic,600,900");
 @import url("https://fonts.googleapis.com/css?family=Montserrat:300,300italic,400,400italic,600,900");
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,900");
 
 #top {
   color: #666;
@@ -352,7 +353,7 @@ nav.secondary.menu-button-secondary {
   color: #fafafa;
 }
 
-p.bold {
+.bold {
   font-weight: 700;
 }
 
@@ -361,13 +362,22 @@ a.real-link {
 }
 
 #find-out-container {
-  padding: 30px 10vw;
+  padding: 20px 10vw;
 }
 
 .find-out-more-row {
   margin-top: 30px;
   width: 100%;
   align-items: flex-start;
+}
+
+#find-out-more-section a {
+  color: #2e2e2e;
+}
+
+#find-out-more-section a:hover {
+  color: #000000;
+  text-decoration: none !important;
 }
 
 .beginning-icon {

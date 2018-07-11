@@ -32,15 +32,15 @@ class EntityCard extends Component {
                             </i>
                         </div>
                     </div>
-                    <Link to="/explore/entity">
-                        <span className="collapse-link" onClick={() => this.dispatch(fetchCurrentEntity(node))}>
-                            {node.name || node.combined || node.number || node.description}
-                        </span>
-                    </Link>
-                    <div className="ml-auto card-program">
-                        <small className="card-sdn-type">
-                            {node.dataset}
-                        </small>
+                    <span className="collapse-link" onClick={this.toggleCollapse}>
+                        {node.name || node.combined || node.label || node.description}
+                    </span>
+                    <div className="card-pills">
+                        <div className="card-sdn-type">
+                            <p className="sdn-type">
+                                { node && node.programs && node.programs.join('/') }
+                            </p>
+                        </div>
                     </div>
                 </div>
                 <div>

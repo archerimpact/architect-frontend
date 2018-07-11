@@ -679,6 +679,7 @@ class Graph {
     // Updates nodes and links according to current data
     update = (event = null, ticks = null, minimap = true) => {
         var self = this;
+
         this.resetGraphOpacity();
         this.force.stop();
         this.matrixToGraph();
