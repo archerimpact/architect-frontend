@@ -45,7 +45,7 @@ class EntityCard extends Component {
                     </span>
                     <div className="ml-auto card-program">
                         <small className="card-sdn-type">
-                            {node.dataset}
+                            {node.programs.join('/')}
                         </small>
                     </div>
                 </div>
