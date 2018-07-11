@@ -9,9 +9,9 @@
 
 .sidebar {
     position: absolute;
-    left: 0;
+    right: 0;
     top: 0;
-    width: 450px;
+    width: 550px;
     height: 100%;
     margin-left: 55px;
     border-right: 1px solid #ebebeb;
@@ -29,13 +29,15 @@
 }
 
 .tab {
-    width: 33.33333%;
-    height: 25px;
-    display: flex;
-    border: 1px solid #aaaaaa;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-bottom: 0;
+    width: 100%;
+    background: #0d77e2;
+    padding: 5px;
+    font-size: 15px;
+    letter-spacing: 2px;
+    font-weight: 100;
+    border: 0;
+    color: white;
+    outline: none;
 }
 
 .active-tab, .active-tab:hover {
@@ -127,7 +129,7 @@
 }
 
 .slide-in {
-    transform: translate(600px);
+    transform: translate(518px);
     transition: transform 400ms ease-in-out;
 }
 

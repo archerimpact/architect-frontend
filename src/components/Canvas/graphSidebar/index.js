@@ -5,6 +5,7 @@ import ListData from "../listData"
 import {Link,withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import Entity from "../entity";
+import {toggleSidebar} from "../../../redux/actions/graphActions"
 
 import "./style.css";
 
@@ -120,31 +121,69 @@ class GraphSidebar extends Component {
         )
     }
 
+    toggleSidebarFunc = (tabName) => {
+        const doNothing = () => {};
+        if (tabName === "toggleSidebar") {
+            this.props.dispatch(toggleSidebar());
+        } else {
+            !this.props.sidebarVisible ? this.props.dispatch(toggleSidebar()) : doNothing()
+        }
+    };
+
+    renderTabs = () => {
+        let baseUrl = '/explore';
+        const activeState = this.props.match.params.sidebarState;
+
+        return (
+            <div className="tabs" key="tabs">
+                <div className={"tab " + (activeState === 'search' ? 'active-tab' : '')} onClick={() => this.toggleSidebarFunc("search")}>
+                    <Link to={baseUrl + '/search'}>
+                        <div>
+                            <i className="tab-icon material-icons">search</i>
+                        </div>
+                    </Link>
+                </div>
+                <div className={"tab " + (activeState === 'entity' ? 'active-tab' : '')} onClick={() => this.toggleSidebarFunc("entity")}>
+                    <Link to={baseUrl + '/entity'}>
+                        <div>
+                            <i className="tab-icon material-icons">description</i>
+                        </div>
+                    </Link>
+                </div>
+                <div className={"tab " + (activeState === 'list' ? 'active-tab' : '')} onClick={() => this.toggleSidebarFunc("list")}>
+                    <Link to={baseUrl + '/list'}>
+                        <div>
+                            <i className="tab-icon material-icons">list</i>
+                        </div>
+                    </Link>
+                </div>
+                <div className="tab" onClick={() => this.toggleSidebarFunc("toggleSidebar")}>
+                    <i className="tab-icon material-icons">{this.props.sidebarVisible ? "chevron_right" : "chevron_left"}</i>
+                </div>
+            </div>
+        )
+    }
+
+
     render() {
         const { sidebarVisible, isCovered, match } = this.props;
         return (
             <div className={"sidebar " + (sidebarVisible ? "slide-out" : "slide-in") + (isCovered ? " hidden" : "")}>
                 <div className="flex-row d-flex full-height">
+                    {this.renderTabs()}
                     <div className="sidebar-container" key="sidebar-container">
-                        <div className="tab-container flex-row">
-                            <Link to="/explore/search" className={"tab " + (this.state.renderSearch ? " active-tab" : "")}>
-                                <div className="tab-text">Search SDN</div>
-                            </Link>
-
-                            <Link to="/explore/entity" className={"tab " + (this.state.renderEntity ? " active-tab" : "")}>
-                                <div className="tab-text">Entity</div>
-                            </Link>
-
-                            <Link to="/explore/list" className={"tab " + (this.state.renderList ? " active-tab" : "")}>
-                                <div className="tab-text">List</div>
-                            </Link>
-                        </div>
                         <div className="searchbar-container">
                             {
-                                !this.state.renderList ?
-                                <SearchBar onSubmit={this.goToSearchPage} value={match.params.sidebarState === "search" && match.params.query ? match.params.query : ""} showSettings={true} placeholder={'Search Archer\'s OFAC database (e.g. "Russia", "Kony", or "DPRK2")'}/>
-                                :
+                                this.state.renderList ?
                                 <SearchBar onSubmit={this.goToListPage} value={match.params.sidebarState === "list" && match.params.query ? match.params.query : ""} showSettings={true} placeholder={'Search entities in this project'}/>
+                                    :
+                                    null
+                            }
+                            {
+                                this.state.renderSearch ?
+                                    <SearchBar onSubmit={this.goToSearchPage} value={match.params.sidebarState === "search" && match.params.query ? match.params.query : ""} showSettings={true} placeholder={'Search Archer\'s OFAC database (e.g. "Russia", "Kony", or "DPRK2")'}/>
+                                    :
+                                    null
                             }
                         </div>
                         <div className="full-width flex-column y-scrollable">
@@ -166,7 +205,7 @@ class GraphSidebar extends Component {
                         </div>
                     </div>
                 </div>
-                {this.state.history.map((res, key) => (<div key={key}> {res.pathname + res.search} </div>))}
+                {/*{this.state.history.map((res, key) => (<div key={key}> {res.pathname + res.search} </div>))}*/}
             </div>
         );
     }
