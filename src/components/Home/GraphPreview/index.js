@@ -16,14 +16,17 @@ class GraphPreview extends Component {
 
     constructor(props) {
       super(props);
-      if (this.props.graph) {
-        this.graph = this.props.graph;
-      } else {
-        this.graph = new ArcherGraph();        
-      }
+      this.state = { width: null, height: null, ref: null };
+
+      if (this.props.graph) { this.graph = this.props.graph; } 
+      else { this.graph = new ArcherGraph(); }
     }
 
     componentDidMount() {
+
+      this.updateWindowDimensions();
+      this.refs.graphPreviewBox.addEventListener('resize', this.updateWindowDimensions);
+
       server.searchBackendText("Dan Gertler") // hardcoded for now, don't worry too much about it until we decide this way of doing the narratives is conceptually best
         .then((data) => {
           let neo4j_id = data[0].id;
@@ -32,16 +35,31 @@ class GraphPreview extends Component {
         .catch((err)=> {console.log(err)});
     }
 
+    componentWillUnmount() {
+      this.refs.graphPreviewBox.removeEventListener('resize', this.updateWindowDimensions);
+    }
+
+    updateWindowDimensions = () => {
+      this.setState({ width: this.refs.graphPreviewBox.clientWidth, height: this.refs.graphPreviewBox.clientHeight });
+    }
+
+
     loadDataToMainGraph = () => {
         this.props.dispatch(loadData(this.props.vignetteGraphData[this.props.index]))
     };
 
+    renderGraph = () => {
+      if (this.state.width && this.state.height) {
+        return <Graph graph={this.graph} height={this.state.height} width={this.state.width} displayMinimap={false} allowKeycodes={false} data={this.props.vignetteGraphData[this.props.index]}/>
+      }   
+    }
+
     render() {
         return (
-          <div className="graph-preview">
+          <div className="graph-preview" >
             <Script url="https://platform.twitter.com/widgets.js" />
-            <div className="graph-card">
-              <Graph graph={this.graph} height={400} width={540} displayMinimap={false} allowKeycodes={false} data={this.props.vignetteGraphData[this.props.index]}/>
+            <div className="graph-card" ref="graphPreviewBox">
+              { this.renderGraph() }
             </div>
             <div className="graph-preview-footer flex-row">
               <div className="graph-preview-share-icons">

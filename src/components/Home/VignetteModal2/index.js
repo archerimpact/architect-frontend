@@ -42,20 +42,36 @@ class VignetteModal2 extends Component {
                   <div className="vignette-card-header">
                     <p className="vignette-date">July 9, 2018</p>
                     <h4 className="vignette-title">HOW TO FOLLOW THE OLIGARCH MONEY TRAIL</h4>
-                    <p className="vignette-author">by Archer Team</p>  
+                    <p className="vignette-author">Treasury Press Release</p>  
                     <hr className="vignette-divider" />
                   </div>
 
                   <div className="vignette-card-left-col-body">
                     <p className="vignette-content">
-                      Pursuant to Executive Order 13661 and 13662, Russian oligarch <button onClick={() => {this.onEntityClick("Oleg Deripasks")}}>Oleg Deripaska</button> has found himself and eight of his companies under U.S. sanctions. The U.S. Department of the Treasury cites Deripaska’s close ties to the Russian state, as well as accusations against the tycoon of money laundering, threatening business rivals, illegal wiretapping, extortion and racketeering, bribing government officials, ordering the murder of a businessman, and having connections to Russian organized crime. Additionally, Deripaska was a client of Paul Manafort, former campaign chairman for U.S. President Donald Trump. 
-                    </p>
+                      "Oleg Deripaska is being designated pursuant to E.O. 13661 for having acted or purported to act for or on behalf of, directly or indirectly, a senior official of the Government of the Russian Federation, as well as pursuant to E.O. 13662 for operating in the energy sector of the Russian Federation economy.  Deripaska has said that he does not separate himself from the Russian state.  He has also acknowledged possessing a Russian diplomatic passport, and claims to have represented the Russian government in other countries.  Deripaska has been investigated for money laundering, and has been accused of threatening the lives of business rivals, illegally wiretapping a government official, and taking part in extortion and racketeering.  There are also allegations that Deripaska bribed a government official, ordered the murder of a businessman, and had links to a Russian organized crime group."                    </p>
                     <p className="vignette-content">
-                      Deripaska is also connected to Valery Pechenkin, a former high-ranking KGB and FSB official who was recently promoted from Deputy Chief Executive Officer of Security to Director General of Deripaska’s group Basic Element Limited. Sources in Moscow claim that Pechenkin helped to orchestrate meetings between then EU Trade Commissioner Peter Mandelson and Deripaska. These meetings expose an important conflict of interest, as Mandelson was involved in multiple decisions related to EU import tariffs that benefitted Deripaska’s aluminum business.
-                    </p>
+B-Finance Ltd., based in the British Virgin Islands, is being designated for being owned or controlled by, directly or indirectly, Oleg Deripaska.
                     <p className="vignette-content">
-                      In an effort to evade sanctions, EN+ Group PLC has announced that Deripaska will reduce his shareholding in the company to below 50 percent. EN+ also maintains a stake in several other companies hit by the Executive Orders, including JSC Eurosibenergo and United Company Rusal PLC. In 2013, a subsidiary of Rusal came under scrutiny by Russia’s Investigative Committee for more than $6 million in tax evasion. Despite this internal investigation, the U.S. Treasury has announced that sanctions relief for Rusal and its subsidiaries would be possible if Deripaska were to divest. 
+Basic Element Limited is being designated for being owned or controlled by, directly or indirectly, Oleg Deripaska.  Basic Element Limited is based in Jersey and is the private investment and management company for Deripaska’s various business interests.
                     </p>
+                      <p className="vignette-content">
+EN+ Group is being designated for being owned or controlled by, directly or indirectly, Oleg Deripaska, B-Finance Ltd., and Basic Element Limited.  EN+ Group is located in Jersey and is a leading international vertically integrated aluminum and power producer.
+                    </p>
+                      <p className="vignette-content">
+EuroSibEnergo is being designated for being owned or controlled by, directly or indirectly, Oleg Deripaska and EN+ Group. EuroSibEnergo is one of the largest independent power companies in Russia, operating power plants across Russia and producing around nine percent of Russia’s total electricity.
+                    </p>
+                      <p className="vignette-content">
+United Company RUSAL PLC is being designated for being owned or controlled by, directly or indirectly, EN+ Group.  United Company RUSAL PLC is based in Jersey and is one of the world’s largest aluminum producers, responsible for seven percent of global aluminum production.
+                    </p>
+                      <p className="vignette-content">
+Russian Machines is being designated for being owned or controlled by, directly or indirectly, Oleg Deripaska and Basic Element Limited.  Russian Machines was established to manage the machinery assets of Basic Element Limited.
+                    </p>
+                      <p className="vignette-content">
+GAZ Group is being designated for being owned or controlled by, directly or indirectly, Oleg Deripaska and Russian Machines.  GAZ Group is Russia’s leading manufacturer of commercial vehicles.
+                    </p>
+                      <p className="vignette-content">
+Agroholding Kuban, located in Russia, is being designated for being owned or controlled by, directly or indirectly, Oleg Deripaska and Basic Element Limited.                    </p>
+                    </p>                                                             
                   </div>
                 </div>
 
