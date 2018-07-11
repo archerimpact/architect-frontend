@@ -342,8 +342,6 @@ export function zoomButton(zoom_in) {
             this.minimap.zooming();
         }
     });
-
-
 }
 
 export function translateGraphAroundNode(d) {
@@ -374,20 +372,15 @@ export function translateGraphAroundId(id) {
     // Center each vector, stretch, then put back
     let d;
     this.node.classed("selected", false)
-        .filter(node => node.id)
+        .filter(node => { if (node.id === id) { d = node; return node; }})
         .classed("selected", true);
-    if (d === null) {
-        return;
-    }
+    if (d === null) { return; }
 
-    const centerX = utils.getNewCoord(this.center[0], this.zoomTranslate[0], this.zoomScale);
-    const centerY = utils.getNewCoord(this.center[1], this.zoomTranslate[1], this.zoomScale);
-    // const centerX = (this.width * this.zoomScale) / 2;
-    // const centerY = (this.height * this.zoomScale) / 2;
-    // const centerX = this.center[0];
-    // const centerY = this.center[1];
-    let x = utils.getNewCoord(d.x, this.zoomTranslate[0], this.zoomScale);
-    let y = utils.getNewCoord(d.y, this.zoomTranslate[1], this.zoomScale);
+    const centerX = this.center[0];
+    const centerY = this.center[1];
+
+    let x = d.x;
+    let y = d.y;
 
     x = centerX > x ? (centerX - x) : (x - centerX);
     y = centerY > y ? (centerY - y) : (y - centerY);
@@ -397,9 +390,10 @@ export function translateGraphAroundId(id) {
     const translate = this.zoom.translate();
     const self = this;
 
-    x = x * this.zoomScale;
-    y = y * this.zoomScale;
+    // x = x * this.zoomScale;
+    // y = y * this.zoomScale;
 
+    // this.center = [d.x, d.y]
     // Transition to the new view over 500ms
     d3.transition().duration(500).tween("translate", function () {
         const interpolateTranslate = d3.interpolate(translate, [x, y]);

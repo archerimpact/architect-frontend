@@ -23,7 +23,6 @@ class VignetteModal extends Component {
     onEntityClick = (string) => {
       // this.graph.flushData();
       var graph = this.graph;
-      debugger;
       server.searchBackendText(string)
         .then((data) => {
           let neo4j_id = data[0].id
@@ -61,7 +60,7 @@ class VignetteModal extends Component {
                 </div>
 
                 <div className="vignette-card-col vignette-card-right-col">
-                    <GraphPreview index={this.props.index} />
+                    <GraphPreview index={this.props.index} graph={this.graph} />
                 </div>
               </div>
             </div>

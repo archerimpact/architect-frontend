@@ -26,7 +26,7 @@ export function isGroup(d) {
 }
 
 export function getNewCoord(x, translate, scale) {
-    return x - translate / scale;
+    return x + translate / scale;
 }
 
 export function isExpandable(d) {

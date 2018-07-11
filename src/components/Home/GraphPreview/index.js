@@ -16,7 +16,11 @@ class GraphPreview extends Component {
 
     constructor(props) {
       super(props);
-      this.graph = new ArcherGraph();
+      if (this.props.graph) {
+        this.graph = this.props.graph;
+      } else {
+        this.graph = new ArcherGraph();        
+      }
     }
 
     componentDidMount() {
