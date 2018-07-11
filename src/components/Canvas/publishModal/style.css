@@ -1,0 +1,48 @@
+.modal-title {
+	margin-bottom: 20px;
+}
+
+.modal-form {
+	padding: 0 0px;
+}
+
+a.underlined-link {
+	text-decoration: underline !important;
+}
+
+.form-group {
+	width: 100%;
+}
+
+#description-textarea {
+	width: 100%;
+}
+
+
+#publish-modal {
+	padding: 20px;
+	width: 500px;
+}
+
+#publish-submit {
+	margin-left: auto;
+}
+
+.generated-link {
+	margin-top: 20px;
+	width: 100%;
+	border-radius: 3px;
+	border: 1px solid #ebebeb;
+	padding: 10px;
+}
+
+#tweet-link {
+	color: #0d77e2;
+	font-size: 24px;
+	margin-left: 8px;
+}
+
+.share-row {
+	display: flex;
+	align-items: center;
+}
