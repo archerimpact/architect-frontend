@@ -66,7 +66,9 @@ class Graph {
         this.xbound = [0, 0];
         this.ybound = [0, 0];
 
-        this.useCola = true;
+        this.useCola = false;
+        this.useCustomContextMenu = true;
+
         this.isDragging = false; // Keep track of dragging to disallow node emphasis on drag
         this.draggedNode = null; // Store reference to currently dragged node, null otherwise
         this.isBrushing = false;
@@ -187,9 +189,11 @@ class Graph {
             .call(this.zoom);
 
         // Disable context menu from popping up on right click
-        svg.on('contextmenu', function (d, i) {
-            //d3.event.preventDefault();
-        });
+        if (this.useCustomContextMenu) {
+            svg.on('contextmenu', function (d, i) {
+                d3.event.preventDefault();
+            });
+        }
 
         return svg;
     }
@@ -701,7 +705,7 @@ class Graph {
                 //.linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE_COLA : constants.LINK_DISTANCE_COLA })
                 .avoidOverlaps(true)
                 .jaccardLinkLengths(constants.LINK_DISTANCE_COLA, .75)
-                //.handleDisconnected(true)
+                .handleDisconnected(false)
                 .nodes(this.nodes)
                 .links(this.links);
         } else {
@@ -737,7 +741,7 @@ class Graph {
             .on('mousedown', function (d) { self.mousedown(d, this); })
             .on('mouseover', function (d) { self.mouseover(d, this); })
             .on('mouseout', function (d) { self.mouseout(d, this); })
-            //.on('contextmenu', this.contextMenu(this.menuActions))
+            .on('contextmenu', this.useCustomContextMenu ? this.contextMenu(this.menuActions) : null)
             .classed('fixed', (d) => { return d.fixed; })
             .classed('faded', (d) => { return this.hoveredNode && !this.areNeighbors(this.hoveredNode, d); })
             .call(this.drag);
@@ -790,7 +794,7 @@ class Graph {
                 .on('dragend', this.stopPropagation)
             );
 
-        this.node.call(this.styleNode)
+        this.node.call(this.styleNode);
         this.node.exit().remove();
 
         // Update node glyphs
@@ -816,7 +820,7 @@ class Graph {
         this.hull.exit().remove();
 
         // Avoid initial chaos and skip the wait for graph to drift back onscreen
-        this.force.start(15, 15, 15);
+        this.force.start(30, 30, 30);
         if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }
 
         if (minimap) {
@@ -833,7 +837,6 @@ class Graph {
 
     // Occurs each tick of simulation
     ticked = (e, self) => {
-        // const classThis = this;
         this.force.resume();
         this.xbound = [this.width, 0];
         this.ybound = [this.height, 0];
@@ -929,34 +932,32 @@ class Graph {
     initializeKeycodes = () => {
         const self = this;
         d3.select('body').call(d3.keybinding()
-            .on('a', () => { this.node.classed('selected', true); })
-            .on('f', keybinding.toggleFixSelectedNodes.bind(self))
-            
+            // Select all nodes
+            .on('a', aesthetics.classSelectedNodes.bind(self))
+            // Clear current selection
+            .on('esc', aesthetics.clearSelected.bind(self))
+            // Expand selected nodes
+            .on('e', d3Data.expandSelectedNodes.bind(self))
+            // Fix selected nodes, unfix nodes if all were previously fixed
+            .on('f', aesthetics.toggleFixSelectedNodes.bind(self))
+            // Group selected nodes
+            .on('g', this.groupSelectedNodes.bind(self))
+            // Ungroup groups in selected nodes
+            .on('h', this.ungroupSelectedGroups.bind(self))
+            // Remove selected nodes in force layout
+            .on('r', this.deleteSelectedNodes.bind(self))
+            .on('del', this.deleteSelectedNodes.bind(self))
+            // Remove selected links in force layout; TODO: fix this
+            .on('shift+r', this.deleteSelectedLinks.bind(self))
+            // Cycle between node name lengths: abbrev -> none -> full
+            .on('t', aesthetics.toggleNodeNameLength.bind(self))
         );
-
-            //     // u: Unpin selected nodes
-            //     if (d3.event.keyCode === 85) {
-            //         this.svg.selectAll('.node.selected')
-            //             .each(function (d) {
-            //                 d.fixed = false;
-            //             })
-            //             .classed('fixed', false);
-            //     }
-          
-            //     // g: Group selected nodes
-            //     else if (d3.event.keyCode === 71) { this.groupSelectedNodes();}
-
-            //     // h: Ungroup selected nodes
-            //     else if (d3.event.keyCode === 72) { this.ungroupSelectedGroups(); }
 
             //     // c: Group all of the possibly same as's
             //     else if (d3.event.keyCode === 67) { this.groupSame(); }
 
             //     // e: Toggle edit mode
             //     else if (d3.event.keyCode === 69) { this.toggleEditMode(); }
-
-            //     // r/del: Remove selected nodes/links
-            //     else if ((d3.event.keyCode === 82 || d3.event.keyCode === 46) && this.editMode) { this.deleteSelectedNodes(); }
 
             //     // l: remove selected links only
             //     else if (d3.event.keyCode === 76 && this.editMode) { this.deleteSelectedLinks(); }
@@ -969,14 +970,6 @@ class Graph {
 
             //     // d: Hide document nodes
             //     else if (d3.event.keyCode === 68) { this.toggleTypeView(DOCUMENT); }
-
-            //     // p: Toggle btwn full/abbrev text
-            //     else if (d3.event.keyCode === 80) {
-            //         this.printFull = (this.printFull + 1) % 3;
-            //         this.selectAllNodeNames()
-            //             .text((d) => { return aesthetics.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
-            //             .call(this.wrapNodeText, this.printFull);
-            //     }
 
             //     // t: expand by degree
             //     else if (d3.event.keyCode === 84) {
@@ -1144,7 +1137,6 @@ Graph.prototype.createHull = d3Data.createHull;
 Graph.prototype.calculateAllHulls = d3Data.calculateAllHulls;
 Graph.prototype.drawHull = d3Data.drawHull;
 Graph.prototype.addLink = d3Data.addLink;
-Graph.prototype.selectLink = d3Data.selectLink;
 
 // From tooltips
 Graph.prototype.initializeTooltip = tt.initializeTooltip;

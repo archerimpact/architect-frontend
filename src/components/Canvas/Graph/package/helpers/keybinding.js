@@ -1,5 +1,4 @@
 import * as d3 from "d3";
-import * as selection from "./selection.js";
 
 export function initializeKeybinding() {
   /*
@@ -200,12 +199,4 @@ export function initializeKeybinding() {
           d3.keybinding.keyCodes[String.fromCharCode(i).toLowerCase()] = i;
       }
   })();
-}
-
-export function toggleFixSelectedNodes() {
-  const selected = selection.selectSelectedNodes();
-  if (selected.empty()) return;
-  const currFix = selected.classed('fixed');
-  selected.classed('fixed', function (d) { return d.fixed = !currFix; });
-  this.force.start();
 }

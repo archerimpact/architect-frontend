@@ -1,6 +1,7 @@
 import * as d3 from "d3";
-import * as utils from "./utils.js";
 import * as aesthetics from "./aesthetics.js";
+import * as selection from "./selection.js";
+import * as utils from "./utils.js";
 import {findEntryById, getD3Event, isGroup, isLeftClick, isRightClick, then} from "./utils.js";
 
 import {GRID_LENGTH} from "./constants.js";
@@ -131,7 +132,7 @@ export function mouseup(d, self) {
             bwdLinkId = this.linkedById[target.id + ',' + source.id];
         if (fwdLinkId) {
             // If link already exists, select it
-            this.selectLink(source, target);
+            selection.selectLink.bind(this, source, target);
         } else if (bwdLinkId) {
             // If link exists in opposite direction, make it bidirectional and select it
             const currLink = findEntryById(this.links, bwdLinkId);
@@ -141,7 +142,7 @@ export function mouseup(d, self) {
         } else {
             // If link doesn't exist, create and select it
             this.addLink(source, target);
-            this.selectLink(source, target);
+            selection.selectLink.bind(this, source, target);
         }
     }
 
@@ -202,12 +203,11 @@ export function mouseout(d, self) {
 
     // Text truncation
     if (this.printFull !== 1) {
-        d3.select(self)
-        .select('.node-name')
-        .text((d) => {
-            return d.group ? '' : aesthetics.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull);
-        })
-        .call(this.wrapNodeText, this.printFull);
+        d3.select(self).select('.node-name')
+            .text((d) => {
+                return d.group ? '' : aesthetics.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull);
+            })
+            .call(this.wrapNodeText, this.printFull);
     }
 
     // Restore node drag functionality for future left clicks
@@ -222,8 +222,7 @@ export function clickedCanvas() {
     resetDragLink(this);
     if (d3.event.defaultPrevented) return;
     if (this.dragDistance === 0) {
-        const selection = this.svg.selectAll('.node.selected');
-        this.addNodeToSelected(selection, d3.event);
+        this.addNodeToSelected(d3.event);
     } else {
         this.dragDistance = 0;
     }

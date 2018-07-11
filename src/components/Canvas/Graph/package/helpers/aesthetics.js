@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import * as selection from "./selection.js";
 import * as utils from "./utils.js";
 import * as constants from "./constants.js";
 import * as colors from "./colorConstants.js";
@@ -7,6 +8,15 @@ export function classExpandableNodes() {
     this.node.classed('expandable', false);
     this.node.filter(d => utils.isExpandable(d))
         .classed('expandable', true);
+}
+
+export function classSelectedNodes() {
+    this.node.classed('selected', true);
+}
+
+export function clearSelected() {
+    this.node.classed('selected', false);
+    this.link.classed('selected', false);
 }
 
 // Link highlighting
@@ -22,23 +32,23 @@ export function highlightLinksFromNode(node) {
         .call(this.styleLink, (d) => { return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index]; });
 }
 
-export function styleNode(selection, colorBlind=false) {
-    selection.select('circle')
+export function styleNode(selected, colorBlind=false) {
+    selected.select('circle')
         .attr('r', (d) => { return d.radius = (d.group ? constants.GROUP_NODE_RADIUS : constants.NODE_RADIUS); })
         .classed('hull-node', (d) => { return d.group; })
         .style('stroke', (d) => { return d.group ? colors.HEX_WHITE : getNodeColor(d); })
         .style('fill', (d) => { return getNodeColor(d); });
         // .style('fill', (d) => { return d.group ? getNodeColor(d) : colors.HEX_LIGHT_GRAY; });
 
-    selection.select('.node-glyph')
+    selected.select('.node-glyph')
         .style('stroke', (d) => { return getNodeColor(d); });
         // .style('fill', (d) => { return getNodeColor(d); });
 
-    selection.select('.glyph-label')
+    selected.select('.glyph-label')
         .style('fill', (d) => { return getNodeColor(d); })
         .style('stroke', (d) => { return getNodeColor(d); });
 
-    selection.select('.icon')
+    selected.select('.icon')
         .style('stroke', (d) => { return getNodeColor(d); });
         // .style('fill', (d) => { return getNodeColor(d); });
 }
@@ -47,9 +57,9 @@ export function getNodeColor(d) {
     return colors.NODE_COLORS[d.type] || colors.HEX_DARK_GRAY;
 }
 
-export function styleLink(selection, isSelected) {
-    selection.classed('selected', isSelected);
-    selection
+export function styleLink(selected, isSelected) {
+    selected.classed('selected', isSelected);
+    selected
         .style('stroke-width', (l) => { return (l.source.group && l.target.group ? constants.GROUP_STROKE_WIDTH : constants.STROKE_WIDTH) + 'px'; })
         .style('marker-start', (l) => {
             if (!l.bidirectional) { return ''; }
@@ -65,8 +75,8 @@ export function styleLink(selection, isSelected) {
 }
 
 // Directions: forward, reverse, both
-export function changeLinkDirectionality(selection, newDirection) {
-    selection.each((d) => {
+export function changeLinkDirectionality(selected, newDirection) {
+    selected.each((d) => {
         if (d.bidirectional) {
             // Implement after matrix adjacency done
         }
@@ -102,18 +112,32 @@ export function resetDragLink(self) {
     self.dragLink.style('visibility', 'hidden');
 }
 
+export function toggleFixSelectedNodes() {
+    const selected = selection.selectSelectedNodes();
+    if (selected.empty()) return;
+    const currFix = selected.classed('fixed');
+    selected.classed('fixed', function (d) { return d.fixed = !currFix; });
+    this.force.start();
+}
+
 // Normalize node text to same casing conventions and length
 // printFull states - 0: abbrev, 1: none, 2: full
 export function processNodeName(str, printFull) {
     if (!str) { return 'Document'; }
     if (printFull === 1) { return ''; }
-
     const delims = [' ', '.', '('];
     for (let i = 0; i < delims.length; i++) {
         str = splitAndCapitalize(str, delims[i]);
     }
 
     return str;
+}
+
+export function toggleNodeNameLength() {
+    this.printFull = (this.printFull + 1) % 3;
+    this.selectAllNodeNames()
+        .text((d) => { return processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
+        .call(this.wrapNodeText, this.printFull);
 }
 
 export function splitAndCapitalize(str, splitChar) {
