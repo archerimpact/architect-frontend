@@ -1,9 +1,8 @@
 import React, {Component} from "react";
-import {withRouter} from "react-router-dom";
+import {Link,withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import {addToGraphFromId} from "../../../redux/actions/graphActions";
-
-import EntityAttributes from "../entityAttributes";
+import {fetchCurrentEntity} from "../../../redux/actions/graphSidebarActions";
 
 import "./style.css";
 
@@ -12,14 +11,7 @@ class EntityCard extends Component {
     constructor(props) {
         super(props);
         this.dispatch = props.dispatch;
-        this.state = {
-            collapsed: true
-        }
     }
-
-    toggleCollapse = () => {
-        this.setState({collapsed: !this.state.collapsed});
-    };
 
     addToGraphFromIdFunc = (graph, id) => {
         if (!this.props.data.nodes.some(e => e.id === this.props.id)) {
@@ -28,7 +20,7 @@ class EntityCard extends Component {
     };
 
     render() {
-        const { node, graph } = this.props;
+        const { node, graph, data } = this.props;
         return (
             <div className="card result-card" key={node.id}>
                 <div className="card-header result-card-header flex-row d-flex">
@@ -40,9 +32,11 @@ class EntityCard extends Component {
                             </i>
                         </div>
                     </div>
-                    <span className="collapse-link" onClick={this.toggleCollapse}>
-                        {node.name || node.combined || node.number || node.description}
-                    </span>
+                    <Link to="/explore/entity">
+                        <span className="collapse-link" onClick={() => this.dispatch(fetchCurrentEntity(node))}>
+                            {node.name || node.combined || node.number || node.description}
+                        </span>
+                    </Link>
                     <div className="ml-auto card-program">
                         <small className="card-sdn-type">
                             {node.dataset}
@@ -51,12 +45,6 @@ class EntityCard extends Component {
                 </div>
                 <div>
                     <div className="card-body result-card-body">
-                        {
-                            this.state.collapsed ?
-                            null
-                                :
-                            <EntityAttributes node={node}/>
-                        }
                     </div>
                 </div>
             </div>

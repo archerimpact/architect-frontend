@@ -17,10 +17,8 @@
 }
 
 .entity-header {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-end;
-    margin: 0 auto;
+    display: block;
+    text-align: center;
 }
 
 .entity-name {
@@ -31,6 +29,7 @@
 .entity-type {
     margin-left: 5px;
     color: #646464;
+    padding-top: 5px;
 }
 
 .entity-source {
@@ -68,6 +67,9 @@
 
 .subheader {
     margin-top: 20px;
+    margin-bottom:20px;
+    text-align: center;
+    font-weight: 100;
 }
 
 .placeholder-text {

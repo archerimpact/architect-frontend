@@ -21,7 +21,7 @@ class ListData extends Component {
         if (node.hasOwnProperty("name")) {
             for (let i=0; i<node.name.length; i++) {
                 let tempDistance = levenshtein.get(node.name.slice(0, i).toLowerCase(), query.toLowerCase())
-                if (tempDistance <= 2) {
+                if (tempDistance === 0) {
                     return tempDistance
                 }
                 sumDistances += tempDistance
@@ -30,7 +30,7 @@ class ListData extends Component {
         } else if (node.hasOwnProperty("combined")) {
             for (let i=0; i<node.combined.length; i++) {
                 let tempDistance = levenshtein.get(node.combined.slice(0, i).toLowerCase(), query.toLowerCase())
-                if (tempDistance <= 2) {
+                if (tempDistance === 0) {
                     return tempDistance
                 }
                 sumDistances += tempDistance
@@ -39,7 +39,7 @@ class ListData extends Component {
         } else if (node.hasOwnProperty("number")) {
             for (let i=0; i<node.number.length; i++) {
                 let tempDistance = levenshtein.get(node.number.slice(0, i).toLowerCase(), query.toLowerCase())
-                if (tempDistance <= 2) {
+                if (tempDistance === 0) {
                     return tempDistance
                 }
                 sumDistances += tempDistance
@@ -48,7 +48,7 @@ class ListData extends Component {
         } else if (node.hasOwnProperty("description")) {
             for (let i=0; i<node.description.length; i++) {
                 let tempDistance = levenshtein.get(node.description.slice(0, i).toLowerCase(), query.toLowerCase())
-                if (tempDistance <= 2) {
+                if (tempDistance === 0) {
                     return tempDistance
                 }
                 sumDistances += tempDistance

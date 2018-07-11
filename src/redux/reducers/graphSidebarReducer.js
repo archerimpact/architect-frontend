@@ -1,14 +1,57 @@
 import {
-    UPDATE_VIGNETTE
+    SEARCH_DATA,
+    RESET_GRAPH,
+    UPDATE_GRAPH_DATA,
+    LOAD_DATA,
+    ENTITY_SET,
+    ENTITY_RESET,
+    ENTITY_CACHE_RESORT,
+    ENTITY_CACHE_ADD
 } from "../actions/actionTypes";
 
-const initialState = {};
+const initialState = {
+    searchData: [],
+    listData: [],
+    currentEntity: null,
+    entityCache: []
+};
 
 export default function (state = initialState, action) {
     switch (action.type) {
-        case UPDATE_VIGNETTE:
+        case SEARCH_DATA:
             return {
-                ...state
+                ...state,
+                searchData: action.payload
+            };
+        case UPDATE_GRAPH_DATA || LOAD_DATA:
+            return {
+                ...state,
+                listData: action.payload.nodes
+            };
+        case RESET_GRAPH:
+            return {
+                ...state,
+                listData: []
+            };
+        case ENTITY_SET:
+            return {
+                ...state,
+                currentEntity: action.payload
+            };
+        case ENTITY_RESET:
+            return {
+                ...state,
+                currentEntity: false
+            };
+        case ENTITY_CACHE_RESORT:
+            return {
+                ...state,
+                entityCache: action.payload
+            };
+        case ENTITY_CACHE_ADD:
+            return {
+                ...state,
+                entityCache: action.payload.concat(state.entityCache)
             };
         default:
             return state;

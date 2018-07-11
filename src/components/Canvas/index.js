@@ -7,6 +7,7 @@ import BottomBar from "../bottomBar";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import {fetchSearchResults} from "../../redux/actions/graphActions";
+import {clearCurrentEntity} from "../../redux/actions/graphSidebarActions";
 
 import './style.css';
 
@@ -35,9 +36,7 @@ class Canvas extends Component {
         if (nextprops.currentNode != null && this.props.currentNode !== nextprops.currentNode) {
             this.props.history.push(this.baseUrl + '/entity/' + encodeURIComponent(nextprops.currentNode.id))
         }
-
         if (this.props.location.pathname !== nextprops.location.pathname && nextprops.match.params) {
-            // this.props.actions.fetchProject(nextprops.match.params.investigationId);
             let nextQuery = nextprops.match.params.query;
             if (nextprops.match.params.sidebarState === 'search') {
                 if (nextQuery != null && this.props.match.params.query !== nextQuery) {
@@ -47,12 +46,15 @@ class Canvas extends Component {
                 if (nextQuery != null && this.props.match.params.query !== nextQuery) {
                     // this.props.dispatch(fetchEntity(decodeURIComponent(nextprops.match.params.query)));
                 }
+                if (nextprops.match.params.sidebarState !== 'entity' && this.props.currentNode !== null) {
+                    this.props.dispatch(clearCurrentEntity())
+                }
             }
         }
     }
 
     render() {
-        const { data, isCovered, onMouseOver,  } = this.props;
+        const { data, isCovered, onMouseOver } = this.props;
         return (
             <div className="canvas">
                 <SideNavBar/>
@@ -73,7 +75,7 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
     return {
         sidebarVisible: state.graph.sidebarVisible,
-        currentNode: state.graph.currentNode,
+        currentNode: state.graphSidebar.currentEntity,
         data: state.graph.data
     };
 }

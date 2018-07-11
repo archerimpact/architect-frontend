@@ -1,46 +1,105 @@
-import {UPDATE_VIGNETTE} from "./actionTypes";
-import _ from 'lodash';
+import {
+    OFFLINE_ACTIONS,
+    SEARCH_DATA,
+    ENTITY_SET,
+    ENTITY_CACHE_RESORT,
+    ENTITY_CACHE_ADD,
+    ENTITY_RESET
+} from "../actions/actionTypes";
 
+import {arraySwap} from "./utils"
 import * as server from "../../server";
-
-/* =========================================== HELPERS ==========================================  */
-
-// Redux state cannot be mutated. Must create new copies of objects - function here ensures that
-function makeDeepCopy(array) {
-    let newArray = [];
-    array.map((object) => {
-        return newArray.push(Object.assign({}, object));
-    });
-    return newArray;
-}
 
 /* =============================================================================================  */
 
-function updateVignetteDispatch(data) {
+function fetchSearchResultsDispatch(data) {
     return {
-        type: UPDATE_VIGNETTE,
+        type: SEARCH_DATA,
         payload: data
     };
 }
 
-export function addToVignetteFromId(graph, id, index) {
-    return (dispatch, getState) => {
-        server.getNode(id, 1)
-            .then(data => {
-                let state = getState()
-                let allNodes = state.home.vignetteGraphData[index].nodes.concat(data.nodes);
-                let allLinks = state.home.vignetteGraphData[index].links.concat(data.links);
-                let dataNodes = _.uniqBy(allNodes, (obj) => {return obj.id});
-                let dataLinks = _.uniqBy(allLinks, (obj) => {return obj.id});
-                graph.addData(data.centerid, makeDeepCopy(dataNodes), makeDeepCopy(dataLinks));
-                graph.update();
-                let newVignetteData = state.home.vignetteGraphData
-                newVignetteData.splice(index, 1, {nodes: dataNodes, links: dataLinks})
-                dispatch(updateVignetteDispatch(newVignetteData))
+export function fetchSearchResults(query) {
+    return (dispatch) => {
+        if (OFFLINE_ACTIONS) return;
+        server.searchBackendText(query)
+            .then((data) => {
+                dispatch(fetchSearchResultsDispatch(data));
             })
-            .catch(err => {
-                console.log(err);
-            });
+            .catch((error) => console.log(error));
+    }
+}
+
+/* =============================================================================================  */
+
+
+function setCurrentEntityDispatch(node) {
+    return {
+        type: ENTITY_SET,
+        payload: node
     };
 }
 
+function addToEntityCache(node) {
+    return {
+        type: ENTITY_CACHE_ADD,
+        payload: [node]
+    }
+}
+
+function reshuffleEntityCache(newEntityCache) {
+    return {
+        type: ENTITY_CACHE_RESORT,
+        payload: newEntityCache
+    }
+}
+
+export function fetchCurrentEntity(node) {
+    return (dispatch, getState) => {
+        if (OFFLINE_ACTIONS) return;
+        let currentNodeId = node.id;
+        let entityCache = getState().graphSidebar.entityCache;
+        let entityCacheLength = entityCache.length;
+        let nodeInEntityCache = false;
+        let i;
+        for (i=0; i < entityCacheLength; i++) {
+            if (entityCache[i].id === currentNodeId) {
+                nodeInEntityCache = true;
+                break;
+            }
+        }
+        if (entityCache.length > 100) {
+            dispatch(reshuffleEntityCache(entityCache.slice(0, 50)))
+        }
+        if (!nodeInEntityCache) {
+            server.getNode(currentNodeId, 1)
+                .then((data) => {
+                    data["id"] = currentNodeId;
+                    dispatch(setCurrentEntityDispatch(data));
+                    dispatch(addToEntityCache(data))
+                })
+                .catch((err) => console.log(err));
+        } else {
+            dispatch(setCurrentEntityDispatch(entityCache[i]));
+            // let newEntityCache = arraySwap(entityCache, i, 0);
+            // dispatch(reshuffleEntityCache(newEntityCache));
+        }
+    };
+}
+
+/* =============================================================================================  */
+
+
+function clearCurrentEntityDisptach() {
+    return {
+        type: ENTITY_RESET,
+    }
+}
+
+export function clearCurrentEntity() {
+    return (dispatch) => {
+        dispatch(clearCurrentEntityDisptach())
+    }
+}
+
+/* =============================================================================================  */

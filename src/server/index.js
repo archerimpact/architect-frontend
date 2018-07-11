@@ -32,6 +32,7 @@ export function searchBackendText(searchQuery) {
             }
         })
         .then(function (response) {
+            console.log(response.data);
             fulfill(response.data.results);
         })
         .catch(function (error) {
@@ -41,7 +42,7 @@ export function searchBackendText(searchQuery) {
 }
 
 export function getNode(neo4j_id, degree=0, useExclude=true) {
-    console.log("in the server call")
+    console.log("in the server call getNode")
     let exclude = '';
     constants.EXPANSION_DEFAULT.exclude.forEach((type) => {
         exclude += type + ','

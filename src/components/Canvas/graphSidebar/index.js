@@ -5,8 +5,6 @@ import ListData from "../listData"
 import {Link,withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import Entity from "../entity";
-import { Input, Button } from 'antd';
-import { saveLink, loadLink } from "../../../redux/actions/graphActions"
 
 import "./style.css";
 
@@ -147,7 +145,7 @@ class GraphSidebar extends Component {
                                 <div className="tab">List</div>
                             </Link>
                         </div>
-                        <div className="full-width flex-column">
+                        <div className="full-width flex-column y-scrollable">
                             {
                                 this.state.renderSearch ?
                                     this.renderSearch()

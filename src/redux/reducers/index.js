@@ -2,6 +2,7 @@ import {persistCombineReducers} from "redux-persist";
 import storage from "redux-persist/es/storage";
 import graph from "./graphReducer";
 import home from "./homeReducer";
+import graphSidebar from "./graphSidebarReducer"
 
 const config = {
     key: 'root',
@@ -11,6 +12,7 @@ const config = {
 config.debug = true;
 const reducers = {
     graph,
+    graphSidebar,
     home
 };
 

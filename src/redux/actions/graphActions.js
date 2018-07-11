@@ -15,7 +15,7 @@ function makeDeepCopy(array) {
 
 /* =============================================================================================  */
 
-export function storeCurrentNodeDispatch(id) {
+export function storeCurrentNodeDispatch(id) {  // MOVED
     return {
         type: STORE_CURRENT_NODE,
         payload: id
@@ -59,7 +59,7 @@ export function addToGraphFromId(graph, id) {
 
 /* =============================================================================================  */
 
-function fetchSearchResultsDispatch(data) {
+function fetchSearchResultsDispatch(data) { // MOVED
     return {
         type: STORE_SEARCH_RESULTS,
         payload: data
@@ -79,7 +79,7 @@ export function fetchSearchResults(query) {
 
 /* =============================================================================================  */
 
-function fetchEntityDispatch(entity) {
+function fetchEntityDispatch(entity) { // MOVED
     return {
         type: STORE_ENTITY,
         payload: entity
@@ -112,7 +112,7 @@ export function fetchEntity(id) {
 
 /* =============================================================================================  */
 
-function reorderEntityCacheDispatch(newEntityCache) {
+function reorderEntityCacheDispatch(newEntityCache) { // MOVED
     return {
         type: REORDER_ENTITY_CACHE,
         payload: newEntityCache

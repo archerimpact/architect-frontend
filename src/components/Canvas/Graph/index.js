@@ -6,8 +6,11 @@ import {withRouter} from "react-router-dom";
 import * as graphActions from "../../../redux/actions/graphActions";
 import {
     addToGraphFromId,
-    setCurrentNode
 } from "../../../redux/actions/graphActions";
+
+import {
+    fetchCurrentEntity
+} from "../../../redux/actions/graphSidebarActions"
 
 import "./graph.css";
 import "./style.css";
@@ -17,8 +20,8 @@ const windowWidth = Math.max(window.innerWidth);
 
 class Graph extends Component {
 
-    setCurrentNodeFunc = (d) => {
-        this.props.dispatch(setCurrentNode(d));
+    fetchCurrentEntityFunc = (d) => {
+        this.props.dispatch(fetchCurrentEntity(d));
     };
 
     expandNodeFromData = (d) => {
@@ -36,7 +39,7 @@ class Graph extends Component {
         }
         graph.bindDisplayFunctions({
             expand: this.expandNodeFromData,
-            node: this.setCurrentNodeFunc,
+            node: this.fetchCurrentEntityFunc,
             save: null
         });
 
@@ -47,7 +50,7 @@ class Graph extends Component {
         const { graph } = this.props;
         graph.bindDisplayFunctions({
             expand: this.expandNodeFromData,
-            node: this.setCurrentNodeFunc,
+            node: this.fetchCurrentEntityFunc,
             save: null
         });
     }
