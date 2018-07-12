@@ -71,7 +71,7 @@ class GraphPreview extends Component {
               <div className="ml-auto">
                 <Link to="/explore">
                     <button className="btn btn-primary graph-preview-explore-button" onClick={() => this.loadDataToMainGraph()}>
-                        Explore In Depth
+                        View in Platform
                         <i className="explore-icon material-icons">launch</i>
                     </button>
                 </Link>
