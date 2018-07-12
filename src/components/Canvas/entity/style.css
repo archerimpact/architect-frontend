@@ -42,7 +42,7 @@
 
 .info-row {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 .info-key {
@@ -50,13 +50,7 @@
 }
 
 .info-value {
-    margin-left: 8px;
-    margin-right: 8px;
-    margin-bottom: 15px;
-    padding-right: 8px;
-    padding-left: 8px;
-    background: #eeeeee;
-    border-radius: 3px;
+
 }
 
 .info-value-list {

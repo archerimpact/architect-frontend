@@ -13,14 +13,15 @@
     top: 0;
     width: 550px;
     height: 100%;
-    border-left: 1px solid #ebebeb;
+    margin-left: 55px;
+    border-right: 1px solid #ebebeb;
 }
 
 .tab-container {
     display: flex;
     justify-content: center;
     z-index: 20;
-    margin-top: 50%;
+    margin-top: 10px;
 }
 
 .sidebar.hidden {
@@ -41,12 +42,6 @@
     font-weight: 100;
     outline: none;
     z-index: 11;
-    border: 1px solid #D4D4D4;
-    border-right: 0;
-    /*height: 42px;*/
-    cursor: pointer;
-    /*background-color: #f0f0f0;*/
-    /*text-align: center;*/
 }
 
 .tab .tab-icon {
@@ -61,6 +56,15 @@
     color: #fafafa;
 }
 
+.tab:hover:not(.active-tab) {
+    background-color: #eee;
+    cursor: pointer;
+}
+
+.tab-text {
+    margin: 0 auto;
+}
+
 .sidebar-collapse:hover {
     background-color: #fafafa;
 }
@@ -73,15 +77,6 @@
     margin-left: 0;
     margin-top: 10px;
     font-size: 22px;
-}
-
-.tabs {
-    width: 30px;
-    margin-top: auto;
-    margin-bottom: auto;
-    z-index: 100;
-    box-shadow: -10px 4px 20px -7px rgba(0, 0, 0, 0.3);
-    -webkit-box-shadow: -10px 4px 20px -7px rgba(0, 0, 0, 0.3);
 }
 
 .sticky-divider {
@@ -107,8 +102,6 @@
     padding: 10px;
     width: 100%;
     background-color: #0d77e2;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
-    -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
     /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
     /*-webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);*/
 }
@@ -144,7 +137,7 @@
 }
 
 .slide-in {
-    transform: translate(520px);
+    transform: translate(518px);
     transition: transform 400ms ease-in-out;
 }
 
