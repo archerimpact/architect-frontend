@@ -1,0 +1,351 @@
+/* General Styling */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-width: 900px;
+    font: normal 16px arial, sans-serif;
+    width: 100%;
+    overflow: hidden;
+}
+
+.unselectable {
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+}
+
+.graph-container {
+    height: 100%;
+}
+
+.svg-content {
+    height: 100%;
+    width: 100%;
+}
+
+svg {
+    z-index: -3;
+}
+
+/* Extent */
+
+svg rect.extent {
+    stroke: rgb(120, 120, 120);
+    stroke-opacity: .3;
+    stroke-width: 2px;
+    fill: rgb(190, 219, 243, .2);
+}
+
+/* Grid lines */
+
+svg line {
+    stroke: rgb(191, 191, 191);
+    stroke-opacity: .3;
+    stroke-width: 1.5px;
+}
+
+/* Toolbar */
+
+.toolbar-background {
+    stroke: #d3d3d3;
+    fill: #fafafa;
+}
+
+.toolbar-button-icon {
+    fill: #202020;
+}
+
+.link-text {
+    stroke: #fff;
+    stroke-width: 3px;
+    fill: #545454;
+    paint-order: stroke;
+    font-size: 14px;
+    font-weight: bolder;
+    letter-spacing: 1.2px;
+}
+
+.link-text textPath.hidden {
+    visibility: hidden;
+}
+
+.link.dynamic {
+    pointer-events: none;
+}
+
+path.link {
+    stroke: #999;
+    opacity: 1;
+    transition-property: opacity;
+    transition-delay: 0ms;
+    transition-duration: 50ms;
+}
+
+path.link.hidden {
+    stroke-width: 0;
+}
+
+path.link.same-as {
+    stroke-dasharray: 5, 3;
+}
+
+path.link.selected {
+    stroke: #0d77e2;
+}
+
+.node {
+    /*fill: #ebebeb;
+    stroke: #545454;*/
+    opacity: 1;
+    transition-property: stroke-opacity, fill-opacity;
+    transition-delay: 0ms;
+    transition-duration: 50ms;
+}
+
+.node-name tspan {
+    stroke: #fff;
+    stroke-width: 3px;
+    font-size: 15px;
+    fill: #545454;
+    font-weight: bolder;
+    paint-order: stroke;
+    cursor: pointer;
+}
+
+.node text.icon {
+    stroke-width: .5px;
+    fill: #545454;
+}
+
+.node.grouped circle {
+    fill: #7cbdff;
+}
+
+.node circle {
+    cursor: pointer;
+    stroke-width: 4.5px;
+}
+
+.node circle.hull-node {
+    stroke-width: 2.4px;
+}
+
+.node.fixed circle.hull-node {
+    stroke: #dddddd !important;
+}
+
+.node.selected circle {
+    stroke: #0d77e2 !important;
+    fill: #0d77e2 !important;
+}
+
+.node.selected circle.hull-node {
+    stroke: #fff !important;
+    fill: #0d77e2 !important;
+}
+
+.node .icon {
+    fill: #fff !important;
+}
+
+.node.fixed .icon {
+    fill: #dddddd !important;
+}
+
+.node.selected .icon {
+    stroke: #0d77e2 !important;
+}
+
+.node circle.node-glyph {
+    /*stroke: #fff !important;*/
+    fill: #fff !important;
+    stroke-width: 3px;
+}
+
+.node-glyph.hidden {
+    display: none;
+}
+
+.node.selected circle.node-glyph {
+    stroke: #0d77e2 !important;
+}
+
+.node.fixed circle.node-glyph {
+    fill: #dddddd !important;
+}
+
+.glyph-label {
+    font-size: 13px;
+    /*stroke: none;
+    fill: #ebebeb;*/
+}
+
+.glyph-label.hidden {
+    display: none;
+}
+
+.node.selected text.glyph-label {
+    stroke: #0d77e2 !important;
+    fill: #0d77e2 !important;
+}
+
+.hull, path {
+    fill: #0d77e2;
+    stroke-opacity: 1;
+    fill-opacity: 0.2;
+    stroke: #7cbdff;
+    stroke-width: 2px;
+    transition-property: stroke-opacity, fill-opacity;
+    transition-delay: 0ms;
+    transition-duration: 50ms;
+}
+
+.faded {
+    transition-delay: 75ms;
+}
+
+.node.faded {
+    stroke-opacity: 0 !important;
+    fill-opacity: 0.15 !important;
+    transition-property: stroke-opacity, fill-opacity;
+}
+
+.node.faded .glyph-label {
+    fill-opacity: 0 !important;
+    transition-property: fill-opacity;
+}
+
+.link.faded {
+    opacity: 0.15 !important;
+    transition-property: opacity;
+}
+
+.hull.faded {
+    stroke-opacity: 0.2 !important;
+    fill-opacity: 0.05 !important;
+    transition-property: stroke-opacity, fill-opacity;
+}
+
+.button {
+    fill: transparent;
+    cursor: pointer;
+}
+
+.button:hover {
+    fill: rgba(0, 0, 0, .1);
+}
+
+.button:active, .button.selected {
+    fill: rgba(0, 0, 0, .25);
+}
+
+#node-tooltip {
+    width: 240px;
+    background: rgba(255, 255, 255, .75);
+    border: 1px solid #000;
+    border-radius: 1px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    font-size: 14px;
+    color: #000;
+    letter-spacing: 1px;
+    transition-delay: 75ms;
+}
+
+.tooltip-title {
+    font-size: 20px;
+    border-bottom: 1.5px solid #0d77e2;
+    background: rgba(13, 119, 226, .2);
+    padding: 5px;
+    color: #0d77e2;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+}
+
+.tooltip-left {
+    margin: auto;
+    margin-left: 0px;
+    max-width: 150px;
+}
+
+.tooltip-right {
+    margin: auto;
+    margin-right: 0px;
+    display: flex;
+    text-align: right;
+    flex-direction: row;
+    font-size: 14px;
+    max-width: 165px;
+    color: #545454;
+}
+
+#minimap-frame {
+    fill: #fff;
+    stroke: #545454;
+    stroke-width: 1.5px;
+    opacity: 0.8;
+}
+
+#svg-image {
+    border: none;
+    cursor: default;
+}
+
+#minimap-select-fill {
+    fill: #b1b1b1;
+    opacity: 0.4;
+}
+
+#minimap-select {
+    cursor: move;
+    stroke: #545454;
+    stroke-width: 1.5px;
+}
+
+/*#minimap-selection {
+    fill: #b1b1b1;
+    stroke: #545454;
+    stroke-width: 1.5px;
+    opacity: 0.4;
+    cursor: move;
+}*/
+
+.context-menu {
+    position: absolute;
+    display: none;
+    background-color: #f2f2f2;
+    border-radius: 0px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    min-width: 150px;
+    border: 1px solid #d4d4d4;
+    z-index: 1200;
+}
+
+.context-menu ul {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+    cursor: default;
+}
+
+.context-menu ul li {
+    padding: 9px 12px;
+}
+
+.context-menu ul li:hover {
+    background-color: #0d77e2;
+    color: #fefefe;
+}
+
+.context-menu ul li ul:hover {
+    background-color: #f2f2f2;
+}

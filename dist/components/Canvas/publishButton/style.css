@@ -1,0 +1,19 @@
+.publish-button {
+	position: absolute;
+	left: 250px;
+	top: 0px;
+	z-index: 1;
+	background-color: #0d77e2;
+	height: 50px;
+	width: 100px;
+	color: #fafafa;
+	align-items: center;
+	justify-content: space-between;
+	padding: 5px 10px;
+	border: none;
+	border-radius: 0px;
+}
+
+.btn-primary:hover, .publish-button:hover {
+	background-color: hsla(210, 89%, 30%, 1)
+}
