@@ -14,7 +14,6 @@ const initialState = {
     canvas: {
         searchData: []
     },
-    entityCache: [],
     data: {
         nodes: [],
         links: []
@@ -60,16 +59,6 @@ export default function (state = initialState, action) {
                     nodes: action.payload.nodes,
                     links: action.payload.links
                 }
-            };
-        case STORE_ENTITY:
-            return {
-                ...state,
-                entityCache: action.payload.concat(state.entityCache)
-            };
-        case REORDER_ENTITY_CACHE:
-            return {
-                ...state,
-                entityCache: action.payload
             };
         case LOAD_DATA:
             return {

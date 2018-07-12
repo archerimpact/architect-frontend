@@ -66,7 +66,7 @@ export function dragstart(d, self) {
 
     this.isDragging = true;
     this.draggedNode = d;
-    //this.displayNodeInfo(d);
+    this.displayNodeInfo(d);
     const node = d3.select(self);
     node
         .attr('dragfix', node.classed('fixed'))

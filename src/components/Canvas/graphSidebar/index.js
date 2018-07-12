@@ -31,20 +31,6 @@ class GraphSidebar extends Component {
         this.setState({listener: listener})
     }
 
-    // componentDidMount() {
-    //     const { match } = this.props;
-    //     if (match.params && match.params.sidebarState === 'publish') {
-    //         console.log("recognized that in publish space")
-    //         let projId = match.params.query;
-    //         if (projId != null) {
-    //             console.log("recognized projId exists", projId);
-    //             let res = this.props.dispatch(loadLink(projId));
-    //             console.log("hi back in main", res)
-    //             // this.setState({projectName: res.name, author: res.author, description: res.description})
-    //         }
-    //     }
-    // }
-
     componentWillUnmount() {
         this.state.listener();
     }

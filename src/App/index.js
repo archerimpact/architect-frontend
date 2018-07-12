@@ -11,7 +11,7 @@ export default class App extends Component {
         return (
           <div>
             <div className="main">
-                <Route exact path="/" component={Home}/>
+                <Route exact path="/:id?" component={Home}/>
                 <Route path="/explore/:sidebarState?/:query?" component={Canvas}/>
             </div>
           </div>

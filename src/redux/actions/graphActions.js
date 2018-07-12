@@ -112,40 +112,40 @@ export function fetchEntity(id) {
 
 /* =============================================================================================  */
 
-function reorderEntityCacheDispatch(newEntityCache) { // MOVED
-    return {
-        type: REORDER_ENTITY_CACHE,
-        payload: newEntityCache
-    }
-}
-
-function move(arr, from, to) {
-    let newArr = makeDeepCopy(arr);
-    newArr.splice(to, 0, this.splice(from, 1)[0]);
-    return newArr
-}
-
-export function reorderEntityCache(id, index=null) {
-    return (dispatch, getState) => {
-        let state = getState();
-        let entityCache = state.graph.entityCache;
-        let newEntityCache = [];
-        if (index) {
-            newEntityCache = move(entityCache, index, 0);
-            dispatch(reorderEntityCacheDispatch(newEntityCache))
-        } else {
-            for (let i=0; i<entityCache.length; i++) {
-                if (entityCache[i].id === id) {
-                    newEntityCache = move(entityCache, i, 0);
-                    break;
-                }
-            }
-            if (newEntityCache.length !== 0) {
-                dispatch(reorderEntityCacheDispatch(newEntityCache))
-            }
-        }
-    }
-}
+// function reorderEntityCacheDispatch(newEntityCache) { // MOVED
+//     return {
+//         type: REORDER_ENTITY_CACHE,
+//         payload: newEntityCache
+//     }
+// }
+//
+// function move(arr, from, to) {
+//     let newArr = makeDeepCopy(arr);
+//     newArr.splice(to, 0, this.splice(from, 1)[0]);
+//     return newArr
+// }
+//
+// export function reorderEntityCache(id, index=null) {
+//     return (dispatch, getState) => {
+//         let state = getState();
+//         let entityCache = state.graph.entityCache;
+//         let newEntityCache = [];
+//         if (index) {
+//             newEntityCache = move(entityCache, index, 0);
+//             dispatch(reorderEntityCacheDispatch(newEntityCache))
+//         } else {
+//             for (let i=0; i<entityCache.length; i++) {
+//                 if (entityCache[i].id === id) {
+//                     newEntityCache = move(entityCache, i, 0);
+//                     break;
+//                 }
+//             }
+//             if (newEntityCache.length !== 0) {
+//                 dispatch(reorderEntityCacheDispatch(newEntityCache))
+//             }
+//         }
+//     }
+// }
 
 /* =============================================================================================  */
 
@@ -179,27 +179,6 @@ function loadGraphDataDispatch(data) {
     return {
         type: LOAD_DATA,
         payload: data
-    }
-}
-
-export function loadLink(projId) {
-    return (dispatch) => {
-        server.getLink(projId)
-            .then((res) => {
-                let graphData;
-                try {
-                    graphData = JSON.parse(res.message.data);
-                } catch (err) {
-                    graphData = null;
-                }
-                console.log("loading graph data", graphData)
-                dispatch(loadGraphDataDispatch(graphData));
-                console.log("sending things back", {name: res.message.name, author: res.message.author, description: res.message.description})
-                return {name: res.message.name, author: res.message.author, description: res.message.description}
-            })
-            .catch((err) => {
-                console.log(err);
-            });
     }
 }
 
