@@ -45,4 +45,5 @@ a.underlined-link {
 .share-row {
 	display: flex;
 	align-items: center;
+	margin-bottom: 20px;
 }

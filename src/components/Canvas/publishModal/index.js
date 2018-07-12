@@ -49,6 +49,7 @@ export default class PublishModal extends Component {
               <i id="tweet-link" className="twitter-action fab fa-twitter"></i>
             </a>
           </div>
+          <small className="link-warning">This link will not be shown again, so make sure to copy it somewhere safe if you'd like to keep it around!</small>
         </div>
       );
     }
@@ -63,15 +64,18 @@ export default class PublishModal extends Component {
           <ModalDialog onClose={this.props.handleClose}>
             <Script url="https://platform.twitter.com/widgets.js" />
             <div id="publish-modal">
-              <h4 className="modal-title">Share this investigation</h4>
+              <h4 className="modal-title">Share this network</h4>
               <p className="lead">
-                Found an interesting network?  Want to show off?  Generate a link to your investigation that you can share on social media or send to coworkers.
+                Want to show off an interesting network you found? With ArcherViz, you can now share fully-interactive graphs via a link! Generate a link below that you can share on social media or send individually.
               </p>
 
-              <div id="publish-submit" className="btn btn-primary" onClick={() => this.fetchLink(graph)}>
-                Submit
-              </div>
-              { this.renderLink() }
+              { this.state.link === '' ?
+                <div id="publish-submit" className="btn btn-primary" onClick={() => this.fetchLink(graph)}>
+                  Generate Link
+                </div>
+                :
+                this.renderLink()
+              }
             </div>
           </ModalDialog>
         </ModalContainer>
