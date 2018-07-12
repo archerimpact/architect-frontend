@@ -26,6 +26,8 @@ const icons = {
     [constants.ORGANIZATION]: '',
     'group': '',
     'same_as_group': '',
+    'Vessel': '',
+    "Aircraft": '',
     [constants.BUTTON_ZOOM_IN_ID]: '',
     [constants.BUTTON_ZOOM_OUT_ID]: '',
     [constants.BUTTON_POINTER_TOOL_ID]: '',
@@ -742,7 +744,7 @@ class Graph {
             .attr('text-anchor', 'middle')
             .attr('dy', '40px')
             .classed('unselectable', true)
-            .text((d) => { return d.group ? '' : aesthetics.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
+            .text((d) => { return d.group ? '' : aesthetics.processNodeName(d.name ? d.name : (d.label ? d.label : d.address), this.printFull); })
             .call(this.wrapNodeText, this.printFull)
             .on('click', function (d) { self.stopPropagation(); })
             .on('mouseover', function (d) { self.stopPropagation(); })
