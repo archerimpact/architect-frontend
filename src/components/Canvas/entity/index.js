@@ -34,7 +34,7 @@ class Entity extends Component {
         nodes.forEach(n => nodeMap[n.id] = n.name);
 
         const extract_link = (type, compareSource, compareTarget) => {
-            if (compareSource) {
+            if (compareTarget) {
                 return links.filter(link => link.type === type && node.id === link.source)
                     .map(link => {
                         for (let k=0; k<nodes.length; k++) {
@@ -43,7 +43,7 @@ class Entity extends Component {
                             }
                         }
                     })
-            } else if (compareTarget) {
+            } else if (compareSource) {
                 return links.filter(link => link.type === type && node.id === link.target)
                     .map(link => {
                         for (let k=0; k<nodes.length; k++) {

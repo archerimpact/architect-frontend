@@ -8,6 +8,11 @@ let api_inst = axios.create({
     timeout: 1000
 });
 
+let new_api_inst = axios.create({
+    baseURL: configData.backend1_url,
+    timeout: 1000
+})
+
 export function searchBackendText(searchQuery) {
     /* Takes in a searchQuery parameter and sends a query directly to the hosted elastic
      search instance. Query format below is the standard for elastic. Matches only if the
@@ -70,7 +75,7 @@ export function getNode(neo4j_id, degree=0, useExclude=true) {
 
 export const createLink = async (name, author, description, data) => {
     let stringifiedData = JSON.stringify(data);
-    const response = await api_inst.post('/projects/create', {
+    const response = await new_api_inst.post('/projects/create', {
         name,
         author,
         description,
@@ -81,7 +86,7 @@ export const createLink = async (name, author, description, data) => {
 
 export const getLink = async (id) => {
     console.log("making call in getLink in server", id)
-    const response = await api_inst.get('/projects/get', {
+    const response = await new_api_inst.get('/projects/get', {
         params: {
             id
         }
@@ -91,7 +96,7 @@ export const getLink = async (id) => {
 };
 
 export const submitEmail = async (email) => {
-    const response = await api_inst.get('/submit/email', {
+    const response = await new_api_inst.get('/submit/email', {
         params: {
             email
         }

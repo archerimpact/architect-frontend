@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router-dom";
 import * as graphActions from "../../../redux/actions/graphActions";
-import { addToGraphFromId } from "../../../redux/actions/graphActions";
+import * as homeActions from '../../../redux/actions/homeActions';
 
 import { fetchCurrentEntity } from "../../../redux/actions/graphSidebarActions"
 
@@ -17,12 +17,17 @@ const windowWidth = Math.max(window.innerWidth);
 class Graph extends Component {
 
     fetchCurrentEntityFunc = (d) => {
-        console.log("i am selecting a node")
-        this.props.dispatch(fetchCurrentEntity(d));
+        if (!this.props.index) {
+            this.props.dispatch(fetchCurrentEntity(d));
+        }
     };
 
     expandNodeFromData = (d) => {
-        this.props.dispatch(addToGraphFromId(this.props.graph, d.id));
+        if (this.props.index) {
+            this.props.dispatch(homeActions.addToVignetteFromId(this.props.graph, d.id, this.props.index))
+        } else {
+            this.props.dispatch(this.addToGraphFromId(this.props.graph, d.id));
+        }
     };
 
     componentDidMount() {
