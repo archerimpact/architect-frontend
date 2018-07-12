@@ -183,23 +183,27 @@ class Minimap {
         const translate = [((this.width - this.boxWidth) / 2 - this.boxX) * this.boxScale * this.scale, ((this.height - this.boxHeight) / 2 - this.boxY) * this.boxScale * this.scale];
         this.graph.performZoom(translate, this.scale);
         this.zoom.translate(translate);
+        this.boxCenterX = this.boxX + this.boxWidth/2;
+        this.boxCenterY = this.boxY + this.boxHeight/2;
     }
 
     dragend = () => {
         this.graph.zoomend(null, null);
     }
 
-    zooming = () => {
-        if (utils.isRightClick()) return;
+    zooming = (currTranslate=null) => {
+        if (!this.isVisible || (currTranslate === null && utils.isRightClick())) return;
         this.scale = d3.event ? d3.event.scale : utils.getScaleFromZoom(this.target.attr('transform'))[0];
-        this.zoomMinimap();
+        this.zoomMinimap(currTranslate);
     }
 
-    zoomMinimap = () => {
+    zoomMinimap = (currTranslate=null) => {
         // Calculate translate from graph to minimap by scaling down graph translate and offsetting by origin
-        const e = d3.event;
-        this.boxX = -e.translate[0] / (this.scale * this.boxScale) + (this.width - this.boxWidth) / 2;
-        this.boxY = -e.translate[1] / (this.scale * this.boxScale) + (this.height - this.boxHeight) / 2;
+        console.log(this.boxX, this.boxY)
+        const translateX = currTranslate ? currTranslate[0] : d3.event.translate[0];
+        const translateY = currTranslate ? currTranslate[1] : d3.event.translate[1];
+        this.boxX = -translateX / (this.scale * this.boxScale) + (this.width - this.boxWidth) / 2;
+        this.boxY = -translateY / (this.scale * this.boxScale) + (this.height - this.boxHeight) / 2;
         this.box
             .attr('x', this.boxX).attr('y', this.boxY)
             .attr('width', this.boxWidth / this.scale)

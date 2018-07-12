@@ -544,8 +544,8 @@ class Graph {
         this.center = [this.width / 2, this.height / 2];
         this.brushX = d3.scale.linear().range([0, width]);
         this.brushY = d3.scale.linear().range([0, height]);
-        this.minimapPaddingX = constants.MINIMAP_MARGIN + constants.BUTTON_WIDTH;
-        this.minimapPaddingY = height - constants.DEFAULT_MINIMAP_SIZE - constants.MINIMAP_MARGIN + 2;
+        this.minimapPaddingX = constants.MINIMAP_MARGIN;
+        this.minimapPaddingY = height - constants.DEFAULT_MINIMAP_SIZE - constants.MINIMAP_MARGIN;
         this.minimapScale = 0.25;
 
         this.numTicks = width / constants.GRID_LENGTH * (1 / constants.MIN_SCALE);
@@ -620,9 +620,9 @@ class Graph {
     // Completely re-renders the graph, assuming all new nodes and links
     setData = (centerid, nodes, links, byIndex) => {
         this.setMatrix(nodes, links, byIndex);
-        this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
+        this.initializeDataDicts(); // If we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
         this.update(null, 500);
-        // set global node id to match the nodes getting passed in
+        // Set global node id to match the nodes getting passed in
         nodes.forEach((node) => {
             if (node.id < 0) {
                 this.globalnodeid = Math.min(this.globalnodeid, node.id);

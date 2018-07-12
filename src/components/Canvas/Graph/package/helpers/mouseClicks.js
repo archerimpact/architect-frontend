@@ -338,7 +338,7 @@ export function zoomButton(zoom_in) {
         if (this.zoomPressed) this.zoomButton(zoom_in);
         else this.isZooming = false;
         if (this.minimap) {
-            this.minimap.zooming();
+            this.minimap.zooming(this.zoomTranslate);
         }
     });
 
