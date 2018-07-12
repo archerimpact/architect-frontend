@@ -27,12 +27,15 @@ class GraphPreview extends Component {
       this.updateWindowDimensions();
       this.refs.graphPreviewBox.addEventListener('resize', this.updateWindowDimensions);
 
-      server.searchBackendText(this.props.startingNode) // hardcoded for now, don't worry too much about it until we decide this way of doing the narratives is conceptually best
-        .then((data) => {
-          let neo4j_id = data[0].id;
-          this.props.dispatch(homeActions.addToVignetteFromId(this.graph, neo4j_id, this.props.index));
-        })
-        .catch((err)=> {console.log(err)});
+
+      if (this.props.startingNode) {
+          server.searchBackendText(this.props.startingNode) // hardcoded for now, don't worry too much about it until we decide this way of doing the narratives is conceptually best
+              .then((data) => {
+                  let neo4j_id = data[0].id;
+                  this.props.dispatch(homeActions.addToVignetteFromId(this.graph, neo4j_id, this.props.index));
+              })
+              .catch((err)=> {console.log(err)});
+      }
     }
 
     componentWillUnmount() {
@@ -69,7 +72,7 @@ class GraphPreview extends Component {
                 <i className="graph-preview-action link-action fas fa-link"></i>
               </div>
               <div className="ml-auto">
-                <Link to="/explore">
+                <Link to="/explore/list">
                     <button className="btn btn-primary graph-preview-explore-button" onClick={() => this.loadDataToMainGraph()}>
                         Explore In Depth
                         <i className="explore-icon material-icons">launch</i>

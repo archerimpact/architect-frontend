@@ -35,6 +35,10 @@ class Home extends Component {
         }
     }
 
+    backToHome = () => {
+        this.setState({linkPresent: false});
+    }
+
     render() {
         const { linkPresent } = this.state;
         return (
@@ -133,7 +137,7 @@ class Home extends Component {
                     <VignettePreview2 key={"vp2"} index={1} colorProfile='1' />
                       {
                           linkPresent ?
-                              <VignettePreview4 key={"vp4"} index={4} colorProfile='4' />
+                              <VignettePreview4 key={"vp4"} index={4} colorProfile='4' backToHome={this.backToHome} />
                               :
                               <VignettePreview3 key={"vp3"} index={2} colorProfile='2' />
                       }

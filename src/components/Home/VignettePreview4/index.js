@@ -13,22 +13,22 @@ class VignettePreview4 extends Component {
     super(props);
       this.graph = new ArcherGraph();
       this.state = {
-      isModalOpen: true,
       colorProfile: props.colorProfile,
     }
   }
 
   handleClose = () => {
-      this.setState({ isModalOpen: false });
+      this.props.history.push('/');
+      this.props.backToHome();
   };
 
   render() {
-    const { name, author, description, handleClose } = this.props;
+    const { name, author, description } = this.props;
     return (
-      <div>
-          <ModalContainer onClose={handleClose}>
-              <ModalDialog onClose={handleClose}>
-                  <div className="vignette-card">V
+      <div onClick={this.handleClose}>
+          <ModalContainer onClose={this.handleClose}>
+              <ModalDialog onClose={this.handleClose}>
+                  <div className="vignette-card">
                       <div className="vignette-card-row flex-row">
                           <div className="vignette-card-col vignette-card-left-col">
                               <div className="vignette-card-header">
