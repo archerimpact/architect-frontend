@@ -491,7 +491,7 @@ class Graph {
                 .on('drag', this.stopPropagation)
                 .on('dragend', this.stopPropagation)
             );
-    }
+    };
 
     getToolbarLabels = () => {
         const labels = [constants.BUTTON_ZOOM_IN_ID, constants.BUTTON_ZOOM_OUT_ID, constants.BUTTON_POINTER_TOOL_ID,
