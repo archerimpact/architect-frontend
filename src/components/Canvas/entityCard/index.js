@@ -13,14 +13,8 @@ class EntityCard extends Component {
         this.dispatch = props.dispatch;
     }
 
-    addToGraphFromIdFunc = (graph, id) => {
-        if (!this.props.data.nodes.some(e => e.id === this.props.id)) {
-            this.dispatch(addToGraphFromId(graph, id))
-        }
-    };
-
     render() {
-        const { node, graph } = this.props;
+        const { node } = this.props;
         return (
             <div className="card result-card" key={node.id}>
                 <div className="card-header result-card-header flex-row d-flex align-items">
@@ -29,11 +23,13 @@ class EntityCard extends Component {
                             Add
                         </div>
                     </div>
-                    <Link to="/explore/entity">
-                        <span className="collapse-link" onClick={() => this.dispatch(fetchCurrentEntity(node))}>
-                            {node.name || node.combined || node.label || node.description}
-                        </span>
-                    </Link>
+                    <div className="collapse-link">
+                        <Link to="/explore/entity">
+                            <span onClick={() => this.dispatch(fetchCurrentEntity(node))}>
+                                {node.name || node.combined || node.label || node.description}
+                            </span>
+                        </Link>
+                    </div>
                     <div className="card-pills">
                         { !node || !node.programs ?
                             null :
