@@ -17,17 +17,17 @@ export default class Home extends Component {
     render() {
         return (
             <div>
-              {/*}
+              
                 <div className="beta-section">
                     <div className="container">
                         <div className="sign-up-row flex-row">
                             <p className="sign-up-tagline">
-                                From July 10 - August 7, we're releasing something new every Tuesday. Come back for more.
+                                This is just a teaser. Stay tuned for more.
                             </p>
                         </div>
                     </div>
                 </div>
-              */}
+              
                     <div id="top">
             <header className="main-header">
               <nav className="primary">
