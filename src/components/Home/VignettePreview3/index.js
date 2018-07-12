@@ -29,7 +29,7 @@ export default class VignettePreview extends Component {
         </div>
         <div className="col-md preview-box">
           <div className={"tint " + "tint-color-" + this.state.colorProfile} onClick={ this.toggleModal }>
-            <p className="preview-summary-text">View the network of a north korean weapons company.</p>
+            <p className="preview-summary-text">View the network of a North Korean weapons company.</p>
           </div>
           <img src="./graph-test.png" className="preview-image" />
         </div>

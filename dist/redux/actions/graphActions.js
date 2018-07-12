@@ -181,7 +181,6 @@ function fetchEntityDispatch(entity) {
 }
 
 function fetchEntityDataFormatter(data) {
-    console.log("fetchEntityDataFormat", data);
     // let nodes = data.nodes;
     // let linksLength = data.links.length;
     // for (let i=0; i < linksLength; i++) {
@@ -274,9 +273,7 @@ function loadLink(projId) {
             } catch (err) {
                 graphData = null;
             }
-            console.log("loading graph data", graphData);
             dispatch(loadGraphDataDispatch(graphData));
-            console.log("sending things back", { name: res.message.name, author: res.message.author, description: res.message.description });
             return { name: res.message.name, author: res.message.author, description: res.message.description };
         }).catch(function (err) {
             console.log(err);

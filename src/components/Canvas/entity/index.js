@@ -175,7 +175,6 @@ class Entity extends Component {
                 let n = node;
                 const val = n[k[0]];
                 empty = false;
-                console.log("val",n[k[0]])
                 return (
                     <div className="info-row" key={k}>
                         <p className="info-key">{k[1]}</p>
@@ -228,7 +227,6 @@ class Entity extends Component {
 
     render() {
         const { currentEntity } = this.props;
-        console.log("currentEntity", currentEntity);
         const keys = [
             ['dateOfBirth', 'Date of Birth'],
             ['placeOfBirth', 'Place of Birth'],
