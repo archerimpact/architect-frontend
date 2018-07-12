@@ -19,10 +19,10 @@ export default (args) => {
             empty = false;
             return (
                 <div className="info-row" key={k}>
-                    <p className="info-key">{k[1]}:</p>
+                    <p className="info-key">{k[1]}</p>
                     { (!(val instanceof Array))
                         ? <p className="info-value">{val}</p>
-                        : <div className="info-value-list"> {val.map(v => <div className="info-value">{v}</div>)} </div>
+                        : <ul className="info-value-list"> {val.map(v => <li className="info-value">{v}</li>)} </ul>
                     }
                 </div>
             )
