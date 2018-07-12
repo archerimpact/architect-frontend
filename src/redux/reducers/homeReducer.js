@@ -1,5 +1,6 @@
 import {
-    UPDATE_VIGNETTE
+    UPDATE_VIGNETTE,
+    LOAD_DATA_VIGNETTE
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -19,6 +20,14 @@ const initialState = {
         {
             nodes: [],
             links: []
+        },
+        {
+            nodes: [],
+            links: [],
+            name: "",
+            author: "",
+            description: "",
+            id: ""
         }
     ]
 };

@@ -2,22 +2,47 @@ import React, {Component} from "react";
 import VignettePreview from './VignettePreview';
 import VignettePreview2 from './VignettePreview2';
 import VignettePreview3 from './VignettePreview3';
+import VignettePreview4 from './VignettePreview4';
 import GraphPreview from './GraphPreview';
 import Footer from './Footer';
 import UnderlinedTextInput from './UnderlinedTextInput';
 import SearchBar from '../searchBar';
 import SearchBarDatabase from '../searchBarDatabase';
 import SignUpForm from '../signUpForm';
+import { loadLink } from "../../redux/actions/homeActions"
+import {withRouter} from "react-router-dom"
+import {connect} from "react-redux"
 
 import "./style.css";
 import "../../App/montserrat.css";
 
-export default class Home extends Component {
+class Home extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            linkPresent: false
+        }
+    }
+
+    componentWillMount() {
+        const { match } = this.props;
+        if (match.params.id) {
+            let projId = match.params.id;
+            if (projId != null) {
+                this.props.dispatch(loadLink(projId));
+            }
+            this.setState({linkPresent: true})
+        }
+    }
+
+    backToHome = () => {
+        this.setState({linkPresent: false});
+    }
 
     render() {
+        const { linkPresent } = this.state;
         return (
             <div>
-              
                 <div className="beta-section">
                     <div className="container">
                         <div className="sign-up-row flex-row">
@@ -27,7 +52,6 @@ export default class Home extends Component {
                         </div>
                     </div>
                 </div>
-              
                     <div id="top">
             <header className="main-header">
               <nav className="primary">
@@ -63,7 +87,7 @@ export default class Home extends Component {
                   <hr className="content-title-underline" />
                 </div>
                 <div className="content-preview-section">
-                  <div className="release-preview-card"> 
+                  <div className="release-preview-card">
                     <div className="row">
                       <div className="col-md-6">
                         <GraphPreview index={3}/>
@@ -104,13 +128,18 @@ export default class Home extends Component {
                   <hr className="content-title-underline" />
 
                   <p className="content-title-summary lead">
-                    Graph visualization can be a powerful tool for creating compelling narratives and conveying complex relationships.  Explore our featured case studies which illustrate the experience of supplementing text with a fully-interactive graph. 
+                    Graph visualization can be a powerful tool for creating compelling narratives and conveying complex relationships.  Explore our featured case studies which illustrate the experience of supplementing text with a fully-interactive graph.
                   </p>
 
                   <div className="row">
                     <VignettePreview key={"vp1"} index={0} colorProfile='0' />
                     <VignettePreview2 key={"vp2"} index={1} colorProfile='1' />
-                    <VignettePreview3 key={"vp3"} index={2} colorProfile='2' />
+                      {
+                          linkPresent ?
+                              <VignettePreview4 key={"vp4"} index={4} colorProfile='4' backToHome={this.backToHome} />
+                              :
+                              <VignettePreview3 key={"vp3"} index={2} colorProfile='2' />
+                      }
                   </div>
 
               </div>
@@ -121,7 +150,7 @@ export default class Home extends Component {
                 <div className="content-title-text text-center">
                   Just the beginning.
                 </div>
-                
+
                 <div className="find-out-more-row flex-row">
                   <i className="beginning-icon material-icons">date_range</i>
                   <div>
@@ -137,4 +166,13 @@ export default class Home extends Component {
       </div>
         );
     }
+
 }
+
+function mapDispatchToProps(dispatch) {
+    return {
+        dispatch: dispatch,
+    };
+}
+
+export default withRouter(connect(mapDispatchToProps)(Home));

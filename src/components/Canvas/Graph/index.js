@@ -17,6 +17,7 @@ const windowWidth = Math.max(window.innerWidth);
 class Graph extends Component {
 
     fetchCurrentEntityFunc = (d) => {
+        console.log("i am selecting a node")
         this.props.dispatch(fetchCurrentEntity(d));
     };
 
