@@ -2,3 +2,7 @@
   position: absolute;
   overflow: hidden;
 }
+
+::-webkit-scrollbar { 
+  display: none; 
+}

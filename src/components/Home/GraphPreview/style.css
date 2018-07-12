@@ -38,6 +38,8 @@
 
 .graph-card {
   height: calc(100% - 50px);
+  margin-left: -50px;
+  overflow-x: hidden;
 }
 
 .explore-icon {
