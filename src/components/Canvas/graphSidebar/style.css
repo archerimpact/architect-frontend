@@ -129,7 +129,6 @@
     overflow-y: scroll;
     display: flex;
     justify-content: center;
-    padding: 20px 20px 80px 20px;
 }
 
 .full-width {
@@ -146,3 +145,6 @@
     transition: transform 400ms ease-in-out;
 }
 
+.padding-on-bottom {
+    padding-bottom: 100px;
+}

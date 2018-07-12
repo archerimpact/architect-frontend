@@ -1034,6 +1034,15 @@ class Graph {
     saveGraphAsSVGString = () => {
         return utils.createSVGString(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
     }
+
+    selectNode(id) {
+      this.node
+        .classed('selected', false);
+
+      this.node
+        .filter(d => { if (id === d.id) return d})
+        .classed("selected", true)
+    }
 }
 
 // From aesthetics.js
