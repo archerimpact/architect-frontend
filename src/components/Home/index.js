@@ -24,15 +24,15 @@ class Home extends Component {
         }
     }
 
-    componentDidMount() {
+    componentWillMount() {
         const { match } = this.props;
         if (match.params.id) {
             let projId = match.params.id;
             if (projId != null) {
                 this.props.dispatch(loadLink(projId));
             }
+            this.setState({linkPresent: true})
         }
-        this.setState({linkPresent: true})
     }
 
     render() {
@@ -137,7 +137,6 @@ class Home extends Component {
                               :
                               <VignettePreview3 key={"vp3"} index={2} colorProfile='2' />
                       }
-
                   </div>
 
               </div>

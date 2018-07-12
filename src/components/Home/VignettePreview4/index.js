@@ -1,47 +1,74 @@
 import React, {Component} from "react";
-import VignetteModal4 from "../VignetteModal4";
-import {withRouter, Redirect} from "react-router-dom";
+import ArcherGraph from "../../Canvas/Graph/package/GraphClass";
+import {withRouter} from "react-router-dom";
+import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+import GraphPreview from '../GraphPreview';
 import {connect} from "react-redux";
 
 import './style.css'
 
-export default class VignettePreview4 extends Component {
+class VignettePreview4 extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
+      this.graph = new ArcherGraph();
+      this.state = {
       isModalOpen: true,
       colorProfile: props.colorProfile,
     }
   }
 
-  turnOffModal = () => this.setState({ isModalOpen: false });
-  handleClick = () => this.setState({ isModalOpen: true });
   handleClose = () => {
       this.setState({ isModalOpen: false });
   };
 
   render() {
+    const { name, author, description, handleClose } = this.props;
     return (
-      <div className="col-md">
-        <div className="preview-title-content">
-          <div className="flex-row">
-            <p className="preview-date">July 9, 2018</p>
-          </div>
-          <h5 className="preview-title">Following Networks in South Sudan</h5>
-          <hr className="preview-divider" />
-        </div>
-        <div className="col-md preview-box">
-          <div className={"tint " + "tint-color-" + this.state.colorProfile} onClick={ this.turnOffModal }>
-            <p className="preview-summary-text">View the network that violates human rights in south sudan.</p>
-          </div>
-          <img src="./graph-test.png" className="preview-image" />
-        </div>
-        {
-          this.state.isModalOpen && 
-          <VignetteModal4 handleClick={this.handleClick} handleClose={this.handleClose} index={this.props.index} />
-        }
+      <div>
+          <ModalContainer onClose={handleClose}>
+              <ModalDialog onClose={handleClose}>
+                  <div className="vignette-card">V
+                      <div className="vignette-card-row flex-row">
+                          <div className="vignette-card-col vignette-card-left-col">
+                              <div className="vignette-card-header">
+                                  <h4 className="vignette-title">{name}</h4>
+                                  <p className="vignette-author">{author}</p>
+                                  <hr className="vignette-divider" />
+                              </div>
+
+                              <div className="vignette-card-left-col-body">
+                                  <p className="vignette-content">
+                                      {description}
+                                  </p>
+                              </div>
+                          </div>
+
+                          <div className="vignette-card-col vignette-card-right-col">
+                              <GraphPreview index={this.props.index} graph={this.graph} />
+                          </div>
+                      </div>
+                  </div>
+              </ModalDialog>
+          </ModalContainer>
       </div>
     );
   }
 }
+
+function mapDispatchToProps(dispatch) {
+    return {
+        dispatch: dispatch,
+    };
+}
+
+function mapStateToProps(state) {
+    return {
+        name: state.home.vignetteGraphData[4].name,
+        author: state.home.vignetteGraphData[4].author,
+        description: state.home.vignetteGraphData[4].description,
+        id: state.home.vignetteGraphData[4].id,
+    };
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(VignettePreview4));
