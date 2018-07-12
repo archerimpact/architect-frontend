@@ -45,7 +45,7 @@ class VignettePreview4 extends Component {
                           </div>
 
                           <div className="vignette-card-col vignette-card-right-col">
-                              <GraphPreview index={this.props.index} graph={this.graph} />
+                              <GraphPreview index={this.props.index} graph={this.graph} id={this.props.id} title={this.props.name} />
                           </div>
                       </div>
                   </div>
