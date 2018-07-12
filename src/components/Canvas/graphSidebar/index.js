@@ -167,7 +167,7 @@ class GraphSidebar extends Component {
                             }
                             {
                                 this.state.renderSearch ?
-                                    <SearchBar onSubmit={this.goToSearchPage} value={match.params.sidebarState === "search" && match.params.query ? match.params.query : ""} showSettings={true} placeholder={'Search Archer\'s OFAC database (e.g. "Russia", "Kony", or "DPRK2")'}/>
+                                    <SearchBar onSubmit={this.goToSearchPage} value={match.params.sidebarState === "search" && match.params.query ? match.params.query : ""} showSettings={true} placeholder={"Search Archer\'s OFAC database (e.g. 'Russia', 'Kony', or 'DPRK2')"}/>
                                     :
                                     null
                             }
