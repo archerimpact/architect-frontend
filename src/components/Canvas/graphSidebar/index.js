@@ -31,20 +31,6 @@ class GraphSidebar extends Component {
         this.setState({listener: listener})
     }
 
-    // componentDidMount() {
-    //     const { match } = this.props;
-    //     if (match.params && match.params.sidebarState === 'publish') {
-    //         console.log("recognized that in publish space")
-    //         let projId = match.params.query;
-    //         if (projId != null) {
-    //             console.log("recognized projId exists", projId);
-    //             let res = this.props.dispatch(loadLink(projId));
-    //             console.log("hi back in main", res)
-    //             // this.setState({projectName: res.name, author: res.author, description: res.description})
-    //         }
-    //     }
-    // }
-
     componentWillUnmount() {
         this.state.listener();
     }
@@ -181,7 +167,7 @@ class GraphSidebar extends Component {
                             }
                             {
                                 this.state.renderSearch ?
-                                    <SearchBar onSubmit={this.goToSearchPage} value={match.params.sidebarState === "search" && match.params.query ? match.params.query : ""} showSettings={true} placeholder={'Search Archer\'s OFAC database (e.g. "Russia", "Kony", or "DPRK2")'}/>
+                                    <SearchBar onSubmit={this.goToSearchPage} value={match.params.sidebarState === "search" && match.params.query ? match.params.query : ""} showSettings={true} placeholder={"Search Archer\'s OFAC database (e.g. 'Russia', 'Kony', or 'DPRK2')"}/>
                                     :
                                     null
                             }
