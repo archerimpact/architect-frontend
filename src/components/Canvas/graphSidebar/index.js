@@ -70,40 +70,9 @@ class GraphSidebar extends Component {
         return (<ListData graph={graph} data={data}/>)
     }
 
-    // handleProjectNameChange = (val) => {
-    //     this.setState({projectName: val})
-    // }
-    //
-    // handleAuthorChange = (val) => {
-    //     this.setState({author: val})
-    // }
-    //
-    // handleDescriptionChange = (val) => {
-    //     this.setState({description: val})
-    // }
-    //
-    // handlePublishSubmit = async () => {
-    //     const { projectName, author, description } = this.state;
-    //     const { graph } = this.props;
-    //     let res = await saveLink(projectName, author, description, graph)
-    //     // modal popbox saying something or the antd popup
-    // };
-    //
-    // renderPublish() {
-    //     const { projectName, author, description } = this.state;
-    //     return (
-    //         <div>
-    //             <Input placeholder="Project Name" value={projectName} onChange={(e) => this.handleProjectNameChange(e.target.value)}/>
-    //             <Input placeholder="Author" value={author} onChange={(e) => this.handleAuthorChange(e.target.value)}/>
-    //             <Input placeholder="Description" value={description} onChange={(e) => this.handleDescriptionChange(e.target.value)}/>
-    //             <Button type="primary" onClick={() => this.handlePublishSubmit()}>Publish</Button>
-    //         </div>
-    //     )
-    // }
-
     renderEntity() {
         return (
-            <Entity graph={this.props.graph} id={this.props.match.params.query}/>
+            <Entity graph={this.props.graph} id={this.props.match.params.query} data={this.props.data}/>
         )
     }
 
