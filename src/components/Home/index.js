@@ -99,14 +99,19 @@ class Home extends Component {
                       </div>
                       <div className="col-md-6 release-preview-content">
                         <div className="release-preview-summary">
-                          <p>
-                            Earlier this year, Archer designed &amp; developed <a href="https://sanctionsexplorer.org/">SanctionsExplorer</a>, releasing it in April in partnership with <a href="https://sanctionsexplorer.org/">C4ADS</a>.  Now, the Archer team has gone one step further,  re-envisioning how our users interact with and derive insight from sanctions data.
-                          </p>
                           <p className="bold">
-                          Welcome to ArcherViz, a bite-sized preview of a powerful investigative platform.
+                            Welcome to ArcherViz, a bite-sized preview of a powerful platform.
                           </p>
+                          <p>
+                            Earlier this year, <a href="https://archerimpact.com" className="underlined-link">Archer</a> designed &amp; developed <a href="https://sanctionsexplorer.org/" className="underlined-link">SanctionsExplorer</a>.  Now, the Archer team has gone one step further, re-envisioning how our users interact with and derive insight from sanctions data.
+                          </p>
+
                           <p id="sign-up">
-                            ArcherViz applies our powerful investigative tool to the OFAC SDN list.  With over 3,000 official entity relationships, this data begs to be interacted with in a graph format. Experience a new way to investigate and share how your favorite sanctioned individuals, companies, and vessels are connected.
+                            ArcherViz applies our powerful analysis software to the OFAC SDN list.  With over 3,000 official entity relationships, this data begs to be interacted with in a network format. Experience a new way to investigate and share how your favorite sanctioned individuals, companies, and vessels are connected.
+                          </p>
+
+                          <p>
+                            With easy publishing features, you can easily share and link your investigative work.
                           </p>
                         </div>
 
