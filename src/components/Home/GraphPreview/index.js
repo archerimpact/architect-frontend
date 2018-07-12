@@ -27,7 +27,6 @@ class GraphPreview extends Component {
       this.updateWindowDimensions();
       this.refs.graphPreviewBox.addEventListener('resize', this.updateWindowDimensions);
 
-
       if (this.props.startingNode) {
           server.searchBackendText(this.props.startingNode) // hardcoded for now, don't worry too much about it until we decide this way of doing the narratives is conceptually best
               .then((data) => {
@@ -53,7 +52,7 @@ class GraphPreview extends Component {
 
     renderGraph = () => {
       if (this.state.width && this.state.height) {
-        return <Graph graph={this.graph} height={this.state.height} width={this.state.width} displayMinimap={false} allowKeycodes={false} data={this.props.vignetteGraphData[this.props.index]}/>
+        return <Graph graph={this.graph} height={this.state.height} width={this.state.width} displayMinimap={false} allowKeycodes={false} data={this.props.vignetteGraphData[this.props.index]} index={this.props.index} />
       }   
     }
 

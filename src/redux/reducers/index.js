@@ -7,7 +7,7 @@ import graphSidebar from "./graphSidebarReducer"
 const config = {
     key: 'root',
     storage,
-    blacklist: ['graph']
+    blacklist: ['graph', 'home']
 };
 
 config.debug = true;
