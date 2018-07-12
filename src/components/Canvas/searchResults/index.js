@@ -4,6 +4,8 @@ import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import "./style.css";
 
+const pageHeight = window.innerHeight;
+
 class BackendSearch extends Component {
     render() {
         if (this.props.searchData === null) {
@@ -14,6 +16,9 @@ class BackendSearch extends Component {
             return (
                 <div className="search-results">
                     {
+                        this.props.searchData.length === 0 ?
+                            <div className="placeholder-text" style={{paddingTop: pageHeight / 3}}>This is the <strong>Search</strong> tab. <br/><br/>Search nodes and explore links in Archer's reconstructed OFAC database.</div>
+                            :
                         this.props.searchData.map((entity) => {
                             return (
                                 <EntityCard key={entity.id} node={entity} data={this.props.data} graph={this.props.graph}/>

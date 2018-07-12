@@ -17,7 +17,9 @@ export const NODE_COLORS = {
   'corporation': '#e18c4d',
   [constants.ORGANIZATION]: '#e18c4d',
   'group': '#34675c',
-  'same_as_group': '#34675c'
+  'same_as_group': '#34675c',
+  'Vessel': '#68cca8',
+  "Aircraft": '#68cca8',
 }
 
 export const NODE_COLORS_COLORBLIND = {

@@ -22,14 +22,14 @@ export default class VignettePreview extends Component {
       <div className="col-md">
         <div className="preview-title-content">
           <div className="flex-row">
-            <p className="preview-date">July 9, 2018</p>
+            <p className="preview-date">July 12, 2018</p>
           </div>
           <h5 className="preview-title">How sanctions data applies to nuclear non-proliferation</h5>
           <hr className="preview-divider" />
         </div>
         <div className="col-md preview-box">
           <div className={"tint " + "tint-color-" + this.state.colorProfile} onClick={ this.toggleModal }>
-            <p className="preview-summary-text">View the network of a north korean weapons company.</p>
+            <p className="preview-summary-text">View the network of a North Korean weapons company.</p>
           </div>
           <img src="./graph-test.png" className="preview-image" />
         </div>

@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import EntityCard from "../entityCard";
+import {addToGraphFromId} from "../../../redux/actions/graphActions";
 
 import "./style.css";
 
@@ -174,7 +175,6 @@ class Entity extends Component {
                 let n = node;
                 const val = n[k[0]];
                 empty = false;
-                console.log("val",n[k[0]])
                 return (
                     <div className="info-row" key={k}>
                         <p className="info-key">{k[1]}</p>
@@ -187,14 +187,20 @@ class Entity extends Component {
             }) }
         </div>);
 
-        console.log("linktypes", linktypes);
-
         return (
             <div className="full-width">
                 <div className="entity-header-wrapper">
                     <div className="entity-header">
                         <div className="entity-name">{node.name || node.combined || node.label || node.description}</div>
                         <div className="entity-type">{node.type}</div>
+                        {
+                            nodes.includes(node) ?
+                                null
+                                :
+                                <div className="btn btn-primary sign-up-button custom-ali-css" onClick={() => this.props.dispatch(addToGraphFromId(this.props.graph, node.id))}>
+                                    Add To Graph
+                                </div>
+                        }
                     </div>
                 </div>
                 <hr />
@@ -214,7 +220,7 @@ class Entity extends Component {
                                 <div key={idx}>
                                     <h5 className="subheader" key={`h5-${idx}`}>{l}</h5>
                                     { t.extracted.map(node =>
-                                    <EntityCard key={node.id} node={node} id={node.id} shouldFetch graph={this.props.graph} /> )}
+                                    <EntityCard key={node.id} node={node} id={node.id} data={this.props.data} shouldFetch graph={this.props.graph} /> )}
                                 </div>
                             );
                         })}
@@ -226,7 +232,6 @@ class Entity extends Component {
 
     render() {
         const { currentEntity } = this.props;
-        console.log("currentEntity", currentEntity);
         const keys = [
             ['dateOfBirth', 'Date of Birth'],
             ['placeOfBirth', 'Place of Birth'],
@@ -235,6 +240,8 @@ class Entity extends Component {
             ['websites', 'Websites'],
             ['aliases', 'Aliases'],
             ['programs', 'Programs'],
+            ['sanctionEvents', 'Sanction Events'],
+            ['locations', 'Location'],
 
             ['numberType', 'Document Type'],
             ['valid', 'Valid'],
@@ -245,7 +252,7 @@ class Entity extends Component {
             ['notes', 'Notes']
         ];
         if (currentEntity === null) {
-            return <div className="sidebar-content-container placeholder-text" style={{paddingTop: pageHeight / 3}}> Click a node to view information about it </div>
+            return <div className="placeholder-text" style={{paddingTop: (pageHeight / 3) + 63}}>This is the <strong>Entity </strong>tab. <br/><br/>Select a node to view information about it. </div>
         }
         if (currentEntity === false) {
             return null

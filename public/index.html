@@ -1,7 +1,21 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-122251815-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
+      gtag('config', 'UA-122251815-1');
+      let counter = 0;
+      setInterval(() => {
+        counter += 10;
+        gtag('event', 'pageLoadedTimer', { event_label: counter, value: counter })
+      }, 10000)
+      
+    </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="theme-color" content="#000000">
@@ -35,6 +49,20 @@
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
+    <script>
+      if (navigator.appName == 'Microsoft Internet Explorer' || 'ActiveXObject' in window) {
+        document.body.innerHTML = '<h1>Unfortunately, Internet Explorer is not yet a supported browser, though we are working on supporting it.  Please access the site using a browser such as Chrome or Firefox for now.  Thanks!</h1>';
+      }
+
+      if (window.innerWidth < 678) {
+        document.body.innerHTML = '<h1 style="width: 200px">Please use a computer (with Chrome or Firefox) for the full interactive experience.</h1>';
+      }
+    </script>
+    <!-- <![if IE]>
+        <script type="text/javascript">
+            document.body.innerHTML = '<h1>Unfortunately, Internet Explorer is not yet a supported browser, though we are working on supporting it.  Please access the site using a browser such as Chrome or Firefox for now.  Thanks!</h1>';
+        </script>
+    <![endif]> -->
     <div id="root"></div>
     <!--
       This HTML file is a template.

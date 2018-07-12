@@ -2,6 +2,10 @@
 @import url("https://fonts.googleapis.com/css?family=Montserrat:300,300italic,400,400italic,600,900");
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,900");
 
+.sign-up-tagline a {
+  color: ;
+}
+
 #top {
   color: #666;
   font-family: "Poppins", Helvetica, sans-serif;
@@ -237,7 +241,7 @@ nav.secondary.menu-button-secondary {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: 500px;
+  width: 650px;
 /*  padding-bottom: 10px;
 */ 
 /*  box-shadow: 0 5px 0 rgba(0,0,0,.2);
@@ -352,4 +356,21 @@ a.real-link {
   font-size: 5rem;
   margin-right: 30px;
   color: #1e1e1e;
+}
+
+
+#top-left-image {
+  width: 100%;
+}
+
+.launch-platform-button {
+  display: flex;
+  align-items: center;
+  width: auto;
+  height: 40px;
+  margin-bottom: 5px;
+}
+
+.launch-icon {
+  margin-left: 8px;
 }

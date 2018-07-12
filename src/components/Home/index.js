@@ -10,7 +10,7 @@ import SearchBar from '../searchBar';
 import SearchBarDatabase from '../searchBarDatabase';
 import SignUpForm from '../signUpForm';
 import { loadLink } from "../../redux/actions/homeActions"
-import {withRouter} from "react-router-dom"
+import { Link, withRouter } from "react-router-dom"
 import {connect} from "react-redux"
 
 import "./style.css";
@@ -37,7 +37,7 @@ class Home extends Component {
 
     backToHome = () => {
         this.setState({linkPresent: false});
-    }
+    };
 
     render() {
         const { linkPresent } = this.state;
@@ -47,7 +47,7 @@ class Home extends Component {
                     <div className="container">
                         <div className="sign-up-row flex-row">
                             <p className="sign-up-tagline">
-                                This is just a teaser. <a href="#sign-up">Sign up</a> for more.
+                                This is just a teaser. Sign up below for more.
                             </p>
                         </div>
                     </div>
@@ -67,7 +67,7 @@ class Home extends Component {
               <div className="logo-header center-column">
                 <span className="centered-image">
                   <a href="/">
-                    <img className="logo-image" src="logo.png" alt="" />
+                    <img className="logo-image" src="archer_viz.png" alt="" />
                   </a>
                 </span>
                     <div className="search-holder">
@@ -80,22 +80,27 @@ class Home extends Component {
           <div className="home-item">
             <div className="content-section treasury-release">
               <div className="container">
-                <div className="content-title-section">
+                <div className="content-title-section flex-row">
                   <div className="content-title-text">
                     The Latest
                   </div>
-                  <hr className="content-title-underline" />
+
+                  <Link to={'/explore/search'} className="btn btn-primary sign-up-button launch-platform-button">
+                      Launch Platform!
+                      <i className="launch-icon material-icons">launch</i>
+                  </Link>
                 </div>
+                <hr className="content-title-underline" />
                 <div className="content-preview-section">
                   <div className="release-preview-card">
                     <div className="row">
                       <div className="col-md-6">
-                        <GraphPreview index={3}/>
+                        <img src="./newnewgif.gif" id="top-left-image" />
                       </div>
                       <div className="col-md-6 release-preview-content">
                         <div className="release-preview-summary">
                           <p>
-                            Earlier this year, Archer designed &amp; developed <a href="https://sanctionsexplorer.org/">SanctionsExplorer</a>, releasing it in April in partnership with C4ADS.  Now, the Archer team has gone one step further,  re-envisioning how our users interact with and derive insight from sanctions data.
+                            Earlier this year, Archer designed &amp; developed <a href="https://sanctionsexplorer.org/">SanctionsExplorer</a>, releasing it in April in partnership with <a href="https://sanctionsexplorer.org/">C4ADS</a>.  Now, the Archer team has gone one step further,  re-envisioning how our users interact with and derive insight from sanctions data.
                           </p>
                           <p className="bold">
                           Welcome to ArcherViz, a bite-sized preview of a powerful investigative platform.
@@ -123,7 +128,7 @@ class Home extends Component {
             <div className="content-section">
               <div className="container">
                   <div className="content-title-text">
-                    Case Studies
+                    Examples
                   </div>
                   <hr className="content-title-underline" />
 

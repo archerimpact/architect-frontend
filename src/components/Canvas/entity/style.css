@@ -24,6 +24,7 @@
 .entity-name {
     font-size: 20px;
     font-weight: bolder;
+    margin-top: 15px;
 }
 
 .entity-type {
@@ -77,5 +78,15 @@ li.info-value {
 }
 
 .placeholder-text {
-    font-family: Montserrat sans-serif;
+    text-align: center;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.custom-ali-css {
+    margin-top: 10px;
+    height: auto;
+    width: auto;
+    font-size: 11px;
+    line-height: 25px;
 }

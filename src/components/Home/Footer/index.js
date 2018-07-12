@@ -10,8 +10,9 @@ export default class Footer extends Component {
           <div className="footer">
             <div className="container">
               <div className="footer-layout-container">
-                <img className="footer-logo" src="full-footer.png" />
-
+                <a href="https://archerimpact.com">
+                  <img className="footer-logo" src="full-footer.png" />
+                </a>
                 <div className="social-media-links-container">
                   <a href="https://twitter.com/archerimpact">
                     <i className="social-media-icon fab fa-twitter"></i>

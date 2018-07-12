@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import BetaModal from '../BetaModal';
 import HelpModal from '../helpModal';
+import TermsModal from '../termsModal';
 import { resetGraphDispatch } from '../../redux/actions/graphActions';
 
 import './style.css';
@@ -18,9 +19,17 @@ class SideNavBar extends Component {
     };
   }
 
-  handleClick = (modalType) => this.setState(modalType ? { isHelpModalOpen: true } : { isBetaModalOpen: true });
-  handleClose = (modalType) => this.setState(modalType ? { isHelpModalOpen: false } : { isBetaModalOpen: false });
-  toggleModal = (modalType) => this.setState(modalType ? { isHelpModalOpen: !this.state.isHelpModalOpen } : { isBetaModalOpen: !this.state.isBetaModalOpen });
+  toggleBetaModal = () => this.setState({ isBetaModalOpen: !this.state.isBetaModalOpen });
+  handleBetaClick = () => this.setState({ isBetaModalOpen: true });
+  handleBetaClose = () => this.setState({ isBetaModalOpen: false });
+
+  toggleHelpModal = () => this.setState({ isHelpModalOpen: !this.state.isHelpModalOpen });
+  handleHelpClick = () => this.setState({ isHelpModalOpen: true });
+  handleHelpClose = () => this.setState({ isHelpModalOpen: false });
+
+  toggleTermsModal = () => this.setState({ isTermsModalOpen: !this.state.isTermsModalOpen });
+  handleTermsClick = () => this.setState({ isTermsModalOpen: true });
+  handleTermsClose = () => this.setState({ isTermsModalOpen: false });
 
   render() {
     return (
@@ -34,16 +43,23 @@ class SideNavBar extends Component {
         <div className="side-nav-button" data-tip="Sign up" onClick={ this.toggleBetaModal }>
           <i className="material-icons">person_add</i>
         </div>
-        <div className="side-nav-button" onClick={ this.toggleModal } data-tip="Help">
+        <div className="side-nav-button" onClick={ this.toggleHelpModal } data-tip="Graph Help">
           <i className="material-icons">help</i>
+        </div>
+        <div className="side-nav-button mt-auto" onClick={ this.toggleTermsModal } data-tip="Terms and Conditions">
+          <i className="material-icons">file_copy</i>
         </div>
         {
           this.state.isBetaModalOpen &&
-          <BetaModal handleClick={ this.handleClick } handleClose={ this.handleClose } />
+          <BetaModal handleClick={ this.handleBetaClick } handleClose={ this.handleBetaClose } />
         }
         {
           this.state.isHelpModalOpen &&
-          <HelpModal handleClick={ this.handleClick } handleClose={ this.handleClose } />
+          <HelpModal handleClick={ this.handleHelpClick } handleClose={ this.handleHelpClose } />
+        }
+        {
+          this.state.isTermsModalOpen &&
+          <TermsModal handleClick={ this.handleTermsClick } handleClose={ this.handleTermsClose } />
         }
       </div>
     )

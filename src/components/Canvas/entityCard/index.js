@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {withRouter} from "react-router-dom";
+import {withRouter,Link} from "react-router-dom";
 import {connect} from "react-redux";
 import {addToGraphFromId} from "../../../redux/actions/graphActions";
 import {fetchCurrentEntity} from "../../../redux/actions/graphSidebarActions";
@@ -13,28 +13,23 @@ class EntityCard extends Component {
         this.dispatch = props.dispatch;
     }
 
-    addToGraphFromIdFunc = (graph, id) => {
-        if (!this.props.data.nodes.some(e => e.id === this.props.id)) {
-            this.dispatch(addToGraphFromId(graph, id))
-        }
-    };
-
     render() {
-        const { node, graph, data } = this.props;
+        const { node } = this.props;
         return (
             <div className="card result-card" key={node.id}>
-                <div className="card-header result-card-header flex-row d-flex">
+                <div className="card-header result-card-header flex-row d-flex align-items">
                     <div className="d-flex">
-                        <div className="icon-div">
-                            <i className="entity-icon add-to-graph-icon material-icons"
-                               onClick={() => this.addToGraphFromIdFunc(graph, node.id)}>
-                               add
-                            </i>
+                        <div className="btn btn-primary sign-up-button custom-ali-css2" onClick={() => this.props.dispatch(addToGraphFromId(this.props.graph, node.id))}>
+                            Add
                         </div>
                     </div>
-                    <span className="collapse-link" onClick={() => this.dispatch(fetchCurrentEntity(node))}>
-                        {node.name || node.combined || node.label || node.description}
-                    </span>
+                    <div className="collapse-link">
+                        <Link to="/explore/entity">
+                            <span onClick={() => this.dispatch(fetchCurrentEntity(node))}>
+                                {node.name || node.combined || node.label || node.description}
+                            </span>
+                        </Link>
+                    </div>
                     <div className="card-pills">
                         { !node || !node.programs ?
                             null :

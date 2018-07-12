@@ -40,7 +40,7 @@ class VignetteModal2 extends Component {
               <div className="vignette-card-row flex-row">
                 <div className="vignette-card-col vignette-card-left-col">
                   <div className="vignette-card-header">
-                    <p className="vignette-date">July 9, 2018</p>
+                    <p className="vignette-date">July 12, 2018</p>
                     <h4 className="vignette-title">HOW sanctions data applies to finding oligarchs</h4>
                     {/*<p className="vignette-author">Treasury Press Release</p>  */}
                     <hr className="vignette-divider" />
@@ -54,7 +54,7 @@ class VignetteModal2 extends Component {
                       Russian Oligarch <button onClick={() => {this.onEntityClick("Oleg Deripaska")}}>Oleg Deripaska</button> was sanctioned on April 8, 2018 by US Treasury.
                     </p>
                     <p className="vignette-content">
-                      Context: According to a US Treasury press release, “Deripaska has been investigated for money laundering, and has been accused of threatening the lives of business rivals, illegally wiretapping a government official, and taking part in extortion and racketeering.  There are also allegations that Deripaska bribed a government official, ordered the murder of a businessman, and had links to a Russian organized crime group.
+                      Context: According to a <a href="https://home.treasury.gov/news/press-releases/sm0338">US Treasury press release</a>, “Deripaska has been investigated for money laundering, and has been accused of threatening the lives of business rivals, illegally wiretapping a government official, and taking part in extortion and racketeering.  There are also allegations that Deripaska bribed a government official, ordered the murder of a businessman, and had links to a Russian organized crime group.
                     </p>
                     <p className="vignette-content">
                       In the graph, you can see companies owned by Deripaska, including <button onClick={() => {this.onEntityClick("Russian Machines")}}>Russian Machines</button>, <button onClick={() => {this.onEntityClick("EN+ Group Plc")}}>EN+ Group Plc</button>, <button onClick={() => {this.onEntityClick("JSC Eurosibinergo")}}>JSC Eurosibinergo</button>, and <button onClick={() => {this.onEntityClick("Basic Element Limited")}}>Basic Element Limited</button>.                                                   
@@ -66,7 +66,7 @@ class VignetteModal2 extends Component {
                 </div>
 
                 <div className="vignette-card-col vignette-card-right-col">
-                    <GraphPreview index={this.props.index} graph={this.graph} startingNode={"Oleg Deripaska"}/>
+                    <GraphPreview index={this.props.index} graph={this.graph} startingNode={"Oleg Deripaska"} noLink />
                 </div>
               </div>
             </div>

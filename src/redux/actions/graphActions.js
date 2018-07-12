@@ -87,7 +87,6 @@ function fetchEntityDispatch(entity) { // MOVED
 }
 
 function fetchEntityDataFormatter(data) {
-    console.log("fetchEntityDataFormat", data);
     // let nodes = data.nodes;
     // let linksLength = data.links.length;
     // for (let i=0; i < linksLength; i++) {

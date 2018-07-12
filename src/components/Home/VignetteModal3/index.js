@@ -41,7 +41,7 @@ class VignetteModal3 extends Component {
               <div className="vignette-card-row flex-row">
                 <div className="vignette-card-col vignette-card-left-col">
                   <div className="vignette-card-header">
-                    <p className="vignette-date">July 9, 2018</p>
+                    <p className="vignette-date">July 12, 2018</p>
                     <h4 className="vignette-title">How sanctions data applies to nuclear non-proliferation</h4>
                     {/*<p className="vignette-author">by Archer Team</p>  */}
                     <hr className="vignette-divider" />
@@ -52,19 +52,19 @@ class VignetteModal3 extends Component {
                       Click on the highlighted entities in this text to expand the node.
                     </p>
                     <p className="vignette-content">
-                      Sanctions data also reveals information and connections about people and companies that proliferate weapons of mass destruction, like nuclear missiles.
+                      Sanctions data also reveals information and connections about people and companies that proliferate weapons of mass destruction, including nuclear missiles.
                     </p>           
                     <p className="vignette-content">
-                      One example is the <button onClick={() => {this.onEntityClick("KOREA MINING DEVELOPMENT TRADING CORPORATION")}}>KOREA MINING DEVELOPMENT TRADING CORPORATION</button>. For context, a US Treasury press release states that “KOMID has offices in multiple countries around the world and aims to facilitate weapons sales.  TCB plays a role in financing KOMID's sales of ballistic missiles and has also been involved in ballistic missile transactions from KOMID to Iran's Shahid Hemmat Industrial Group (SHIG), the U.S. and UN-designated Iranian organization responsible for developing liquid-fueled ballistic missiles.”
+                      One example is the <button onClick={() => {this.onEntityClick("KOREA MINING DEVELOPMENT TRADING CORPORATION")}}>KOREA MINING DEVELOPMENT TRADING CORPORATION</button>. For context, a <a href="https://www.treasury.gov/press-center/press-releases/Pages/tg1828.aspx">US Treasury press release</a> states that “KOMID has offices in multiple countries around the world and aims to facilitate weapons sales.  <button onClick={() => {this.onEntityClick("TANCHON COMMERCIAL BANK")}}>TCB [Tanchon Commercial Bank]</button> plays a role in financing KOMID's sales of ballistic missiles and has also been involved in ballistic missile transactions from KOMID to Iran's <button onClick={() => {this.onEntityClick("Shahid Hemmat Industrial Group")}}>Shahid Hemmat Industrial Group (SHIG)</button>, the U.S. and UN-designated Iranian organization responsible for developing liquid-fueled ballistic missiles.”
                     </p>
                     <p className="vignette-content">
-                      One example is the <button onClick={() => {this.onEntityClick("KOREA MINING DEVELOPMENT TRADING CORPORATION")}}>KOREA MINING DEVELOPMENT TRADING CORPORATION</button>. For context, a US Treasury press release states that “KOMID has offices in multiple countries around the world and aims to facilitate weapons sales.  TCB plays a role in financing KOMID's sales of ballistic missiles and has also been involved in ballistic missile transactions from KOMID to Iran's Shahid Hemmat Industrial Group (SHIG), the U.S. and UN-designated Iranian organization responsible for developing liquid-fueled ballistic missiles.”
+                      You can see that <button onClick={() => {this.onEntityClick("KOREA MINING DEVELOPMENT TRADING CORPORATION")}}>Korean Mining Development Corporation</button>, <button onClick={() => {this.onEntityClick("TANCHON COMMERCIAL BANK")}}>Tanchon Commercial Bank</button>, and <button onClick={() => {this.onEntityClick("Shahid Hemmat Industrial Group")}}>Shahid Hemmat Industrial Group</button> have five, seven, and ten connections respectively.
                     </p>
                   </div>
                 </div>
 
                 <div className="vignette-card-col vignette-card-right-col">
-                    <GraphPreview index={this.props.index} graph={this.graph} startingNode={"KOREA MINING DEVELOPMENT TRADING CORPORATION"}/>
+                    <GraphPreview index={this.props.index} graph={this.graph} startingNode={"KOREA MINING DEVELOPMENT TRADING CORPORATION"} noLink />
                 </div>
               </div>
             </div>
