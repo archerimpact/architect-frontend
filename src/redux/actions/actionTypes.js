@@ -28,7 +28,6 @@ export const ENTITY_CACHE_ADD = "ENTITY_CACHE_ADD";
 
 export const UPDATE_VIGNETTE = "UPDATE_VIGNETTE";
 
-
 /* ============================ OFFLINE ACTIONS ============================ */
 // OFFLINE_ACTIONS MUST be set to false for production. Do not push to remote with this set to true.
 export const OFFLINE_ACTIONS = false;
