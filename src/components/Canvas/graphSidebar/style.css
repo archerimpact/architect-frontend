@@ -145,3 +145,6 @@
     transition: transform 400ms ease-in-out;
 }
 
+.padding-on-bottom {
+    padding-bottom: 100px;
+}
