@@ -33,7 +33,7 @@ class VignettePreview4 extends Component {
                           <div className="vignette-card-col vignette-card-left-col">
                               <div className="vignette-card-header">
                                   <h4 className="vignette-title">{name}</h4>
-                                  <p className="vignette-author">{author}</p>
+                                  <p className="vignette-author">by {author}</p>
                                   <hr className="vignette-divider" />
                               </div>
 

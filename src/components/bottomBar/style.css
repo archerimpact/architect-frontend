@@ -8,6 +8,7 @@
     display: -ms-flexbox;
     display: flex;
     color: #fafafa;
+    z-index: 5;
 }
 
 .bottombar-content {
