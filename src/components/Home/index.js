@@ -10,7 +10,7 @@ import SearchBar from '../searchBar';
 import SearchBarDatabase from '../searchBarDatabase';
 import SignUpForm from '../signUpForm';
 import { loadLink } from "../../redux/actions/homeActions"
-import {withRouter} from "react-router-dom"
+import { Link, withRouter } from "react-router-dom"
 import {connect} from "react-redux"
 
 import "./style.css";
@@ -80,12 +80,17 @@ class Home extends Component {
           <div className="home-item">
             <div className="content-section treasury-release">
               <div className="container">
-                <div className="content-title-section">
+                <div className="content-title-section flex-row">
                   <div className="content-title-text">
                     The Latest
                   </div>
-                  <hr className="content-title-underline" />
+
+                  <Link to={'/explore/search'} className="btn btn-primary sign-up-button launch-platform-button">
+                      Launch Platform!
+                      <i className="launch-icon material-icons">launch</i>
+                  </Link>
                 </div>
+                <hr className="content-title-underline" />
                 <div className="content-preview-section">
                   <div className="release-preview-card">
                     <div className="row">

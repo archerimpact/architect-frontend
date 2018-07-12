@@ -358,3 +358,15 @@ a.real-link {
 #top-left-image {
   width: 100%;
 }
+
+.launch-platform-button {
+  display: flex;
+  align-items: center;
+  width: auto;
+  height: 30px;
+  margin-bottom: 5px;
+}
+
+.launch-icon {
+  margin-left: 8px;
+}
