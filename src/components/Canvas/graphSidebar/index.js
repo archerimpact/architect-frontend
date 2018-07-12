@@ -186,7 +186,7 @@ class GraphSidebar extends Component {
                                     null
                             }
                         </div>
-                        <div className="full-width flex-column y-scrollable">
+                        <div className="full-width flex-column y-scrollable padding-on-bottom">
                             {
                                 this.state.renderSearch ?
                                     this.renderSearch()
