@@ -36,16 +36,6 @@ class SideNavBar extends Component {
             <i className="material-icons">data_usage</i>
           </div>
         </Link>
-        <Link to='/build' onClick={() => { this.props.dispatch(resetGraphDispatch()); }}>
-          <div className="side-nav-button" data-tip="Spaces">
-            <i className="material-icons">dashboard</i>
-          </div>
-        </Link>
-        <Link to='/user'>
-          <div className="side-nav-button" data-tip="Account">
-            <i className="material-icons">account_box</i>
-          </div>
-        </Link>
         <div className="bottom">
           <div className="side-nav-button" data-tip="Sign up" onClick={ this.toggleBetaModal }>
             <i className="material-icons">person_add</i>
