@@ -136,7 +136,7 @@
 }
 
 .slide-in {
-    transform: translate(468px);
+    transform: translate(518px);
     transition: transform 400ms ease-in-out;
 }
 
