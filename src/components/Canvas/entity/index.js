@@ -193,9 +193,14 @@ class Entity extends Component {
                     <div className="entity-header">
                         <div className="entity-name">{node.name || node.combined || node.label || node.description}</div>
                         <div className="entity-type">{node.type}</div>
-                        <div className="btn btn-primary sign-up-button custom-ali-css" onClick={() => this.props.dispatch(addToGraphFromId(this.props.graph, node.id))}>
-                            Add To Graph
-                        </div>
+                        {
+                            nodes.includes(node) ?
+                                null
+                                :
+                                <div className="btn btn-primary sign-up-button custom-ali-css" onClick={() => this.props.dispatch(addToGraphFromId(this.props.graph, node.id))}>
+                                    Add To Graph
+                                </div>
+                        }
                     </div>
                 </div>
                 <hr />
@@ -235,6 +240,8 @@ class Entity extends Component {
             ['websites', 'Websites'],
             ['aliases', 'Aliases'],
             ['programs', 'Programs'],
+            ['sanctionEvents', 'Sanction Events'],
+            ['locations', 'Location'],
 
             ['numberType', 'Document Type'],
             ['valid', 'Valid'],
@@ -245,7 +252,7 @@ class Entity extends Component {
             ['notes', 'Notes']
         ];
         if (currentEntity === null) {
-            return <div className="sidebar-content-container placeholder-text" style={{paddingTop: pageHeight / 3}}> Click a node to view information about it </div>
+            return <div className="placeholder-text" style={{paddingTop: (pageHeight / 3) + 63}}>This is the <strong>Entity </strong>tab. <br/><br/>Select a node to view information about it. </div>
         }
         if (currentEntity === false) {
             return null

@@ -78,7 +78,9 @@ li.info-value {
 }
 
 .placeholder-text {
-    font-family: Montserrat sans-serif;
+    text-align: center;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .custom-ali-css {

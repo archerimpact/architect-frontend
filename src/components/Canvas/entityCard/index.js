@@ -13,14 +13,8 @@ class EntityCard extends Component {
         this.dispatch = props.dispatch;
     }
 
-    addToGraphFromIdFunc = (graph, id) => {
-        if (!this.props.data.nodes.some(e => e.id === this.props.id)) {
-            this.dispatch(addToGraphFromId(graph, id))
-        }
-    };
-
     render() {
-        const { node, graph } = this.props;
+        const { node } = this.props;
         return (
             <div className="card result-card" key={node.id}>
                 <div className="card-header result-card-header flex-row d-flex align-items">
