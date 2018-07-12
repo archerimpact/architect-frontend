@@ -8,6 +8,8 @@ import EntityCard from "../entityCard";
 import * as Fuse from "fuse.js"
 import "./style.css";
 
+const pageHeight = window.innerHeight;
+
 class ListData extends Component {
     constructor(props){
         super(props);
@@ -47,7 +49,9 @@ class ListData extends Component {
                         this.state.listDataSearchResults.length !== 0 ?
                         this.state.listDataSearchResults.map(node => <EntityCard key={node.id} node={node} graph={graph} data={data}/>)
                             :
-                        this.props.data.nodes.map(node => <EntityCard key={node.id} node={node} graph={graph} data={data}/>)
+                            (this.props.data.nodes.length === 0 ? <div className="placeholder-text" style={{paddingTop: pageHeight / 3}}>This is the <strong>List </strong>tab. <br/><br/>Come here to search nodes that have already been added to your graph.<br/><br/> Select the search tab to begin.</div>:
+                            this.props.data.nodes.map(node => <EntityCard key={node.id} node={node} graph={graph} data={data}/>) )
+
                     }
                 </div>
             </div>
