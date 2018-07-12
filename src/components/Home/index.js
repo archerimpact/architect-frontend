@@ -123,7 +123,7 @@ class Home extends Component {
             <div className="content-section">
               <div className="container">
                   <div className="content-title-text">
-                    Case Studies
+                    Examples
                   </div>
                   <hr className="content-title-underline" />
 

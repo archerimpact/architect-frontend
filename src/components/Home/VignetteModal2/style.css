@@ -1,3 +1,8 @@
+
+.vignette-content a {
+  color: #0D77E2;
+}
+
 .vignette-card {
   width: calc(100vw - 160px);
   height: 85vh;
