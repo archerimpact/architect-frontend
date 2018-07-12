@@ -167,9 +167,9 @@ export function toggleSidebar() {
 
 /* =============================================================================================  */
 
-export async function saveLink(graph) {
+export async function saveLink(name, author, description, graph) {
     const data = graph.fetchData();
-    const r = await server.createLink(data)
+    const r = await server.createLink(name, author, description, data)
     return r.message
 }
 
@@ -192,7 +192,10 @@ export function loadLink(projId) {
                 } catch (err) {
                     graphData = null;
                 }
+                console.log("loading graph data", graphData)
                 dispatch(loadGraphDataDispatch(graphData));
+                console.log("sending things back", {name: res.message.name, author: res.message.author, description: res.message.description})
+                return {name: res.message.name, author: res.message.author, description: res.message.description}
             })
             .catch((err) => {
                 console.log(err);
