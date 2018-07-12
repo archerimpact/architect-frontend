@@ -64,7 +64,7 @@ class VignetteModal extends Component {
                 </div>
 
                 <div className="vignette-card-col vignette-card-right-col">
-                    <GraphPreview index={this.props.index} graph={this.graph} startingNode={"Dan Gertler"} />
+                    <GraphPreview index={this.props.index} graph={this.graph} startingNode={"Dan Gertler"} noLink />
                 </div>
               </div>
             </div>

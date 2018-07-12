@@ -41,7 +41,7 @@ class VignetteModal3 extends Component {
               <div className="vignette-card-row flex-row">
                 <div className="vignette-card-col vignette-card-left-col">
                   <div className="vignette-card-header">
-                    <p className="vignette-date">July 9, 2018</p>
+                    <p className="vignette-date">July 12, 2018</p>
                     <h4 className="vignette-title">How sanctions data applies to nuclear non-proliferation</h4>
                     {/*<p className="vignette-author">by Archer Team</p>  */}
                     <hr className="vignette-divider" />
@@ -64,7 +64,7 @@ class VignetteModal3 extends Component {
                 </div>
 
                 <div className="vignette-card-col vignette-card-right-col">
-                    <GraphPreview index={this.props.index} graph={this.graph} startingNode={"KOREA MINING DEVELOPMENT TRADING CORPORATION"}/>
+                    <GraphPreview index={this.props.index} graph={this.graph} startingNode={"KOREA MINING DEVELOPMENT TRADING CORPORATION"} noLink />
                 </div>
               </div>
             </div>

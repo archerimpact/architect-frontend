@@ -52,7 +52,6 @@ function searchBackendText(searchQuery) {
                 size: 50
             }
         }).then(function (response) {
-            console.log(response.data);
             fulfill(response.data.results);
         }).catch(function (error) {
             console.log(error);
@@ -64,7 +63,6 @@ function getNode(neo4j_id) {
     var degree = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     var useExclude = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
-    console.log("in the server call getNode");
     var exclude = '';
     constants.EXPANSION_DEFAULT.exclude.forEach(function (type) {
         exclude += type + ',';
@@ -79,7 +77,6 @@ function getNode(neo4j_id) {
 
     return new Promise(function (fulfill, reject) {
         _axios2.default.get(url).then(function (response) {
-            console.log("response.data from getNode", response.data);
             fulfill(response.data);
         }).catch(function (error) {
             console.log(error);
@@ -127,7 +124,6 @@ var getLink = exports.getLink = function () {
             while (1) {
                 switch (_context2.prev = _context2.next) {
                     case 0:
-                        console.log("making call in getLink in server", id);
                         _context2.next = 3;
                         return api_inst.get('/projects/get', {
                             params: {
@@ -138,7 +134,6 @@ var getLink = exports.getLink = function () {
                     case 3:
                         response = _context2.sent;
 
-                        console.log("received response in server", response.data);
                         return _context2.abrupt("return", response.data);
 
                     case 6:
@@ -171,7 +166,6 @@ var submitEmail = exports.submitEmail = function () {
                     case 2:
                         response = _context3.sent;
 
-                        console.log(response);
                         return _context3.abrupt("return", response);
 
                     case 5:

@@ -23,7 +23,6 @@ class VignettePreview4 extends Component {
   };
 
   render() {
-      console.log("this hsould be 4", this.props.index)
     const { name, author, description } = this.props;
     return (
       <div onClick={this.handleClose}>
@@ -46,7 +45,7 @@ class VignettePreview4 extends Component {
                           </div>
 
                           <div className="vignette-card-col vignette-card-right-col">
-                              <GraphPreview index={this.props.index} graph={this.graph} />
+                              <GraphPreview index={this.props.index} graph={this.graph} id={this.props.id} title={this.props.name} />
                           </div>
                       </div>
                   </div>

@@ -51,7 +51,6 @@ class GraphPreview extends Component {
 
     renderGraph = () => {
       if (this.state.width && this.state.height) {
-          console.log("index and more", this.props.index, this.props.vignetteGraphData);
         return <Graph graph={this.graph} height={this.state.height} width={this.state.width} displayMinimap={false} allowKeycodes={false} data={this.props.vignetteGraphData[this.props.index]} index={this.props.index} />
       }   
     };
@@ -65,10 +64,14 @@ class GraphPreview extends Component {
             </div>
             <div className="graph-preview-footer flex-row">
               <div className="graph-preview-share-icons">
-                <a href={"https://twitter.com/intent/tweet?text=" + encodeURIComponent(`${ this.props.title ? '"' + this.props.title + '" - Try out an interactive way to experience case studies like this' : 'Try out an interactive way to experience case studies' } (and explore your favorite sanctioned networks!) on #ArcherViz @archerimpact ${this.props.url || "https://viz.archerimpact.com"}`)} >
+                <a href={"https://twitter.com/intent/tweet?text=" + encodeURIComponent(`${ this.props.title ? '"' + this.props.title + '" - Try out an interactive way to experience case studies like this' : 'Try out an interactive way to experience case studies' } (and explore your favorite sanctioned networks!) on #ArcherViz @archerimpact ${ this.props.id ? 'https://viz.archerimpact.com/' + this.props.id : 'https://viz.archerimpact.com'}`)} >
                   <i className="graph-preview-action twitter-action fab fa-twitter"></i>
                 </a>
-                <i className="graph-preview-action link-action fas fa-link"></i>
+                { this.props.noLink ? 
+                  null
+                  :
+                  <i className="graph-preview-action link-action fas fa-link"></i>
+                }
               </div>
               <div className="ml-auto">
                 <Link to="/explore/list">
