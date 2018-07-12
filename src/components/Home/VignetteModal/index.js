@@ -55,7 +55,7 @@ class VignetteModal extends Component {
                     <p className="vignette-content">
                       One example is <button onClick={() => {this.onEntityClick("Dan Gertler")}}>Dan Gertler</button>, sanctioned under the Global Magnitsky Executive Order of December 2017. For context, a US Treasury press release states that “Gertler is an international businessman and billionaire who has amassed his fortune through hundreds of millions of dollars’ worth of opaque and corrupt mining and oil deals in the Democratic Republic of the Congo (DRC).”                    </p>
                     <p className="vignette-content">
-                      On the graph, you can see Gertler’s companies and associates that appear in the US Treasury SDN list. One company, <button onClick={() => {this.onEntityClick("Fleurette Properties Limited")}}>Fleurette Holdings Limited</button>, is a holding company the owns 14 other companies on the list.
+                      On the graph, you can see Gertler’s companies and associates that appear in the US Treasury SDN list. One company, <button onClick={() => {this.onEntityClick("Fleurette Properties Limited")}}>Fleurette Holdings Limited</button>, is a holding company the owns 20 other companies on the list.
                     </p>
                     <p className="vignette-content">
                       You can also see Gertler’s associate, <button onClick={() => {this.onEntityClick("Pieter Albert Debouitte")}}>Pieter Albert Debouitte</button>, who is connected to <button onClick={() => {this.onEntityClick("Fleurette Properties Limited")}}>Fleurette Holdings Limited</button> and the <button onClick={() => {this.onEntityClick("Gertler Family Foundation")}}>Gertler Family Foundation</button>.
@@ -64,7 +64,7 @@ class VignetteModal extends Component {
                 </div>
 
                 <div className="vignette-card-col vignette-card-right-col">
-                    <GraphPreview index={this.props.index} graph={this.graph} />
+                    <GraphPreview index={this.props.index} graph={this.graph} startingNode={"Dan Gertler"} />
                 </div>
               </div>
             </div>

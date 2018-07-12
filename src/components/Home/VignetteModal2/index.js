@@ -41,42 +41,32 @@ class VignetteModal2 extends Component {
                 <div className="vignette-card-col vignette-card-left-col">
                   <div className="vignette-card-header">
                     <p className="vignette-date">July 9, 2018</p>
-                    <h4 className="vignette-title">HOW sanctions data applies to corruption</h4>
-                    <p className="vignette-author">Treasury Press Release</p>  
+                    <h4 className="vignette-title">HOW sanctions data applies to finding oligarchs</h4>
+                    {/*<p className="vignette-author">Treasury Press Release</p>  */}
                     <hr className="vignette-divider" />
                   </div>
 
                   <div className="vignette-card-left-col-body">
                     <p className="vignette-content">
-                      "Oleg Deripaska is being designated pursuant to E.O. 13661 for having acted or purported to act for or on behalf of, directly or indirectly, a senior official of the Government of the Russian Federation, as well as pursuant to E.O. 13662 for operating in the energy sector of the Russian Federation economy.  Deripaska has said that he does not separate himself from the Russian state.  He has also acknowledged possessing a Russian diplomatic passport, and claims to have represented the Russian government in other countries.  Deripaska has been investigated for money laundering, and has been accused of threatening the lives of business rivals, illegally wiretapping a government official, and taking part in extortion and racketeering.  There are also allegations that Deripaska bribed a government official, ordered the murder of a businessman, and had links to a Russian organized crime group."                    </p>
+                      Click on the highlighted entities in this text to expand the node.
+                    </p>
                     <p className="vignette-content">
-B-Finance Ltd., based in the British Virgin Islands, is being designated for being owned or controlled by, directly or indirectly, Oleg Deripaska.
+                      Russian Oligarch <button onClick={() => {this.onEntityClick("Oleg Deripaska")}}>Oleg Deripaska</button> was sanctioned on April 8, 2018 by US Treasury.
+                    </p>
                     <p className="vignette-content">
-Basic Element Limited is being designated for being owned or controlled by, directly or indirectly, Oleg Deripaska.  Basic Element Limited is based in Jersey and is the private investment and management company for Deripaska’s various business interests.
+                      Context: According to a US Treasury press release, “Deripaska has been investigated for money laundering, and has been accused of threatening the lives of business rivals, illegally wiretapping a government official, and taking part in extortion and racketeering.  There are also allegations that Deripaska bribed a government official, ordered the murder of a businessman, and had links to a Russian organized crime group.
                     </p>
-                      <p className="vignette-content">
-EN+ Group is being designated for being owned or controlled by, directly or indirectly, Oleg Deripaska, B-Finance Ltd., and Basic Element Limited.  EN+ Group is located in Jersey and is a leading international vertically integrated aluminum and power producer.
+                    <p className="vignette-content">
+                      In the graph, you can see companies owned by Deripaska, including <button onClick={() => {this.onEntityClick("Russian Machines")}}>Russian Machines</button>, <button onClick={() => {this.onEntityClick("EN+ Group Plc")}}>EN+ Group Plc</button>, <button onClick={() => {this.onEntityClick("JSC Eurosibinergo")}}>JSC Eurosibinergo</button>, and <button onClick={() => {this.onEntityClick("Basic Element Limited")}}>Basic Element Limited</button>.                                                   
                     </p>
-                      <p className="vignette-content">
-EuroSibEnergo is being designated for being owned or controlled by, directly or indirectly, Oleg Deripaska and EN+ Group. EuroSibEnergo is one of the largest independent power companies in Russia, operating power plants across Russia and producing around nine percent of Russia’s total electricity.
+                    <p className="vignette-content">
+                      Use the graph to discover another company in the network, <button onClick={() => {this.onEntityClick("United Company Rusal PLC")}}>United Company Rusal PLC</button>, owned by EN+ Group Plc.
                     </p>
-                      <p className="vignette-content">
-United Company RUSAL PLC is being designated for being owned or controlled by, directly or indirectly, EN+ Group.  United Company RUSAL PLC is based in Jersey and is one of the world’s largest aluminum producers, responsible for seven percent of global aluminum production.
-                    </p>
-                      <p className="vignette-content">
-Russian Machines is being designated for being owned or controlled by, directly or indirectly, Oleg Deripaska and Basic Element Limited.  Russian Machines was established to manage the machinery assets of Basic Element Limited.
-                    </p>
-                      <p className="vignette-content">
-GAZ Group is being designated for being owned or controlled by, directly or indirectly, Oleg Deripaska and Russian Machines.  GAZ Group is Russia’s leading manufacturer of commercial vehicles.
-                    </p>
-                      <p className="vignette-content">
-Agroholding Kuban, located in Russia, is being designated for being owned or controlled by, directly or indirectly, Oleg Deripaska and Basic Element Limited.                    </p>
-                    </p>                                                             
                   </div>
                 </div>
 
                 <div className="vignette-card-col vignette-card-right-col">
-                    <GraphPreview index={this.props.index} graph={this.graph} />
+                    <GraphPreview index={this.props.index} graph={this.graph} startingNode={"Oleg Deripaska"}/>
                 </div>
               </div>
             </div>
