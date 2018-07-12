@@ -90,7 +90,7 @@ class Home extends Component {
                   <div className="release-preview-card">
                     <div className="row">
                       <div className="col-md-6">
-                        <GraphPreview index={3}/>
+                        <img src="./newnewgif.gif" id="top-left-image" />
                       </div>
                       <div className="col-md-6 release-preview-content">
                         <div className="release-preview-summary">
