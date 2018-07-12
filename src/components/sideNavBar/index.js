@@ -31,18 +31,11 @@ class SideNavBar extends Component {
             <img id="archer-a-icon" src={ archerLogoA }></img>
           </div>
         </Link>
-        <Link to='/data'>
-          <div id="second-nav-button" className="side-nav-button" data-tip="Data">
-            <i className="material-icons">data_usage</i>
-          </div>
-        </Link>
-        <div className="bottom">
-          <div className="side-nav-button" data-tip="Sign up" onClick={ this.toggleBetaModal }>
-            <i className="material-icons">person_add</i>
-          </div>
-          <div className="side-nav-button" onClick={ this.toggleModal } data-tip="Help">
-            <i className="material-icons">help</i>
-          </div>
+        <div className="side-nav-button" data-tip="Sign up" onClick={ this.toggleBetaModal }>
+          <i className="material-icons">person_add</i>
+        </div>
+        <div className="side-nav-button" onClick={ this.toggleModal } data-tip="Help">
+          <i className="material-icons">help</i>
         </div>
         {
           this.state.isBetaModalOpen &&
