@@ -47,7 +47,7 @@ class Home extends Component {
                     <div className="container">
                         <div className="sign-up-row flex-row">
                             <p className="sign-up-tagline">
-                                This is just a teaser. Stay tuned for more.
+                                This is just a teaser. <a href="#sign-up">Sign up</a> for more.
                             </p>
                         </div>
                     </div>
@@ -59,7 +59,7 @@ class Home extends Component {
                   <li className="menu-item">
                     {/*
                     <div className="search-holder">
-                      <SearchBar />
+                      <SearchBar isHomePage={true} />
                     </div> */}
                   </li>
                 </ul>
@@ -71,8 +71,7 @@ class Home extends Component {
                   </a>
                 </span>
                     <div className="search-holder">
-                      <SearchBarDatabase homeSearchContainerId="home-search-container" homeSearchInputId="home-search-input" showSettings={false}/>
-
+                      <SearchBarDatabase homeSearchContainerId="home-search-container" homeSearchInputId="home-search-input" showSettings={false} isHomePage={true}/>
                     </div>
               </div>
             </header>
@@ -109,7 +108,7 @@ class Home extends Component {
                         <div className="sign-up-container" id="subscribe">
                           <h4>There's more coming soon!</h4>
                           <p>
-                            This is just a preview of how powerful graph visualization can be applied to critical datasets.  Sign up to receive early access to our full beta release when it's ready.
+                            This is just a preview of how powerful graph visualization can be applied to critical datasets.  Sign up to receive early access to our full beta.
                           </p>
                           <SignUpForm/>
                         </div>
@@ -156,7 +155,7 @@ class Home extends Component {
                   <i className="beginning-icon material-icons">date_range</i>
                   <div>
                     <p className="content-title-summary lead">
-                      The summer is in full swing and so are we.  We have an exciting set of releases slated for the next few weeks.  Don't want to miss out?  Catch us on <a href="https://twitter.com/archerimpact" className="real-link bold">Twitter</a> or <a href="#sign-up" className="real-link bold">subscribe</a> to our summer announcements. To learn more about what we do, check out our <a href="http://archer.cloud/" className="real-link bold"> website</a>.
+                      The summer is in full swing and so are we.  We have an exciting set of releases slated for the next few weeks.  Don't want to miss out?  Catch us on <a href="https://twitter.com/archerimpact" className="real-link bold">Twitter</a> or <a href="#sign-up" className="real-link bold">subscribe</a> to our summer announcements. To learn more about what we do, check out our <a href="https://archerimapct.com/" className="real-link bold"> website</a>.
                     </p>
                   </div>
                 </div>

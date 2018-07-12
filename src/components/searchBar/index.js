@@ -22,7 +22,7 @@ class SearchBar extends Component {
     render() {
         return (
             <div className="search-container">
-                <div id={this.props.homeSearchContainerId} className="search-input-container">
+                <div id={this.props.homeSearchContainerId} className={this.props.isHomePage ? "home-input-container"  : "search-input-container"}>
                     <div className="d-flex flex-row full-height">
                         <form className="search-form" onSubmit={(e) => this.submitSearch(e)}>
                             <input id={this.props.homeSearchInputId}
