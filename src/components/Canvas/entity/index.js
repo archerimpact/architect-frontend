@@ -177,10 +177,10 @@ class Entity extends Component {
                 console.log("val",n[k[0]])
                 return (
                     <div className="info-row" key={k}>
-                        <p className="info-key">{k[1]}:</p>
+                        <p className="info-key">{k[1]}</p>
                         { (!(val instanceof Array))
                             ? <p className="info-value">{val.toString()}</p>
-                            : val.map(v => <div className="info-value">{v}</div>)
+                            : val.map(v => <li className="info-value">{v}</li>)
                         }
                     </div>
                 )

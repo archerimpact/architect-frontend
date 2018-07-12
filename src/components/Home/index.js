@@ -78,7 +78,7 @@ export default class Home extends Component {
                           Welcome to ArcherViz, a bite-sized preview of a powerful investigative platform.
                           </p>
                           <p id="sign-up">
-                            ArcherViz applies our powerful investigative tool to the OFAC SDN list.  With over 3,000 official links, this data begs to be interacted with in a graph format. Experience a new way to investigate and share how your favorite sanctioned individuals, companies, and vessels are connected.
+                            ArcherViz applies our powerful investigative tool to the OFAC SDN list.  With over 3,000 official entity relationships, this data begs to be interacted with in a graph format. Experience a new way to investigate and share how your favorite sanctioned individuals, companies, and vessels are connected.
                           </p>
                         </div>
 
