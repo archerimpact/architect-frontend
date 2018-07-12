@@ -11,7 +11,6 @@ class EntityCard extends Component {
     constructor(props) {
         super(props);
         this.dispatch = props.dispatch;
-        console.log("i am rendering", this.props.node.name)
         this.nodeInGraph = false;
         for (let i=0; i < this.props.data.nodes.length; i++) {
             if (this.props.data.nodes[i].id === this.props.node.id) {
