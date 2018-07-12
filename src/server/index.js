@@ -28,7 +28,8 @@ export function searchBackendText(searchQuery) {
     return new Promise(function (fulfill, reject) {
         axios.get(url, {
             params: {
-                source_content_type: 'application/json'
+                source_content_type: 'application/json',
+                size: 50,
             }
         })
         .then(function (response) {

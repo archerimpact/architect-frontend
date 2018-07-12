@@ -20,6 +20,11 @@ class BackendSearch extends Component {
                             );
                         })
                     }
+                    { this.props.searchData.length === 50 ? 
+                        <p className="paging-coming-soon">(Showing top 50 results)</p>
+                        :
+                        null
+                    }
                 </div>
             );
         }
