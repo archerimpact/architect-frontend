@@ -3,11 +3,11 @@ import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import BetaModal from '../BetaModal';
-import HelpModal from '../../helpModal';
-import { resetProjectDispatch } from '../../../redux/actions/graphActions';
+import HelpModal from '../helpModal';
+import { resetGraphDispatch } from '../../redux/actions/graphActions';
 
 import './style.css';
-import archerLogoA from '../../../images/archer-logo-a.png';
+import archerLogoA from '../../images/archer-logo-a.png';
 
 class SideNavBar extends Component {
   constructor(props) {
@@ -26,7 +26,7 @@ class SideNavBar extends Component {
     return (
       <div className="side-nav unselectable">
         <ReactTooltip place="right" effect="solid"/>
-        <Link to='/' onClick={() => { this.props.dispatch(resetProjectDispatch()); }}>
+        <Link to='/' onClick={() => { this.props.dispatch(resetGraphDispatch()); }}>
           <div id='top-nav-button' className="side-nav-button">
             <img id="archer-a-icon" src={ archerLogoA }></img>
           </div>
@@ -36,7 +36,7 @@ class SideNavBar extends Component {
             <i className="material-icons">data_usage</i>
           </div>
         </Link>
-        <Link to='/build' onClick={() => { this.props.dispatch(resetProjectDispatch()); }}>
+        <Link to='/build' onClick={() => { this.props.dispatch(resetGraphDispatch()); }}>
           <div className="side-nav-button" data-tip="Spaces">
             <i className="material-icons">dashboard</i>
           </div>
