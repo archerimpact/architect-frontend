@@ -11,7 +11,20 @@ class EntityCard extends Component {
     constructor(props) {
         super(props);
         this.dispatch = props.dispatch;
+        console.log("i am rendering", this.props.node.name)
+        this.nodeInGraph = false;
+        for (let i=0; i < this.props.data.nodes.length; i++) {
+            if (this.props.data.nodes[i].id === this.props.node.id) {
+                this.nodeInGraph = true;
+                break
+            }
+        }
     }
+
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     console.log("force-re-render");
+    //     return true
+    // }
 
     componentWillReceiveProps(nextProps) {
         this.nodeInGraph = false;
@@ -34,7 +47,7 @@ class EntityCard extends Component {
                             :
                             <div className="d-flex">
                                 <div className="btn btn-primary sign-up-button custom-ali-css2" onClick={() => this.props.dispatch(addToGraphFromId(this.props.graph, node.id))}>
-                                    Add
+                                    ADD
                                 </div>
                             </div>
                     }
