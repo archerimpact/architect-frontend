@@ -88,3 +88,13 @@ export const getLink = async (id) => {
     console.log("received response in server", response.data)
     return response.data;
 };
+
+export const submitEmail = async (email) => {
+    const response = await api_inst.get('/submit/email', {
+        params: {
+            email
+        }
+    })
+    console.log(response)
+    return response
+}
