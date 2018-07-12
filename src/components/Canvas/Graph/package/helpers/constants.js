@@ -49,10 +49,10 @@ export const MINIMAP_TICK = 50;
 
 export const ENTITY = "Entity";
 // export const INDIVIDUAL = "Individual";
-export const PERSON = "person";
+export const PERSON = "Person";
 export const GROUP = "group";
 export const GROUP_HULL = "Group Hull";
 export const DOCUMENT = "Document";
-export const IDENTIFYING_DOCUMENT = "identifyingDocument";
-export const ORGANIZATION = "organization";
+export const IDENTIFYING_DOCUMENT = "Identifying Document";
+export const ORGANIZATION = "Organization";
 export const CORPORATION = "corporation";
