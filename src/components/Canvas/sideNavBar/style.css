@@ -1,27 +1,25 @@
 .side-nav {
   position: absolute;
   height: 100%;
-  width: 55px;
-  background: #252525;
-  padding: 5px 0px;
+  width: 50px;
+  background: #202020;
 }
 
 .side-nav-button {
   position: relative;
-  height: 55px;
+  height: 50px;
   width: 100%;
-  margin: 5px 0px;
   cursor: pointer;
+  text-align: center;
 }
 
 .side-nav-button i {
   position: relative;
   width: 100%;
-  text-align: center;
   margin-top: 0px;
-  font-size: 2em;
-  height: 55px;
-  line-height: 55px;
+  font-size: 1.8em;
+  height: 50px;
+  line-height: 60px;
   vertical-align: middle;
   color: white;
 }
@@ -33,6 +31,25 @@
 
 .side-nav-button:hover i {
   color: #0d77e2;
+}
+
+#top-nav-button {
+  margin-top: 0px;
+  border-right: 1.5px solid #1b1b1b;
+  border-bottom: 1.5px solid #171717;
+  padding-bottom: 2.5px;
+}
+
+#top-nav-button:hover {
+  border-left: none;
+  background: #252525;
+}
+
+#archer-a-icon {
+  filter: invert(100%);
+  position: relative;
+  width: 30px;
+  top: 10px;
 }
 
 .bottom {

@@ -1,11 +1,14 @@
 import * as constants from "./constants.js";
 
 export const HEX_BLUE = '#0d77e2';
-export const HEX_WHITE = '#fff';
+export const HEX_WHITE = '#ffffff';
 export const HEX_LIGHT_GRAY = '#ebebeb';
 export const HEX_GRAY = '#999';
 export const HEX_DARK_GRAY = '#545454';
-export const HEX_PRIMARY_ACCENT = '#6B238E';
+export const HEX_BLACK = '#000000';
+export const HEX_PRIMARY_ACCENT = '#6b238e';
+export const HEX_TOOLBAR_BACKGROUND = '#fafafa';
+export const HEX_TOOLBAR_BORDER = '#d3d3d3';
 
 export const NODE_COLORS = {
   'person': '#68cca8',

@@ -1,3 +1,5 @@
+/* General Styling */
+
 * {
     margin: 0;
     padding: 0;
@@ -32,15 +34,30 @@ svg {
     z-index: -3;
 }
 
+/* Extent */
+
 svg rect.extent {
     stroke: rgb(120, 120, 120, .3);
     stroke-width: 2px;
     fill: rgb(190, 219, 243, .2);
 }
 
+/* Grid lines */
+
 svg line {
     stroke: rgb(191, 191, 191, 0.3);
     stroke-width: 1.5px;
+}
+
+/* Toolbar */
+
+.toolbar-background {
+    stroke: #d3d3d3;
+    fill: #fafafa;
+}
+
+.toolbar-button-icon {
+    fill: #202020;
 }
 
 .link-text {

@@ -18,7 +18,7 @@ export const MARKER_SIZE_BIG = 5;
 export const MARKER_SIZE_SMALL = 4.1;
 
 export const TOOLBAR_PADDING = 0;
-export const BUTTON_WIDTH = 55;
+export const BUTTON_WIDTH = 50;
 export const BUTTON_ZOOM_IN_ID = 'button-zoom-in';
 export const BUTTON_ZOOM_OUT_ID = 'button-zoom-out';
 export const BUTTON_POINTER_TOOL_ID = 'button-pointer-tool';

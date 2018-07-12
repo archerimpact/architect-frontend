@@ -5,7 +5,8 @@ import ReactTooltip from 'react-tooltip';
 import HelpModal from '../../helpModal';
 import { resetProjectDispatch } from '../../../redux/actions/graphActions';
 
-import './style.css'
+import './style.css';
+import archerLogoA from '../../../images/archer-logo-a.png';
 
 class SideNavBar extends Component {
   constructor(props) {
@@ -24,12 +25,12 @@ class SideNavBar extends Component {
       <div className="side-nav unselectable">
         <ReactTooltip place="right" effect="solid"/>
         <Link to='/' onClick={() => { this.props.dispatch(resetProjectDispatch()); }}>
-          <div className="side-nav-button" data-tip="Home">
-            <i className="material-icons">home</i>
+          <div id='top-nav-button' className="side-nav-button">
+            <img id="archer-a-icon" src={ archerLogoA }></img>
           </div>
         </Link>
         <Link to='/data'>
-          <div className="side-nav-button" data-tip="Data">
+          <div id="second-nav-button" className="side-nav-button" data-tip="Data">
             <i className="material-icons">data_usage</i>
           </div>
         </Link>

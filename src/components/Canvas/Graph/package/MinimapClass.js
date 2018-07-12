@@ -1,8 +1,8 @@
 import * as d3 from "d3";
 import * as utils from "./helpers/utils.js";
-import {stopPropagation} from "./helpers/mouseClicks.js";
+import { stopPropagation } from "./helpers/mouseClicks.js";
 import * as constants from "./helpers/constants.js";
-import {DEFAULT_MINIMAP_SIZE, MINIMAP_PADDING} from "./helpers/constants.js";
+import { DEFAULT_MINIMAP_SIZE, MINIMAP_PADDING } from "./helpers/constants.js";
 
 class Minimap {
     constructor(svg) {
