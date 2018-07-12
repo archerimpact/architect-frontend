@@ -11,66 +11,19 @@
     color: #fafafa;
 }
 
-#bottom-email-submit {
-	background-color: transparent;
-	border: none;
-	outline: none;
-	padding: 2px 0 0 10px;
-}
-
-.bottom-email-row {
-	align-items: center;
-}
-
-.bottombar-submit:hover {
-	color: #b3cae1;
-}
-
 .bottombar-content {
-	display: flex;
-	align-items: center;
-	width: 100%;
+    display: flex;
+    align-items: center;
+    width: 100%;
 }
 
 .bottombar-text {
-	margin-bottom: 0;
-	flex-basis: 400px;
-	font-size: 13px;
-	text-align: right;
+    margin-bottom: 0;
+    font-size: 14px;
+    text-align: left;
 }
 
 .bottombar-close {
-	color: #aaaaaa;
-	align-self: flex-start;
-}
-
-.bottombar-close:hover {
-	color: #ffffff;
-	cursor: pointer;
-}
-
-.bottombar-input, .bottombar-input:focus {
-    color: #fafafa;
-    margin-left: 20px;
-    background-color: transparent;
-    -ms-flex-preferred-size: 150px;
-    flex-basis: 150px;
-    -ms-flex-positive: 2;
-    flex-grow: 2;
-    height: 20px;
-    font-size: 13px;
-    border: 0;
-    /* padding-left: 0; */
-    padding-bottom: 10px;
-    border-bottom: 1px solid #fafafa;
-    /* padding-bottom: 12px; */
-    border-radius: 0;
-    outline: none;
-    box-shadow: none;
-    -webkit-box-shadow: none;
-}
-
-.bottombar-submit {
-	align-self: flex-end center;
-	margin-left: 5px;
+    color: #aaaaaa;
+    margin-right: 8px;
 }

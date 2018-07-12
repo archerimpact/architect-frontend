@@ -208,3 +208,8 @@ export function loadData(data) {
         dispatch(loadGraphDataDispatch(data));
     }
 }
+
+export async function submitEmail(email) {
+    const response = await server.submitEmail(email)
+    return response
+}

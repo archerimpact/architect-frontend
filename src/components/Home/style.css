@@ -261,10 +261,6 @@ nav.secondary.menu-button-secondary {
   flex-direction: column;
 }
 
-.sign-up-form {
-  display: flex;
-  flex-grow: 10;
-}
 
 .sign-up-container {
   margin-top: auto;
@@ -281,34 +277,6 @@ nav.secondary.menu-button-secondary {
   width: 100%;
 }
 
-.sign-up-input {
-  border: 1px solid #eee;
-  border-radius: 2px;
-  line-height: 37px;
-  margin-right: 20px;
-  width: 100%;
-  padding: 3px;
-  padding-left: 10px;
-}
-
-.sign-up-input:focus {
-  outline: none;
-}
-
-.sign-up-input input {
-  overflow: hidden;
-}
-
-.sign-up-button {
-  background-color: rgba(0,0,0,.84);
-  color: rgba(255, 255, 255, .97);
-  line-height: 43px;
-  padding: 0 16px;
-  border: 1px solid rgba(0,0,0,.15);
-  border-radius: 3px;
-  align-self: flex-end;
-  margin-left: auto;
-}
 
 .content-title-text {
   font-family: "Poppins", Helvetica, sans-serif;

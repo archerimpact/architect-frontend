@@ -4,10 +4,10 @@ import VignettePreview2 from './VignettePreview2';
 import VignettePreview3 from './VignettePreview3';
 import GraphPreview from './GraphPreview';
 import Footer from './Footer';
-import ParticleBackground from './ParticleBackground';
 import UnderlinedTextInput from './UnderlinedTextInput';
-import SearchBar from '../searchBar'
-import SearchBarDatabase from '../searchBarDatabase'
+import SearchBar from '../searchBar';
+import SearchBarDatabase from '../searchBarDatabase';
+import SignUpForm from '../signUpForm';
 
 import "./style.css";
 import "../../App/montserrat.css";
@@ -77,10 +77,10 @@ export default class Home extends Component {
                             Earlier this year, Archer designed &amp; developed <a href="https://sanctionsexplorer.org/">SanctionsExplorer</a>, releasing it in April in partnership with C4ADS.  Now, the Archer team has gone one step further,  re-envisioning how our users interact with and derive insight from sanctions data.
                           </p>
                           <p className="bold">
-                          Welcome to ArcherSpark, a bite-sized preview of a powerful investigative platform.
+                          Welcome to ArcherViz, a bite-sized preview of a powerful investigative platform.
                           </p>
                           <p id="sign-up">
-                            ArcherSpark applies our powerful investigative tool to the OFAC SDN list.  With over 3,000 official links, this data begs to be interacted with in a graph format. Experience a new way to investigate and share how your favorite sanctioned individuals, companies, and vessels are connected.
+                            ArcherViz applies our powerful investigative tool to the OFAC SDN list.  With over 3,000 official links, this data begs to be interacted with in a graph format. Experience a new way to investigate and share how your favorite sanctioned individuals, companies, and vessels are connected.
                           </p>
                         </div>
 
@@ -89,12 +89,7 @@ export default class Home extends Component {
                           <p>
                             This is just a preview of how powerful graph visualization can be applied to critical datasets.  Sign up to receive early access to our full beta release when it's ready.
                           </p>
-                          <form className="sign-up-form" action="https://archeratberkeley.us17.list-manage.com/subscribe/post?u=6f7abb9e526fd4f56b65d0305&amp;id=8399a2fbfc" method="post" id="subForm" data-error="Please fill all fields correctly." data-success="Thanks for signing up! Please check your inbox for confirmation email.">
-                            <input className="sign-up-input form-control validate-email" id="mce-EMAIL" name="EMAIL" type="email" placeholder="Email Address" required />
-                            <button type="submit" className="btn sign-up-button">
-                              Subscribe Now
-                            </button>
-                          </form>
+                          <SignUpForm/>
                         </div>
 
                       </div>
