@@ -67,7 +67,7 @@ class Home extends Component {
               <div className="logo-header center-column">
                 <span className="centered-image">
                   <a href="/">
-                    <img className="logo-image" src="logo.png" alt="" />
+                    <img className="logo-image" src="archer_viz.png" alt="" />
                   </a>
                 </span>
                     <div className="search-holder">
@@ -95,7 +95,7 @@ class Home extends Component {
                       <div className="col-md-6 release-preview-content">
                         <div className="release-preview-summary">
                           <p>
-                            Earlier this year, Archer designed &amp; developed <a href="https://sanctionsexplorer.org/">SanctionsExplorer</a>, releasing it in April in partnership with C4ADS.  Now, the Archer team has gone one step further,  re-envisioning how our users interact with and derive insight from sanctions data.
+                            Earlier this year, Archer designed &amp; developed <a href="https://sanctionsexplorer.org/">SanctionsExplorer</a>, releasing it in April in partnership with <a href="https://sanctionsexplorer.org/">C4ADS</a>.  Now, the Archer team has gone one step further,  re-envisioning how our users interact with and derive insight from sanctions data.
                           </p>
                           <p className="bold">
                           Welcome to ArcherViz, a bite-sized preview of a powerful investigative platform.
