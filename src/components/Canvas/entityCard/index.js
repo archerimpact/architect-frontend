@@ -23,11 +23,13 @@ class EntityCard extends Component {
                             Add
                         </div>
                     </div>
-                    <Link to="/explore/entity">
-                        <span className="collapse-link" onClick={() => this.dispatch(fetchCurrentEntity(node))}>
-                            {node.name || node.combined || node.label || node.description}
-                        </span>
-                    </Link>
+                    <div className="collapse-link">
+                        <Link to="/explore/entity">
+                            <span onClick={() => this.dispatch(fetchCurrentEntity(node))}>
+                                {node.name || node.combined || node.label || node.description}
+                            </span>
+                        </Link>
+                    </div>
                     <div className="card-pills">
                         { !node || !node.programs ?
                             null :
