@@ -1,7 +1,7 @@
 .bottombar {
     background-color: #0d77e2;
     position: absolute;
-    left: 50px;
+    left: 0px;
     width: calc(100% - 50px);
     bottom: 0;
     border-top: 1px solid #ebebeb;

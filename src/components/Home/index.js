@@ -47,7 +47,7 @@ class Home extends Component {
                     <div className="container">
                         <div className="sign-up-row flex-row">
                             <p className="sign-up-tagline">
-                                This is just a teaser. <a href="#sign-up">Sign up</a> for more.
+                                This is just a teaser. Sign up for more.
                             </p>
                         </div>
                     </div>
