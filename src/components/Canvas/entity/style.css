@@ -44,8 +44,6 @@
 .info-row {
     display: flex;
     flex-direction: column;
-    border: 1px solid #ebebeb;
-    border-radius: 5px;
     padding: 0 10px 10px 10px;
     margin-bottom: 15px;
 }

@@ -13,16 +13,31 @@ class EntityCard extends Component {
         this.dispatch = props.dispatch;
     }
 
+    componentWillReceiveProps(nextProps) {
+        this.nodeInGraph = false;
+        for (let i=0; i < nextProps.data.nodes.length; i++) {
+            if (nextProps.data.nodes[i].id === this.props.node.id) {
+                this.nodeInGraph = true;
+                break
+            }
+        }
+    }
+
     render() {
         const { node } = this.props;
         return (
             <div className="card result-card" key={node.id}>
                 <div className="card-header result-card-header flex-row d-flex align-items">
-                    <div className="d-flex">
-                        <div className="btn btn-primary sign-up-button custom-ali-css2" onClick={() => this.props.dispatch(addToGraphFromId(this.props.graph, node.id))}>
-                            Add
-                        </div>
-                    </div>
+                    {
+                        this.nodeInGraph ?
+                            null
+                            :
+                            <div className="d-flex">
+                                <div className="btn btn-primary sign-up-button custom-ali-css2" onClick={() => this.props.dispatch(addToGraphFromId(this.props.graph, node.id))}>
+                                    Add
+                                </div>
+                            </div>
+                    }
                     <div className="collapse-link">
                         <Link to="/explore/entity">
                             <span onClick={() => this.dispatch(fetchCurrentEntity(node))}>

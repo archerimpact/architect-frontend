@@ -187,6 +187,15 @@ class Entity extends Component {
             }) }
         </div>);
 
+        let nodeInGraph = false;
+
+        for (let i=0; i < this.props.data.nodes.length; i++) {
+            if (this.props.data.nodes[i].id === node.id) {
+                nodeInGraph = true;
+                break
+            }
+        }
+
         return (
             <div className="full-width">
                 <div className="entity-header-wrapper">
@@ -194,7 +203,7 @@ class Entity extends Component {
                         <div className="entity-name">{node.name || node.combined || node.label || node.description}</div>
                         <div className="entity-type">{node.type}</div>
                         {
-                            nodes.includes(node) ?
+                            nodeInGraph ?
                                 null
                                 :
                                 <div className="btn btn-primary sign-up-button custom-ali-css" onClick={() => this.props.dispatch(addToGraphFromId(this.props.graph, node.id))}>
@@ -274,7 +283,7 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
     return {
-        currentEntity: state.graphSidebar.currentEntity
+        currentEntity: state.graphSidebar.currentEntity,
         // should add currentNode here... but let me first see if that's first actually being used.
         // if not being used, then should only track when sidebar is visible. If it is being used, then always track regardless
     };
