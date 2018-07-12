@@ -12,7 +12,7 @@ class SearchBarDatabase extends Component {
 
     render() {
         return (
-            <SearchBar homeSearchContainerId={this.props.homeSearchContainerId} homeSearchInputId={this.props.homeSearchInputId} onSubmit={this.goToSearchPage} value={this.props.search} showSettings={this.props.showSettings} placeholder={'Search Entities, Programs, Filters (e.g. "Gertler", "EO13662", "Aircraft")'} isHomePage={this.props.isHomePage}/>
+            <SearchBar homeSearchContainerId={this.props.homeSearchContainerId} homeSearchInputId={this.props.homeSearchInputId} onSubmit={this.goToSearchPage} value={this.props.search} showSettings={this.props.showSettings} placeholder={"Search Entities/Programs/Types ('Gertler', 'EO13662', 'Aircraft')"} isHomePage={this.props.isHomePage}/>
         );
     }
 }
