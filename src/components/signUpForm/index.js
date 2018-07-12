@@ -27,11 +27,11 @@ export default class SignUpForm extends Component {
   render = () => {
     if (this.state.emailSubmitted) {
       return (
-        <p>Thanks!</p>
+        <p className="bottombar-text">Thanks!</p>
       )
     }
     else {
-      const useClass = this.props.naked ? "bottombar" : "sign-up"
+      const useClass = this.props.naked ? "bottombar" : "sign-up";
       return (
         <form className={ useClass + "-form" }>
           <input className={ useClass + "-input form-control" } type="email" placeholder="Email address" onChange={(e) => this.handleEmailChange(e.target.value)} />

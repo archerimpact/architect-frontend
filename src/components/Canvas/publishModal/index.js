@@ -91,7 +91,7 @@ export default class PublishModal extends Component {
 
                 <div className="form-row">
                   <div id="publish-submit" className="btn btn-primary" onClick={() => this.fetchLink(title, author, description, graph)}>
-                    Submit
+                    Get Link
                   </div>
                 </div>
               </form>
