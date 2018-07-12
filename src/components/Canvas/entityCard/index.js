@@ -20,16 +20,13 @@ class EntityCard extends Component {
     };
 
     render() {
-        const { node, graph, data } = this.props;
+        const { node, graph } = this.props;
         return (
             <div className="card result-card" key={node.id}>
-                <div className="card-header result-card-header flex-row d-flex">
+                <div className="card-header result-card-header flex-row d-flex align-items">
                     <div className="d-flex">
-                        <div className="icon-div">
-                            <i className="entity-icon add-to-graph-icon material-icons"
-                               onClick={() => this.addToGraphFromIdFunc(graph, node.id)}>
-                               add
-                            </i>
+                        <div className="btn btn-primary sign-up-button custom-ali-css2" onClick={() => this.props.dispatch(addToGraphFromId(this.props.graph, node.id))}>
+                            Add
                         </div>
                     </div>
                     <span className="collapse-link" onClick={() => this.dispatch(fetchCurrentEntity(node))}>

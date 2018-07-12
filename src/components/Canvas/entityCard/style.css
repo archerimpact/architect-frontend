@@ -77,3 +77,16 @@ li.no-bullet {
     text-decoration: underline;
     cursor: pointer;
 }
+
+.custom-ali-css2 {
+    height: auto;
+    width: auto;
+    font-size: 11px;
+    line-height: 25px;
+    padding-right: 6px;
+    padding-left: 6px;
+}
+
+.align-items {
+    align-items: center;
+}

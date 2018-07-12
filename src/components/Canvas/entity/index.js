@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import EntityCard from "../entityCard";
+import {addToGraphFromId} from "../../../redux/actions/graphActions";
 
 import "./style.css";
 
@@ -193,6 +194,9 @@ class Entity extends Component {
                     <div className="entity-header">
                         <div className="entity-name">{node.name || node.combined || node.label || node.description}</div>
                         <div className="entity-type">{node.type}</div>
+                        <div className="btn btn-primary sign-up-button custom-ali-css" onClick={() => this.props.dispatch(addToGraphFromId(this.props.graph, node.id))}>
+                            Add To Graph
+                        </div>
                     </div>
                 </div>
                 <hr />
