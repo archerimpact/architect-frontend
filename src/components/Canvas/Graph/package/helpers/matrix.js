@@ -87,6 +87,7 @@ export function addToMatrix(centerid, nodes, links) {
     }
 
     this.update(null, 20);
+    this.force.tick();
 }
 
 export function matrixToGraph() {

@@ -1,16 +1,12 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import {withRouter} from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { withRouter } from "react-router-dom";
 import * as graphActions from "../../../redux/actions/graphActions";
-import {
-    addToGraphFromId,
-} from "../../../redux/actions/graphActions";
+import { addToGraphFromId } from "../../../redux/actions/graphActions";
 
-import {
-    fetchCurrentEntity
-} from "../../../redux/actions/graphSidebarActions"
+import { fetchCurrentEntity } from "../../../redux/actions/graphSidebarActions"
 
 import "./graph.css";
 import "./style.css";

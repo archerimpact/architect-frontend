@@ -1,8 +1,8 @@
 import * as d3 from "d3";
 import * as utils from "./helpers/utils.js";
-import {stopPropagation} from "./helpers/mouseClicks.js";
+import { stopPropagation } from "./helpers/mouseClicks.js";
 import * as constants from "./helpers/constants.js";
-import {DEFAULT_MINIMAP_SIZE, MINIMAP_PADDING} from "./helpers/constants.js";
+import { DEFAULT_MINIMAP_SIZE, MINIMAP_PADDING } from "./helpers/constants.js";
 
 class Minimap {
     constructor(svg) {
@@ -189,22 +189,26 @@ class Minimap {
         const translate = [((this.width - this.boxWidth) / 2 - this.boxX) * this.boxScale * this.scale, ((this.height - this.boxHeight) / 2 - this.boxY) * this.boxScale * this.scale];
         this.graph.performZoom(translate, this.scale);
         this.zoom.translate(translate);
+        this.boxCenterX = this.boxX + this.boxWidth/2;
+        this.boxCenterY = this.boxY + this.boxHeight/2;
     }
 
     dragend = () => {
         this.graph.zoomend(null, null);
     }
 
-    zooming = () => {
-        this.scale = (d3.event && !utils.isRightClick()) ? d3.event.scale : utils.getScaleFromZoom(this.target.attr('transform'))[0];
-        this.zoomMinimap();
+    zooming = (currTranslate=null) => {
+        if (!this.isVisible || (currTranslate === null && utils.isRightClick())) return;
+        this.scale = d3.event ? d3.event.scale : utils.getScaleFromZoom(this.target.attr('transform'))[0];
+        this.zoomMinimap(currTranslate);
     }
 
-    zoomMinimap = () => {
+    zoomMinimap = (currTranslate=null) => {
         // Calculate translate from graph to minimap by scaling down graph translate and offsetting by origin
-        const e = d3.event;
-        this.boxX = -e.translate[0] / (this.scale * this.boxScale) + (this.width - this.boxWidth) / 2;
-        this.boxY = -e.translate[1] / (this.scale * this.boxScale) + (this.height - this.boxHeight) / 2;
+        const translateX = currTranslate ? currTranslate[0] : d3.event.translate[0];
+        const translateY = currTranslate ? currTranslate[1] : d3.event.translate[1];
+        this.boxX = -translateX / (this.scale * this.boxScale) + (this.width - this.boxWidth) / 2;
+        this.boxY = -translateY / (this.scale * this.boxScale) + (this.height - this.boxHeight) / 2;
         this.box
             .attr('x', this.boxX).attr('y', this.boxY)
             .attr('width', this.boxWidth / this.scale)
@@ -280,6 +284,7 @@ class Minimap {
 
         this.widthOffset = (this.width - (this.boxWidth / this.scale)) / 2;
         this.heightOffset = (this.height - (this.boxHeight / this.scale)) / 2;
+        this.toggleMinimapVisibility();
     }
 
     getBoundingPositionX = (position) => {

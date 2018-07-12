@@ -2,83 +2,75 @@ import React, { Component } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
-import { resetGraphDispatch, toggleSidebar } from '../../redux/actions/graphActions';
 import BetaModal from '../BetaModal';
+import HelpModal from '../helpModal';
+import { resetGraphDispatch } from '../../redux/actions/graphActions';
 
-import './style.css'
+import './style.css';
+import archerLogoA from '../../images/archer-logo-a.png';
 
 class SideNavBar extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      isBetaModalOpen: false
+    this.state = { 
+      isBetaModalOpen: false,
+      isHelpModalOpen: false 
     };
   }
 
-  handleClick = () => this.setState({ isBetaModalOpen: true });
-  handleClose = () => this.setState({ isBetaModalOpen: false });
-  toggleBetaModal = () => this.setState({ isBetaModalOpen: !this.state.isBetaModalOpen });
+  handleClick = (modalType) => this.setState(modalType ? { isHelpModalOpen: true } : { isBetaModalOpen: true });
+  handleClose = (modalType) => this.setState(modalType ? { isHelpModalOpen: false } : { isBetaModalOpen: false });
+  toggleModal = (modalType) => this.setState(modalType ? { isHelpModalOpen: !this.state.isHelpModalOpen } : { isBetaModalOpen: !this.state.isBetaModalOpen });
 
   render() {
     return (
-      <div className="side-nav">
+      <div className="side-nav unselectable">
         <ReactTooltip place="right" effect="solid"/>
-        <Link to='/'>
-          <div className="side-nav-button" data-tip="Home">
-            <i className="material-icons">home</i>
+        <Link to='/' onClick={() => { this.props.dispatch(resetGraphDispatch()); }}>
+          <div id='top-nav-button' className="side-nav-button">
+            <img id="archer-a-icon" src={ archerLogoA }></img>
           </div>
         </Link>
-        <Link to='/explore/search'>
-          <div className="side-nav-button" data-tip="Graph">
+        <Link to='/data'>
+          <div id="second-nav-button" className="side-nav-button" data-tip="Data">
             <i className="material-icons">data_usage</i>
           </div>
         </Link>
-        {/*<Link to='/' onClick={() => { dispatch(resetProjectDispatch()); }}>*/}
-          {/*<div className="side-nav-button" data-tip="Spaces">*/}
-            {/*<i className="material-icons">dashboard</i>*/}
-          {/*</div>*/}
-        {/*</Link>*/}
-        {/*<Link to='/user'>*/}
-          {/*<div className="side-nav-button" data-tip="Account">*/}
-            {/*<i className="material-icons">account_box</i>*/}
-          {/*</div>*/}
-        {/*</Link>*/}
+        <Link to='/build' onClick={() => { this.props.dispatch(resetGraphDispatch()); }}>
+          <div className="side-nav-button" data-tip="Spaces">
+            <i className="material-icons">dashboard</i>
+          </div>
+        </Link>
+        <Link to='/user'>
+          <div className="side-nav-button" data-tip="Account">
+            <i className="material-icons">account_box</i>
+          </div>
+        </Link>
         <div className="bottom">
-          {/*<Link to='/settings'>*/}
-            {/*<div className="side-nav-button" data-tip="Settings">*/}
-              {/*<i className="material-icons">settings</i>*/}
-            {/*</div>*/}
-          {/*</Link>*/}
-
-          <div className="side-nav-button" data-tip="Sign up" onClick={this.toggleBetaModal}>
+          <div className="side-nav-button" data-tip="Sign up" onClick={ this.toggleBetaModal }>
             <i className="material-icons">person_add</i>
           </div>
-
-          <Link to='/help'>
-            <div className="side-nav-button" data-tip="Help">
-              <i className="material-icons">help</i>
-            </div>
-          </Link>
+          <div className="side-nav-button" onClick={ this.toggleModal } data-tip="Help">
+            <i className="material-icons">help</i>
+          </div>
         </div>
         {
           this.state.isBetaModalOpen &&
-          <BetaModal handleClick={this.handleClick} handleClose={this.handleClose} />
+          <BetaModal handleClick={ this.handleClick } handleClose={ this.handleClose } />
+        }
+        {
+          this.state.isHelpModalOpen &&
+          <HelpModal handleClick={ this.handleClick } handleClose={ this.handleClose } />
         }
       </div>
-    );
-  };
-}
+    )
+  }
+};
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch: dispatch,
+    dispatch: dispatch
   };
 }
 
-function mapStateToProps(state) {
-  return {
-    sidebarVisible: state.graph.sidebarVisible
-  };
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SideNavBar));
+export default withRouter(connect(mapDispatchToProps)(SideNavBar));
