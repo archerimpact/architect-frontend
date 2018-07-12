@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import BetaModal from '../BetaModal';
 import HelpModal from '../helpModal';
+import TermsModal from '../termsModal';
 import { resetGraphDispatch } from '../../redux/actions/graphActions';
 
 import './style.css';
@@ -26,6 +27,10 @@ class SideNavBar extends Component {
   handleHelpClick = () => this.setState({ isHelpModalOpen: true });
   handleHelpClose = () => this.setState({ isHelpModalOpen: false });
 
+  toggleTermsModal = () => this.setState({ isTermsModalOpen: !this.state.isTermsModalOpen });
+  handleTermsClick = () => this.setState({ isTermsModalOpen: true });
+  handleTermsClose = () => this.setState({ isTermsModalOpen: false });
+
   render() {
     return (
       <div className="side-nav unselectable">
@@ -38,8 +43,11 @@ class SideNavBar extends Component {
         <div className="side-nav-button" data-tip="Sign up" onClick={ this.toggleBetaModal }>
           <i className="material-icons">person_add</i>
         </div>
-        <div className="side-nav-button" onClick={ this.toggleHelpModal } data-tip="Help">
+        <div className="side-nav-button" onClick={ this.toggleHelpModal } data-tip="Graph Help">
           <i className="material-icons">help</i>
+        </div>
+        <div className="side-nav-button mt-auto" onClick={ this.toggleTermsModal } data-tip="Terms and Conditions">
+          <i className="material-icons">file_copy</i>
         </div>
         {
           this.state.isBetaModalOpen &&
@@ -48,6 +56,10 @@ class SideNavBar extends Component {
         {
           this.state.isHelpModalOpen &&
           <HelpModal handleClick={ this.handleHelpClick } handleClose={ this.handleHelpClose } />
+        }
+        {
+          this.state.isTermsModalOpen &&
+          <TermsModal handleClick={ this.handleTermsClick } handleClose={ this.handleTermsClose } />
         }
       </div>
     )
