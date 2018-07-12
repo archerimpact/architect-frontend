@@ -30,13 +30,12 @@ const icons = {
     [constants.BUTTON_ZOOM_OUT_ID]: '',
     [constants.BUTTON_POINTER_TOOL_ID]: '',
     [constants.BUTTON_SELECTION_TOOL_ID]: '',
-    [constants.BUTTON_EDIT_MODE_ID]: '',
+    // [constants.BUTTON_EDIT_MODE_ID]: '',
     [constants.BUTTON_FIX_NODE_ID]: '',
-    [constants.BUTTON_SIMPLIFY_ID]: '',
-    [constants.BUTTON_TOGGLE_MINIMAP_ID]: '',
-    [constants.BUTTON_UNDO_ACTION_ID]: '',
-    [constants.BUTTON_REDO_ACTION_ID]: '',
-    [constants.BUTTON_SAVE_PROJECT_ID]: ''
+    // [constants.BUTTON_TOGGLE_MINIMAP_ID]: '',
+    // [constants.BUTTON_UNDO_ACTION_ID]: '',
+    // [constants.BUTTON_REDO_ACTION_ID]: '',
+    // [constants.BUTTON_SAVE_PROJECT_ID]: ''
 };
 
 class Graph {
@@ -207,7 +206,7 @@ class Graph {
             .call(this.brush);
 
         this.svg.on('mousedown', () => {
-            svgBrush.style('opacity', utils.isRightClick() ? 1 : 0);
+            svgBrush.style('opacity', utils.isRightClick() || this.selectionTool ? 1 : 0);
         });
 
         return svgBrush;
@@ -451,7 +450,6 @@ class Graph {
                 width: this.width - constants.TOOLBAR_PADDING * 2,
                 height: constants.BUTTON_WIDTH
             })
-            //.style('fill', colors.HEX_TOOLBAR_BACKGROUND)
             .on('click', () => { d3.select('.context-menu').style('display', 'none'); });
 
         const button = this.svg.selectAll('.button')
@@ -495,13 +493,11 @@ class Graph {
 
     getToolbarLabels = () => {
         const labels = [constants.BUTTON_ZOOM_IN_ID, constants.BUTTON_ZOOM_OUT_ID, constants.BUTTON_POINTER_TOOL_ID,
-            constants.BUTTON_SELECTION_TOOL_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_FIX_NODE_ID,
-            constants.BUTTON_SIMPLIFY_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_UNDO_ACTION_ID,
-            constants.BUTTON_REDO_ACTION_ID, constants.BUTTON_SAVE_PROJECT_ID];
+            constants.BUTTON_SELECTION_TOOL_ID, constants.BUTTON_FIX_NODE_ID]; 
+            //constants.BUTTON_UNDO_ACTION_ID, constants.BUTTON_REDO_ACTION_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_SAVE_PROJECT_ID
         const titles = [constants.BUTTON_ZOOM_IN_TITLE, constants.BUTTON_ZOOM_OUT_TITLE, constants.BUTTON_POINTER_TOOL_TITLE,
-            constants.BUTTON_SELECTION_TOOL_TITLE, constants.BUTTON_EDIT_MODE_TITLE, constants.BUTTON_FIX_NODE_TITLE,
-            constants.BUTTON_SIMPLIFY_TITLE, constants.BUTTON_TOGGLE_MINIMAP_TITLE, constants.BUTTON_UNDO_ACTION_TITLE,
-            constants.BUTTON_REDO_ACTION_TITLE, constants.BUTTON_SAVE_PROJECT_TITLE];
+            constants.BUTTON_SELECTION_TOOL_TITLE, constants.BUTTON_FIX_NODE_TITLE]; 
+            //constants.BUTTON_UNDO_ACTION_TITLE, constants.BUTTON_REDO_ACTION_TITLE, constants.BUTTON_EDIT_MODE_TITLE, constants.BUTTON_TOGGLE_MINIMAP_TITLE, constants.BUTTON_SAVE_PROJECT_TITLE
         const labelObjects = [];
         for (let i = 0; i < labels.length; i++) {
             labelObjects.push({label: labels[i], title: titles[i]});
@@ -528,7 +524,7 @@ class Graph {
         this.svg.on('mouseup', () => { this.svg.call(this.zoom) });
     }
 
-    initializeButton = (id, onclick, isSelected = false) => {
+    initializeButton = (id, onclick, isSelected=false) => {
         d3.select('#' + id)
             .on('click', () => {
                 onclick();
@@ -572,31 +568,17 @@ class Graph {
         this.initializeButton(constants.BUTTON_POINTER_TOOL_ID, () => {
             d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', false);
             d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', true);
+            this.selectionTool = false;
         }, true); // Placeholder method
         this.initializeButton(constants.BUTTON_SELECTION_TOOL_ID, () => {
             d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', false);
             d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', true);
+            this.selectionTool = true;
         }); // Placeholder method
-        this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => {
-            this.toggleEditMode()
-        });
-        this.initializeButton(constants.BUTTON_FIX_NODE_ID, () => {
-            this.toggleFixedNodes()
-        });
-        this.initializeButton(constants.BUTTON_SIMPLIFY_ID, () => {
-            //this.hideTypeNodes(DOCUMENT);
-            this.groupSame();
-        });
-        this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => {
-            this.minimap.toggleMinimapVisibility();
-        }); // Wrap in unnamed function bc minimap has't been initialized yet
-        this.initializeButton(constants.BUTTON_UNDO_ACTION_ID, () => {
-        }); // Placeholder method
-        this.initializeButton(constants.BUTTON_REDO_ACTION_ID, () => {
-        }); // Placeholder method
-        this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => {
-            this.saveAllData()
-        }); // Placeholder method
+        // this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => { this.toggleEditMode(); });
+        this.initializeButton(constants.BUTTON_FIX_NODE_ID, () => { this.toggleFixedNodes(); });
+        this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => { this.minimap.toggleMinimapVisibility(); }); // Wrap in unnamed function bc minimap has't been initialized yet
+        this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => { this.saveAllData() }); // Placeholder method
 
         // Create selectors
         this.linkContainer = this.container.append('g').attr('class', 'link-items');

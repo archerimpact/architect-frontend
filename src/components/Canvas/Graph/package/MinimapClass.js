@@ -199,7 +199,6 @@ class Minimap {
 
     zoomMinimap = (currTranslate=null) => {
         // Calculate translate from graph to minimap by scaling down graph translate and offsetting by origin
-        console.log(this.boxX, this.boxY)
         const translateX = currTranslate ? currTranslate[0] : d3.event.translate[0];
         const translateY = currTranslate ? currTranslate[1] : d3.event.translate[1];
         this.boxX = -translateX / (this.scale * this.boxScale) + (this.width - this.boxWidth) / 2;

@@ -2,10 +2,10 @@ import * as d3 from "d3";
 import * as aesthetics from "./aesthetics.js";
 import * as selection from "./selection.js";
 import * as utils from "./utils.js";
-import {findEntryById, getD3Event, isGroup, isLeftClick, isRightClick, then} from "./utils.js";
+import { findEntryById, getD3Event, isGroup, isLeftClick, isRightClick, then } from "./utils.js";
 
-import {GRID_LENGTH} from "./constants.js";
-import {resetDragLink} from "./aesthetics.js";
+import { GRID_LENGTH } from "./constants.js";
+import { resetDragLink } from "./aesthetics.js";
 
 // Click-drag node selection
 export function brushstart() {
@@ -14,7 +14,7 @@ export function brushstart() {
 
 export function brushing() {
     let self = this;
-    if (isRightClick()) {
+    if (isRightClick() || this.selectionTool) {
         const extent = this.brush.extent();
         this.svg.selectAll('.node')
             .classed('selected', function (d) {
@@ -270,10 +270,9 @@ export function zoomstart(d, self) {
 }
 
 export function zooming(d, self) {
-    if (!isRightClick()) {
-        const e = d3.event;
-        this.performZoom(e.translate, e.scale); // perform the zoom with the translate and scale from the handlers triggered by the graph
-    }
+    if (isRightClick() || this.selectionTool) return;
+    const e = d3.event;
+    this.performZoom(e.translate, e.scale); // Perform the zoom with the translate and scale from the handlers triggered by the graph
 }
 
 export function performZoom(translate, scale) {
@@ -285,7 +284,7 @@ export function performZoom(translate, scale) {
 
 export function zoomend(d, self) {
     this.svg.attr('cursor', 'move');
-    if (isRightClick()) {
+    if (isRightClick() || this.selectionTool) {
         this.zoom.translate(this.zoomTranslate);
         this.zoom.scale(this.zoomScale);
     }
