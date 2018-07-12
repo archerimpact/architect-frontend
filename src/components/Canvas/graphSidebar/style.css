@@ -13,15 +13,14 @@
     top: 0;
     width: 550px;
     height: 100%;
-    margin-left: 55px;
-    border-right: 1px solid #ebebeb;
+    border-left: 1px solid #ebebeb;
 }
 
 .tab-container {
     display: flex;
     justify-content: center;
     z-index: 20;
-    margin-top: 10px;
+    margin-top: 50%;
 }
 
 .sidebar.hidden {
@@ -29,31 +28,18 @@
 }
 
 .tab {
-    width: 100%;
-    background: #0d77e2;
-    padding: 5px;
-    font-size: 15px;
-    letter-spacing: 2px;
-    font-weight: 100;
-    border: 0;
-    color: white;
-    outline: none;
+    width: 30px;
+    border: 1px solid #D4D4D4;
+    border-right: 0;
+    height: 42px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    text-align: center;
+    border-right: 1px solid #bbbbbb;
 }
 
 .active-tab, .active-tab:hover {
     color: #fafafa;
-}
-
-.tab:hover {
-    background-color: #eee;
-}
-
-.tab-text {
-    margin: 0 auto;
-}
-
-.tab.active-tab {
-    background-color: #0d77e2;
 }
 
 .sidebar-collapse:hover {
@@ -68,6 +54,15 @@
     margin-left: 0;
     margin-top: 10px;
     font-size: 22px;
+}
+
+.tabs {
+    width: 30px;
+    margin-top: auto;
+    margin-bottom: auto;
+    z-index: 100;
+    box-shadow: -10px 4px 20px -7px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: -10px 4px 20px -7px rgba(0, 0, 0, 0.3);
 }
 
 .sticky-divider {
@@ -89,10 +84,11 @@
 .searchbar-container {
     background-color: #ffffff;
     z-index: 100;
-    padding-top: 10px;
-    padding: 10px;
+    padding: 10px 12px 10px 12px;
     width: 100%;
     background-color: #0d77e2;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
+    -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
     /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
     /*-webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);*/
 }
@@ -129,7 +125,7 @@
 }
 
 .slide-in {
-    transform: translate(518px);
+    transform: translate(520px);
     transition: transform 400ms ease-in-out;
 }
 
