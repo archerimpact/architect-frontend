@@ -252,7 +252,7 @@ class Entity extends Component {
         }
         let id = currentEntity.id;
         return (
-            <div className="sidebar-content-container" style={{paddingTop: 20, paddingLeft: 20, paddingRight: 20}}>
+            <div className="sidebar-content-container">
                 {this.renderEntity(currentEntity.nodes.filter(n => n.id === id)[0], currentEntity.nodes, currentEntity.links, keys)}
             </div>
         );
