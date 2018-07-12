@@ -14,3 +14,7 @@
     display: flex;
     justify-content: center;
 }
+
+.entities-in-graph-title {
+    margin-top: 10px;
+}
