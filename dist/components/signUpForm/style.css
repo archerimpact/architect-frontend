@@ -1,0 +1,84 @@
+/* regular styling */
+
+.sign-up-form {
+  display: flex;
+  width: 100%;
+}
+
+.sign-up-input {
+  border: 1px solid #eee;
+  border-radius: 2px;
+  line-height: 37px;
+  margin-right: 20px;
+  flex-basis: 80%;
+  padding: 3px;
+  padding-left: 10px;
+}
+
+.sign-up-input:focus {
+  outline: none;
+}
+
+.sign-up-button {
+  background-color: #0d77e2;
+  color: rgba(255, 255, 255, .97);
+  line-height: 43px;
+  padding: 0 16px;
+  border: 1px solid rgba(0,0,0,.15);
+  border-radius: 3px;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+
+
+/* Bottom bar */
+
+.btn.bottombar-button, .btn.bottombar-button:hover {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  padding: 2px 0 0 10px;
+}
+
+.bottombar-form {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.bottombar-submit:hover {
+  color: #b3cae1;
+}
+
+
+.bottombar-close:hover {
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.bottombar-input, .bottombar-input:focus {
+  color: #fafafa;
+  margin-left: 20px;
+  background-color: transparent;
+  -ms-flex-preferred-size: 150px;
+  flex-basis: 150px;
+  -ms-flex-positive: 2;
+  flex-grow: 2;
+  height: 20px;
+  font-size: 13px;
+  border: 0;
+  /* padding-left: 0; */
+  padding-bottom: 10px;
+  border-bottom: 1px solid #fafafa;
+  /* padding-bottom: 12px; */
+  border-radius: 0;
+  outline: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+
+.bottombar-submit {
+  align-self: flex-end center;
+  margin-left: 5px;
+}

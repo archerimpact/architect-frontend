@@ -52,6 +52,7 @@ class GraphPreview extends Component {
 
     renderGraph = () => {
       if (this.state.width && this.state.height) {
+          // console.log("index and more", this.props.index, this.graph, this.state.height)
         return <Graph graph={this.graph} height={this.state.height} width={this.state.width} displayMinimap={false} allowKeycodes={false} data={this.props.vignetteGraphData[this.props.index]} index={this.props.index} />
       }   
     }

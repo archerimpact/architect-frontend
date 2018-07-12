@@ -1,0 +1,81 @@
+@font-face {
+    font-family: 'source-code-pro';
+    src: url('/fonts/sourcecodepro-regular-webfont.woff2') format('woff2'),
+    url('/fonts/sourcecodepro-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.entity-container {
+    width: calc(100%);
+    padding: 20px 20px 0 20px;
+}
+
+.entity-header-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.entity-header {
+    display: block;
+    text-align: center;
+}
+
+.entity-name {
+    font-size: 20px;
+    font-weight: bolder;
+}
+
+.entity-type {
+    margin-left: 5px;
+    color: #646464;
+    padding-top: 5px;
+}
+
+.entity-source {
+    margin: 0 auto;
+}
+
+.entity-body {
+    padding: 0 20px;
+}
+
+.info-row {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ebebeb;
+    border-radius: 5px;
+    padding: 0 10px 10px 10px;
+    margin-bottom: 15px;
+}
+
+.info-key {
+    white-space: nowrap;
+    text-transform: uppercase;
+    font-family: 'Open Sans', 'Helvetica', sans-serif;
+    margin: 10px 0 15px 0;
+    color: #1e1e1e;
+    border-bottom: 1px solid #ebebeb;
+}
+
+li.info-value {
+    margin-left: 8px;
+    color: #8a8a8a;
+}
+
+.info-value-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.subheader {
+    margin-top: 20px;
+    margin-bottom:20px;
+    text-align: center;
+    font-weight: 100;
+}
+
+.placeholder-text {
+    font-family: Montserrat sans-serif;
+}
