@@ -103,7 +103,7 @@ class Home extends Component {
                             Welcome to ArcherViz, a bite-sized preview of a powerful platform.
                           </p>
                           <p>
-                            Earlier this year, Archer designed &amp; developed <a href="https://sanctionsexplorer.org/">SanctionsExplorer</a>.  Now, the Archer team has gone one step further, re-envisioning how our users interact with and derive insight from sanctions data.
+                            Earlier this year, <a href="https://archerimpact.com" className="underlined-link">Archer</a> designed &amp; developed <a href="https://sanctionsexplorer.org/" className="underlined-link">SanctionsExplorer</a>.  Now, the Archer team has gone one step further, re-envisioning how our users interact with and derive insight from sanctions data.
                           </p>
 
                           <p id="sign-up">
