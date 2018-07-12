@@ -23,6 +23,7 @@ class VignettePreview4 extends Component {
   };
 
   render() {
+      console.log("this hsould be 4", this.props.index)
     const { name, author, description } = this.props;
     return (
       <div onClick={this.handleClose}>

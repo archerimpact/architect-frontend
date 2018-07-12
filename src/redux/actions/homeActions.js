@@ -45,8 +45,6 @@ export function addToVignetteFromId(graph, id, index) {
     };
 }
 
-/* =============================================================================================  */
-
 export function loadLink(projId) {
     return (dispatch, getState) => {
         server.getLink(projId)

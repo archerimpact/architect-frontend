@@ -37,7 +37,7 @@ class Home extends Component {
 
     backToHome = () => {
         this.setState({linkPresent: false});
-    }
+    };
 
     render() {
         const { linkPresent } = this.state;
