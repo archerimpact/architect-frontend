@@ -1,6 +1,7 @@
 import * as d3 from "d3";
+import * as selection from "./selection.js";
 import * as utils from "./utils.js";
-import {GROUP_HULL} from "./constants.js";
+import { GROUP_HULL } from "./constants.js";
 
 export function getInverseAction(action) {
     // Implement for undo
@@ -8,9 +9,53 @@ export function getInverseAction(action) {
 }
 
 // Multi-node manipulation methods
+export function addLink(source, target) {
+    // this.reloadIdToIndex();
+    const i = this.idToIndex[source.id];
+    const j = this.idToIndex[target.id];
+
+    this.createLink(i, j);
+    this.update();
+}
+
+// Delete selected links
+export function deleteSelectedLinks() {
+    let selected = selection.selectSelectedLinks();
+    if (selected.empty()) return;
+    selected.each((d) => {
+        let i = this.idToIndex[d.source.id];
+        let j = this.idToIndex[d.target.id];
+        this.deleteLink(i, j);
+    })
+
+    this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
+    this.node.classed("selected", false)
+    this.update();
+}
+
+export function addNodeToSelected(event=null) {
+    let selected = selection.selectSelectedNodes();
+    if (selected.empty()) return;
+    // For each node selected, create a link attaching the new node to the selected node
+    selected
+        .each((d) => {
+            let i = this.adjacencyMatrix.length - 1;
+            let j = this.idToIndex[d.id];
+            this.createLink(i, j);
+        });
+
+    // Remove highlighting of all nodes and links
+    this.node.classed('selected', false);
+    this.link.call(this.styleLink, false);
+    this.nodeSelection = {};
+    this.update(event);
+    this.fillGroupNodes();
+}
+
 export function deleteSelectedNodes() {
-    let select = this.svg.selectAll('.node.selected');
-    select.each((d) => {
+    let selected = selection.selectSelectedNodes();
+    if (selected.empty()) return;
+    selected.each((d) => {
         for (let i = this.adjacencyMatrix.length - 1; i >= 0; i--) {
             if (this.adjacencyMatrix[i][i].data.id === d.id) {
                 this.deleteNode(i);
@@ -25,52 +70,11 @@ export function deleteSelectedNodes() {
     this.update();
 }
 
-// Delete selected links
-export function deleteSelectedLinks() {
-    let select = this.svg.selectAll('.link.selected');
-
-    select.each((d) => {
-        let i = this.idToIndex[d.source.id];
-        let j = this.idToIndex[d.target.id];
-        this.deleteLink(i, j);
-    })
-
-    this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
-    this.node.classed("selected", false)
-    this.update();
-}
-
-export function addLink(source, target) {
-    // this.reloadIdToIndex();
-    const i = this.idToIndex[source.id];
-    const j = this.idToIndex[target.id];
-
-    this.createLink(i, j);
-    this.update();
-}
-
-export function selectLink(source, target) {
-    const linkId = this.linkedById[source.id + ',' + target.id] || this.linkedById[target.id + ',' + source.id];
-    this.link.filter((d) => { return d.id === linkId; })
-        .call(this.styleLink, true);
-}
-
-export function addNodeToSelected(selection, event = null) {
-    // let node = this.createNode(ENTITY, null, event);
-    // For each node selected, create a link attaching the new node to the selected node
-    selection
-        .each((d) => {
-            let i = this.adjacencyMatrix.length - 1;
-            let j = this.idToIndex[d.id];
-            this.createLink(i, j);
-        });
-
-    // Remove highlighting of all nodes and links
-    this.node.classed('selected', false);
-    this.link.call(this.styleLink, false);
-    this.nodeSelection = {};
-    this.update(event);
-    this.fillGroupNodes();
+export function expandSelectedNodes() {
+    let selected = selection.selectSelectedNodes();
+    selected.each((d) => {
+        this.expandNodeFromData(d);
+    });
 }
 
 export function toggleTypeView(type) {
@@ -98,46 +102,43 @@ export function showHiddenType(type) {
 }
 
 export function groupSelectedNodes() {
-    let select = this.svg.selectAll('.node.selected');
-    if (select[0].length <= 1) {
-        return;
-    } //do nothing if nothing is selected & if there's one node
+    let selected = selection.selectSelectedNodes();
+    if (selected.empty() || selected[0].length <= 1) return; // Exit if nothing/1 node is selected
 
     const group = [];
 
-    select.each((d) => {
+    selected.each((d) => {
         if (d === this.hoveredNode) { this.deletingHoveredNode = true; }
         group.push(this.idToIndex[d.id]);
     });
 
     this.createGroup(group);
-
-    this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
+    this.nodeSelection = {}; // Reset to an empty dictionary because items have been removed, and now nothing is selected
     this.update();
     this.fillGroupNodes();
-    this.displayGroupInfo(this.groups);
 }
 
 export function ungroupSelectedGroups() {
-    // let select = this.svg.selectAll('.node.selected')
-    //   .filter((d) => {
-    //     for (let i = this.adjacencyMatrix.length-1; i >=0; i--) {
-    //       if (this.adjacencyMatrix[i][i].data.id === d.id && utils.isGroup(d)) { this.ungroup(i); }
-    //     }
-    //
-    //     if (d === this.hoveredNode) { this.deletingHoveredNode = true; }
-    //   });
+    let selected = selection.selectSelectedNodes();
+    if (selected.empty()) return;
+    selected
+        .filter((d) => {
+            for (let i = this.adjacencyMatrix.length-1; i >=0; i--) {
+                if (this.adjacencyMatrix[i][i].data.id === d.id && utils.isGroup(d)) { this.ungroup(i); }
+            }
+        
+            if (d === this.hoveredNode) { this.deletingHoveredNode = true; }
+        });
 
-    this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
+    this.nodeSelection = {}; // Reset to an empty dictionary because items have been removed, and now nothing is selected
     this.node.classed('selected', false);
     this.link.call(this.styleLink, false);
     this.update();
     this.fillGroupNodes();
-    this.displayGroupInfo(this.groups);
 }
 
-export function expandGroups(select, centered = false) {
-    select.each((d) => {
+export function expandGroups(selection, centered = false) {
+    selection.each((d) => {
         this.expandGroup(this.idToIndex[d.id]);
     });
 }
@@ -172,7 +173,6 @@ export function toggleGroupView(id) {
 
 export function groupSame() {
     /* Groups all the nodes that are connected to each other with possibly_same_as */
-
     let sameGroups = {};
     // let alreadyGrouped = []
     let group = 0;
@@ -206,7 +206,6 @@ export function groupSame() {
     this.nodeSelection = {}; //reset to an empty dictionary because items have been removed, and now nothing is selected
     this.update();
     this.fillGroupNodes();
-    this.displayGroupInfo(this.groups);
 }
 
 //Hull functions
@@ -237,8 +236,7 @@ export function calculateAllHulls() {
             let group = this.getGroupMembers(this.idToIndex[hull.groupId]);
             for (let a = 0; a < group.length; a++) {
                 let subGroup = this.getGroupMembers(group[a]);
-                if (subGroup.length > 0
-                    && this.expandedGroups[this.indexToId[group[a]]]) {
+                if (subGroup.length > 0 && this.expandedGroups[this.indexToId[group[a]]]) {
                     group = group.concat(subGroup);
                 }
             }

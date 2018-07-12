@@ -1,14 +1,18 @@
 import * as d3 from "d3";
+import * as cola from "webcola";
+
 import * as aesthetics from "./helpers/aesthetics.js";
-import * as utils from "./helpers/utils.js";
-import * as mouseClicks from "./helpers/mouseClicks.js";
-import * as tt from "./helpers/tooltips.js";
-import * as matrix from "./helpers/matrix.js";
 import * as d3Data from "./helpers/changeD3Data.js";
-import Minimap from "./MinimapClass.js";
+import * as keybinding from "./helpers/keybinding.js"
+import * as matrix from "./helpers/matrix.js";
+import * as mouseClicks from "./helpers/mouseClicks.js";
+import * as selection from "./helpers/selection.js";
+import * as tt from "./helpers/tooltips.js";
+import * as utils from "./helpers/utils.js";
+
 import * as constants from "./helpers/constants.js";
-import {DOCUMENT} from "./helpers/constants.js";
 import * as colors from "./helpers/colorConstants.js";
+import Minimap from "./MinimapClass.js";
 
 // FontAwesome icon unicode-to-node type dict
 // Use this to find codes for FA icons: https://fontawesome.com/cheatsheet
@@ -16,23 +20,22 @@ const icons = {
     [constants.PERSON]: '',
     'Individual': '',
     'Document': '',
-    [constants.IDENTIFYING_DOCUMENT]: '',
+    [constants.IDENTIFYING_DOCUMENT]: '',
     'corporation': '',
     'Entity': '',
-    [constants.ORGANIZATION]: '',
+    [constants.ORGANIZATION]: '',
     'group': '',
     'same_as_group': '',
     [constants.BUTTON_ZOOM_IN_ID]: '',
     [constants.BUTTON_ZOOM_OUT_ID]: '',
     [constants.BUTTON_POINTER_TOOL_ID]: '',
     [constants.BUTTON_SELECTION_TOOL_ID]: '',
-    [constants.BUTTON_EDIT_MODE_ID]: '',
+    // [constants.BUTTON_EDIT_MODE_ID]: '',
     [constants.BUTTON_FIX_NODE_ID]: '',
-    [constants.BUTTON_SIMPLIFY_ID]: '',
-    [constants.BUTTON_TOGGLE_MINIMAP_ID]: '',
-    [constants.BUTTON_UNDO_ACTION_ID]: '',
-    [constants.BUTTON_REDO_ACTION_ID]: '',
-    [constants.BUTTON_SAVE_PROJECT_ID]: ''
+    // [constants.BUTTON_TOGGLE_MINIMAP_ID]: '',
+    // [constants.BUTTON_UNDO_ACTION_ID]: '',
+    // [constants.BUTTON_REDO_ACTION_ID]: '',
+    // [constants.BUTTON_SAVE_PROJECT_ID]: ''
 };
 
 class Graph {
@@ -61,6 +64,9 @@ class Graph {
         this.tickCount = 0;
         this.xbound = [0, 0];
         this.ybound = [0, 0];
+
+        this.useCola = false;
+        this.useCustomContextMenu = true;
 
         this.isDragging = false; // Keep track of dragging to disallow node emphasis on drag
         this.draggedNode = null; // Store reference to currently dragged node, null otherwise
@@ -95,6 +101,7 @@ class Graph {
         this.svgGrid = null;
         this.force = null;
         this.drag = null;
+        this.defs = null;
 
         this.adjacencyMatrix = [];
         this.globalLinks = {};
@@ -181,9 +188,11 @@ class Graph {
             .call(this.zoom);
 
         // Disable context menu from popping up on right click
-        svg.on('contextmenu', function (d, i) {
-            d3.event.preventDefault();
-        });
+        if (this.useCustomContextMenu) {
+            svg.on('contextmenu', function (d, i) {
+                d3.event.preventDefault();
+            });
+        }
 
         return svg;
     }
@@ -197,7 +206,7 @@ class Graph {
             .call(this.brush);
 
         this.svg.on('mousedown', () => {
-            svgBrush.style('opacity', utils.isRightClick() ? 1 : 0);
+            svgBrush.style('opacity', utils.isRightClick() || this.selectionTool ? 1 : 0);
         });
 
         return svgBrush;
@@ -247,18 +256,23 @@ class Graph {
     }
 
     initializeForce = () => {
+        if (this.useCola) {
+            return cola.d3adaptor()
+                .linkDistance(30)
+                .size([this.width, this.height]);
+        }
+
         return d3.layout.force()
             .size([this.width, this.height]);
     }
 
-    intitializeDrag = () => {
+    initializeDrag = () => {
         const self = this;
         const drag = this.force.drag()
             .origin((d) => { return d; })
             .on('dragstart', function (d) { self.dragstart(d, this) })
             .on('drag', function (d) { self.dragging(d, this) })
             .on('dragend', function (d) { self.dragend(d, this)});
-
         return drag;
     }
 
@@ -281,27 +295,14 @@ class Graph {
                 action: (elm, d, i) => {
                     this.expandNodeFromData(d);
                 }
-                // subtype: 'checklist',
-                // children: [
-                //   {
-                //     title: 'hi'
-                //   },
-                //   {
-                //     title: 'hello'
-                //   },
-                //   {
-                //     title: 'world'
-                //   }
-                // ]
             }
 
         ]
     }
 
     initializeContextMenu = () => {
-        // LICENSING INFO: https://github.com/patorjk/d3-context-menu
         this.contextMenu = function (menu, openCallback) {
-            // create the div element that will hold the context menu
+            // Dreate the div element that will hold the context menu
             d3.selectAll('.context-menu')
                 .data([1]).enter()
                 .append('div')
@@ -312,7 +313,7 @@ class Graph {
                 d3.select('.context-menu').style('display', 'none');
             });
 
-            // this gets executed when a contextmenu event occurs
+            // This gets executed when a contextmenu event occurs
             return function (data, index) {
                 const self = this;
                 d3.selectAll('.context-menu').html('');
@@ -326,25 +327,12 @@ class Graph {
                         d.action(self, data, index);
                         d3.select('.context-menu').style('display', 'none');
                     });
-                // .on('mouseover', function(d, i) {
-                //   if (d.children && d.children.length === 0) { return; }
-                //   console.log('d.subtype')
-                //   if (d.subtype === 'checklist') {
-                //     d3.select(this).selectAll('ul').remove();
-                //     var parentNode = d3.select(this).node().parentNode;
-                //     d3.select(parentNode ).append('li').append('ul')
-                //       .selectAll('li')
-                //         .data(d.children).enter()
-                //         .append('li')
-                //         .text((cd) => { return cd.title; });
-                //   }
-                // });
 
-                // the openCallback allows an action to fire before the menu is displayed
+                // The openCallback allows an action to fire before the menu is displayed
                 // an example usage would be closing a tooltip
                 if (openCallback) openCallback(data, index);
 
-                // display context menu
+                // Display context menu
                 d3.select('.context-menu')
                     .style('left', (d3.event.x - 2) + 'px')
                     .style('top', (d3.event.y - 2) + 'px')
@@ -363,9 +351,8 @@ class Graph {
             ['gray', 'blue']
         ];
         const markerList = this.deriveMarkerData(this.getMarkerIdPermutations(possibleAttrs));
-        const defs = this.svg.append('defs');
         for (let marker of markerList) {
-            defs
+            this.defs
                 .append('marker')
                     .attr('id', marker.id)
                     .attr('viewBox', '5 -5 10 10')
@@ -406,7 +393,7 @@ class Graph {
         }
 
         const colorNameToHex = {
-            'gray': colors.HEX_DARK_GRAY,
+            'gray': colors.HEX_GRAY,
             'blue': colors.HEX_BLUE
         };
 
@@ -421,6 +408,26 @@ class Graph {
         return markerList;
     }
 
+    useFilterFlood = (colorHex) => {
+        const filterId = `filter-flood-${colorHex}`;
+        if (this.defs.selectAll(`#${filterId}`).empty()) {
+            const filter = this.defs.append('filter')
+                .attr('id', filterId);
+
+            filter.append('feFlood')
+                .attr('flood-color', `#${colorHex}`)
+                .attr('result', 'flood');
+
+            const filterMerge = filter.append('feMerge');
+            filterMerge.append('feMergeNode')
+                .attr('in', 'flood');
+            filterMerge.append('feMergeNode')
+                .attr('in', 'SourceGraphic');
+        }
+
+        return `url(#${filterId})`;
+    }
+
     initializeDragLink = () => {
         return this.svg.append('line')
             .attr('class', 'link dynamic')
@@ -432,122 +439,100 @@ class Graph {
             .style('visibility', 'hidden');
     }
 
-    // initializeToolbarButtons = () => {
-    //     const buttonData = this.getToolbarLabels();
+    initializeToolbarButtons = () => {
+        const buttonData = this.getToolbarLabels();
 
-    //     this.svg.append('rect')
-    //     .attr('y', constants.TOOLBAR_PADDING)
-    //     .attr({
-    //         x: constants.TOOLBAR_PADDING,
-    //         width: constants.BUTTON_WIDTH,
-    //         height: this.height - constants.TOOLBAR_PADDING * 2
-    //     })
-    //     .style('fill', colors.HEX_PRIMARY_ACCENT)
-    //     .on('click', () => {
-    //         d3.select('.context-menu').style('display', 'none');
-    //     });
+        this.svg.append('rect')
+            .attr('class', 'toolbar-background')
+            .attr('y', constants.TOOLBAR_PADDING)
+            .attr({
+                x: constants.TOOLBAR_PADDING,
+                width: this.width - constants.TOOLBAR_PADDING * 2,
+                height: constants.BUTTON_WIDTH
+            })
+            .on('click', () => { d3.select('.context-menu').style('display', 'none'); });
 
-    //     const button = this.svg.selectAll('.button')
-    //     .data(buttonData)
-    //     .enter().append('g')
-    //     .attr('class', 'button')
-    //     .attr('pointer-events', 'all');
+        const button = this.svg.selectAll('.button')
+            .data(buttonData)
+            .enter().append('g')
+            .attr('class', 'button')
+            .attr('pointer-events', 'all');
 
-    //     button.append('title')
-    //     .text((d) => {
-    //         return d.title;
-    //     });
+        button.append('title')
+            .text((d) => { return d.title; });
 
-    //     button.append('text')
-    //     .attr('class', 'button-icon')
-    //     .attr('x', constants.TOOLBAR_PADDING + constants.BUTTON_WIDTH / 2)
-    //     .attr('y', (d, i) => {
-    //         return (constants.TOOLBAR_PADDING + constants.BUTTON_WIDTH / 2) + i * constants.BUTTON_WIDTH;
-    //     })
-    //     .style({
-    //         'text-anchor': 'middle',
-    //         'dominant-baseline': 'central',
-    //         'font-family': 'FontAwesome',
-    //         'font-size': constants.BUTTON_WIDTH * 0.4 + 'px'
-    //     })
-    //     .style('fill', colors.HEX_WHITE)
-    //     .style('font-weight', 'lighter')
-    //     .text((d) => {
-    //         return (d.label && icons[d.label]) ? icons[d.label] : '';
-    //     })
-    //     .classed('unselectable', true);
+        button.append('text')
+            .attr('class', 'toolbar-button-icon')
+            .attr('x', (d, i) => { return (constants.TOOLBAR_PADDING + constants.BUTTON_WIDTH / 2) + i * constants.BUTTON_WIDTH; })
+            .attr('y', constants.TOOLBAR_PADDING + constants.BUTTON_WIDTH / 2)
+            .style({
+                'text-anchor': 'middle',
+                'dominant-baseline': 'central',
+                'font-family': 'FontAwesome',
+                'font-size': constants.BUTTON_WIDTH * 0.4 + 'px'
+            })
+            .text((d) => { return (d.label && icons[d.label]) ? icons[d.label] : ''; })
+            .classed('unselectable', true);
 
-    //     button.append('rect')
-    //     .attr('id', (d) => {
-    //         return d.label;
-    //     })
-    //     .attr('y', (d, i) => {
-    //         return constants.TOOLBAR_PADDING + i * constants.BUTTON_WIDTH;
-    //     })
-    //     .attr({
-    //         x: constants.TOOLBAR_PADDING,
-    //         width: constants.BUTTON_WIDTH,
-    //         height: constants.BUTTON_WIDTH,
-    //         class: 'button'
-    //     })
-    //     .on('dblclick', this.stopPropagation)
-    //     .call(d3.behavior.drag()
-    //         .on('dragstart', this.stopPropagation)
-    //         .on('drag', this.stopPropagation)
-    //         .on('dragend', this.stopPropagation)
-    //     );
-    // }
+        button.append('rect')
+            .attr('id', (d) => { return d.label; })
+            .attr('x', (d, i) => { return constants.TOOLBAR_PADDING + i * constants.BUTTON_WIDTH; })
+            .attr({
+                y: constants.TOOLBAR_PADDING,
+                width: constants.BUTTON_WIDTH,
+                height: constants.BUTTON_WIDTH,
+                class: 'button'
+            })
+            .on('dblclick', this.stopPropagation)
+            .call(d3.behavior.drag()
+                .on('dragstart', this.stopPropagation)
+                .on('drag', this.stopPropagation)
+                .on('dragend', this.stopPropagation)
+            );
+    }
 
-    // getToolbarLabels = () => {
-    //     const labels = [constants.BUTTON_ZOOM_IN_ID, constants.BUTTON_ZOOM_OUT_ID, constants.BUTTON_POINTER_TOOL_ID,
-    //         constants.BUTTON_SELECTION_TOOL_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_FIX_NODE_ID,
-    //         constants.BUTTON_SIMPLIFY_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_UNDO_ACTION_ID,
-    //         constants.BUTTON_REDO_ACTION_ID, constants.BUTTON_SAVE_PROJECT_ID];
-    //     const titles = [constants.BUTTON_ZOOM_IN_TITLE, constants.BUTTON_ZOOM_OUT_TITLE, constants.BUTTON_POINTER_TOOL_TITLE,
-    //         constants.BUTTON_SELECTION_TOOL_TITLE, constants.BUTTON_EDIT_MODE_TITLE, constants.BUTTON_FIX_NODE_TITLE,
-    //         constants.BUTTON_SIMPLIFY_TITLE, constants.BUTTON_TOGGLE_MINIMAP_TITLE, constants.BUTTON_UNDO_ACTION_TITLE,
-    //         constants.BUTTON_REDO_ACTION_TITLE, constants.BUTTON_SAVE_PROJECT_TITLE];
-    //     const labelObjects = [];
-    //     for (let i = 0; i < labels.length; i++) {
-    //         labelObjects.push({label: labels[i], title: titles[i]});
-    //     }
+    getToolbarLabels = () => {
+        const labels = [constants.BUTTON_ZOOM_IN_ID, constants.BUTTON_ZOOM_OUT_ID, constants.BUTTON_POINTER_TOOL_ID,
+            constants.BUTTON_SELECTION_TOOL_ID, constants.BUTTON_FIX_NODE_ID]; 
+            //constants.BUTTON_UNDO_ACTION_ID, constants.BUTTON_REDO_ACTION_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_SAVE_PROJECT_ID
+        const titles = [constants.BUTTON_ZOOM_IN_TITLE, constants.BUTTON_ZOOM_OUT_TITLE, constants.BUTTON_POINTER_TOOL_TITLE,
+            constants.BUTTON_SELECTION_TOOL_TITLE, constants.BUTTON_FIX_NODE_TITLE]; 
+            //constants.BUTTON_UNDO_ACTION_TITLE, constants.BUTTON_REDO_ACTION_TITLE, constants.BUTTON_EDIT_MODE_TITLE, constants.BUTTON_TOGGLE_MINIMAP_TITLE, constants.BUTTON_SAVE_PROJECT_TITLE
+        const labelObjects = [];
+        for (let i = 0; i < labels.length; i++) {
+            labelObjects.push({label: labels[i], title: titles[i]});
+        }
 
-    //     return labelObjects;
-    // }
+        return labelObjects;
+    }
 
-    // // Control logic to zoom when buttons are pressed, keep zooming while they are pressed, stop zooming
-    // // when released or moved off of, not snap-pan when moving off buttons, and restore pan on mouseup.
-    // initializeZoomButtons = () => {
-    //     const self = this;
-    //     this.zoomPressed = false;
-    //     d3.selectAll(`#${constants.BUTTON_ZOOM_IN_ID}, #${constants.BUTTON_ZOOM_OUT_ID}`)
-    //     .on('mousedown', function () {
-    //         self.zoomPressed = true;
-    //         self.disableZoom();
-    //         self.zoomButton(this.id === constants.BUTTON_ZOOM_IN_ID);
-    //         d3.select('.context-menu').style('display', 'none');
-    //     })
-    //     .on('mouseup', () => {
-    //         this.zoomPressed = false;
-    //     })
-    //     .on('mouseout', () => {
-    //         this.zoomPressed = false;
-    //     });
+    // Control logic to zoom when buttons are pressed, keep zooming while they are pressed, stop zooming
+    // when released or moved off of, not snap-pan when moving off buttons, and restore pan on mouseup.
+    initializeZoomButtons = () => {
+        const self = this;
+        this.zoomPressed = false;
+        d3.selectAll(`#${constants.BUTTON_ZOOM_IN_ID}, #${constants.BUTTON_ZOOM_OUT_ID}`)
+            .on('mousedown', function () {
+                self.zoomPressed = true;
+                self.disableZoom();
+                self.zoomButton(this.id === constants.BUTTON_ZOOM_IN_ID);
+                d3.select('.context-menu').style('display', 'none');
+            })
+            .on('mouseup', () => { this.zoomPressed = false; })
+            .on('mouseout', () => { this.zoomPressed = false; });
 
-    //     this.svg.on('mouseup', () => {
-    //         this.svg.call(this.zoom)
-    //     });
-    // }
+        this.svg.on('mouseup', () => { this.svg.call(this.zoom) });
+    }
 
-    // initializeButton = (id, onclick, isSelected = false) => {
-    //     d3.select('#' + id)
-    //     .on('click', () => {
-    //         onclick();
-    //         d3.select('.context-menu').style('display', 'none');
-    //         this.stopPropagation();
-    //     })
-    //     .classed('selected', isSelected);
-    // }
+    initializeButton = (id, onclick, isSelected=false) => {
+        d3.select('#' + id)
+            .on('click', () => {
+                onclick();
+                d3.select('.context-menu').style('display', 'none');
+                this.stopPropagation();
+            })
+            .classed('selected', isSelected);
+    }
 
     generateCanvas = (width, height, graphRef, allowKeycodes=true) => {
         this.width = width;
@@ -555,8 +540,8 @@ class Graph {
         this.center = [this.width / 2, this.height / 2];
         this.brushX = d3.scale.linear().range([0, width]);
         this.brushY = d3.scale.linear().range([0, height]);
-        this.minimapPaddingX = constants.MINIMAP_MARGIN + constants.BUTTON_WIDTH;
-        this.minimapPaddingY = height - constants.DEFAULT_MINIMAP_SIZE - constants.MINIMAP_MARGIN + 2;
+        this.minimapPaddingX = constants.MINIMAP_MARGIN;
+        this.minimapPaddingY = height - constants.DEFAULT_MINIMAP_SIZE - constants.MINIMAP_MARGIN;
         this.minimapScale = 0.25;
 
         this.numTicks = width / constants.GRID_LENGTH * (1 / constants.MIN_SCALE);
@@ -569,47 +554,36 @@ class Graph {
         this.svgGrid = this.initializeSVGgrid();
         this.curve = this.initializeCurve();
         this.force = this.initializeForce();
-        this.drag = this.intitializeDrag();
+        this.drag = this.initializeDrag();
         this.dragLink = this.initializeDragLink();
+        this.defs = this.svg.append('defs');
         this.initializeMenuActions();
         this.initializeContextMenu();
         this.initializeMarkers();
 
-        // this.initializeToolbarButtons();
-        // this.initializeZoomButtons();
-        // this.initializeButton(constants.BUTTON_POINTER_TOOL_ID, () => {
-        //     d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', false);
-        //     d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', true);
-        // }, true); // Placeholder method
-        // this.initializeButton(constants.BUTTON_SELECTION_TOOL_ID, () => {
-        //     d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', false);
-        //     d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', true);
-        // }); // Placeholder method
-        // this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => {
-        //     this.toggleEditMode()
-        // });
-        // this.initializeButton(constants.BUTTON_FIX_NODE_ID, () => {
-        //     this.toggleFixedNodes()
-        // });
-        // this.initializeButton(constants.BUTTON_SIMPLIFY_ID, () => {
-        //     this.hideTypeNodes(DOCUMENT);
-        //     this.groupSame();
-        // });
-        // this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => {
-        //     this.minimap.toggleMinimapVisibility();
-        // }); // Wrap in unnamed function bc minimap has't been initialized yet
-        // this.initializeButton(constants.BUTTON_UNDO_ACTION_ID, () => {
-        // }); // Placeholder method
-        // this.initializeButton(constants.BUTTON_REDO_ACTION_ID, () => {
-        // }); // Placeholder method
-        // this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => {
-        //     this.saveAllData()
-        // }); // Placeholder method
-        if (this.setupKeycodes === true) { this.setupKeycodes(); }
+        keybinding.initializeKeybinding();
+        this.initializeKeycodes();
+
+        this.initializeToolbarButtons();
+        this.initializeZoomButtons();
+        this.initializeButton(constants.BUTTON_POINTER_TOOL_ID, () => {
+            d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', false);
+            d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', true);
+            this.selectionTool = false;
+        }, true); // Placeholder method
+        this.initializeButton(constants.BUTTON_SELECTION_TOOL_ID, () => {
+            d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', false);
+            d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', true);
+            this.selectionTool = true;
+        }); // Placeholder method
+        // this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => { this.toggleEditMode(); });
+        this.initializeButton(constants.BUTTON_FIX_NODE_ID, () => { this.toggleFixedNodes(); });
+        this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => { this.minimap.toggleMinimapVisibility(); }); // Wrap in unnamed function bc minimap has't been initialized yet
+        this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => { this.saveAllData() }); // Placeholder method
 
         // Create selectors
         this.linkContainer = this.container.append('g').attr('class', 'link-items');
-        this.linkText = this.linkContainer.selectAll('.link-text');
+        this.linkText = this.linkContainer.selectAll('.link-text > textPath');
         this.link = this.linkContainer.selectAll('.link');
         this.hull = this.container.append('g').attr('class', 'hull-items').selectAll('.hull');
         this.node = this.container.append('g').attr('class', 'node-items').selectAll('.node');
@@ -629,9 +603,9 @@ class Graph {
     // Completely re-renders the graph, assuming all new nodes and links
     setData = (centerid, nodes, links, byIndex) => {
         this.setMatrix(nodes, links, byIndex);
-        this.initializeDataDicts(); // if we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
+        this.initializeDataDicts(); // If we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
         this.update(null, 500);
-        // set global node id to match the nodes getting passed in
+        // Set global node id to match the nodes getting passed in
         nodes.forEach((node) => {
             if (node.id < 0) {
                 this.globalnodeid = Math.min(this.globalnodeid, node.id);
@@ -677,7 +651,7 @@ class Graph {
     }
 
     // Updates nodes and links according to current data
-    update = (event = null, ticks = null, minimap = true) => {
+    update = (event=null, ticks=null, minimap=true) => {
         var self = this;
 
         this.resetGraphOpacity();
@@ -685,20 +659,30 @@ class Graph {
         this.matrixToGraph();
         this.reloadNeighbors();
 
-        this.force
-            .gravity(.33)
-            .charge((d) => { return d.group ? -7500 : -20000 })
-            .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
-            .alpha(.8)
-            .nodes(this.nodes)
-            .links(this.links);
+        if (this.useCola) {
+            this.force
+                //.linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE_COLA : constants.LINK_DISTANCE_COLA })
+                .avoidOverlaps(true)
+                .jaccardLinkLengths(constants.LINK_DISTANCE_COLA, .75)
+                .handleDisconnected(false)
+                .nodes(this.nodes)
+                .links(this.links);
+        } else {
+            this.force
+                .gravity(.33)
+                .charge((d) => { return d.group ? -7500 : -20000 })
+                .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
+                .alpha(.8)
+                .nodes(this.nodes)
+                .links(this.links);
+        }
 
         // Update links
         this.link = this.link.data(this.links, (l) => { return l.id; }); // Resetting the key is important because otherwise it maps the new data to the old data in order
         this.linkEnter = this.link.enter()
             .append('path')
             .attr('class', 'link')
-            .attr('id', (l) => { return `link-${l.id}`; })
+            .attr('id', (l) => { return `link-${utils.hash(l.id)}`; })
             .classed('same-as', (l) => { return utils.isPossibleLink(l.type); })
             .classed('faded', (l) => { return this.hoveredNode && !(l.source === this.hoveredNode || l.target === this.hoveredNode); })
             .on('mouseover', this.mouseoverLink);
@@ -716,7 +700,7 @@ class Graph {
             .on('mousedown', function (d) { self.mousedown(d, this); })
             .on('mouseover', function (d) { self.mouseover(d, this); })
             .on('mouseout', function (d) { self.mouseout(d, this); })
-            .on('contextmenu', this.contextMenu(this.menuActions))
+            .on('contextmenu', this.useCustomContextMenu ? this.contextMenu(this.menuActions) : null)
             .classed('fixed', (d) => { return d.fixed; })
             .classed('faded', (d) => { return this.hoveredNode && !this.areNeighbors(this.hoveredNode, d); })
             .call(this.drag);
@@ -733,15 +717,16 @@ class Graph {
 
         this.nodeEnter.append('circle')
             .attr('class', 'node-glyph')
-            .attr('r', 8)
-            .attr('cx', 17)
-            .attr('cy', 17);
+            .attr('r', 11)
+            .attr('cx', 18)
+            .attr('cy', -19);
 
         this.nodeEnter.append('text')
             .attr('class', 'glyph-label')
-            .attr('dx', 17)
-            .attr('dy', 20)
-            .attr('text-anchor', 'middle');
+            .attr('dx', 18)
+            .attr('dy', -14.5)
+            .attr('text-anchor', 'middle')
+            .classed('unselectable', true);
 
         this.nodeEnter.append('text')
             .attr('class', 'icon')
@@ -757,7 +742,7 @@ class Graph {
             .attr('text-anchor', 'middle')
             .attr('dy', '40px')
             .classed('unselectable', true)
-            .text((d) => { return d.group ? '' : utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
+            .text((d) => { return d.group ? '' : aesthetics.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
             .call(this.wrapNodeText, this.printFull)
             .on('click', function (d) { self.stopPropagation(); })
             .on('mouseover', function (d) { self.stopPropagation(); })
@@ -768,7 +753,7 @@ class Graph {
                 .on('dragend', this.stopPropagation)
             );
 
-        this.node.call(this.styleNode)
+        this.node.call(this.styleNode);
         this.node.exit().remove();
 
         // Update node glyphs
@@ -794,11 +779,11 @@ class Graph {
         this.hull.exit().remove();
 
         // Avoid initial chaos and skip the wait for graph to drift back onscreen
-        this.force.start();
+        this.force.start(30, 30, 30);
         if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }
 
         if (minimap) {
-            this.toRenderMinimap = true;
+            this.toRenderMinimap = false; // TODO: Set to true when bringing minimap back
             this.tickCount = 0;
         }
 
@@ -811,7 +796,6 @@ class Graph {
 
     // Occurs each tick of simulation
     ticked = (e, self) => {
-        // const classThis = this;
         this.force.resume();
         this.xbound = [this.width, 0];
         this.ybound = [this.height, 0];
@@ -849,29 +833,27 @@ class Graph {
         }
 
         this.link
-            .each(function (l) {
+            .each((l) => {
                 const x1 = l.source.x,
-                    y1 = l.source.y,
-                    x2 = l.target.x,
-                    y2 = l.target.y;
+                      y1 = l.source.y,
+                      x2 = l.target.x,
+                      y2 = l.target.y;
                 l.distance = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
                 const sourcePadding = l.target.radius + (l.bidirectional ? constants.MARKER_PADDING : 0),
-                    targetPadding = l.source.radius + constants.MARKER_PADDING;
+                      targetPadding = l.source.radius + constants.MARKER_PADDING;
                 l.sourceX = x1 + (x2 - x1) * (l.distance - sourcePadding) / l.distance;
                 l.sourceY = y1 + (y2 - y1) * (l.distance - sourcePadding) / l.distance;
                 l.targetX = x2 - (x2 - x1) * (l.distance - targetPadding) / l.distance;
                 l.targetY = y2 - (y2 - y1) * (l.distance - targetPadding) / l.distance;
             })
-            .attr('d', (l) => { return 'M' + l.sourceX + ',' + l.sourceY + 'L' + l.targetX + ',' + l.targetY; });
+            .attr('d', (l) => { return 'M' + l.sourceX + ',' + l.sourceY + 'L' + l.targetX + ',' + l.targetY; })
+            .attr('stroke-dasharray', aesthetics.createLinkTextBackground);
 
         this.linkText
-            .attr('transform', function (l) {
-                if (l.sourceX < l.targetX) return '';
-                const bbox = this.getBBox();
-                const centerX = bbox.x + bbox.width / 2;
-                const centerY = bbox.y + bbox.height / 2;
-                return `rotate(180 ${centerX} ${centerY})`;
-            });
+                .attr('transform', aesthetics.rotateLinkText)
+            .select('textPath')
+                .each(aesthetics.hideLongLinkText);
+            
 
         if (this.editMode && this.mousedownNode) {
             const x1 = this.mousedownNode.x * this.zoomScale + this.zoomTranslate[0],
@@ -895,7 +877,7 @@ class Graph {
 
     // Custom force that takes the parent group position as the centroid to moves all contained nodes toward
     groupNodesForce = (alpha) => {
-        var self = this;
+        const self = this;
         // Only apply force on grouped nodes that aren't being dragged and aren't fixed
         return function (d) {
             if (d.group && (!self.isDragging || d.id !== self.draggedNode.id) && !d.fixed) {
@@ -906,74 +888,69 @@ class Graph {
     }
 
     // Graph manipulation keycodes
-    setupKeycodes = () => {
-        d3.select('body')
-            .on('keydown', () => {
-                if (d3.event.target.nodeName === 'INPUT') { return; }
+    initializeKeycodes = () => {
+        const self = this;
+        d3.select('body').call(d3.keybinding()
+            // Select all nodes
+            .on('a', aesthetics.classSelectedNodes.bind(self))
+            // Clear current selection
+            .on('esc', aesthetics.clearSelected.bind(self))
+            // Expand selected nodes
+            .on('e', d3Data.expandSelectedNodes.bind(self))
+            // Fix selected nodes, unfix nodes if all were previously fixed
+            .on('f', aesthetics.toggleFixSelectedNodes.bind(self))
+            // Group selected nodes
+            .on('g', this.groupSelectedNodes.bind(self))
+            // Ungroup groups in selected nodes
+            .on('h', this.ungroupSelectedGroups.bind(self))
+            // Remove selected nodes in force layout
+            .on('r', this.deleteSelectedNodes.bind(self))
+            .on('del', this.deleteSelectedNodes.bind(self))
+            // Remove selected links in force layout; TODO: fix this
+            .on('shift+r', this.deleteSelectedLinks.bind(self))
+            // Cycle between node name lengths: abbrev -> none -> full
+            .on('t', aesthetics.toggleNodeNameLength.bind(self))
+        );
 
-                // u: Unpin selected nodes
-                if (d3.event.keyCode === 85) {
-                    this.svg.selectAll('.node.selected')
-                        .each(function (d) {
-                            d.fixed = false;
-                        })
-                        .classed('fixed', false);
-                }
-          
-                // g: Group selected nodes
-                else if (d3.event.keyCode === 71) { this.groupSelectedNodes();}
+            //     // c: Group all of the possibly same as's
+            //     else if (d3.event.keyCode === 67) { this.groupSame(); }
 
-                // h: Ungroup selected nodes
-                else if (d3.event.keyCode === 72) { this.ungroupSelectedGroups(); }
+            //     // e: Toggle edit mode
+            //     else if (d3.event.keyCode === 69) { this.toggleEditMode(); }
 
-                // c: Group all of the possibly same as's
-                else if (d3.event.keyCode === 67) { this.groupSame(); }
+            //     // l: remove selected links only
+            //     else if (d3.event.keyCode === 76 && this.editMode) { this.deleteSelectedLinks(); }
 
-                // e: Toggle edit mode
-                else if (d3.event.keyCode === 69) { this.toggleEditMode(); }
+            //     // a: Add node linked to selected
+            //     else if (d3.event.keyCode === 65 && this.editMode) {
+            //         const selection = this.svg.selectAll('.node.selected');
+            //         this.addNodeToSelected(selection);
+            //     }
 
-                // r/del: Remove selected nodes/links
-                else if ((d3.event.keyCode === 82 || d3.event.keyCode === 46) && this.editMode) { this.deleteSelectedNodes(); }
+            //     // d: Hide document nodes
+            //     else if (d3.event.keyCode === 68) { this.toggleTypeView(DOCUMENT); }
 
-                // l: remove selected links only
-                else if (d3.event.keyCode === 76 && this.editMode) { this.deleteSelectedLinks(); }
+            //     // t: expand by degree
+            //     else if (d3.event.keyCode === 84) {
+            //         if (this.degreeExpanded === 0 && this.nodes.length !== 1) {
+            //             return;
+            //         }
 
-                // a: Add node linked to selected
-                else if (d3.event.keyCode === 65 && this.editMode) {
-                    const selection = this.svg.selectAll('.node.selected');
-                    this.addNodeToSelected(selection);
-                }
+            //         if (this.degreeExpanded === 0 && this.nodes.length === 1) {
+            //             this.expandingNode = this.nodes[0];
+            //         }
 
-                // d: Hide document nodes
-                else if (d3.event.keyCode === 68) { this.toggleTypeView(DOCUMENT); }
+            //         this.degreeExpanded += 1;
 
-                // p: Toggle btwn full/abbrev text
-                else if (d3.event.keyCode === 80) {
-                    this.printFull = (this.printFull + 1) % 3;
-                    this.selectAllNodeNames()
-                        .text((d) => { return utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull); })
-                        .call(this.wrapNodeText, this.printFull);
-                }
+            //         if (this.degreeExpanded <= 4) {
+            //             d3.json(`/data/well_connected_${this.degreeExpanded}.json`, (json) => {
+            //                 this.addToMatrix(0, json.nodes, json.links);
+            //             });
+            //         }
+            //     }
 
-                // t: expand by degree
-                else if (d3.event.keyCode === 84) {
-                    if (this.degreeExpanded === 0 && this.nodes.length !== 1) {
-                        return;
-                    }
-
-                    if (this.degreeExpanded === 0 && this.nodes.length === 1) {
-                        this.expandingNode = this.nodes[0];
-                    }
-
-                    this.degreeExpanded += 1;
-
-                    if (this.degreeExpanded <= 4) {
-                        d3.json(`/data/well_connected_${this.degreeExpanded}.json`, (json) => {
-                            this.addToMatrix(0, json.nodes, json.links);
-                        });
-                    }
-                }
-            });
+            //     this.force.resume();
+            // });
     };
 
     toggleFixedNodes = () => {
@@ -1071,7 +1048,6 @@ Graph.prototype.resetGraphOpacity = aesthetics.resetGraphOpacity;
 Graph.prototype.resetDragLink = aesthetics.resetDragLink;
 Graph.prototype.wrapNodeText = aesthetics.wrapNodeText;
 Graph.prototype.updateLinkText = aesthetics.updateLinkText;
-Graph.prototype.wrapLinkText = aesthetics.wrapLinkText;
 
 // From mouseClicks.js
 Graph.prototype.brushstart = mouseClicks.brushstart;
@@ -1120,7 +1096,6 @@ Graph.prototype.createHull = d3Data.createHull;
 Graph.prototype.calculateAllHulls = d3Data.calculateAllHulls;
 Graph.prototype.drawHull = d3Data.drawHull;
 Graph.prototype.addLink = d3Data.addLink;
-Graph.prototype.selectLink = d3Data.selectLink;
 
 // From tooltips
 Graph.prototype.initializeTooltip = tt.initializeTooltip;

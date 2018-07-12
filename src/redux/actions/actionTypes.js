@@ -30,7 +30,5 @@ export const UPDATE_VIGNETTE = "UPDATE_VIGNETTE";
 
 
 /* ============================ OFFLINE ACTIONS ============================ */
-
-
-// This MUST be set to false for production. Do not push to remote with this set to true.
+// OFFLINE_ACTIONS MUST be set to false for production. Do not push to remote with this set to true.
 export const OFFLINE_ACTIONS = false;

@@ -5,10 +5,12 @@ export const GRID_LENGTH = 80;
 
 export const NODE_RADIUS = 23;
 export const LINK_DISTANCE = 100;
+export const LINK_DISTANCE_COLA = 180;
 export const STROKE_WIDTH = 2.7;
 
 export const GROUP_NODE_RADIUS = 10;
 export const GROUP_LINK_DISTANCE = 40;
+export const GROUP_LINK_DISTANCE_COLA = 60;
 export const GROUP_STROKE_WIDTH = 2.4;
 
 export const MARKER_PADDING = 7;
@@ -16,14 +18,13 @@ export const MARKER_SIZE_BIG = 5;
 export const MARKER_SIZE_SMALL = 4.1;
 
 export const TOOLBAR_PADDING = 0;
-export const BUTTON_WIDTH = 55;
+export const BUTTON_WIDTH = 50;
 export const BUTTON_ZOOM_IN_ID = 'button-zoom-in';
 export const BUTTON_ZOOM_OUT_ID = 'button-zoom-out';
 export const BUTTON_POINTER_TOOL_ID = 'button-pointer-tool';
 export const BUTTON_SELECTION_TOOL_ID = 'button-selection-tool';
 export const BUTTON_EDIT_MODE_ID = 'button-edit-mode';
 export const BUTTON_FIX_NODE_ID = 'button-fix-node';
-export const BUTTON_SIMPLIFY_ID = 'button-simplify';
 export const BUTTON_TOGGLE_MINIMAP_ID = 'button-toggle-minimap';
 export const BUTTON_UNDO_ACTION_ID = 'button-undo-action';
 export const BUTTON_REDO_ACTION_ID = 'button-redo-action';
@@ -35,7 +36,6 @@ export const BUTTON_POINTER_TOOL_TITLE = 'Pointer tool';
 export const BUTTON_SELECTION_TOOL_TITLE = 'Selection tool';
 export const BUTTON_EDIT_MODE_TITLE = 'Toggle edit mode';
 export const BUTTON_FIX_NODE_TITLE = 'Pin all nodes';
-export const BUTTON_SIMPLIFY_TITLE = 'Simplify graph';
 export const BUTTON_TOGGLE_MINIMAP_TITLE = 'Toggle minimap';
 export const BUTTON_UNDO_ACTION_TITLE = 'Undo';
 export const BUTTON_REDO_ACTION_TITLE = 'Redo';

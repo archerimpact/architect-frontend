@@ -1,6 +1,6 @@
 import * as d3 from "d3";
-import * as utils from "./utils.js";
-import {MAX_HEIGHT} from "./constants.js";
+import * as aesthetics from "./aesthetics.js";
+import { MAX_HEIGHT } from "./constants.js";
 const $ = require("jquery");
 
 export function initializeTooltip() {
@@ -26,7 +26,7 @@ export function displayDebugTooltip(self) {
 
 export function displayTooltip(d) {
     const attrs = ['id', 'name', 'type'];
-    this.displayData('node-tooltip', utils.processNodeName(d.name), this.populateNodeInfoBody, d, attrs);
+    this.displayData('node-tooltip', aesthetics.processNodeName(d.name), this.populateNodeInfoBody, d, attrs);
     this.moveTooltip(d);
     $('#node-tooltip').show();
 }
