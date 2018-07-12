@@ -1,4 +1,4 @@
 .canvas {
   position: absolute;
-  overflow-y: hidden;
+  overflow: hidden;
 }
