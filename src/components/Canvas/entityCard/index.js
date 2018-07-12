@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {withRouter} from "react-router-dom";
+import {withRouter,Link} from "react-router-dom";
 import {connect} from "react-redux";
 import {addToGraphFromId} from "../../../redux/actions/graphActions";
 import {fetchCurrentEntity} from "../../../redux/actions/graphSidebarActions";
@@ -29,9 +29,11 @@ class EntityCard extends Component {
                             Add
                         </div>
                     </div>
-                    <span className="collapse-link" onClick={() => this.dispatch(fetchCurrentEntity(node))}>
-                        {node.name || node.combined || node.label || node.description}
-                    </span>
+                    <Link to="/explore/entity">
+                        <span className="collapse-link" onClick={() => this.dispatch(fetchCurrentEntity(node))}>
+                            {node.name || node.combined || node.label || node.description}
+                        </span>
+                    </Link>
                     <div className="card-pills">
                         { !node || !node.programs ?
                             null :
