@@ -1,9 +1,11 @@
 import * as d3 from "d3";
+import * as aesthetics from "./aesthetics.js";
+import * as selection from "./selection.js";
 import * as utils from "./utils.js";
-import {findEntryById, getD3Event, isGroup, isLeftClick, isRightClick, then} from "./utils.js";
+import { findEntryById, getD3Event, isGroup, isLeftClick, isRightClick, then } from "./utils.js";
 
-import {GRID_LENGTH} from "./constants.js";
-import {resetDragLink} from "./aesthetics.js";
+import { GRID_LENGTH } from "./constants.js";
+import { resetDragLink } from "./aesthetics.js";
 
 // Click-drag node selection
 export function brushstart() {
@@ -12,7 +14,7 @@ export function brushstart() {
 
 export function brushing() {
     let self = this;
-    if (isRightClick()) {
+    if (isRightClick() || this.selectionTool) {
         const extent = this.brush.extent();
         this.svg.selectAll('.node')
             .classed('selected', function (d) {
@@ -64,7 +66,7 @@ export function dragstart(d, self) {
 
     this.isDragging = true;
     this.draggedNode = d;
-    this.displayNodeInfo(d);
+    //this.displayNodeInfo(d);
     const node = d3.select(self);
     node
         .attr('dragfix', node.classed('fixed'))
@@ -106,7 +108,6 @@ export function mousedown(d, self) {
     }
 
     this.dragDistance = 0;
-    if (isLeftClick()) { this.link.call(this.styleLink, false); }
     if (this.editMode) {
         this.mousedownNode = d;
         this.dragLink
@@ -131,7 +132,7 @@ export function mouseup(d, self) {
             bwdLinkId = this.linkedById[target.id + ',' + source.id];
         if (fwdLinkId) {
             // If link already exists, select it
-            this.selectLink(source, target);
+            selection.selectLink.bind(this, source, target);
         } else if (bwdLinkId) {
             // If link exists in opposite direction, make it bidirectional and select it
             const currLink = findEntryById(this.links, bwdLinkId);
@@ -141,7 +142,7 @@ export function mouseup(d, self) {
         } else {
             // If link doesn't exist, create and select it
             this.addLink(source, target);
-            this.selectLink(source, target);
+            selection.selectLink.bind(this, source, target);
         }
     }
 
@@ -173,7 +174,7 @@ export function mouseover(d, self) {
         if (this.printFull === 0) {
             d3.select(self)
                 .select('.node-name')
-                .text(utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull), 2)
+                .text(aesthetics.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull), 2)
                 .call(this.wrapNodeText, 2);
         }
     }
@@ -202,12 +203,11 @@ export function mouseout(d, self) {
 
     // Text truncation
     if (this.printFull !== 1) {
-        d3.select(self)
-        .select('.node-name')
-        .text((d) => {
-            return d.group ? '' : utils.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull);
-        })
-        .call(this.wrapNodeText, this.printFull);
+        d3.select(self).select('.node-name')
+            .text((d) => {
+                return d.group ? '' : aesthetics.processNodeName(d.name ? d.name : (d.number ? d.number : d.address), this.printFull);
+            })
+            .call(this.wrapNodeText, this.printFull);
     }
 
     // Restore node drag functionality for future left clicks
@@ -222,8 +222,7 @@ export function clickedCanvas() {
     resetDragLink(this);
     if (d3.event.defaultPrevented) return;
     if (this.dragDistance === 0) {
-        const selection = this.svg.selectAll('.node.selected');
-        this.addNodeToSelected(selection, d3.event);
+        this.addNodeToSelected(d3.event);
     } else {
         this.dragDistance = 0;
     }
@@ -271,10 +270,9 @@ export function zoomstart(d, self) {
 }
 
 export function zooming(d, self) {
-    if (!isRightClick()) {
-        const e = d3.event;
-        this.performZoom(e.translate, e.scale); // perform the zoom with the translate and scale from the handlers triggered by the graph
-    }
+    if (isRightClick() || this.selectionTool) return;
+    const e = d3.event;
+    this.performZoom(e.translate, e.scale); // Perform the zoom with the translate and scale from the handlers triggered by the graph
 }
 
 export function performZoom(translate, scale) {
@@ -286,7 +284,7 @@ export function performZoom(translate, scale) {
 
 export function zoomend(d, self) {
     this.svg.attr('cursor', 'move');
-    if (isRightClick()) {
+    if (isRightClick() || this.selectionTool) {
         this.zoom.translate(this.zoomTranslate);
         this.zoom.scale(this.zoomScale);
     }
@@ -339,7 +337,7 @@ export function zoomButton(zoom_in) {
         if (this.zoomPressed) this.zoomButton(zoom_in);
         else this.isZooming = false;
         if (this.minimap) {
-            this.minimap.zooming();
+            this.minimap.zooming(this.zoomTranslate);
         }
     });
 

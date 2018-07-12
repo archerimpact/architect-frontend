@@ -1,4 +1,4 @@
-import {GET_PROJECTS, LOAD_PROJECT, TOGGLE_SIDEBAR, OFFLINE_ACTIONS} from "./actionTypes";
+import { GET_PROJECTS, LOAD_PROJECT, TOGGLE_SIDEBAR, OFFLINE_ACTIONS } from "./actionTypes";
 
 import * as server from "../../server";
 import offlineData from "../../data/well_connected_3.json";

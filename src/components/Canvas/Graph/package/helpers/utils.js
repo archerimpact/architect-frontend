@@ -117,9 +117,18 @@ export function createSVGString(targetSVG, x1, x2, y1, y2, width = null, height 
         }
 
         Array.from(e.childNodes).forEach((e) => {
-            if (e.classList[0] === "svg-grid") {
+            // console.log(e.childNodes)
+            if (e.classList[0] === "svg-grid" || e.classList.contains("icon")) {
                 e.parentNode.removeChild(e);
             }
+            
+            // Array.from(e.childNodes).forEach((e) => {
+            //     Array.from(e.childNodes).forEach((e) => {
+            //         if (e.classList[0] === "icon") {
+            //             e.parentNode.removeChild(e);
+            //         }
+            //     });
+            // });
         });
     });
 
@@ -186,33 +195,6 @@ export function findEntryById(dictList, id) {
     return null;
 }
 
-// Normalize node text to same casing conventions and length
-// printFull states - 0: abbrev, 1: none, 2: full
-export function processNodeName(str, printFull) {
-    if (!str) { return 'Document'; }
-    if (printFull === 1) { return ''; }
-
-    const delims = [' ', '.', '('];
-    for (let i = 0; i < delims.length; i++) {
-        str = splitAndCapitalize(str, delims[i]);
-    }
-
-    return str;
-}
-
-export function splitAndCapitalize(str, splitChar) {
-    let tokens = str.toString().split(splitChar);
-    tokens = tokens.map(function (token, idx) {
-        return capitalize(token, splitChar === ' ');
-    });
-
-    return tokens.join(splitChar);
-}
-
-export function capitalize(str, first) {
-    return str.charAt(0).toUpperCase() + (first ? str.slice(1).toLowerCase() : str.slice(1));
-}
-
 // Wrapper to get d3 event without worrying about event vs sourceEvent
 export function getD3Event() {
     if (d3.event) {
@@ -240,4 +222,17 @@ export function atan2(y, x) {
     if (Math.abs(y) > Math.abs(x)) { r = 1.57079637 - r; }
     if (x < 0) { r = Math.PI - r; }
     return ((y < 0) ? -r : r) * 180 / Math.PI;
+}
+
+// Non-secure hash function
+export function hash(str) {
+    let char, hash = 0;
+    if (str.length === 0) return hash;
+    for (let i = 0; i < str.length; i++) {
+        char = str.charCodeAt(i);
+        hash = ((hash<<5)-hash)+char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+
+    return hash;
 }

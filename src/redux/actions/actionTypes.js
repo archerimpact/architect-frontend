@@ -18,5 +18,5 @@ export const RESET_GRAPH = "RESET_GRAPH";
 export const STORE_ENTITY = "STORE_ENTITY";
 
 /* ============================ OFFLINE ACTIONS ============================ */
-// This MUST be set to false for production. Do not push to remote with this set to true.
+// OFFLINE_ACTIONS MUST be set to false for production. Do not push to remote with this set to true.
 export const OFFLINE_ACTIONS = false;
