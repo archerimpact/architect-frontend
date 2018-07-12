@@ -24,7 +24,7 @@ export default class VignettePreview2 extends Component {
           <div className="flex-row">
             <p className="preview-date">July 9, 2018</p>
           </div>
-          <h5 className="preview-title">HOW sanctions data applies to corruption</h5>
+          <h5 className="preview-title">HOW sanctions data applies to oligarchs</h5>
           <hr className="preview-divider" />
         </div>
         <div className="col-md preview-box">
