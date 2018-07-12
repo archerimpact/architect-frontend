@@ -26,7 +26,7 @@ class Graph extends Component {
         if (this.props.index) {
             this.props.dispatch(homeActions.addToVignetteFromId(this.props.graph, d.id, this.props.index))
         } else {
-            this.props.dispatch(this.addToGraphFromId(this.props.graph, d.id));
+            this.props.dispatch(graphActions.addToGraphFromId(this.props.graph, d.id));
         }
     };
 
