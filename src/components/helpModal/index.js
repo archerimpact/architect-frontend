@@ -32,7 +32,7 @@ class HelpModal extends Component {
                     </td>
                   </tr>
                   <tr>
-                    <td className="rule">Expand/(un)group node</td>
+                    <td className="rule">Expand node</td>
                     <td className="hotkey">
                       <p className="code">dbl-click</p>
                     </td>
