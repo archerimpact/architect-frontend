@@ -202,7 +202,6 @@ var Entity = function (_Component) {
                     var n = node;
                     var val = n[k[0]];
                     empty = false;
-                    console.log("val", n[k[0]]);
                     return _react2.default.createElement(
                         "div",
                         { className: "info-row", key: k },
@@ -225,8 +224,6 @@ var Entity = function (_Component) {
                     );
                 })
             );
-
-            console.log("linktypes", linktypes);
 
             return _react2.default.createElement(
                 "div",
@@ -311,7 +308,6 @@ var Entity = function (_Component) {
         value: function render() {
             var currentEntity = this.props.currentEntity;
 
-            console.log("currentEntity", currentEntity);
             var keys = [['dateOfBirth', 'Date of Birth'], ['placeOfBirth', 'Place of Birth'], ['titles', 'Titles'], ['emailAddresses', 'Email Addresses'], ['websites', 'Websites'], ['aliases', 'Aliases'], ['programs', 'Programs'], ['numberType', 'Document Type'], ['valid', 'Valid'], ['number', 'Number'], ['issuedBy', 'Issuer'], ['issuedIn', 'Place of Issue'], ['issuedOn', 'Date of Issue'], ['notes', 'Notes']];
             if (currentEntity === null) {
                 return _react2.default.createElement(

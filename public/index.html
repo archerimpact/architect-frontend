@@ -12,7 +12,6 @@
       let counter = 0;
       setInterval(() => {
         counter += 10;
-        console.log(counter);
         gtag('event', 'pageLoadedTimer', { event_label: counter, value: counter })
       }, 10000)
       

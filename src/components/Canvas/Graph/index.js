@@ -34,7 +34,6 @@ class Graph extends Component {
         const { data, graph, width, height, allowKeycodes, displayMinimap } = this.props;
         // this.props.dispatch(initializeCanvas(this.props.graph, this.props.width, this.props.height));
         graph.generateCanvas(width ? width : windowWidth, height ? height: windowHeight, this.refs.graphContainer, allowKeycodes);
-        console.log("data reloading", data);
         if (data.nodes.length !== 0) {
             graph.setData(0, this.makeDeepCopy(data.nodes), this.makeDeepCopy(data.links));
         } else {
