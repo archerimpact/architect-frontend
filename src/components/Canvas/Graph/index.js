@@ -34,6 +34,7 @@ class Graph extends Component {
         const { data, graph, width, height, allowKeycodes, displayMinimap } = this.props;
         // this.props.dispatch(initializeCanvas(this.props.graph, this.props.width, this.props.height));
         graph.generateCanvas(width ? width : windowWidth, height ? height: windowHeight, this.refs.graphContainer, allowKeycodes);
+        console.log("data reloading", data);
         if (data.nodes.length !== 0) {
             graph.setData(0, this.makeDeepCopy(data.nodes), this.makeDeepCopy(data.links));
         } else {
@@ -48,13 +49,11 @@ class Graph extends Component {
       if (displayMinimap === false) { graph.hideMinimap(); }
     }
 
-    componentWillReceiveProps(nextprops) {
-        const { graph } = this.props;
-        graph.bindDisplayFunctions({
-            expand: this.expandNodeFromData,
-            node: this.fetchCurrentEntityFunc,
-            save: null
-        });
+    componentWillReceiveProps(nextProps) {
+        if (this.props.data.id !== nextProps.data.id) {
+            nextProps.graph.setData(0, this.makeDeepCopy(nextProps.data.nodes), this.makeDeepCopy(nextProps.data.links));
+            if (nextProps.displayMinimap === false) { nextProps.graph.hideMinimap(); }
+        }
     }
 
     makeDeepCopy(array) {

@@ -23,18 +23,17 @@ class GraphPreview extends Component {
     }
 
     componentDidMount() {
-
       this.updateWindowDimensions();
       this.refs.graphPreviewBox.addEventListener('resize', this.updateWindowDimensions);
 
-      if (this.props.startingNode) {
-          server.searchBackendText(this.props.startingNode) // hardcoded for now, don't worry too much about it until we decide this way of doing the narratives is conceptually best
-              .then((data) => {
-                  let neo4j_id = data[0].id;
-                  this.props.dispatch(homeActions.addToVignetteFromId(this.graph, neo4j_id, this.props.index));
-              })
-              .catch((err)=> {console.log(err)});
-      }
+        if (this.props.startingNode) {
+            server.searchBackendText(this.props.startingNode) // hardcoded for now, don't worry too much about it until we decide this way of doing the narratives is conceptually best
+                .then((data) => {
+                    let neo4j_id = data[0].id;
+                    this.props.dispatch(homeActions.addToVignetteFromId(this.graph, neo4j_id, this.props.index));
+                })
+                .catch((err)=> {console.log(err)});
+        }
     }
 
     componentWillUnmount() {
@@ -43,7 +42,7 @@ class GraphPreview extends Component {
 
     updateWindowDimensions = () => {
       this.setState({ width: this.refs.graphPreviewBox.clientWidth, height: this.refs.graphPreviewBox.clientHeight });
-    }
+    };
 
 
     loadDataToMainGraph = () => {
@@ -52,10 +51,10 @@ class GraphPreview extends Component {
 
     renderGraph = () => {
       if (this.state.width && this.state.height) {
-          // console.log("index and more", this.props.index, this.graph, this.state.height)
+          console.log("index and more", this.props.index, this.props.vignetteGraphData);
         return <Graph graph={this.graph} height={this.state.height} width={this.state.width} displayMinimap={false} allowKeycodes={false} data={this.props.vignetteGraphData[this.props.index]} index={this.props.index} />
       }   
-    }
+    };
 
     render() {
         return (

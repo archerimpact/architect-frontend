@@ -37,7 +37,7 @@ class Home extends Component {
 
     backToHome = () => {
         this.setState({linkPresent: false});
-    }
+    };
 
     render() {
         const { linkPresent } = this.state;
@@ -47,7 +47,7 @@ class Home extends Component {
                     <div className="container">
                         <div className="sign-up-row flex-row">
                             <p className="sign-up-tagline">
-                                This is just a teaser. <a href="#sign-up">Sign up</a> for more.
+                                This is just a teaser. Sign up for more.
                             </p>
                         </div>
                     </div>
@@ -90,7 +90,7 @@ class Home extends Component {
                   <div className="release-preview-card">
                     <div className="row">
                       <div className="col-md-6">
-                        <GraphPreview index={3}/>
+                        <img src="./newnewgif.gif" id="top-left-image" />
                       </div>
                       <div className="col-md-6 release-preview-content">
                         <div className="release-preview-summary">

@@ -40,7 +40,7 @@ class VignetteModal2 extends Component {
               <div className="vignette-card-row flex-row">
                 <div className="vignette-card-col vignette-card-left-col">
                   <div className="vignette-card-header">
-                    <p className="vignette-date">July 9, 2018</p>
+                    <p className="vignette-date">July 12, 2018</p>
                     <h4 className="vignette-title">HOW sanctions data applies to finding oligarchs</h4>
                     {/*<p className="vignette-author">Treasury Press Release</p>  */}
                     <hr className="vignette-divider" />

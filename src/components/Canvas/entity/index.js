@@ -187,8 +187,6 @@ class Entity extends Component {
             }) }
         </div>);
 
-        console.log("linktypes", linktypes);
-
         return (
             <div className="full-width">
                 <div className="entity-header-wrapper">
@@ -214,7 +212,7 @@ class Entity extends Component {
                                 <div key={idx}>
                                     <h5 className="subheader" key={`h5-${idx}`}>{l}</h5>
                                     { t.extracted.map(node =>
-                                    <EntityCard key={node.id} node={node} id={node.id} shouldFetch graph={this.props.graph} /> )}
+                                    <EntityCard key={node.id} node={node} id={node.id} data={this.props.data} shouldFetch graph={this.props.graph} /> )}
                                 </div>
                             );
                         })}
