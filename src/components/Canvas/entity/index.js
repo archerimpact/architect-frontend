@@ -180,7 +180,7 @@ class Entity extends Component {
                         <p className="info-key">{k[1]}</p>
                         { (!(val instanceof Array))
                             ? <p className="info-value">{val.toString()}</p>
-                            : val.map(v => <li className="info-value">{v}</li>)
+                            : val.map(v => <li className="info-value" key={v}>{v}</li>)
                         }
                     </div>
                 )
