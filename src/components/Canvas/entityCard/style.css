@@ -26,7 +26,7 @@
     color: #aaaaaa;
     margin-left: 1em;
     background-color: #eeeeee;
-    padding: 5px;
+    padding: 3px;
     max-width: 90px;
     max-height: 30px;
     overflow-y: hidden;
@@ -36,6 +36,7 @@ p.sdn-type {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    margin: 0;
 }
 
 h5.card-detail-header {

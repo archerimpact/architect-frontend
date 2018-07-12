@@ -36,11 +36,16 @@ class EntityCard extends Component {
                         {node.name || node.combined || node.label || node.description}
                     </span>
                     <div className="card-pills">
-                        <div className="card-sdn-type">
-                            <p className="sdn-type">
-                                { node && node.programs && node.programs.join('/') }
-                            </p>
-                        </div>
+                        { !node || !node.programs ?
+                            null :
+                            (
+                                <div className="card-sdn-type">
+                                    <p className="sdn-type">
+                                        { node && node.programs && node.programs.join('/') }
+                                    </p>
+                                </div>
+                            )
+                        }
                     </div>
                 </div>
                 <div>

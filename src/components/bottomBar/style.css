@@ -11,6 +11,21 @@
     color: #fafafa;
 }
 
+#bottom-email-submit {
+	background-color: transparent;
+	border: none;
+	outline: none;
+	padding: 2px 0 0 10px;
+}
+
+.bottom-email-row {
+	align-items: center;
+}
+
+.bottombar-submit:hover {
+	color: #b3cae1;
+}
+
 .bottombar-content {
 	display: flex;
 	align-items: center;

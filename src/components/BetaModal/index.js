@@ -29,13 +29,13 @@ export default class BetaModal extends Component {
               <p className="modal-p">
                 Sign up to get early access to our beta!
               </p>
-              
-              <form className="modal-form">
+
+              <form className="modal-form" action="https://archeratberkeley.us17.list-manage.com/subscribe/post?u=6f7abb9e526fd4f56b65d0305&amp;id=8399a2fbfc" method="post" id="subForm" data-error="Please fill all fields correctly." data-success="Thanks for signing up! Please check your inbox for confirmation email.">
                 <div className="flex-row">
-                  <input id="beta-email-input" className="form-control" placeholder="Email address" type="text" />
-                  <div id="beta-email-submit" className="btn btn-primary">
-                    Get beta access
-                  </div>
+                  <input id="beta-email-input" className="sign-up-input form-control validate-email" id="mce-EMAIL" name="EMAIL" type="email" placeholder="Email Address" required />
+                  <button id="beta-email-submit" className="btn btn-primary" type="submit" >
+                    Subscribe Now
+                  </button>
                 </div>
               </form>
 

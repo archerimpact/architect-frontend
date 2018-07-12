@@ -136,7 +136,7 @@ class GraphSidebar extends Component {
 
         return (
             <div className="tabs" key="tabs">
-                <div className={"tab " + (activeState === 'search' ? 'active-tab' : '')} onClick={() => this.toggleSidebarFunc("search")}>
+                <div className={"mt-auto tab " + (activeState === 'search' ? 'active-tab' : '')} onClick={() => this.toggleSidebarFunc("search")}>
                     <Link to={baseUrl + '/search'}>
                         <div>
                             <i className="tab-icon material-icons">search</i>
@@ -157,8 +157,8 @@ class GraphSidebar extends Component {
                         </div>
                     </Link>
                 </div>
-                <div className="tab" onClick={() => this.toggleSidebarFunc("toggleSidebar")}>
-                    <i className="tab-icon material-icons">{this.props.sidebarVisible ? "chevron_right" : "chevron_left"}</i>
+                <div className="mb-auto tab" onClick={() => this.toggleSidebarFunc("toggleSidebar")}>
+                    <i className="tab-icon toggle-tab-icon material-icons">{this.props.sidebarVisible ? "chevron_right" : "chevron_left"}</i>
                 </div>
             </div>
         )
