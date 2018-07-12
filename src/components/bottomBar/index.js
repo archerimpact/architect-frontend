@@ -28,7 +28,7 @@ export default class BottomBar extends Component {
             <div className="bottombar-content">
               { this.renderClose() }
               <p className="bottombar-text">
-                We're just getting started &mdash; this is only a sneak peek of our full platform! Subscribe to be notified of our future releases.
+                We're just getting started &mdash; this is only a sneak peek of our full platform! Subscribe to be notified of our future releases.&nbsp;
               </p>
               <SignUpForm naked />
             </div>

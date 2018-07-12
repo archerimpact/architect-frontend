@@ -21,3 +21,12 @@
     padding: 0px 4px;
     border-left: 1px solid #D4D4D4;
 }
+
+#graph-container {
+    margin-left: 50px;
+    overflow-x: hidden;
+}
+
+#graph-container::-webkit-scrollbar { 
+    display: none; 
+}

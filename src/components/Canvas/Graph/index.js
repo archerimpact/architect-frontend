@@ -67,7 +67,7 @@ class Graph extends Component {
         const { height, width, onMouseOver } = this.props;
         return (
             <div>
-                <div ref="graphContainer" style={{"height": height ? height : windowHeight + "px", "width": width ? width : windowWidth + "px"}} onMouseOver={onMouseOver}></div>
+                <div id="graph-container" ref="graphContainer" style={{"height": height ? height : windowHeight + "px", "width": width ? width : windowWidth + "px"}} onMouseOver={onMouseOver}></div>
             </div>
         );
     }
