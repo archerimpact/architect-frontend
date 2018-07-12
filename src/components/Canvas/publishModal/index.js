@@ -18,8 +18,8 @@ export default class PublishModal extends Component {
     }
   }
 
-  fetchLink = async (title, author, description, graph) => {
-    let response = await saveLink(title, author, description, graph)
+  fetchLink = async (graph) => {
+    let response = await saveLink(graph)
     this.setState({link: response})
   }
 
@@ -44,7 +44,7 @@ export default class PublishModal extends Component {
         <div className="generated-link">
           <p>Feel free to tweet this out, or directly share this link:</p>
           <div className="flex-row share-row">
-            <input value={"http://viz.archerimpact.com/t/" + this.state.link} className="form-control" readOnly/>
+            <input value={"https://viz.archerimpact.com/t/" + this.state.link} className="form-control" readOnly/>
             <a href={"https://twitter.com/intent/tweet?text=" + encodeURIComponent(`${ this.state.title ? `"${this.state.title}" - ` : '' }Check out my powerful interactive graph visualization of a sanctioned network on #ArcherViz @archerimpact https://viz.archerimpact.com/t/${this.state.link}`)} >
               <i id="tweet-link" className="twitter-action fab fa-twitter"></i>
             </a>
@@ -68,31 +68,9 @@ export default class PublishModal extends Component {
                 Found an interesting network?  Want to show off?  Generate a link to your investigation that you can share on social media or send to coworkers.
               </p>
 
-              <form>
-                <div className="form-row">
-                  <div className="form-group col">
-                    <label htmlFor="title-input">Title</label>
-                    <input className="form-control" id="title-input" placeholder="Title" value={title} onChange={(e) => this.handleTitleChange(e.target.value)} />
-                  </div>
-                  <div className="form-group col">
-                    <label htmlFor="author-input">Author</label>
-                    <input className="form-control" id="author-input" placeholder="Your name" value={author} onChange={(e) => this.handleAuthorChange(e.target.value)} />
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="description-textarea">Description</label>
-                    <textarea className="form-control" id="description-textarea" value={description} onChange={(e) => this.handleDescriptionChange(e.target.value)} />
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div id="publish-submit" className="btn btn-primary" onClick={() => this.fetchLink(title, author, description, graph)}>
-                    Submit
-                  </div>
-                </div>
-              </form>
+              <div id="publish-submit" className="btn btn-primary" onClick={() => this.fetchLink(graph)}>
+                Submit
+              </div>
               { this.renderLink() }
             </div>
           </ModalDialog>
