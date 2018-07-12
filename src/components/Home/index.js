@@ -127,7 +127,7 @@ export default class Home extends Component {
                   <i className="beginning-icon material-icons">date_range</i>
                   <div>
                     <p className="content-title-summary lead">
-                      The summer is in full swing and so are we.  We have an exciting set of releases slated for the next few weeks.  Don't want to miss out?  Catch us on <a href="https://twitter.com/archerimpact" className="real-link bold">Twitter</a> or <a href="#sign-up" className="real-link bold">subscribe</a> to our summer announcements. To learn more about what we do, check out our <a href="http://archer.cloud/" className="real-link bold"> website</a>.
+                      The summer is in full swing and so are we.  We have an exciting set of releases slated for the next few weeks.  Don't want to miss out?  Catch us on <a href="https://twitter.com/archerimpact" className="real-link bold">Twitter</a> or <a href="#sign-up" className="real-link bold">subscribe</a> to our summer announcements. To learn more about what we do, check out our <a href="https://archerimapct.com/" className="real-link bold"> website</a>.
                     </p>
                   </div>
                 </div>
