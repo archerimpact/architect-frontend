@@ -15,7 +15,8 @@ class SideNavBar extends Component {
     super(props);
     this.state = { 
       isBetaModalOpen: false,
-      isHelpModalOpen: false 
+      isHelpModalOpen: false,
+      isTermsModalOpen: false 
     };
   }
 
@@ -43,10 +44,10 @@ class SideNavBar extends Component {
         <div className="side-nav-button" data-tip="Sign up" onClick={ this.toggleBetaModal }>
           <i className="material-icons">person_add</i>
         </div>
-        <div className="side-nav-button" onClick={ this.toggleHelpModal } data-tip="Graph Help">
+        <div className="side-nav-button" onClick={ this.toggleHelpModal } data-tip="Graph help">
           <i className="material-icons">help</i>
         </div>
-        <div className="side-nav-button mt-auto" onClick={ this.toggleTermsModal } data-tip="Terms and Conditions">
+        <div className="side-nav-button mt-auto" onClick={ this.toggleTermsModal } data-tip="Terms and conditions">
           <i className="material-icons">file_copy</i>
         </div>
         {

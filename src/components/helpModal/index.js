@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 
-import './style.css'
+import './style.css';
 
 class HelpModal extends Component {
   render() {
