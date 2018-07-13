@@ -282,18 +282,18 @@ class Graph {
 
     initializeMenuActions = () => {
         this.menuActions = [
-            {
-                title: 'Group selected nodes',
-                action: (elm, d, i) => {
-                    this.groupSelectedNodes();
-                }
-            },
-            {
-                title: 'Ungroup selected nodes',
-                action: (elm, d, i) => {
-                    this.ungroupSelectedGroups();
-                }
-            },
+            // {
+            //     title: 'Group selected nodes',
+            //     action: (elm, d, i) => {
+            //         this.groupSelectedNodes();
+            //     }
+            // },
+            // {
+            //     title: 'Ungroup selected nodes',
+            //     action: (elm, d, i) => {
+            //         this.ungroupSelectedGroups();
+            //     }
+            // },
             {
                 title: 'Expand 1st degree connections...',
                 action: (elm, d, i) => {
