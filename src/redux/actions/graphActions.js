@@ -1,4 +1,4 @@
-import {LOAD_DATA, REORDER_ENTITY_CACHE, UPDATE_GRAPH_DATA, OFFLINE_ACTIONS, TOGGLE_SIDEBAR, RESET_GRAPH, STORE_CURRENT_NODE, STORE_ENTITY, STORE_SEARCH_RESULTS} from "./actionTypes";
+import {LOADING, LOAD_DATA, REORDER_ENTITY_CACHE, UPDATE_GRAPH_DATA, OFFLINE_ACTIONS, TOGGLE_SIDEBAR, RESET_GRAPH, STORE_CURRENT_NODE, STORE_ENTITY, STORE_SEARCH_RESULTS} from "./actionTypes";
 import _ from 'lodash';
 import * as server from "../../server/index";
 
@@ -66,12 +66,21 @@ function fetchSearchResultsDispatch(data) { // MOVED
     };
 }
 
+function toggleLoading(bool) { // MOVED
+    return {
+        type: LOADING,
+        payload: bool
+    };
+}
+
 export function fetchSearchResults(query) {
     return (dispatch) => {
+        dispatch(toggleLoading(true));
         if (OFFLINE_ACTIONS) return;
         server.searchBackendText(query)
         .then((data) => {
             dispatch(fetchSearchResultsDispatch(data));
+            dispatch(toggleLoading(false))
         })
         .catch((error) => console.log(error));
     }

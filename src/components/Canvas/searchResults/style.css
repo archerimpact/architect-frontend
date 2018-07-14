@@ -19,3 +19,15 @@
 	margin-top: 20px;
 	text-align: right;
 }
+
+.spinning-svg path {
+    stroke: #FFFFFF !important;
+    stroke-width: 0;
+}
+
+.around-loading {
+    width: 100%;
+    height: 100%;
+    margin-left: 225px;
+    margin-top: 50%;
+}
