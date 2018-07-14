@@ -68,9 +68,10 @@ hr.preview-divider {
 .preview-summary-text {
 	margin: auto;
 	color: #fafafa;
-	font-size: 30px;
+	font-size: 20px;
 	text-align: center;
-	text-shadow: 1px 1px #222222;	
+	text-shadow: 1px 1px #222222;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .tint:hover {

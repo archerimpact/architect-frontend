@@ -21,7 +21,7 @@ export default class BetaModal extends Component {
 
               <p className="modal-p">
                 If you'd like to find out more, check out&nbsp;
-                <a href="https://archer.cloud/" className="underlined-link">
+                <a href="https://www.archerimpact.com" className="underlined-link">
                   our website
                 </a>
                 .

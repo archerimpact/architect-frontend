@@ -36,7 +36,7 @@ table {
 }
 
 .modal-content tr p {
-  margin: 0px;
+  margin: 0;
 }
 
 .modal-content tr p.code {
