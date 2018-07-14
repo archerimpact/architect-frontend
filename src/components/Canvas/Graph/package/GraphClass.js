@@ -33,6 +33,8 @@ const icons = {
     [constants.BUTTON_POINTER_TOOL_ID]: '',
     [constants.BUTTON_SELECTION_TOOL_ID]: '',
     // [constants.BUTTON_EDIT_MODE_ID]: '',
+    [constants.BUTTON_EXPAND_NODES_ID]: '',
+    [constants.BUTTON_REMOVE_NODES_ID]: '',
     [constants.BUTTON_FIX_NODE_ID]: '',
     // [constants.BUTTON_TOGGLE_MINIMAP_ID]: '',
     // [constants.BUTTON_UNDO_ACTION_ID]: '',
@@ -495,10 +497,10 @@ class Graph {
 
     getToolbarLabels = () => {
         const labels = [constants.BUTTON_ZOOM_IN_ID, constants.BUTTON_ZOOM_OUT_ID, constants.BUTTON_POINTER_TOOL_ID,
-            constants.BUTTON_SELECTION_TOOL_ID, constants.BUTTON_FIX_NODE_ID]; 
+            constants.BUTTON_SELECTION_TOOL_ID, constants.BUTTON_EXPAND_NODES_ID, constants.BUTTON_REMOVE_NODES_ID, constants.BUTTON_FIX_NODE_ID]; 
             //constants.BUTTON_UNDO_ACTION_ID, constants.BUTTON_REDO_ACTION_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_SAVE_PROJECT_ID
         const titles = [constants.BUTTON_ZOOM_IN_TITLE, constants.BUTTON_ZOOM_OUT_TITLE, constants.BUTTON_POINTER_TOOL_TITLE,
-            constants.BUTTON_SELECTION_TOOL_TITLE, constants.BUTTON_FIX_NODE_TITLE]; 
+            constants.BUTTON_SELECTION_TOOL_TITLE, constants.BUTTON_EXPAND_NODES_TITLE, constants.BUTTON_REMOVE_NODES_TITLE, constants.BUTTON_FIX_NODE_TITLE]; 
             //constants.BUTTON_UNDO_ACTION_TITLE, constants.BUTTON_REDO_ACTION_TITLE, constants.BUTTON_EDIT_MODE_TITLE, constants.BUTTON_TOGGLE_MINIMAP_TITLE, constants.BUTTON_SAVE_PROJECT_TITLE
         const labelObjects = [];
         for (let i = 0; i < labels.length; i++) {
@@ -579,9 +581,11 @@ class Graph {
             this.selectionTool = true;
         }); // Placeholder method
         // this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => { this.toggleEditMode(); });
+        this.initializeButton(constants.BUTTON_EXPAND_NODES_ID, d3Data.expandSelectedNodes.bind(this));
+        this.initializeButton(constants.BUTTON_REMOVE_NODES_ID, d3Data.deleteSelectedNodes.bind(this));
         this.initializeButton(constants.BUTTON_FIX_NODE_ID, () => { this.toggleFixedNodes(); });
-        this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => { this.minimap.toggleMinimapVisibility(); }); // Wrap in unnamed function bc minimap has't been initialized yet
-        this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => { this.saveAllData() }); // Placeholder method
+        //this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => { this.minimap.toggleMinimapVisibility(); }); // Wrap in unnamed function bc minimap has't been initialized yet
+        //this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => { this.saveAllData() }); // Placeholder method
 
         // Create selectors
         this.linkContainer = this.container.append('g').attr('class', 'link-items');
@@ -902,9 +906,9 @@ class Graph {
             // Fix selected nodes, unfix nodes if all were previously fixed
             .on('f', aesthetics.toggleFixSelectedNodes.bind(self))
             // Group selected nodes
-            .on('g', this.groupSelectedNodes.bind(self))
+            // .on('g', this.groupSelectedNodes.bind(self))
             // Ungroup groups in selected nodes
-            .on('h', this.ungroupSelectedGroups.bind(self))
+            // .on('h', this.ungroupSelectedGroups.bind(self))
             // Remove selected nodes in force layout
             .on('r', this.deleteSelectedNodes.bind(self))
             .on('del', this.deleteSelectedNodes.bind(self))

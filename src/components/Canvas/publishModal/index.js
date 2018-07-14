@@ -45,7 +45,7 @@ export default class PublishModal extends Component {
           <p>Feel free to tweet this out, or directly share this link:</p>
           <div className="flex-row share-row">
             <input value={"https://viz.archerimpact.com/" + this.state.link} className="form-control" readOnly/>
-            <a href={"https://twitter.com/intent/tweet?text=" + encodeURIComponent(`${ this.state.title ? `"${this.state.title}" - ` : '' }Check out my powerful interactive graph visualization of a sanctioned network on #ArcherViz @archerimpact https://viz.archerimpact.com/t/${this.state.link}`)} >
+            <a href={"https://twitter.com/intent/tweet?text=" + encodeURIComponent(`${ this.state.title ? `"${this.state.title}" - ` : '' }Check out my powerful interactive graph visualization of a sanctioned network on #ArcherViz @archerimpact https://viz.archerimpact.com/${this.state.link}`)} >
               <i id="tweet-link" className="twitter-action fab fa-twitter"></i>
             </a>
           </div>

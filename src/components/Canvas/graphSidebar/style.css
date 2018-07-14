@@ -13,9 +13,9 @@
     top: 0;
     width: 550px;
     height: 100%;
-    margin-left: 55px;
     border-right: 1px solid #ebebeb;
     z-index: 4;
+    margin-right: 50px;
 }
 
 .tab-container {
