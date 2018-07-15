@@ -45,6 +45,19 @@ export const BUTTON_UNDO_ACTION_TITLE = 'Undo';
 export const BUTTON_REDO_ACTION_TITLE = 'Redo';
 export const BUTTON_SAVE_PROJECT_TITLE = 'Save project';
 
+export const BUTTON_ZOOM_IN_CODE = '+';
+export const BUTTON_ZOOM_OUT_CODE = '-';
+export const BUTTON_POINTER_TOOL_CODE = '';
+export const BUTTON_SELECTION_TOOL_CODE = '';
+export const BUTTON_EDIT_MODE_CODE = '';
+export const BUTTON_EXPAND_NODES_CODE = 'e';
+export const BUTTON_REMOVE_NODES_CODE = 'r';
+export const BUTTON_FIX_NODE_CODE = 'f';
+export const BUTTON_TOGGLE_MINIMAP_CODE = 'm';
+export const BUTTON_UNDO_ACTION_CODE = '';
+export const BUTTON_REDO_ACTION_CODE = '';
+export const BUTTON_SAVE_PROJECT_CODE = '';
+
 // export const MINIMAP_SCALE = 0.15;
 export const MINIMAP_PADDING = 100;
 export const DEFAULT_MINIMAP_SIZE = 300;
