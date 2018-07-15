@@ -258,18 +258,23 @@ path.link.selected {
 .d3-tip:after {
   box-sizing: border-box;
   display: inline;
-  font-size: 10px;
+  font-size: 13px;
   width: 100%;
-  line-height: 1;
+  line-height: .5;
   color: rgba(0, 0, 0, 0.8);
   content: "\25BC";
   position: absolute;
   text-align: center;
+  -webkit-transform:scale(1.2,1); /* Safari and Chrome */
+    -moz-transform:scale(1.2,1); /* Firefox */
+    -ms-transform:scale(1.2,1); /* IE 9 */
+    -o-transform:scale(1.2,1); /* Opera */
+    transform:scale(1.2,1); /* W3C */
 }
 
 .d3-tip.s:after {
   content: "\25B2";
-  margin: 0 0 1px 0;
+  margin: 0 0 0px 0;
   top: -8px;
   left: 0;
   text-align: center;

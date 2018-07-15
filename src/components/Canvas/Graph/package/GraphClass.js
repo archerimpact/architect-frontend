@@ -444,7 +444,7 @@ class Graph {
     initializeTooltip = () => {
         this.tooltip = d3.tip()
             .attr('class', 'd3-tip')
-            .offset([10, 0])
+            .offset([11, 0])
             .html((d) => { return d.code ? `${d.title} <span style='color: #0d77e2;'>[${d.code}]</span>` : d.title; });
         this.svg.call(this.tooltip);
     }
@@ -493,6 +493,7 @@ class Graph {
             })
             .on('mouseover', self.tooltip.show)
             .on('mouseout', self.tooltip.hide)
+            .on('mouseleave', self.tooltip.hide)
             .on('dblclick', this.stopPropagation)
             .call(d3.behavior.drag()
                 .on('dragstart', this.stopPropagation)
