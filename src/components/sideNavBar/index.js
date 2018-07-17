@@ -35,7 +35,7 @@ class SideNavBar extends Component {
   render() {
     return (
       <div className="side-nav unselectable">
-        <ReactTooltip place="right" effect="solid"/>
+        <ReactTooltip className="sidenav-tooltip" place="right" effect="solid"/>
         <Link to='/' onClick={() => { this.props.dispatch(resetGraphDispatch()); }}>
           <div id='top-nav-button' className="side-nav-button">
             <img id="archer-a-icon" src={ archerLogoA }></img>

@@ -7,9 +7,6 @@ import * as d3 from "d3";
 
 export function initializeTooltip() {
   d3.tip = function() {
-
-    // Public - contructs a new tooltip
-    //
     // Returns a tip
       var direction = d3_tip_direction,
           offset    = d3_tip_offset,
