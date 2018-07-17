@@ -10,7 +10,7 @@ const config = {
     blacklist: ['graph', 'home', 'graphSidebar']
 };
 
-config.debug = true;
+config.debug = false;
 const reducers = {
     graph,
     graphSidebar,
