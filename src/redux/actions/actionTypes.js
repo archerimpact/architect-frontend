@@ -11,6 +11,7 @@ export const RESET_GRAPH = "RESET_GRAPH";
 export const STORE_ENTITY = "STORE_ENTITY";
 export const REORDER_ENTITY_CACHE = "REORDER_ENTITY_CACHE";
 export const LOAD_DATA = "LOAD_DATA";
+export const LOADING = "LOADING";
 
 
 /* ============================ GRAPH SIDEBAR ACTIONS ============================ */

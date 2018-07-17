@@ -12,6 +12,7 @@
     "react": "^15.0.0",
     "react-dom": "^15.6.1",
     "react-load-script": "0.0.6",
+    "react-loading": "^2.0.3",
     "react-modal-dialog": "^4.0.7",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.2.2",

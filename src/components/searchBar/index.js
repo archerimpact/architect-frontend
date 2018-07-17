@@ -17,7 +17,7 @@ class SearchBar extends Component {
     submitSearch = (e) => {
         e.preventDefault();
         this.props.onSubmit(this.refs.query.value);
-    }
+    };
 
     render() {
         return (

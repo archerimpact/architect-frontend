@@ -6,23 +6,33 @@ import {
     STORE_SEARCH_RESULTS,
     UPDATE_GRAPH_DATA,
     TOGGLE_SIDEBAR,
-    LOAD_DATA
+    LOAD_DATA,
+    LOADING
 } from "../actions/actionTypes";
 
 const initialState = {
     sidebarVisible: true,
     canvas: {
-        searchData: []
+        searchData: [],
+        loading: null
     },
     data: {
         nodes: [],
         links: []
     },
-    currentNode: null
+    currentNode: null,
 };
 
 export default function (state = initialState, action) {
     switch (action.type) {
+        case LOADING:
+            return {
+                ...state,
+                canvas: {
+                    ...state.canvas,
+                    loading: action.payload
+                }
+            };
         case TOGGLE_SIDEBAR:
             return {
                 ...state,

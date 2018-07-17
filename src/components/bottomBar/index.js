@@ -39,7 +39,7 @@ export default class BottomBar extends Component {
               { this.renderClose() }
               <p className="bottombar-text">
                 Thanks! For more info, check out&nbsp;
-                <a href="https://archer.cloud">
+                <a href="https://www.archerimpact.com">
                   our website
                 </a>
                 .
