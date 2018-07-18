@@ -4,6 +4,7 @@ import * as actions from "../../redux/actions/userActions";
 import {userLogIn} from "../../redux/actions/userActions";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
+import ArcherLogo from "../../images/Archerlogobig.png";
 import "./style.css";
 
 
@@ -61,15 +62,11 @@ class Login extends Component {
 
         return (
             <div className="row">
-                <div className="col-sm-6 page-col left-col d-flex justify-content-center">
-                    <img src="https://image.ibb.co/jU5GpS/architect_dark_hex_promo_angle_fixed_01.png" id="tagline-img"
-                         className="img-fluid" alt=""/>
-                </div>
-
-                <div className='col-sm-6 page-col right-col d-flex'>
-                    <h2 className="temp-logo">Architect</h2>
-                    { this.state.error ? <p> Error! Invalid login or password. Please try again. </p> : [] }
-
+                <div>
+                    <a href="https://www.archerimpact.com/">
+                        <img src={ArcherLogo} id="home-image" alt="Archer"/>
+                    </a>
+                    { this.state.error ? <p> Error! Invalid login or password. Please try again. </p> : null }
                     <form className="login-form">
                         <div className="form-group row">
                             <i className="material-icons login-icon">{ this.state.email !== '' ? "perm_identity" : "person" }</i>
@@ -103,20 +100,7 @@ class Login extends Component {
                             >Login
                             </button>
                         </div>
-
-                        <button
-                            className="btn btn-primary"
-                            style={{margin: 15}}
-                            onClick={this.handleSubmit}
-                        >Sign Up
-                        </button>
-                        <div>
-                            <Link to={'/create_account'} style={{color: 'inherit'}}> New around here? Create an
-                                Account!</Link>
-                        </div>
                     </form>
-                    <img src="https://preview.ibb.co/egm3KS/gradient_real_bottom_graph.png" id="right-img"
-                         className="" alt=""/>
                 </div>
             </div>
         );
