@@ -1,5 +1,7 @@
 import React, {Component} from "react";
-import {Route} from "react-router-dom";
+import {Redirect, Route} from "react-router-dom";
+import {userLogOut} from "../redux/actions/userActions";
+import PrivateRoute from "./PrivateRoute"
 import Login from "../components/Login";
 import Canvas from "../components/Canvas";
 
