@@ -30,7 +30,7 @@ export default class App extends Component {
         if (IE) {
             return <h1 className="special-message" style={{width: window.innerWidth}}>Unfortunately, Internet Explorer is not yet a supported browser, though we are working on supporting it.  Please access the site using a browser such as Chrome or Firefox.</h1>
         } else if (phone) {
-            return <h1 className="special-message" style={{width: window.innerWidth}}>Please use a laptop for a full interactive experience.</h1>
+            return <h1 className="special-message" style={{width: window.innerWidth}}>Please use a computer for a full interactive experience.</h1>
         }
         else {
             return (
