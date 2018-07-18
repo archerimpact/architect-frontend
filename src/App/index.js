@@ -10,7 +10,7 @@ import "./style.css";
 
 class App extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             IE: false,
             phone: false
@@ -31,10 +31,6 @@ class App extends Component {
         return this.props.dispatch(userLogOut());
     }
 
-    logIn() {
-        return (<Redirect to={'/'}/>);
-    }
-
     render() {
         const {IE, phone} = this.state;
         if (IE) {
@@ -49,7 +45,7 @@ class App extends Component {
                 <div>
                     <div className="main">
                         <Route exact path="/" component={Login}/>
-                        <PrivateRoute path="/explore/:sidebarState?/:query?" component={Canvas}/>
+                        <PrivateRoute path="/explore/:sidebarState/:query?" component={Canvas}/>
                     </div>
                 </div>
             );
