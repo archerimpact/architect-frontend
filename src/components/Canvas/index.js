@@ -4,7 +4,6 @@ import ArcherGraph from "./Graph/package/GraphClass";
 import GraphSidebar from "./graphSidebar";
 import SideNavBar from "../sideNavBar";
 import PublishButton from "./publishButton";
-import BottomBar from "../bottomBar";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import {fetchSearchResults} from "../../redux/actions/graphActions";

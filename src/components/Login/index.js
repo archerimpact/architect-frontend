@@ -48,11 +48,10 @@ class Login extends Component {
             console.log('Could not authenticate', err);
             this.setState({error: err});
         });
-    }
-
+    };
 
     render() {
-        const {from} = this.props.location.state || {from: {pathname: '/'}};
+        const {from} = this.props.location.state || {from: {pathname: '/explore/search'}};
 
         if (this.state.redirectToReferrer) {
             return (

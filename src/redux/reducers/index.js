@@ -9,6 +9,7 @@ const config = {
     storage
 };
 
+config.debug = true;
 const reducers = {
     graph,
     graphSidebar,
