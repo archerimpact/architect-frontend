@@ -4,8 +4,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router-dom";
 import * as graphActions from "../../../redux/actions/graphActions";
-import * as homeActions from '../../../redux/actions/homeActions';
-
 import { fetchCurrentEntity } from "../../../redux/actions/graphSidebarActions"
 
 import "./graph.css";
@@ -24,7 +22,7 @@ class Graph extends Component {
 
     expandNodeFromData = (d) => {
         if (this.props.index) {
-            this.props.dispatch(homeActions.addToVignetteFromId(this.props.graph, d.id, this.props.index))
+            console.log("this used to add to vignette")
         } else {
             this.props.dispatch(graphActions.addToGraphFromId(this.props.graph, d.id));
         }

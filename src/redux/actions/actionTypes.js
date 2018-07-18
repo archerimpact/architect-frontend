@@ -1,4 +1,7 @@
+/* ============================ USER ACTIONS ============================ */
 
+export const USER_LOGIN = "USER_LOGIN";
+export const USER_LOGOUT = "USER_LOGOUT";
 
 /* ============================ GRAPH ACTIONS ============================ */
 
@@ -22,12 +25,6 @@ export const ENTITY_SET = "ENTITY_SET";
 export const ENTITY_RESET = "ENTITY_RESET";
 export const ENTITY_CACHE_RESORT = "ENTITY_CACHE_RESORT";
 export const ENTITY_CACHE_ADD = "ENTITY_CACHE_ADD";
-
-
-/* ============================ HOME ACTIONS ============================ */
-
-
-export const UPDATE_VIGNETTE = "UPDATE_VIGNETTE";
 
 /* ============================ OFFLINE ACTIONS ============================ */
 // OFFLINE_ACTIONS MUST be set to false for production. Do not push to remote with this set to true.
