@@ -5,7 +5,7 @@ import * as d3 from "d3";
 //
 // Tooltips for d3.js SVG visualizations
 
-export function initializeTooltip() {
+export function setupTooltip() {
   d3.tip = function() {
     // Returns a tip
       var direction = d3_tip_direction,

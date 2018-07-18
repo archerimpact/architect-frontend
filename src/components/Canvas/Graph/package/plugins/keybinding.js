@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 
-export function initializeKeybinding() {
+export function setupKeybinding() {
   /*
    * This code is licensed under the MIT license.
    *

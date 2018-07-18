@@ -14,7 +14,7 @@ export function brushstart() {
 
 export function brushing() {
     let self = this;
-    if (isRightClick() || this.selectionTool) {
+    if (isRightClick() || this.rectSelect) {
         const extent = this.brush.extent();
         this.svg.selectAll('.node')
             .classed('selected', function (d) {
@@ -251,6 +251,27 @@ export function mouseupCanvas(self) {
     this.mousedownNode = null;
 }
 
+export function lassoStart() {
+    this.lasso.items()
+        .classed({ "not_possible": true, "selected": false });
+}
+
+export function lassoDraw() {
+    this.lasso.items().filter(function(d) { return d.possible === true; })
+        .classed({ "not_possible": false, "possible": true });
+
+    this.lasso.items().filter(function(d) { return d.possible === false; })
+        .classed({ "not_possible": true, "possible": false });
+}
+
+export function lassoEnd() {
+    this.lasso.items().filter(function(d) { return d.selected === true; })
+        .classed({ "not_possible": false, "possible": false, "selected": true });
+
+    this.lasso.items().filter(function(d) { return d.selected === false; })
+        .classed({ "not_possible": false, "possible": false });
+};
+
 // Link mouse handlers
 export function mouseoverLink(d) {
     this.displayLinkInfo(d);
@@ -270,7 +291,7 @@ export function zoomstart(d, self) {
 }
 
 export function zooming(d, self) {
-    if (isRightClick() || this.selectionTool) return;
+    if (isRightClick() || this.rectSelect || this.freeSelect) return;
     const e = d3.event;
     this.performZoom(e.translate, e.scale); // Perform the zoom with the translate and scale from the handlers triggered by the graph
 }
@@ -284,7 +305,7 @@ export function performZoom(translate, scale) {
 
 export function zoomend(d, self) {
     this.svg.attr('cursor', 'move');
-    if (isRightClick() || this.selectionTool) {
+    if (isRightClick() || this.rectSelect || this.freeSelect) {
         this.zoom.translate(this.zoomTranslate);
         this.zoom.scale(this.zoomScale);
     }
@@ -325,7 +346,7 @@ export function zoomButton(zoom_in) {
     d3.transition().duration(100).tween("zoom", function () {
         const interpolate_scale = d3.interpolate(scale, targetScale),
               interpolate_trans = d3.interpolate(translate, [x, y]);
-        return function (t) {
+        return function(t) {
             self.zoom
                 .scale(interpolate_scale(t))
                 .translate(interpolate_trans(t));
