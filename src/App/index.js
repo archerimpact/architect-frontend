@@ -38,11 +38,11 @@ class App extends Component {
     render() {
         const {IE, phone} = this.state;
         if (IE) {
-            return <h1 className="special-message" style={{width: window.innerWidth}}>Unfortunately, Internet Explorer
+            return <h1 className="special-message">Unfortunately, Internet Explorer
                 is not yet a supported browser, though we are working on supporting it. Please access the site using a
                 browser such as Chrome or Firefox.</h1>
         } else if (phone) {
-            return <h1 className="special-message" style={{width: window.innerWidth}}>Please use a computer for a full
+            return <h1 className="special-message">Please use a computer for a full
                 interactive experience.</h1>
         } else {
             return (

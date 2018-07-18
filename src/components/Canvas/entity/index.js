@@ -206,7 +206,7 @@ class Entity extends Component {
                             nodeInGraph ?
                                 null
                                 :
-                                <div className="btn btn-primary sign-up-button custom-ali-css" onClick={() => this.props.dispatch(addToGraphFromId(this.props.graph, node.id))}>
+                                <div className="btn btn-primary custom-ali-css sign-up-button" onClick={() => this.props.dispatch(addToGraphFromId(this.props.graph, node.id))}>
                                     Add To Graph
                                 </div>
                         }

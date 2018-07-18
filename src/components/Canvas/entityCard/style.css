@@ -82,9 +82,9 @@ li.no-bullet {
     height: auto;
     width: auto;
     font-size: 11px;
-    line-height: 25px;
-    padding-right: 6px;
-    padding-left: 6px;
+    line-height: 25px !important;
+    padding-right: 6px !important;
+    padding-left: 6px !important;
 }
 
 .align-items {

@@ -82,9 +82,9 @@ li.info-value {
 }
 
 .custom-ali-css {
-    margin-top: 10px;
-    height: auto;
-    width: auto;
-    font-size: 11px;
-    line-height: 25px;
+    margin-top: 10px !important;
+    height: auto !important;
+    width: auto !important;
+    font-size: 11px !important;
+    line-height: 25px !important;
 }
