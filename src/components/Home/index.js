@@ -10,7 +10,7 @@ import SearchBar from '../searchBar';
 import SearchBarDatabase from '../searchBarDatabase';
 import SignUpForm from '../signUpForm';
 import { loadLink } from "../../redux/actions/homeActions"
-import { Link, withRouter } from "react-router-dom"
+import { Link, withRouter, Redirect } from "react-router-dom"
 import {connect} from "react-redux"
 
 import "./style.css";
@@ -28,10 +28,10 @@ class Home extends Component {
         const { match } = this.props;
         if (match.params.id) {
             let projId = match.params.id;
-            if (projId != null) {
+            if (projId != null && projId !== "explore") {
                 this.props.dispatch(loadLink(projId));
+                this.setState({linkPresent: true})
             }
-            this.setState({linkPresent: true})
         }
     }
 
@@ -41,6 +41,7 @@ class Home extends Component {
 
     render() {
         const { linkPresent } = this.state;
+
         return (
             <div>
                 <div className="beta-section">
