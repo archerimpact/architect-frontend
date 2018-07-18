@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Redirect, Route} from "react-router-dom";
+import {Redirect, Route, withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import {userLogOut} from "../redux/actions/userActions";
 import PrivateRoute from "./PrivateRoute"
@@ -22,7 +22,7 @@ class App extends Component {
         return (
           <div>
             <div className="main">
-                <Route path="/" component={Login}/>
+                <Route exact path="/" component={Login}/>
                 <PrivateRoute path="/explore/:sidebarState?/:query?" component={Canvas}/>
             </div>
           </div>
@@ -36,4 +36,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-export default connect(mapDispatchToProps)(App);
+export default withRouter(connect(mapDispatchToProps)(App));

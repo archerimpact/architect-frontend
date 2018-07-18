@@ -10,7 +10,7 @@ const pageHeight = window.innerHeight;
 
 class BackendSearch extends Component {
     render() {
-        if (this.props.loading === null) {
+        if (this.props.loading == null) {
             return (
             <div className="placeholder-text" style={{paddingTop: pageHeight / 3}}>This is the <strong>Search</strong> tab. <br/><br/>Search nodes and explore links in Archer's reconstructed OFAC database.</div>
             );
