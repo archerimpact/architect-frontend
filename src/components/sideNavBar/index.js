@@ -14,12 +14,10 @@ class SideNavBar extends Component {
   constructor(props) {
     super(props);
     this.state = { 
-      isBetaModalOpen: false,
-      isHelpModalOpen: false 
+      isHelpModalOpen: false
     };
   }
 
-  toggleBetaModal = () => this.setState({ isBetaModalOpen: !this.state.isBetaModalOpen });
   handleBetaClick = () => this.setState({ isBetaModalOpen: true });
   handleBetaClose = () => this.setState({ isBetaModalOpen: false });
 
@@ -40,19 +38,12 @@ class SideNavBar extends Component {
             <img id="archer-a-icon" src={ archerLogoA }></img>
           </div>
         </Link>
-        <div className="side-nav-button" data-tip="Sign up" onClick={ this.toggleBetaModal }>
-          <i className="material-icons">person_add</i>
-        </div>
         <div className="side-nav-button" onClick={ this.toggleHelpModal } data-tip="Graph Help">
           <i className="material-icons">help</i>
         </div>
         <div className="side-nav-button mt-auto" onClick={ this.toggleTermsModal } data-tip="Terms and Conditions">
           <i className="material-icons">file_copy</i>
         </div>
-        {
-          this.state.isBetaModalOpen &&
-          <BetaModal handleClick={ this.handleBetaClick } handleClose={ this.handleBetaClose } />
-        }
         {
           this.state.isHelpModalOpen &&
           <HelpModal handleClick={ this.handleHelpClick } handleClose={ this.handleHelpClose } />
