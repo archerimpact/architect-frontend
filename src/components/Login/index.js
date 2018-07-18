@@ -63,12 +63,14 @@ class Login extends Component {
         return (
             <div className="row">
                 <div>
-                    <a href="https://www.archerimpact.com/">
-                        <img src={ArcherLogo} id="home-image" alt="Archer"/>
-                    </a>
+                    <div className="image-wrapper">
+                        <a href="https://www.archerimpact.com/">
+                            <img src={ArcherLogo} id="home-image" alt="Archer"/>
+                        </a>
+                    </div>
                     { this.state.error ? <p> Error! Invalid login or password. Please try again. </p> : null }
                     <form className="login-form">
-                        <div className="form-group row">
+                        <div className="form-group">
                             <i className="material-icons login-icon">{ this.state.email !== '' ? "perm_identity" : "person" }</i>
                             <input
                                 className="form-control sexy-input"
@@ -81,7 +83,7 @@ class Login extends Component {
                             />
                         </div>
 
-                        <div className="form-group row">
+                        <div className="form-group">
                             <i className="material-icons login-icon">{ this.state.password !== '' ? "lock_open" : "lock"}</i>
                             <input
                                 className="form-control sexy-input"
@@ -93,7 +95,7 @@ class Login extends Component {
                             />
                         </div>
 
-                        <div className="form-group row">
+                        <div className="form-group">
                             <button
                                 className="btn btn-primary login-btn"
                                 onClick={this.handleSubmit}

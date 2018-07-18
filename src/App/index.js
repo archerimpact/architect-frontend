@@ -9,6 +9,23 @@ import Canvas from "../components/Canvas";
 import "./style.css";
 
 class App extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            IE: false,
+            phone: false
+        }
+    }
+
+    componentWillMount() {
+        if (navigator.appName === 'Microsoft Internet Explorer' || 'ActiveXObject' in window) {
+            this.setState({IE: true})
+        }
+
+        if (window.innerWidth < 0) {
+            this.setState({phone: true})
+        }
+    }
 
     logOut() {
         return this.props.dispatch(userLogOut());
@@ -19,14 +36,24 @@ class App extends Component {
     }
 
     render() {
-        return (
-          <div>
-            <div className="main">
-                <Route exact path="/" component={Login}/>
-                <PrivateRoute path="/explore/:sidebarState?/:query?" component={Canvas}/>
-            </div>
-          </div>
-        );
+        const {IE, phone} = this.state;
+        if (IE) {
+            return <h1 className="special-message" style={{width: window.innerWidth}}>Unfortunately, Internet Explorer
+                is not yet a supported browser, though we are working on supporting it. Please access the site using a
+                browser such as Chrome or Firefox.</h1>
+        } else if (phone) {
+            return <h1 className="special-message" style={{width: window.innerWidth}}>Please use a computer for a full
+                interactive experience.</h1>
+        } else {
+            return (
+                <div>
+                    <div className="main">
+                        <Route exact path="/" component={Login}/>
+                        <PrivateRoute path="/explore/:sidebarState?/:query?" component={Canvas}/>
+                    </div>
+                </div>
+            );
+        }
     }
 }
 
