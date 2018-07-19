@@ -6,7 +6,8 @@ import user from "./userReducer";
 
 const config = {
     key: 'root',
-    storage
+    storage,
+    blacklist: ['graph', 'graphSidebar']
 };
 
 config.debug = true;
