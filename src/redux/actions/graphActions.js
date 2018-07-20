@@ -42,14 +42,13 @@ export function addToGraphFromId(graph, id) {
     return (dispatch, getState) => {
         server.getNode(id, 1)
           .then(data => {
-              let state = getState()
+              let state = getState();
               let allNodes = state.graph.data.nodes.concat(data.nodes);
               let allLinks = state.graph.data.links.concat(data.links);
               let dataNodes = _.uniqBy(allNodes, (obj) => {return obj.id});
               let dataLinks = _.uniqBy(allLinks, (obj) => {return obj.id});
               graph.addData(data.centerid, makeDeepCopy(dataNodes), makeDeepCopy(dataLinks));
-              graph.update();
-              dispatch(updateGraphDispatch({nodes: dataNodes, links: dataLinks}));
+              // dispatch(updateGraphDispatch({nodes: dataNodes, links: dataLinks}));
           })
           .catch(err => {
               console.log(err);
@@ -199,4 +198,26 @@ export function loadData(data) {
 export async function submitEmail(email) {
     const response = await server.submitEmail(email)
     return response
+}
+
+/* =============================================================================================  */
+
+function saveD3DataToReduxDispatch(data) {
+    return {
+        type: LOAD_DATA,
+        payload: data
+    }
+}
+
+export function saveD3DataToRedux(nodes, links) {
+    return (dispatch) => {
+        let newNodes = makeDeepCopy(nodes);
+        let newLinks = makeDeepCopy(links);
+        for (let i=0; i<newLinks.length; i++) {
+            newLinks[i].target = newLinks[i].target.id
+            newLinks[i].source = newLinks[i].source.id
+        }
+        let data = {nodes: newNodes, links: newLinks}
+        dispatch(saveD3DataToReduxDispatch(data))
+    }
 }

@@ -142,7 +142,7 @@ class Graph {
         this.populateNodeInfoBody = this.populateNodeInfoBody.bind(this);
         this.resetDragLink = this.resetDragLink.bind(this);
 
-        this.bindDisplayFunctions({}); //no display functions yet
+        this.bindReactActions({}); //no display functions yet
     }
 
     initializeDataDicts = () => {
@@ -629,32 +629,32 @@ class Graph {
         this.minimap
             .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
             .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
-    }
+    };
 
     addData = (centerid, nodes, links) => {
         this.addToMatrix(centerid, nodes, links);
-    }
+    };
 
     fetchData = () => {
         return {nodes: this.nodes, links: this.links};
-    }
+    };
 
     hideMinimap = () => {
       this.minimap.hideMinimap();
-    }
+    };
 
     flushData = () => {
       this.setData(0, [], [], true);
-    }
+    };
 
-    bindDisplayFunctions = (displayFunctions) => {
-        this.displayNodeInfo = displayFunctions.node ? displayFunctions.node : function (d) {};
-        this.displayLinkInfo = displayFunctions.link ? displayFunctions.link : function (d) {};
-        this.displayGroupInfo = displayFunctions.group ? displayFunctions.group : function (d) {};
-        this.expandNodeFromData = displayFunctions.expand ? displayFunctions.expand : function (d) {};
-        this.saveAllData = displayFunctions.save ? displayFunctions.save : function (d) {};
+    bindReactActions = (reactActions) => {
+        this.displayNodeInfo = reactActions.node ? reactActions.node : function (d) {};
+        this.displayLinkInfo = reactActions.link ? reactActions.link : function (d) {};
+        this.displayGroupInfo = reactActions.group ? reactActions.group : function (d) {};
+        this.expandNodeFromData = reactActions.expand ? reactActions.expand : function (d) {};
+        this.saveAllData = reactActions.save ? reactActions.save : function (d) {};
         this.initializeMenuActions();
-    }
+    };
 
     // Updates nodes and links according to current data
     update = (event=null, ticks=null, minimap=true) => {
@@ -664,6 +664,7 @@ class Graph {
         this.force.stop();
         this.matrixToGraph();
         this.reloadNeighbors();
+        this.saveAllData({nodes: this.nodes, links: this.links});
 
         if (this.useCola) {
             this.force
