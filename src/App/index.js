@@ -22,7 +22,8 @@ class App extends Component {
             this.setState({IE: true})
         }
 
-        if (window.innerWidth < 0) {
+
+        if (window.innerWidth < 678) {
             this.setState({phone: true})
         }
     }

@@ -76,7 +76,7 @@ export function fetchCurrentEntity(node) {
                 .then((data) => {
                     data["id"] = currentNodeId;
                     dispatch(setCurrentEntityDispatch(data));
-                    dispatch(addToEntityCache(data))
+                    dispatch(addToEntityCache(data));
                 })
                 .catch((err) => console.log(err));
         } else {

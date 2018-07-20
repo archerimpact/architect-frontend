@@ -11,7 +11,6 @@ import {
 
 const initialState = {
     searchData: [],
-    listData: [],
     currentEntity: null,
     entityCache: []
 };
@@ -22,16 +21,6 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 searchData: action.payload
-            };
-        case UPDATE_GRAPH_DATA || LOAD_DATA:
-            return {
-                ...state,
-                listData: action.payload.nodes
-            };
-        case RESET_GRAPH:
-            return {
-                ...state,
-                listData: []
             };
         case ENTITY_SET:
             return {

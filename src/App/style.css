@@ -8,7 +8,7 @@
 }
 
 body {
-	font-family: 'Open Sans', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   color: #1a1a1a;
   overflow: scroll;
   background: #f7f7f7;
@@ -21,10 +21,6 @@ body {
 
 .y-scrollable {
   overflow-y: auto;
-}
-
-.show-nav {
-  height: calc(100% - 46px);
 }
 
 a {
@@ -48,9 +44,10 @@ a:link {
 
 .special-message {
     font-family: "Montserrat", sans-serif;
+    width: 100vw;
     text-align: center;
     margin-top: 25px;
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: auto;
+    margin-right: auto;
     font-size: 25px;
 }
