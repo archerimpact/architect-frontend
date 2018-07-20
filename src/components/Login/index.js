@@ -21,7 +21,6 @@ class Login extends Component {
     }
 
     handleEmailInputChange = (event) => {
-        console.log('typing email');
         this.setState({email: event.target.value});
     };
 
@@ -31,7 +30,6 @@ class Login extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        console.log('Submitting...');
         // TODO: Implement form validation
         this.props.dispatch(userLogIn(this.state.email, this.state.password))
         .then(data => {
@@ -69,7 +67,9 @@ class Login extends Component {
                                 <img src={ArcherLogo} id="home-image" alt="Archer"/>
                             </a>
                         </div>
+                        <div style={{textAlign: "center", fontFamily: "Montserrat, sans-serif"}}>
                         { this.state.error ? <p> Error! Invalid login or password. Please try again. </p> : null }
+                        </div>
                         <form >
                             <div className="flex-row" style={{justifyContent: "center", marginLeft: -12}}>
                                 <i className='material-icons login-icon'>{ this.state.email !== '' ? 'perm_identity' : 'person' }</i>
