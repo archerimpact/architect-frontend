@@ -23,7 +23,7 @@ class App extends Component {
         }
 
 
-        if (window.innerWidth < 678) {
+        if (window.innerWidth < 0) {
             this.setState({phone: true})
         }
     }

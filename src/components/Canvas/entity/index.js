@@ -111,11 +111,25 @@ class Entity extends Component {
             }
         }
 
+        if (node.type === "recruitingAgency") {
+            node.type = "Recruiting Agency"
+        } else if (node.type === "company") {
+            node.type = "Company"
+        } else if (node.type === "person") {
+            node.type = "Person"
+        }
+
+        function toTitleCase(str) {
+            return str.replace(/\w\S*/g, function(txt){
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+        }
+
         return (
             <div className="full-width">
                 <div className="entity-header-wrapper">
                     <div className="entity-header">
-                        <div className="entity-name">{node.name || node.combined || node.label || node.description}</div>
+                        <div className="entity-name">{toTitleCase(node.name) || toTitleCase(node.combined) || toTitleCase(node.label) || toTitleCase(node.description)}</div>
                         <div className="entity-type">{node.type}</div>
                         {
                             nodeInGraph ?

@@ -18,6 +18,13 @@ class EntityCard extends Component {
                 break
             }
         }
+        if (props.node.type === "recruitingAgency") {
+            props.node.type = "Recruiting Agency"
+        } else if (props.node.type === "company") {
+            props.node.type = "Company"
+        } else if (props.node.type === "person") {
+            props.node.type = "Person"
+        }
     }
 
     // shouldComponentUpdate(nextProps, nextState) {
@@ -34,6 +41,12 @@ class EntityCard extends Component {
             }
         }
     }
+
+    toTitleCase = (str) => {
+        return str.replace(/\w\S*/g, function(txt){
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
+    };
 
     render() {
         const { node } = this.props;
@@ -53,17 +66,17 @@ class EntityCard extends Component {
                     <div className="collapse-link">
                         <Link to="/explore/entity">
                             <span onClick={() => this.dispatch(fetchCurrentEntity(node))}>
-                                {node.name || node.combined || node.label || node.description}
+                                {this.toTitleCase(node.name) || this.toTitleCase(node.combined) || this.toTitleCase(node.label) || this.toTitleCase(node.description)}
                             </span>
                         </Link>
                     </div>
                     <div className="card-pills">
-                        { !node || !node.programs ?
+                        { !node || !node.type ?
                             null :
                             (
                                 <div className="card-sdn-type">
                                     <p className="sdn-type">
-                                        { node && node.programs && node.programs.join('/') }
+                                        { node && node.type }
                                     </p>
                                 </div>
                             )

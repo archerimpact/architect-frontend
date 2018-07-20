@@ -105,19 +105,12 @@ class GraphSidebar extends Component {
                         </div>
                     </Link>
                 </div>
-                <div className={"tab " + (activeState === 'list' ? 'active-tab' : '')} onClick={() => this.toggleSidebarFunc("list")}>
-                    <Link to={baseUrl + '/list'}>
-                        <div>
-                            <i className="tab-icon material-icons">list</i>
-                        </div>
-                    </Link>
-                </div>
                 <div className="mb-auto tab" onClick={() => this.toggleSidebarFunc("toggleSidebar")}>
                     <i className="tab-icon toggle-tab-icon material-icons">{this.props.sidebarVisible ? "chevron_right" : "chevron_left"}</i>
                 </div>
             </div>
         )
-    }
+    };
 
 
     render() {
@@ -136,7 +129,7 @@ class GraphSidebar extends Component {
                             }
                             {
                                 this.state.renderSearch ?
-                                    <SearchBar onSubmit={this.goToSearchPage} value={match.params.sidebarState === "search" && match.params.query ? match.params.query : ""} showSettings={true} placeholder={"Search Amnesty\'s database (e.g. 'xxx' or 'xxx')"}/>
+                                    <SearchBar onSubmit={this.goToSearchPage} value={match.params.sidebarState === "search" && match.params.query ? match.params.query : ""} showSettings={true} placeholder={"Search Amnesty\'s database"}/>
                                     :
                                     null
                             }

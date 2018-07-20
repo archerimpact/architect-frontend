@@ -44,7 +44,7 @@
 .sexy-input:focus {
     outline: none;
     box-shadow: none;
-    border-bottom: 1px solid #ff6060;
+    border-bottom: 1px solid #0D77E2;
     background-color: transparent;
     color: #333;
 }
@@ -57,10 +57,6 @@
     opacity: 0.3;
 }
 
-.login-form {
-
-}
-
 #home-image {
     width: 40%;
     align-self: flex-end;
@@ -69,7 +65,7 @@
 }
 
 .login-icon {
-    color: #ff6060;
+    color: #0D77E2;
     font-size: 30px;
     margin-right: 15px;
     padding-top: 5px;
@@ -82,18 +78,13 @@
 }
 
 .btn-outline-primary {
-    border-color: #ff6060;
-    color: #ff6060;
+    border-color: #0D77E2;
+    color: #0D77E2;
 }
 
 .btn-primary {
-    border-color: #ff6060;
-    background-color: #ff6060;
-}
-
-.login-btn {
-    margin-left: auto;
-    margin-right: 20px;
+    border-color: #0D77E2;
+    background-color: #0D77E2;
 }
 
 #tagline-img {

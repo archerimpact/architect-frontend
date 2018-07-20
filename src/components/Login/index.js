@@ -61,8 +61,8 @@ class Login extends Component {
         }
 
         return (
-            <div className="row">
-                <div>
+            <div className="flex-row">
+                <div className="ml-auto mr-auto">
                     <div className="image-wrapper">
                         <a href="https://www.archerimpact.com/">
                             <img src={ArcherLogo} id="home-image" alt="Archer"/>
