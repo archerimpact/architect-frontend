@@ -44,7 +44,7 @@ class App extends Component {
         } else {
             return (
                 <div>
-                    <div className="main">
+                    <div>
                         <Route exact path="/" component={Login}/>
                         <PrivateRoute path="/explore/:sidebarState/:query?" component={Canvas}/>
                     </div>

@@ -58,7 +58,7 @@
 }
 
 #home-image {
-    width: 40%;
+    width: 85%;
     align-self: flex-end;
     margin-bottom: 20px;
     cursor: default;
@@ -89,4 +89,14 @@
 
 #tagline-img {
     max-height: 100%;
+}
+
+.image-wrapper {
+    text-align: center;
+}
+
+
+.button-login {
+    margin-left: auto;
+    margin-right: auto;
 }

@@ -63,46 +63,50 @@ class Login extends Component {
         return (
             <div className="flex-row">
                 <div className="ml-auto mr-auto">
-                    <div className="image-wrapper">
-                        <a href="https://www.archerimpact.com/">
-                            <img src={ArcherLogo} id="home-image" alt="Archer"/>
-                        </a>
+                    <div style={{maxWidth: 300, marginTop: window.innerHeight / 3}}>
+                        <div className="image-wrapper">
+                            <a href="https://www.archerimpact.com/">
+                                <img src={ArcherLogo} id="home-image" alt="Archer"/>
+                            </a>
+                        </div>
+                        { this.state.error ? <p> Error! Invalid login or password. Please try again. </p> : null }
+                        <form >
+                            <div className="flex-row">
+                                <i className='material-icons login-icon'>{ this.state.email !== '' ? 'perm_identity' : 'person' }</i>
+                                <input
+                                    className="form-control sexy-input"
+                                    placeholder="Email"
+                                    value={this.state.email}
+                                    style={{width: 300}}
+                                    onChange={this.handleEmailInputChange}
+                                    type="text"
+                                    autoFocus
+                                />
+                            </div>
+
+                            <div className="flex-row">
+                                <i className='material-icons login-icon'>{ this.state.password !== '' ? 'lock_open' : 'lock'}</i>
+                                <input
+                                    className="form-control sexy-input"
+                                    placeholder="Password"
+                                    value={this.state.password}
+                                    style={{width: 300}}
+                                    onChange={this.handlePasswordInputChange}
+                                    type="password"
+                                />
+                            </div>
+
+                            <div className="flex-row">
+                                <div className="button-login">
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick={this.handleSubmit}
+                                    >Login
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    { this.state.error ? <p> Error! Invalid login or password. Please try again. </p> : null }
-                    <form className="login-form">
-                        <div className="form-group">
-                            <i className="material-icons login-icon">{ this.state.email !== '' ? "perm_identity" : "person" }</i>
-                            <input
-                                className="form-control sexy-input"
-                                placeholder="Email"
-                                value={this.state.email}
-                                style={{width: 300}}
-                                onChange={this.handleEmailInputChange}
-                                type="text"
-                                autoFocus
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <i className="material-icons login-icon">{ this.state.password !== '' ? "lock_open" : "lock"}</i>
-                            <input
-                                className="form-control sexy-input"
-                                placeholder="Password"
-                                value={this.state.password}
-                                style={{width: 300}}
-                                onChange={this.handlePasswordInputChange}
-                                type="password"
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <button
-                                className="btn btn-primary login-btn"
-                                onClick={this.handleSubmit}
-                            >Login
-                            </button>
-                        </div>
-                    </form>
                 </div>
             </div>
         );
