@@ -58,5 +58,5 @@ export const GROUP = "group";
 export const GROUP_HULL = "Group Hull";
 export const DOCUMENT = "Document";
 export const IDENTIFYING_DOCUMENT = "Identifying Document";
-export const ORGANIZATION = "Organization";
-export const CORPORATION = "corporation";
+export const ORGANIZATION = "recruitingAgency";
+export const CORPORATION = "company";

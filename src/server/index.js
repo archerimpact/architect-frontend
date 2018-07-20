@@ -5,12 +5,8 @@ import * as constants from "./settingsConstants.js";
 
 let api_inst = axios.create({
     baseURL: configData.backend_url,
-    timeout: 1000
-});
-
-let new_api_inst = axios.create({
-    baseURL: configData.backend1_url,
-    timeout: 1000
+    timeout: 1000,
+    headers: {}
 })
 
 export function searchBackendText(searchQuery) {
@@ -72,7 +68,7 @@ export function getNode(neo4j_id, degree=0, useExclude=true) {
 
 export const createLink = async (name, author, description, data) => {
     let stringifiedData = JSON.stringify(data);
-    const response = await new_api_inst.post('/projects/create', {
+    const response = await api_inst.post('/projects/create', {
         name,
         author,
         description,
@@ -82,7 +78,7 @@ export const createLink = async (name, author, description, data) => {
 };
 
 export const getLink = async (id) => {
-    const response = await new_api_inst.get('/projects/get', {
+    const response = await api_inst.get('/projects/get', {
         params: {
             id
         }
@@ -91,7 +87,7 @@ export const getLink = async (id) => {
 };
 
 export const submitEmail = async (email) => {
-    const response = await new_api_inst.get('/submit/email', {
+    const response = await api_inst.get('/submit/email', {
         params: {
             email
         }

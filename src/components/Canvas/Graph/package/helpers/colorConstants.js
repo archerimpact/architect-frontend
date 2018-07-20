@@ -11,10 +11,10 @@ export const HEX_TOOLBAR_BACKGROUND = '#fafafa';
 export const HEX_TOOLBAR_BORDER = '#d3d3d3';
 
 export const NODE_COLORS = {
-  'person': '#68cca8',
+  [constants.PERSON]: HEX_BLUE,
   'Document': '#ea88cc',
   [constants.IDENTIFYING_DOCUMENT]: '#ea88cc',
-  'corporation': '#e18c4d',
+  [constants.CORPORATION]: HEX_DARK_GRAY,
   [constants.ORGANIZATION]: '#e18c4d',
   'group': '#34675c',
   'same_as_group': '#34675c',

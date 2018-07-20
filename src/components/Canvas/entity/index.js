@@ -56,116 +56,31 @@ class Entity extends Component {
             }
         };
 
-        const aliases = extract_link('AKA', true, false);
-        const documents = extract_link('HAS_ID_DOC', true, false);
-        const locations = extract_link('HAS_KNOWN_LOCATION', true, false);
-        const sanctions = extract_link('SANCTIONED_ON', true, false);
-
-        const part_ofs = extract_link('SIGNIFICANT_PART_OF', true, false);
-        const contains = extract_link('SIGNIFICANT_PART_OF', false, true);
-
-        const supporting = extract_link('PROVIDING_SUPPORT_TO', true, false);
-        const supported = extract_link('PROVIDING_SUPPORT_TO', false, true);
-
-        const owned = extract_link('OWNED_BY', true, false);
-        const owns = extract_link('OWNED_BY', false, true);
-
-        const subservants = extract_link('LEADER_OF', true, false);
-        const leaders = extract_link('LEADER_OF', false, true);
-
-        const acting = extract_link('ACTING_FOR', true, false);
-        const action_received = extract_link('ACTING_FOR', false, true);
-
-        const associates = extract_link('ASSOCIATE_OF', false, true);
-        const related = extract_link('RELATED_TO', false, true);
-
-        const maybe_sames = links.filter(link => link.type === link.type.startsWith('MATCHED_') && node.id === link.source);
+        const connected1 = extract_link('connected_to', true, false);
+        const connected2 = extract_link('connected_to', false, true);
+        const director_of = extract_link('director_of', true, false);
+        const director = extract_link('director_of', false, true);
 
         const linktypes = {
-            'Documents': {
-                type: 'HAS_ID_DOC',
-                extracted: documents,
-                chooseDisplay: 'target',
-            },
-            'Locations': {
-                type: 'HAS_KNOWN_LOCATION',
-                extracted: locations,
-                chooseDisplay: 'target',
-            },
-            'Sanctioned On': {
-                type: 'SANCTIONED_ON',
-                extracted: sanctions,
-                chooseDisplay: 'target',
-            },
-            'Significant Part Of': {
-                type: 'SIGNIFICANT_PART_OF',
-                extracted: part_ofs,
-                chooseDisplay: 'target',
-            },
-            'Significantly Contains': {
-                type: 'SIGNIFICANT_PART_OF',
-                extracted: contains,
+            'Director Of': {
+                type: 'director_of',
+                extracted: director_of,
                 chooseDisplay: 'source',
             },
-            'Providing Support To': {
-                type: 'PROVIDING_SUPPORT_TO',
-                extracted: supporting,
+            'Director': {
+                type: 'director_of',
+                extracted: director,
                 chooseDisplay: 'target',
             },
-            'Supported By': {
-                type: 'PROVIDING_SUPPORT_TO',
-                extracted: supported,
-                chooseDisplay: 'source',
-            },
-            'Owned By': {
-                type: 'OWNED_BY',
-                extracted: owned,
+            ' Connected To ': {
+                type: 'connected_to',
+                extracted: connected1,
                 chooseDisplay: 'target',
             },
-            'Owns': {
-                type: 'OWNED_BY',
-                extracted: owns,
+            'Connected To': {
+                type: 'connected_to',
+                extracted: connected2,
                 chooseDisplay: 'source',
-            },
-            'Leader Of': {
-                type: 'LEADER_OF',
-                extracted: subservants,
-                chooseDisplay: 'target',
-            },
-            'Lead By': {
-                type: 'LEADER_OF',
-                extracted: leaders,
-                chooseDisplay: 'source',
-            },
-            'Acting For': {
-                type: 'ACTING_FOR',
-                extracted: acting,
-                chooseDisplay: 'target',
-            },
-            'Receives Actions From': {
-                type: 'ACTING_FOR',
-                extracted: action_received,
-                chooseDisplay: 'source',
-            },
-            'Associate Of': {
-                type: 'ASSOCIATE_OF',
-                extracted: associates,
-                chooseDisplay: 'source',
-            },
-            'Related To': {
-                type: 'RELATED_TO',
-                extracted: related,
-                chooseDisplay: 'source',
-            },
-            'Aliases': {
-                type: 'AKA',
-                extracted: aliases,
-                chooseDisplay: 'target',
-            },
-            'Possibly Same As': {
-                type: '',
-                extracted: maybe_sames,
-                chooseDisplay: 'target',
             }
         };
 
@@ -242,23 +157,30 @@ class Entity extends Component {
     render() {
         const { currentEntity } = this.props;
         const keys = [
-            ['dateOfBirth', 'Date of Birth'],
-            ['placeOfBirth', 'Place of Birth'],
-            ['titles', 'Titles'],
-            ['emailAddresses', 'Email Addresses'],
-            ['websites', 'Websites'],
+            ['notes', 'Notes'],
+            ['accusedOf', 'Accused Of'],
             ['aliases', 'Aliases'],
-            ['programs', 'Programs'],
-            ['sanctionEvents', 'Sanction Events'],
-            ['locations', 'Location'],
-
-            ['numberType', 'Document Type'],
-            ['valid', 'Valid'],
-            ['number', 'Number'],
-            ['issuedBy', 'Issuer'],
-            ['issuedIn', 'Place of Issue'],
-            ['issuedOn', 'Date of Issue'],
-            ['notes', 'Notes']
+            ['businessType', 'Business Type'],
+            ['companyAddress', 'Company Address'],
+            ['agencyAddress', 'Agency Address'],
+            ['archiveAddress', 'Archive Address'],
+            ['countryOfOperation', 'Country of Operation'],
+            ['countryOfOrigin', 'Country of Origin'],
+            ['locationOfOperation', 'Location of Operation'],
+            ['locationOfOrigin', 'Location of Origin'],
+            ['crNumber', 'Company Registration Number'],
+            ['industrySector', 'Industry Sector'],
+            ['recruitmentSector', 'Recruitment Sector'],
+            ['numberOfWorkersSentAbroad', 'Number of Workers Sent Abroad'],
+            ['yearsInOperation', 'Years In Operation'],
+            ['jointVenture', 'Joint Venture'],
+            ['sisterCompany', 'Sister Company'],
+            ['phoneNumber', 'Phone Number'],
+            ['faxNumber', 'Fax Number'],
+            ['governmentIDNumber', 'Government ID Number'],
+            ['website', 'Website'],
+            ['webSources', 'Web Sources'],
+            ['archiveSources', 'Archive Sources']
         ];
         if (currentEntity === null) {
             return <div className="placeholder-text" style={{paddingTop: (pageHeight / 3) + 63}}>This is the <strong>Entity </strong>tab. <br/><br/>Select a node to view information about it. </div>

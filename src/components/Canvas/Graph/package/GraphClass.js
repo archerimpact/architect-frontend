@@ -21,7 +21,7 @@ const icons = {
     'Individual': '',
     'Document': '',
     [constants.IDENTIFYING_DOCUMENT]: '',
-    'corporation': '',
+    [constants.CORPORATION]: '',
     'Entity': '',
     [constants.ORGANIZATION]: '',
     'group': '',
