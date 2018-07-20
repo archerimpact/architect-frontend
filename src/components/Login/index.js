@@ -63,7 +63,7 @@ class Login extends Component {
         return (
             <div className="flex-row">
                 <div className="ml-auto mr-auto">
-                    <div style={{maxWidth: 300, marginTop: window.innerHeight / 3}}>
+                    <div style={{maxWidth: 500, marginTop: window.innerHeight / 3}}>
                         <div className="image-wrapper">
                             <a href="https://www.archerimpact.com/">
                                 <img src={ArcherLogo} id="home-image" alt="Archer"/>
@@ -71,26 +71,26 @@ class Login extends Component {
                         </div>
                         { this.state.error ? <p> Error! Invalid login or password. Please try again. </p> : null }
                         <form >
-                            <div className="flex-row">
+                            <div className="flex-row" style={{justifyContent: "center", marginLeft: -12}}>
                                 <i className='material-icons login-icon'>{ this.state.email !== '' ? 'perm_identity' : 'person' }</i>
                                 <input
                                     className="form-control sexy-input"
                                     placeholder="Email"
                                     value={this.state.email}
-                                    style={{width: 300}}
+                                    style={{width: 400}}
                                     onChange={this.handleEmailInputChange}
                                     type="text"
                                     autoFocus
                                 />
                             </div>
 
-                            <div className="flex-row">
-                                <i className='material-icons login-icon'>{ this.state.password !== '' ? 'lock_open' : 'lock'}</i>
+                            <div className="flex-row" style={{justifyContent: "center", marginLeft: -12}}>
+                                <i className='material-icons login-icon' style={{fontSize: 22}}>{ this.state.password !== '' ? 'lock_open' : 'lock'}</i>
                                 <input
                                     className="form-control sexy-input"
                                     placeholder="Password"
                                     value={this.state.password}
-                                    style={{width: 300}}
+                                    style={{width: 400}}
                                     onChange={this.handlePasswordInputChange}
                                     type="password"
                                 />
