@@ -658,7 +658,7 @@ class Graph {
 
     // Updates nodes and links according to current data
     update = (event=null, ticks=null, minimap=true) => {
-        var self = this;
+        let self = this;
 
         this.resetGraphOpacity();
         this.force.stop();
@@ -762,14 +762,6 @@ class Graph {
         this.node.call(this.styleNode);
         this.node.exit().remove();
 
-        // Update node glyphs
-        this.node.select('.node-glyph')
-            .classed('hidden', (d) => { return d.group || !utils.isExpandable(d); });
-
-        this.node.select('.glyph-label')
-            .text((d) => { return utils.getNumLinksToExpand(d); })
-            .classed('hidden', (d) => { return d.group || !utils.isExpandable(d); });
-
         // Update hulls
         this.hull = this.hull.data(this.hulls);
         this.hull
@@ -786,6 +778,15 @@ class Graph {
 
         // Avoid initial chaos and skip the wait for graph to drift back onscreen
         this.force.start(30, 30, 30);
+
+        // Update node glyphs
+        this.node.select('.node-glyph')
+            .classed('hidden', (d) => {  return d.group || !utils.isExpandable(d); });
+
+        this.node.select('.glyph-label')
+            .text((d) => { return utils.getNumLinksToExpand(d); })
+            .classed('hidden', (d) => { return d.group || !utils.isExpandable(d); });
+
         if (ticks) { for (let i = ticks; i > 0; --i) this.force.tick(); }
 
         if (minimap) {
