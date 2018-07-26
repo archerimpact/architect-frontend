@@ -1,46 +1,38 @@
 import React, {Component} from "react";
-import SearchCard from "../searchCard";
+import EntityCard from "../entityCard";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
-import {addToGraphFromId, saveCurrentProjectData} from "../../../redux/actions/graphActions";
+import ReactLoading from "react-loading";
+
 import "./style.css";
 
+const pageHeight = window.innerHeight;
+
 class BackendSearch extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            showResults: true,
-        };
-    }
-
-    toggleSearchResults = () => {
-        return this.setState({showResults: !this.state.showResults});
-    }
-
-    addToGraph = (id) => {
-        this.props.dispatch(addToGraphFromId(this.props.graph, id));
-    }
-
-    saveCurrentProjectDataFunc = () => {
-        this.props.dispatch(saveCurrentProjectData(this.props.graph));
-    }
-
     render() {
-        if (this.props.searchData === null) {
+        if (this.props.loading == null) {
             return (
-                <div>Loading...</div>
+            <div className="placeholder-text" style={{paddingTop: pageHeight / 3}}>This is the <strong>Search</strong> tab. <br/><br/>Search nodes and explore links in Archer's reconstructed OFAC database.</div>
             );
         } else {
             return (
                 <div className="search-results">
                     {
-                        this.props.searchData.map((entity) => {
-                            return (
-                                // <EntityCard data={entity} addToGraph={this.addToGraph} />
-                                <SearchCard key={entity.id} id={entity.id} data={entity} graph={this.props.graph}/>
-                            );
-                        })
+                        this.props.loading ?
+                            <div className="around-loading">
+                                <ReactLoading type="spin" color="#0D77E2" height={50} width={50} className="spinning-svg"/>
+                            </div>
+                            :
+                            this.props.searchData.length === 0 ? <div className="placeholder-text" style={{paddingTop: pageHeight / 3}}>No Results</div>: this.props.searchData.map((entity) => {
+                                return (
+                                    <EntityCard key={entity.id} node={entity} data={this.props.data} graph={this.props.graph}/>
+                                );
+                            })
+                    }
+                    { !this.props.loading && this.props.searchData.length === 50 ?
+                        <p className="paging-coming-soon">(Showing top 50 results)</p>
+                        :
+                        null
                     }
                 </div>
             );
@@ -50,12 +42,13 @@ class BackendSearch extends Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        dispatch: dispatch,
+        dispatch: dispatch
     };
 }
 
 function mapStateToProps(state) {
     return {
+        loading: state.graph.canvas.loading,
         searchData: state.graph.canvas.searchData
     }
 }

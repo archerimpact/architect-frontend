@@ -1,5 +1,5 @@
-import {RESET_GRAPH, STORE_CURRENT_NODE, STORE_ENTITY, STORE_SEARCH_RESULTS, UPDATE_GRAPH_DATA, OFFLINE_ACTIONS} from "./actionTypes";
-
+import {LOADING, LOAD_DATA, REORDER_ENTITY_CACHE, UPDATE_GRAPH_DATA, OFFLINE_ACTIONS, TOGGLE_SIDEBAR, RESET_GRAPH, STORE_CURRENT_NODE, STORE_ENTITY, STORE_SEARCH_RESULTS} from "./actionTypes";
+import _ from 'lodash';
 import * as server from "../../server/index";
 
 /* =========================================== HELPERS ==========================================  */
@@ -13,37 +13,9 @@ function makeDeepCopy(array) {
     return newArray;
 }
 
-// Action subroutine to call when wanting to update a graph (saving it under a project)
-export function saveCurrentProjectData(graph) {
-    return (dispatch, getState) => {
-        let state = getState();
-        let projid = state.project.currentProject._id;
-        let data = graph.fetchData();
-        let image_string;
-        if (data.nodes.length > 0 && data.links.length > 0) {
-          image_string = graph.saveGraphAsSVGString();
-        } else {
-          image_string = null;
-        }
-        
-        server.updateProject({id: projid, d3Data: data, image: image_string})
-            .then((res) => {
-                if (res.success) {
-                    dispatch(updateGraphDispatch(data));
-                } else {
-                    console.log("graph did not update successfully!");
-                    // TODO flash messages for failures on parent page
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    };
-}
-
 /* =============================================================================================  */
 
-export function storeCurrentNodeDispatch(id) {
+export function storeCurrentNodeDispatch(id) {  // MOVED
     return {
         type: STORE_CURRENT_NODE,
         payload: id
@@ -67,55 +39,79 @@ function updateGraphDispatch(data) {
 }
 
 export function addToGraphFromId(graph, id) {
-    return (dispatch) => {
-        server.getNode(id)
-            .then(data => {
-                graph.addData(data.centerid, makeDeepCopy(data.nodes), makeDeepCopy(data.links));
-                graph.update();
-                dispatch(saveCurrentProjectData(graph));
-                // dispatch(updateGraphDispatch(data)); // right here change to saveCurrentProjectData
-            })
-            .catch(err => {
-                console.log(err);
-            });
+    return (dispatch, getState) => {
+        server.getNode(id, 1)
+          .then(data => {
+              let state = getState();
+              let allNodes = state.graph.data.nodes.concat(data.nodes);
+              let allLinks = state.graph.data.links.concat(data.links);
+              let dataNodes = _.uniqBy(allNodes, (obj) => {return obj.id});
+              let dataLinks = _.uniqBy(allLinks, (obj) => {return obj.id});
+              graph.addData(data.centerid, makeDeepCopy(dataNodes), makeDeepCopy(dataLinks));
+              // dispatch(updateGraphDispatch({nodes: dataNodes, links: dataLinks}));
+          })
+          .catch(err => {
+              console.log(err);
+          });
     };
 }
 
 /* =============================================================================================  */
 
-function fetchSearchResultsDispatch(data) {
+function fetchSearchResultsDispatch(data) { // MOVED
     return {
         type: STORE_SEARCH_RESULTS,
         payload: data
     };
 }
 
+function toggleLoading(bool) { // MOVED
+    return {
+        type: LOADING,
+        payload: bool
+    };
+}
+
 export function fetchSearchResults(query) {
     return (dispatch) => {
+        dispatch(toggleLoading(true));
         if (OFFLINE_ACTIONS) return;
         server.searchBackendText(query)
-            .then((data) => {
-                dispatch(fetchSearchResultsDispatch(data));
-            })
-            .catch((error) => console.log(error));
+        .then((data) => {
+            dispatch(fetchSearchResultsDispatch(data));
+            dispatch(toggleLoading(false))
+        })
+        .catch((error) => console.log(error));
     }
 }
 
 /* =============================================================================================  */
 
-function fetchEntityDispatch(entity) {
+function fetchEntityDispatch(entity) { // MOVED
     return {
         type: STORE_ENTITY,
         payload: entity
     };
 }
 
+function fetchEntityDataFormatter(data) {
+    // let nodes = data.nodes;
+    // let linksLength = data.links.length;
+    // for (let i=0; i < linksLength; i++) {
+    //     // nodes[i]
+    // }
+    // we just need data to be node.id and then each possible link type or attr that matters "sanctioned on", etc here.
+    //
+    return [data]
+}
+
 export function fetchEntity(id) {
     return (dispatch) => {
         if (OFFLINE_ACTIONS) return;
-        server.getNode(id)
+        server.getNode(id, 1)
             .then(data => {
-                dispatch(fetchEntityDispatch(data));
+                let formattedResponse = fetchEntityDataFormatter(data);
+                dispatch(fetchEntityDispatch(formattedResponse));
             })
             .catch(err => console.log(err));
     };
@@ -123,121 +119,105 @@ export function fetchEntity(id) {
 
 /* =============================================================================================  */
 
-export function resetProjectDispatch() {
+// function reorderEntityCacheDispatch(newEntityCache) { // MOVED
+//     return {
+//         type: REORDER_ENTITY_CACHE,
+//         payload: newEntityCache
+//     }
+// }
+//
+// function move(arr, from, to) {
+//     let newArr = makeDeepCopy(arr);
+//     newArr.splice(to, 0, this.splice(from, 1)[0]);
+//     return newArr
+// }
+//
+// export function reorderEntityCache(id, index=null) {
+//     return (dispatch, getState) => {
+//         let state = getState();
+//         let entityCache = state.graph.entityCache;
+//         let newEntityCache = [];
+//         if (index) {
+//             newEntityCache = move(entityCache, index, 0);
+//             dispatch(reorderEntityCacheDispatch(newEntityCache))
+//         } else {
+//             for (let i=0; i<entityCache.length; i++) {
+//                 if (entityCache[i].id === id) {
+//                     newEntityCache = move(entityCache, i, 0);
+//                     break;
+//                 }
+//             }
+//             if (newEntityCache.length !== 0) {
+//                 dispatch(reorderEntityCacheDispatch(newEntityCache))
+//             }
+//         }
+//     }
+// }
+
+/* =============================================================================================  */
+
+
+
+export function resetGraphDispatch() {
     return {
         type: RESET_GRAPH,
     };
 }
 
-/* ===================================== ACTIONS THAT ARE NOT IN USE ========================================  */
+/* =============================================================================================  */
 
-// export function initializeCanvas(graph, width, height) {
-//     return (dispatch) => {
-//         graph.generateCanvas(width, height);
-//         graph.setData(0, [], []);
-//         dispatch(resetProjectDispatch());
-//     };
-// }
+export function toggleSidebar() {
+    return {
+        type: TOGGLE_SIDEBAR
+    }
+}
 
-// function parseNeo4jData(data) {
-//     data = data[0]; //because the neo4j data resides in data[0]
-//
-//     function getidfromurl(neo4j_url) {
-//         return parseInt(neo4j_url.split('/').pop(), 10); //neo4j relationship stores the url to the nodes, id is in the last part of the url
-//     };
-//
-//     var nodesData = data[1];
-//     var neo4jtoindex = {};
-//     var nodes, links;
-//
-//     nodes = nodesData.map((node, i) => {
-//         neo4jtoindex[parseInt(node.metadata.id, 10)] = i; //store a dictionary mapping neo4j_id to the index
-//         if (typeof(node.metadata) === "undefined") { console.log("error in that node.metadata is undefined"); }
-//         return {
-//             id: parseInt(node.metadata.id, 10),
-//             type: node.metadata.labels[0],
-//             name: node.data.name,
-//             // resigned_on: node.data.resigned_on,
-//             // occupation: node.data.occupation,
-//             // address: node.data.address,
-//             // nationality: node.data.nationality,
-//             // country_of_residence: node.data.country_of_residence,
-//             // date_of_birth: node.data.date_of_birth,
-//             // appointed_on: node.data.appointed_on
-//         };
-//     });
-//
-//     links = data[0].map((edge) => {
-//         //target and source have to reference the index of the node
-//         return { id: edge.metadata.id, type: edge.metadata.type, source: getidfromurl(edge.start), target: getidfromurl(edge.end) };
-//     });
-//
-//     return { nodes: nodes, links: links, centerid: data[2].metadata.id };
-// }
+/* =============================================================================================  */
 
+export async function saveLink(name, author, description, graph) {
+    const data = graph.fetchData();
+    const r = await server.createLink(name, author, description, data)
+    return r.message
+}
 
-// searchBackend(query){
-// server.searchBackendText(query)
-//   .then((data)=>{
-//     this.setState( {searchData: data.hits.hits, nodesData: null} );
-//     this.fetchGraph(data.hits.hits[0]._source.neo4j_id);
-//     var ids = data.hits.hits.map((item) => {
-//       return item._source.neo4j_id
-//     });
-//     this.searchBackendNodes(ids); //use the neo4jids of the elastic results to get all data
-//   })
-//   .catch((error) => { console.log(error); });
-// }
+/* =============================================================================================  */
 
+function loadGraphDataDispatch(data) {
+    return {
+        type: LOAD_DATA,
+        payload: data
+    }
+}
 
-// searchBackendNodes(idsArray){
-//   server.getBackendNodes(idsArray)
-//     .then(data => {
-//         this.setState( {nodesData: data} );
-//     })
-//     .catch(err => { console.log(err); });
-// }
+export function loadData(data) {
+    return (dispatch) => {
+        dispatch(loadGraphDataDispatch(data));
+    }
+}
 
+export async function submitEmail(email) {
+    const response = await server.submitEmail(email)
+    return response
+}
 
-// export function fetchGraphFromQuery(query) {
+/* =============================================================================================  */
 
-//   server.getGraph(id)
-//     .then(data => {
-//       updateGraph(data);
-//     })
-//     .catch(err => { console.log(err); });
-// }
+function saveD3DataToReduxDispatch(data) {
+    return {
+        type: LOAD_DATA,
+        payload: data
+    }
+}
 
-
-// export function fetchGraphFromId(graph, id) {
-//     return (dispatch, getState) => {
-//         function setCurrentNode(d) {
-//             dispatch(storeCurrentNodeDispatch(d.id));
-//             // graph.translateGraphAroundNode(d)
-//         }
-//         server.getGraph(id)
-//             .then(data => {
-//                 // var graphData = parseNeo4jData(data);
-//                 var graphData = data;
-//                 graph.setData(graphData.centerid, makeDeepCopy(graphData.nodes), makeDeepCopy(graphData.links));
-//                 dispatch(updateGraphDispatch(graphData));
-//             })
-//             .catch(err => { console.log(err); });
-//     }
-// }
-
-
-// function updateProjectDispatch(data) {
-//   return {
-//     type: UPDATE_PROJECT_DATA,
-//     payload: data
-//   };
-// }
-
-// export function updateGraph(graph, graphData) {
-//   return (dispatch, getState) => {
-//     // var graphData = parseNeo4jData(data);
-//     graph.setData(graphData.centerid, makeDeepCopy(graphData.nodes), makeDeepCopy(graphData.links));
-//     dispatch(updateGraphDispatch(graphData))
-//   }
-// }
+export function saveD3DataToRedux(nodes, links) {
+    return (dispatch) => {
+        let newNodes = makeDeepCopy(nodes);
+        let newLinks = makeDeepCopy(links);
+        for (let i=0; i<newLinks.length; i++) {
+            newLinks[i].target = newLinks[i].target.id
+            newLinks[i].source = newLinks[i].source.id
+        }
+        let data = {nodes: newNodes, links: newLinks}
+        dispatch(saveD3DataToReduxDispatch(data))
+    }
+}

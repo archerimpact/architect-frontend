@@ -1,4 +1,8 @@
 .canvas {
   position: absolute;
-  overflow-y: hidden;
+  overflow: hidden;
+}
+
+::-webkit-scrollbar { 
+  display: none; 
 }

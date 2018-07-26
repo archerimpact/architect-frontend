@@ -62,7 +62,7 @@ class SearchCard extends Component {
 
     renderButtons = () => {
         let action, actionFunc;
-        const url = '/build/' + this.props.match.params.investigationId + '/entity/' + encodeURIComponent(this.props.id);
+        const url = '/explore/entity/' + encodeURIComponent(this.props.id);
         if (this.props.currentProject && this.props.currentProject.graphData && this.props.currentProject.graphData.nodes && this.props.currentProject.graphData.nodes.some(e => e.id === this.props.id)) {
             action = "link";
             actionFunc = () => this.props.graph.translateGraphAroundId(this.props.id);
@@ -95,17 +95,14 @@ class SearchCard extends Component {
                 <div className="card-header result-card-header flex-row d-flex">
                     {this.renderButtons()}
                     <span className="collapse-link" onClick={this.toggleCollapse}>
-            {this.state.data.name || this.state.data.combined || this.state.data.number || this.state.data.description}
-          </span>
-
-
+                      {this.state.data.name || this.state.data.combined || this.state.data.number || this.state.data.description}
+                    </span>
                     <div className="ml-auto card-program">
                         {this.props.data._type}
                         <small className="card-sdn-type">
                             {this.props.data.dataset}
                         </small>
                     </div>
-
                 </div>
                 <div className={this.state.collapsed ? 'collapse' : null}>
                     <div className="card-body result-card-body">

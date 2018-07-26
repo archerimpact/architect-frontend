@@ -26,7 +26,7 @@ export function isGroup(d) {
 }
 
 export function getNewCoord(x, translate, scale) {
-    return x - translate / scale;
+    return x + translate / scale;
 }
 
 export function isExpandable(d) {
@@ -117,7 +117,6 @@ export function createSVGString(targetSVG, x1, x2, y1, y2, width = null, height 
         }
 
         Array.from(e.childNodes).forEach((e) => {
-            // console.log(e.childNodes)
             if (e.classList[0] === "svg-grid" || e.classList.contains("icon")) {
                 e.parentNode.removeChild(e);
             }
@@ -175,7 +174,7 @@ export function isObject(input) {
 }
 
 export function printObject(object) {
-    console.log(JSON.stringify(object, null, 4));
+    // console.log(JSON.stringify(object, null, 4));
 }
 
 // ==============

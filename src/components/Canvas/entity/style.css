@@ -17,20 +17,20 @@
 }
 
 .entity-header {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-end;
-    margin: 0 auto;
+    display: block;
+    text-align: center;
 }
 
 .entity-name {
     font-size: 20px;
     font-weight: bolder;
+    margin-top: 15px;
 }
 
 .entity-type {
     margin-left: 5px;
     color: #646464;
+    padding-top: 5px;
 }
 
 .entity-source {
@@ -38,26 +38,28 @@
 }
 
 .entity-body {
-    padding: 0 10px;
+    padding: 0 20px;
 }
 
 .info-row {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    padding: 0 10px 10px 10px;
+    margin-bottom: 15px;
 }
 
 .info-key {
     white-space: nowrap;
+    text-transform: uppercase;
+    font-family: 'Open Sans', 'Helvetica', sans-serif;
+    margin: 10px 0 15px 0;
+    color: #1e1e1e;
+    border-bottom: 1px solid #ebebeb;
 }
 
-.info-value {
+li.info-value {
     margin-left: 8px;
-    margin-right: 8px;
-    margin-bottom: 15px;
-    padding-right: 8px;
-    padding-left: 8px;
-    background: #eeeeee;
-    border-radius: 3px;
+    color: #8a8a8a;
 }
 
 .info-value-list {
@@ -68,4 +70,21 @@
 
 .subheader {
     margin-top: 20px;
+    margin-bottom:20px;
+    text-align: center;
+    font-weight: 100;
+}
+
+.placeholder-text {
+    text-align: center;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.custom-ali-css {
+    margin-top: 10px;
+    height: auto;
+    width: auto;
+    font-size: 11px;
+    line-height: 25px;
 }
