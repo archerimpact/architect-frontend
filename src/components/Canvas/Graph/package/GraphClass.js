@@ -944,9 +944,9 @@ class Graph {
         const self = this;
         d3.select('body').call(d3.keybinding()
             // Select all nodes
-            .on('a', aesthetics.classSelectedNodes.bind(self))
+            .on('a', aesthetics.classAllNodesSelected.bind(self))
             // Clear current selection
-            .on('esc', aesthetics.clearSelected.bind(self))
+            .on('esc', aesthetics.unclassAllNodesSelected.bind(self))
             // Expand selected nodes
             .on('e', d3Data.expandSelectedNodes.bind(self))
             // Fix selected nodes, unfix nodes if all were previously fixed

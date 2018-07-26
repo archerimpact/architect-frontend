@@ -41,8 +41,7 @@ export function brushend() {
 export function clicked(d, self, i) {
     if (d3.event.defaultPrevented) return;
     const node = d3.select(self);
-    const fixed = !(node.attr('dragfix') === 'true');
-    node.classed('fixed', d.fixed = fixed);
+    node.classed('fixed', d.fixed = !(node.attr('dragfix') === 'true'));
     this.force.resume();
     d3.event.stopPropagation();
 }
@@ -51,9 +50,11 @@ export function rightclicked(node, d) {
     this.force.resume();
 }
 
-export function dblclicked(d) {
+export function dblclicked(d, self) {
     if (isGroup(d)) { this.toggleGroupView(d.id); }
     if (utils.isExpandable(d)) { this.expandNodeFromData(d); }
+    const node = d3.select(self);
+    node.classed('selected', false);
     d3.event.stopPropagation();
 }
 
@@ -87,9 +88,13 @@ export function dragend(d, self) {
     // if (!parseInt(node.attr('dragdistance')) && isRightClick()) {
     //   this.rightclicked(node, d);
     // }
-
-    if (node.attr('dragdistance')) {
+    if (parseInt(node.attr('dragdistance'), 10)) {
         node.classed('fixed', d.fixed = true);
+        if (!node.classed('selected')) {
+            aesthetics.classNodeSelected.bind(this, node, true)();
+        }
+    } else {
+        aesthetics.classNodeSelected.bind(this, node, !node.classed('selected'))();
     }
 
     this.isDragging = false;
@@ -346,7 +351,7 @@ export function zoomButton(zoom_in) {
     d3.transition().duration(100).tween("zoom", function () {
         const interpolate_scale = d3.interpolate(scale, targetScale),
               interpolate_trans = d3.interpolate(translate, [x, y]);
-        return function(t) {
+        return function (t) {
             self.zoom
                 .scale(interpolate_scale(t))
                 .translate(interpolate_trans(t));
