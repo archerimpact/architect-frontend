@@ -1,0 +1,17 @@
+.search-bar {
+    margin-bottom: 10px;
+}
+
+.search-results {
+    width: 100%;
+    margin: 0 0 40px 0;
+    height: 350px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: calc(100% - 78px);
+    padding: 0 20px;
+}
+
+.entity-result {
+    border-bottom: 1px solid #CCCCCC;
+}

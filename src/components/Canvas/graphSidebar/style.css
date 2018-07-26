@@ -1,0 +1,125 @@
+.flex-row {
+    display: flex;
+    width: 100%;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.sidebar {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 630px;
+    height: 100%;
+}
+
+.sidebar.hidden {
+    display: none;
+}
+
+.tabs {
+    width: 30px;
+    margin-top: auto;
+    margin-bottom: auto;
+    z-index: 100;
+    box-shadow: -10px 4px 20px -7px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: -10px 4px 20px -7px rgba(0, 0, 0, 0.3);
+}
+
+.tab {
+    width: 30px;
+    border: 1px solid #D4D4D4;
+    border-right: 0;
+    height: 42px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    text-align: center;
+    border-right: 1px solid #bbbbbb;
+}
+
+.tab:hover {
+    background-color: #ffffff;
+}
+
+.tab.active-tab {
+    background-color: #ffffff;
+    border-right: 0;
+}
+
+.sidebar-collapse:hover {
+    background-color: #fafafa;
+}
+
+.tab-icon {
+    margin-left: 0;
+    margin-top: 10px;
+    font-size: 22px;
+}
+
+.sticky-divider {
+    margin: 0;
+    border-top: 1px solid rgb(0, 0, 0, 0.1);
+}
+
+.searchbar-container, .results-container {
+    width: 100%;
+}
+
+.top-sidebar-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.searchbar-container {
+    background-color: #ffffff;
+    z-index: 100;
+    padding-top: 10px;
+    padding: 10px 12px 10px 12px;
+    width: 100%;
+    background-color: #ff5d4c;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
+    -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
+}
+
+.results-container {
+    padding: 0 20px;
+}
+
+.sidebar-container {
+    box-shadow: -1px -1px 20px 0 rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: -1px -1px 20px 0 rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100% !important;
+    height: 100%;
+    padding: 0;
+    z-index: 10;
+    border: 1px;
+    background-color: #FFFFFF;
+}
+
+.sidebar-content-container {
+    width: 100%;
+    padding: 20px 20px 0 20px;
+    overflow-y: scroll;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.slide-in {
+    transform: translate(600px);
+    transition: transform 400ms ease-in-out;
+}
+
+.slide-out {
+    transform: translate(0);
+    transition: transform 400ms ease-in-out;
+}
+

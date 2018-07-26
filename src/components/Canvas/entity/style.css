@@ -1,0 +1,71 @@
+@font-face {
+    font-family: 'source-code-pro';
+    src: url('/fonts/sourcecodepro-regular-webfont.woff2') format('woff2'),
+    url('/fonts/sourcecodepro-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.entity-container {
+    width: calc(100%);
+    padding: 20px 20px 0 20px;
+}
+
+.entity-header-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.entity-header {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    margin: 0 auto;
+}
+
+.entity-name {
+    font-size: 20px;
+    font-weight: bolder;
+}
+
+.entity-type {
+    margin-left: 5px;
+    color: #646464;
+}
+
+.entity-source {
+    margin: 0 auto;
+}
+
+.entity-body {
+    padding: 0 10px;
+}
+
+.info-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.info-key {
+    white-space: nowrap;
+}
+
+.info-value {
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-bottom: 15px;
+    padding-right: 8px;
+    padding-left: 8px;
+    background: #eeeeee;
+    border-radius: 3px;
+}
+
+.info-value-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.subheader {
+    margin-top: 20px;
+}

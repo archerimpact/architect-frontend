@@ -1,5 +1,5 @@
 import axios from "axios";
-import { configData } from '../config.js';
+import {configData} from "../config.js";
 
 let api_inst = axios.create({
     baseURL: configData.backend_url,
@@ -35,9 +35,9 @@ export const isAuthenticated = async () => {
 };
 
 export function isAuthedBool() {
-    isAuthenticated().then(function(response) {
+    isAuthenticated().then(function (response) {
         return response.data.success;
-    }).catch(function(err) {
+    }).catch(function (err) {
         return err;
     })
 }
