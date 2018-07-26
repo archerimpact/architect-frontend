@@ -1,0 +1,86 @@
+.tint-color-0 {
+	background-color: rgba(37, 82, 170, 0.6);
+}
+
+.tint-color-0:hover {
+	background-color: rgba(37, 82, 170, 0.9);
+}
+
+.tint-color-1 {
+	background-color: rgba(21, 162, 138, 0.6);
+}
+
+.tint-color-1:hover {
+	background-color: rgba(21, 162, 138, 0.9);
+}
+
+.tint-color-2 {
+	background-color: rgba(197, 25, 137, 0.6);
+}
+
+.tint-color-2:hover {
+	background-color: rgba(197, 25, 137, 0.9);
+}
+
+.preview-box {
+	border: 1px solid #ebebeb;
+	padding: 0;
+  overflow: hidden;
+}
+
+.preview-date, .preview-author {
+  font-weight: 300;
+  color: #aaaaaa;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  word-spacing: 2px;
+  margin-bottom: 5px;
+}
+
+.preview-title {
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+hr.preview-divider {
+  margin-top: 0;
+}
+
+.preview-image {
+	width: 100%;
+	height: auto;
+	filter: blur(2px);
+	padding: 2px;		/* this value must match the blur value or else the image will bleed out of bounds */
+}
+
+.tint {
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 1;
+	height: 100%;
+	width: 100%;
+	padding: 30px;
+	display: flex;
+}
+
+.preview-summary-text {
+	margin: auto;
+	color: #fafafa;
+	font-size: 30px;
+	text-align: center;
+	text-shadow: 1px 1px #222222;	
+}
+
+.tint:hover {
+	transition: background-color 200ms linear;
+	-webkit-transition: background-color 200ms linear;
+	-ms-transition: background-color 200ms linear;
+	cursor: pointer;
+}
+
+.modal-wrapper {
+	z-index: 100000;
+}

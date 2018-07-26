@@ -7,9 +7,7 @@
 }
 
 body {
-    min-width: 900px;
     font: normal 16px arial, sans-serif;
-    height: 100vh;
     width: 100%;
     overflow: hidden;
 }
@@ -21,7 +19,7 @@ body {
     user-select: none; /* Standard */
 }
 
-#graph-container {
+.graph-container {
     height: 100%;
 }
 
@@ -37,7 +35,8 @@ svg {
 /* Extent */
 
 svg rect.extent {
-    stroke: rgb(120, 120, 120, .3);
+    stroke: rgb(120, 120, 120);
+    stroke-opacity: .3;
     stroke-width: 2px;
     fill: rgb(190, 219, 243, .2);
 }
@@ -45,7 +44,8 @@ svg rect.extent {
 /* Grid lines */
 
 svg line {
-    stroke: rgb(191, 191, 191, 0.3);
+    stroke: rgb(191, 191, 191);
+    stroke-opacity: .3;
     stroke-width: 1.5px;
 }
 
@@ -244,6 +244,41 @@ path.link.selected {
     fill: rgba(0, 0, 0, .25);
 }
 
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 13px;
+  width: 100%;
+  line-height: .5;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+  -webkit-transform:scale(1.2,1); /* Safari and Chrome */
+    -moz-transform:scale(1.2,1); /* Firefox */
+    -ms-transform:scale(1.2,1); /* IE 9 */
+    -o-transform:scale(1.2,1); /* Opera */
+    transform:scale(1.2,1); /* W3C */
+}
+
+.d3-tip.s:after {
+  content: "\25B2";
+  margin: 0 0 0px 0;
+  top: -8px;
+  left: 0;
+  text-align: center;
+}
+
 #node-tooltip {
     width: 240px;
     background: rgba(255, 255, 255, .75);
@@ -341,7 +376,7 @@ path.link.selected {
 }
 
 .context-menu ul li:hover {
-    background-color: #ff5d4c;
+    background-color: #0d77e2;
     color: #fefefe;
 }
 

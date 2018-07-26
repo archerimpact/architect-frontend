@@ -1,0 +1,29 @@
+.bottombar {
+    background-color: #0d77e2;
+    position: absolute;
+    left: 0px;
+    width: 100%;
+    bottom: 0px;
+    padding: 5px 10px;
+    display: -ms-flexbox;
+    display: flex;
+    color: #fafafa;
+    z-index: 5;
+}
+
+.bottombar-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.bottombar-text {
+    margin-bottom: 0;
+    font-size: 14px;
+    text-align: left;
+}
+
+.bottombar-close {
+    color: #aaaaaa;
+    margin-right: 8px;
+}

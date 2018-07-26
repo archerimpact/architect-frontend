@@ -1,19 +1,20 @@
 import {persistCombineReducers} from "redux-persist";
 import storage from "redux-persist/es/storage";
 import graph from "./graphReducer";
-import user from "./userReducer";
-import project from "./projectReducer";
+import home from "./homeReducer";
+import graphSidebar from "./graphSidebarReducer"
 
 const config = {
     key: 'root',
-    storage
+    storage,
+    blacklist: ['graph', 'home', 'graphSidebar']
 };
 
-config.debug = true;
+config.debug = false;
 const reducers = {
     graph,
-    user,
-    project
+    graphSidebar,
+    home
 };
 
 const reducer = persistCombineReducers(config, reducers);

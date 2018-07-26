@@ -1,12 +1,8 @@
 import React, {Component} from "react";
-import {Link, withRouter} from "react-router-dom";
-import * as server from "../../../server";
+import {withRouter,Link} from "react-router-dom";
 import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import * as graphActions from "../../../redux/actions/graphActions";
 import {addToGraphFromId} from "../../../redux/actions/graphActions";
-
-import EntityAttributes from "../entityAttributes";
+import {fetchCurrentEntity} from "../../../redux/actions/graphSidebarActions";
 
 import "./style.css";
 
@@ -14,100 +10,86 @@ class EntityCard extends Component {
 
     constructor(props) {
         super(props);
-        let isDataReady = !props.shouldFetch || !isNaN(this.props.id);
-        let urlId = decodeURIComponent(this.props.id).split("/");
-        let urlName = urlId[urlId.length - 1];
-        this.state = {
-            collapsed: true,
-            data: isDataReady ? props.data : null,
-            isDataReady: isDataReady,
-            name: props.data.name ? props.data.name : urlName
+        this.dispatch = props.dispatch;
+        this.nodeInGraph = false;
+        for (let i=0; i < this.props.data.nodes.length; i++) {
+            if (this.props.data.nodes[i].id === this.props.node.id) {
+                this.nodeInGraph = true;
+                break
+            }
         }
     }
 
-    componentWillMount() {
-        if (!this.state.isDataReady) {
-            server.getNode(this.props.id, false)
-            .then(d => {
-                this.setState({isDataReady: true, data: d.nodes.filter(n => n.id === this.props.id)[0]})
-            })
-            .catch(err => console.log(err));
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     console.log("force-re-render");
+    //     return true
+    // }
+
+    componentWillReceiveProps(nextProps) {
+        this.nodeInGraph = false;
+        for (let i=0; i < nextProps.data.nodes.length; i++) {
+            if (nextProps.data.nodes[i].id === this.props.node.id) {
+                this.nodeInGraph = true;
+                break
+            }
         }
     }
 
-    toggleCollapse = () => {
-        const current = this.state.collapsed;
-        this.setState({collapsed: !current});
-    }
-
-    renderButtons = () => {
-        let action, actionFunc;
-        const url = '/build/' + this.props.match.params.investigationId + '/entity/' + encodeURIComponent(this.props.id);
-        if (this.props.currentProject && this.props.currentProject.graphData && this.props.currentProject.graphData.nodes && this.props.currentProject.graphData.nodes.some(e => e.id === this.props.id)) {
-            action = "link";
-            actionFunc = () => this.props.graph.translateGraphAroundId(this.props.id);
-        } else {
-            action = "add";
-            actionFunc = () => this.props.dispatch(addToGraphFromId(this.props.graph, this.props.id));
-        }
-        return (
-            <div className="d-flex">
-                <div className="icon-div">
-                    <i className="entity-icon add-to-graph-icon material-icons" onClick={actionFunc}>{action}</i>
-                </div>
-                <div className="icon-div">
-                    <Link to={url}>
-                        <i className="entity-icon detailed-view-icon material-icons">description</i>
-                    </Link>
-                </div>
-            </div>
-        )
-
+    // Use to capitalize titles or attributes
+    toTitleCase = (str) => {
+        return str.replace(/\w\S*/g, function(txt){
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
     };
 
     render() {
-        if (!this.state.isDataReady) {
-            return <div key={this.props.id}> Loading ... </div>
-        }
-
+        const { node } = this.props;
         return (
-            <div className="card result-card" key={this.props.id}>
-                <div className="card-header result-card-header flex-row d-flex">
-                    {this.renderButtons()}
-                    <span className="collapse-link" onClick={this.toggleCollapse}>
-            {this.state.data.name || this.state.data.combined || this.state.data.number || this.state.data.description}
-          </span>
-                    <small className="card-sdn-type">
-
-                    </small>
-
-                    <div className="ml-auto card-program">
-                        {this.state.data.type}
+            <div className="card result-card" key={node.id}>
+                <div className="card-header result-card-header flex-row d-flex align-items">
+                    {
+                        this.nodeInGraph ?
+                            null
+                            :
+                            <div className="d-flex">
+                                <div className="btn btn-primary sign-up-button custom-ali-css2" onClick={() => this.props.dispatch(addToGraphFromId(this.props.graph, node.id))}>
+                                    ADD
+                                </div>
+                            </div>
+                    }
+                    <div className="collapse-link">
+                        <Link to="/explore/entity">
+                            <span onClick={() => this.dispatch(fetchCurrentEntity(node))}>
+                                {node.name || node.combined || node.label || node.description}
+                            </span>
+                        </Link>
                     </div>
-
+                    <div className="card-pills">
+                        { !node || !node.programs ?
+                            null :
+                            (
+                                <div className="card-sdn-type">
+                                    <p className="sdn-type">
+                                        { node && node.programs && node.programs.join('/') }
+                                    </p>
+                                </div>
+                            )
+                        }
+                    </div>
                 </div>
-                <div className={this.state.collapsed ? 'collapse' : null}>
+                <div>
                     <div className="card-body result-card-body">
-                        <EntityAttributes node={this.state.data}/>
                     </div>
                 </div>
             </div>
         );
     }
-
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(graphActions, dispatch),
-        dispatch: dispatch,
+        dispatch: dispatch
     };
 }
 
-function mapStateToProps(state) {
-    return {
-        currentProject: state.project.currentProject,
-    };
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EntityCard));
+export default withRouter(connect(mapDispatchToProps)(EntityCard));

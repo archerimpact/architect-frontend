@@ -1,0 +1,20 @@
+.search-results {
+    width: 100%;
+    margin: 0 0 80px 0;
+    height: 350px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: calc(100% - 78px);
+    padding: 0 20px;
+}
+
+.sidebar-content-container {
+    width: 100%;
+    overflow-y: scroll;
+    display: flex;
+    justify-content: center;
+}
+
+.entities-in-graph-title {
+    margin-top: 10px;
+}

@@ -1,16 +1,13 @@
 import React, {Component} from "react";
-
 import Graph from "./Graph";
 import ArcherGraph from "./Graph/package/GraphClass";
 import GraphSidebar from "./graphSidebar";
-import SideNavBar from "./sideNavBar";
-
+import SideNavBar from "../sideNavBar";
+import PublishButton from "./publishButton";
 import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
 import {withRouter} from "react-router-dom";
-import * as actions from "../../redux/actions/projectActions";
-import {fetchProject} from "../../redux/actions/projectActions";
-import {fetchEntity, fetchSearchResults} from "../../redux/actions/graphActions";
+import {fetchSearchResults} from "../../redux/actions/graphActions";
+import {clearCurrentEntity} from "../../redux/actions/graphSidebarActions";
 
 import './style.css';
 
@@ -19,22 +16,38 @@ class Canvas extends Component {
     constructor(props) {
         super(props);
         this.graph = new ArcherGraph();
-        this.baseUrl = '/build/' + (this.props.match.params ? this.props.match.params.investigationId : null);
+        this.baseUrl = '/explore';
+        this.state = {
+            width: window.innerWidth,
+            height: window.innerHeight
+        }
+    }
+
+    updateDimensions = () => {
+        let w = window,
+            d = document,
+            documentElement = d.documentElement,
+            body = d.getElementsByTagName('body')[0],
+            width = w.innerWidth || documentElement.clientWidth || body.clientWidth,
+            height = w.innerHeight|| documentElement.clientHeight|| body.clientHeight;
+
+        this.setState({width: width, height: height});
+    };
+
+    componentWillMount() {
+        this.updateDimensions();
     }
 
     componentDidMount() {
-        if (this.props.match.params && this.props.match.params.investigationId) {
-            this.props.dispatch(fetchProject(this.props.match.params.investigationId));
-        }
-
-        if (this.props.currentNode != null) {
-            this.props.history.push(this.baseUrl + '/entity/' + encodeURIComponent(this.props.currentNode.id))
-        }
-        
+        // if (this.props.currentNode != null) {
+        //   debugger;
+        //     this.props.history.push(this.baseUrl + '/entity/' + encodeURIComponent(this.props.currentNode.id))
+        // }
+        window.addEventListener("resize", this.updateDimensions);
         if (this.props.match.params && this.props.match.params.sidebarState === 'search' && this.props.match.params.query != null) {
             this.props.dispatch(fetchSearchResults(this.props.match.params.query));
         } else if (this.props.match.params && this.props.match.params.sidebarState === 'entity') {
-            this.props.dispatch(fetchEntity(decodeURIComponent(this.props.match.params.query)));
+            // this.props.dispatch(fetchEntity(decodeURIComponent(this.props.match.params.query)));
         }
     }
 
@@ -42,9 +55,7 @@ class Canvas extends Component {
         if (nextprops.currentNode != null && this.props.currentNode !== nextprops.currentNode) {
             this.props.history.push(this.baseUrl + '/entity/' + encodeURIComponent(nextprops.currentNode.id))
         }
-
         if (this.props.location.pathname !== nextprops.location.pathname && nextprops.match.params) {
-            // this.props.actions.fetchProject(nextprops.match.params.investigationId);
             let nextQuery = nextprops.match.params.query;
             if (nextprops.match.params.sidebarState === 'search') {
                 if (nextQuery != null && this.props.match.params.query !== nextQuery) {
@@ -52,18 +63,29 @@ class Canvas extends Component {
                 }
             } else if (nextprops.match.params.sidebarState === 'entity') {
                 if (nextQuery != null && this.props.match.params.query !== nextQuery) {
-                    this.props.dispatch(fetchEntity(decodeURIComponent(nextprops.match.params.query)));
+                    // this.props.dispatch(fetchEntity(decodeURIComponent(nextprops.match.params.query)));
+                }
+                if (nextprops.match.params.sidebarState !== 'entity' && this.props.currentNode !== null) {
+                    this.props.dispatch(clearCurrentEntity())
                 }
             }
         }
     }
 
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.updateDimensions);
+    }
+
     render() {
+        const { data, isCovered, onMouseOver } = this.props;
+        const { width, height} = this.state;
         return (
-            <div className="canvas">
-                <SideNavBar />
-                <Graph graph={this.graph} onMouseOver={this.props.onMouseOver}/>
-                <GraphSidebar isCovered={this.props.isCovered} graph={this.graph}/>
+            <div className="canvas" style={{width, height}}>
+                <SideNavBar/>
+                <Graph graph={this.graph} onMouseOver={onMouseOver} data={data} displayMinimap={false} width={width} height={height}/>
+                <GraphSidebar isCovered={isCovered} graph={this.graph} data={data}/>
+                {/*<BottomBar/>*/}
+                <PublishButton graph={this.graph}/>
             </div>
         )
     }
@@ -71,7 +93,6 @@ class Canvas extends Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({...actions}, dispatch),
         dispatch: dispatch,
     };
 }
@@ -79,8 +100,8 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
     return {
         sidebarVisible: state.graph.sidebarVisible,
-        currentProject: state.project.currentProject,
-        currentNode: state.graph.currentNode,
+        currentNode: state.graphSidebar.currentEntity,
+        data: state.graph.data
     };
 }
 

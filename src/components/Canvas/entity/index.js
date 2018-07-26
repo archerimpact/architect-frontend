@@ -1,45 +1,37 @@
 import React, {Component} from "react";
+import {connect} from "react-redux";
+import {withRouter} from "react-router-dom";
+import EntityCard from "../entityCard";
+import {addToGraphFromId} from "../../../redux/actions/graphActions";
 
 import "./style.css";
 
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import * as actions from "../../../redux/actions/userActions";
-import {withRouter} from "react-router-dom";
-import EntityCard from "../entityCard";
-import EntityAttributes from "../entityAttributes";
-import * as server from "../../../server";
-
-
-// const tab_style = {
-//   backgroundColor: '#FFFFFF',
-//   color: '#747474'
-// };
+const pageHeight = window.innerHeight;
 
 class Entity extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            currentEntity: null,
-        };
-    }
-
-    componentWillMount() {
-        server.getNode(decodeURIComponent(this.props.id), false)
-        .then(d => {
-            this.setState({currentEntity: d})
-        })
-        .catch(err => console.log(err));
-    }
-
-    componentWillReceiveProps(nextprops) {
-        server.getNode(decodeURIComponent(this.props.id), false)
-        .then(d => {
-            this.setState({currentEntity: d})
-        })
-        .catch(err => console.log(err));
-    }
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {
+    //         currentEntityDegreeOne: null,
+    //     };
+    // }
+    //
+    // componentDidMount() {
+    //     if (this.props.id) {
+    //         this.props.dispatch(fetchCurrentEntity(this.props.id))
+    //     }
+    // }
+    //
+    // componentWillReceiveProps(nextprops) {
+    //     if (this.props.id) {
+    //         server.getNode(decodeURIComponent(this.props.id), 1, false)
+    //             .then(d => {
+    //                 this.setState({currentEntityDegreeOne: d})
+    //             })
+    //             .catch(err => console.log(err));
+    //     }
+    // }
 
 
     renderEntity = (node, nodes, links, keys) => {
@@ -50,12 +42,25 @@ class Entity extends Component {
         nodes.forEach(n => nodeMap[n.id] = n.name);
 
         const extract_link = (type, compareSource, compareTarget) => {
-            return links.filter(link => link.type === type &&
-                (
-                    (compareSource && node.id === link.source) ||
-                    (compareTarget && node.id === link.target)
-                )
-            );
+            if (compareTarget) {
+                return links.filter(link => link.type === type && node.id === link.source)
+                    .map(link => {
+                        for (let k=0; k<nodes.length; k++) {
+                            if (nodes[k].id === link.target) {
+                                return nodes[k]
+                            }
+                        }
+                    })
+            } else if (compareSource) {
+                return links.filter(link => link.type === type && node.id === link.target)
+                    .map(link => {
+                        for (let k=0; k<nodes.length; k++) {
+                            if (nodes[k].id === link.source) {
+                                return nodes[k]
+                            }
+                        }
+                    })
+            }
         };
 
         const aliases = extract_link('AKA', true, false);
@@ -171,56 +176,107 @@ class Entity extends Component {
             }
         };
 
-        const attrs = <EntityAttributes node={node}/>;
+        let empty = true;
+        const attrs = (<div>
+            { keys.filter(k => node[k[0]]).map(k => {
+                let n = node;
+                const val = n[k[0]];
+                empty = false;
+                return (
+                    <div className="info-row" key={k}>
+                        <p className="info-key">{k[1]}</p>
+                        { (!(val instanceof Array))
+                            ? <p className="info-value">{val.toString()}</p>
+                            : val.map(v => <li className="info-value" key={v}>{v}</li>)
+                        }
+                    </div>
+                )
+            }) }
+        </div>);
+
+        let nodeInGraph = false;
+
+        for (let i=0; i < this.props.data.nodes.length; i++) {
+            if (this.props.data.nodes[i].id === node.id) {
+                nodeInGraph = true;
+                break
+            }
+        }
 
         return (
             <div className="full-width">
                 <div className="entity-header-wrapper">
                     <div className="entity-header">
-                        <div
-                            className="entity-name">{node.name || node.combined || node.number || node.description}</div>
-                        <div className="entity-type">({node.type})</div>
+                        <div className="entity-name">{node.name || node.combined || node.label || node.description}</div>
+                        <div className="entity-type">{node.type}</div>
+                        {
+                            nodeInGraph ?
+                                null
+                                :
+                                <div className="btn btn-primary sign-up-button custom-ali-css" onClick={() => this.props.dispatch(addToGraphFromId(this.props.graph, node.id))}>
+                                    Add To Graph
+                                </div>
+                        }
                     </div>
-                    <div className="entity-source">{node.dataset}</div>
                 </div>
                 <hr />
                 <div className="entity-body">
-
-                    <h5 className="">Attributes</h5>
-                    { attrs }
-
-                    { Object.keys(linktypes).filter(l => linktypes[l].extracted.length !== 0).map((l, idx) => {
-                        const t = linktypes[l];
-                        return (
-                            <div key={idx}>
-                                <h5 className="subheader" key={`h5-${idx}`}>{l}</h5>
-                                { t.extracted.map(i => <EntityCard key={i[t.chooseDisplay]} data={i} id={i[t.chooseDisplay]} shouldFetch
-                                                                   graph={this.props.graph}/>) }
+                    {
+                        empty ?
+                            null :
+                            <div>
+                                <h5 className="subheader">Attributes</h5>
+                                {attrs}
                             </div>
-                        );
-                    })}
-
+                    }
+                    <div>
+                        { Object.keys(linktypes).filter(l => linktypes[l].extracted.length !== 0).map((l, idx) => {
+                            const t = linktypes[l];
+                            return (
+                                <div key={idx}>
+                                    <h5 className="subheader" key={`h5-${idx}`}>{l}</h5>
+                                    { t.extracted.map(node =>
+                                    <EntityCard key={node.id} node={node} id={node.id} data={this.props.data} shouldFetch graph={this.props.graph} /> )}
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
         )
-    }
+    };
 
     render() {
+        const { currentEntity } = this.props;
         const keys = [
-            ['registered_in', 'Registered In'],
-            ['birthdate', 'Date of Birth'],
-            ['gender', 'Gender'],
-            ['place_of_birth', 'Place of Birth'],
-            ['last_seen', 'Last Seen'],
-            ['incorporation_date', 'Incorporation Date']
+            ['dateOfBirth', 'Date of Birth'],
+            ['placeOfBirth', 'Place of Birth'],
+            ['titles', 'Titles'],
+            ['emailAddresses', 'Email Addresses'],
+            ['websites', 'Websites'],
+            ['aliases', 'Aliases'],
+            ['programs', 'Programs'],
+            ['sanctionEvents', 'Sanction Events'],
+            ['locations', 'Location'],
+
+            ['numberType', 'Document Type'],
+            ['valid', 'Valid'],
+            ['number', 'Number'],
+            ['issuedBy', 'Issuer'],
+            ['issuedIn', 'Place of Issue'],
+            ['issuedOn', 'Date of Issue'],
+            ['notes', 'Notes']
         ];
-        if (this.state.currentEntity === null) {
-            return <div className="sidebar-content-container"> Click a node to view information about it </div>
+        if (currentEntity === null) {
+            return <div className="placeholder-text" style={{paddingTop: (pageHeight / 3) + 63}}>This is the <strong>Entity </strong>tab. <br/><br/>Select a node to view information about it. </div>
         }
-        let id = decodeURIComponent(this.props.match.params.query);
+        if (currentEntity === false) {
+            return null
+        }
+        let id = currentEntity.id;
         return (
             <div className="sidebar-content-container">
-                {this.renderEntity(this.state.currentEntity.nodes.filter(n => n.id === id)[0], this.state.currentEntity.nodes, this.state.currentEntity.links, keys)}
+                {this.renderEntity(currentEntity.nodes.filter(n => n.id === id)[0], currentEntity.nodes, currentEntity.links, keys)}
             </div>
         );
     }
@@ -228,15 +284,15 @@ class Entity extends Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(actions, dispatch),
         dispatch: dispatch,
     };
 }
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state) {
     return {
-        currentNode: state.graph.currentNode,
-        currentEntity: state.graph.currentEntity
+        currentEntity: state.graphSidebar.currentEntity,
+        // should add currentNode here... but let me first see if that's first actually being used.
+        // if not being used, then should only track when sidebar is visible. If it is being used, then always track regardless
     };
 }
 

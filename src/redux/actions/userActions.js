@@ -1,4 +1,4 @@
-import {USER_LOGIN, USER_LOGOUT, OFFLINE_ACTIONS} from "./actionTypes";
+import {OFFLINE_ACTIONS, USER_LOGIN, USER_LOGOUT} from "./actionTypes";
 
 import {authenticateAccount, logoutAccount} from "../../server/auth_routes";
 
@@ -15,8 +15,8 @@ export function userLogIn(username, password) {
             dispatch(userLogInDispatch());
             return {success: true};
         }
-        
-        // Service authentication request by dispatching to backend 
+
+        // Service authentication request by dispatching to backend
         return authenticateAccount({username, password})
             .then((res) => {
                 dispatch(userLogInDispatch());

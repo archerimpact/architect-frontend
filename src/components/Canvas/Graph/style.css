@@ -24,4 +24,9 @@
 
 #graph-container {
     margin-left: 50px;
+    overflow-x: hidden;
+}
+
+#graph-container::-webkit-scrollbar { 
+    display: none; 
 }
