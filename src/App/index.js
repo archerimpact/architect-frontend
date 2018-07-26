@@ -36,6 +36,15 @@ export default class App extends Component {
             return (
                 <div>
                     <div className="main">
+
+                        {/* OLD ROUTING */}
+                        {/*<PrivateRoute exact path="/" component={Home}/>*/}
+                        {/*<Route path="/login" component={Login}/>*/}
+                        {/*<Route path="/create_account" component={CreateAccount}/>*/}
+                        {/*<PrivateRoute path="/explore/:sidebarState?" component={Canvas}/>*/}
+                        {/*<PrivateRoute path="/build/:investigationId/:sidebarState?/:query?" component={Canvas}/>*/}
+                        {/*<PrivateRoute exact path="/build" component={Investigations}/>*/}
+
                         <Route exact path="/:id?" component={Home}/>
                         <Route path="/explore/:sidebarState?/:query?" component={Canvas}/>
                     </div>

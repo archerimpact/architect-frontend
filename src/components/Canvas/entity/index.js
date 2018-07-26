@@ -10,6 +10,13 @@ const pageHeight = window.innerHeight;
 
 class Entity extends Component {
 
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {
+    //         currentEntityDegreeOne: null,
+    //     };
+    // }
+    //
     // componentDidMount() {
     //     if (this.props.id) {
     //         this.props.dispatch(fetchCurrentEntity(this.props.id))

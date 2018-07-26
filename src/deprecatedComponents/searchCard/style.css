@@ -20,22 +20,10 @@
     border-left: 0;
 }
 
-.card-sdn-type {
+small.card-sdn-type {
     font-size: 12px;
     color: #aaaaaa;
     margin-left: 1em;
-    background-color: #eeeeee;
-    padding: 3px;
-    max-width: 90px;
-    max-height: 30px;
-    overflow-y: hidden;
-}
-
-p.sdn-type {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    margin: 0;
 }
 
 h5.card-detail-header {
@@ -48,14 +36,9 @@ li.no-bullet {
     list-style: none;
 }
 
-.card-pills {
-    display: flex;
-    margin-left: auto;
-}
-
 .entity-icon {
     cursor: pointer;
-    color: #0d77e2;
+    color: #ff5d4c;
     margin: auto 10px auto 0;
     font-size: 20px;
 }
@@ -75,17 +58,4 @@ li.no-bullet {
 .collapse-link:hover {
     text-decoration: underline;
     cursor: pointer;
-}
-
-.custom-ali-css2 {
-    height: auto;
-    width: auto;
-    font-size: 11px;
-    line-height: 25px;
-    padding-right: 6px;
-    padding-left: 6px;
-}
-
-.align-items {
-    align-items: center;
 }

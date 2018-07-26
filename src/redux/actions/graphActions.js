@@ -4,7 +4,7 @@ import * as server from "../../server/index";
 
 /* =========================================== HELPERS ==========================================  */
 
-// Redux state cannot be mutated. Must create new copies of objects - function here ensures that
+// Redux state cannot be mutated. Must create new copies of objects  function here ensures that
 function makeDeepCopy(array) {
     let newArray = [];
     array.map((object) => {
@@ -220,4 +220,34 @@ export function saveD3DataToRedux(nodes, links) {
         let data = {nodes: newNodes, links: newLinks}
         dispatch(saveD3DataToReduxDispatch(data))
     }
+}
+
+/* ========================================= DEPRECATED ACTIONS ==============================================  */
+
+// Action subroutine to call when wanting to update a graph (saving it under a project)
+export function saveCurrentProjectData(graph) {
+    return (dispatch, getState) => {
+            let state = getState();
+            let projid = state.project.currentProject._id;
+            let data = graph.fetchData();
+            let image_string;
+            if (data.nodes.length > 0 && data.links.length > 0) {
+                  image_string = graph.saveGraphAsSVGString();
+                } else {
+                  image_string = null;
+                }
+
+                server.updateProject({id: projid, d3Data: data, image: image_string})
+                .then((res) => {
+                        if (res.success) {
+                                dispatch(updateGraphDispatch(data));
+                            } else {
+                                console.log("graph did not update successfully!");
+                                // TODO flash messages for failures on parent page
+                                }
+                    })
+                .catch((err) => {
+                        console.log(err);
+                    });
+        };
 }

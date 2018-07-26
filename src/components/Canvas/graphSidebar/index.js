@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import SearchResults from "../searchResults";
 import SearchBar from "../../searchBar";
-import ListData from "../listData"
 import {Link,withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import Entity from "../entity";
@@ -13,7 +12,6 @@ class GraphSidebar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            renderList: props.match.params ? props.match.params.sidebarState === "list" : false,
             renderSearch: props.match.params ? props.match.params.sidebarState === "search" : false,
             renderEntity: props.match.params ? props.match.params.sidebarState === "entity" : false,
             history: [],
@@ -38,7 +36,6 @@ class GraphSidebar extends Component {
     componentWillReceiveProps(nextprops) {
         if (this.props.location.pathname !== nextprops.location.pathname) {
             this.setState({
-                renderList: nextprops.match.params ? nextprops.match.params.sidebarState === "list" : false,
                 renderSearch: nextprops.match.params ? nextprops.match.params.sidebarState === "search" : false,
                 renderEntity: nextprops.match.params ? nextprops.match.params.sidebarState === "entity" : false
             })
@@ -50,12 +47,6 @@ class GraphSidebar extends Component {
         this.props.history.push(newPathname);
     };
 
-
-    goToListPage = (query) => {
-        let newPathname = '/explore/list/' + query;
-        this.props.history.push(newPathname);
-    };
-
     renderSearch() {
         const { graph, data } = this.props;
         return (
@@ -63,11 +54,6 @@ class GraphSidebar extends Component {
                 <SearchResults graph={graph} entity data={data}/>
             </div>
         )
-    }
-
-    renderList() {
-        const { graph, data } = this.props;
-        return (<ListData graph={graph} data={data}/>)
     }
 
     renderEntity() {
@@ -105,13 +91,6 @@ class GraphSidebar extends Component {
                         </div>
                     </Link>
                 </div>
-                <div className={"tab " + (activeState === 'list' ? 'active-tab' : '')} onClick={() => this.toggleSidebarFunc("list")}>
-                    <Link to={baseUrl + '/list'}>
-                        <div>
-                            <i className="tab-icon material-icons">list</i>
-                        </div>
-                    </Link>
-                </div>
                 <div className="mb-auto tab" onClick={() => this.toggleSidebarFunc("toggleSidebar")}>
                     <i className="tab-icon toggle-tab-icon material-icons">{this.props.sidebarVisible ? "chevron_right" : "chevron_left"}</i>
                 </div>
@@ -129,12 +108,6 @@ class GraphSidebar extends Component {
                     <div className="sidebar-container" key="sidebar-container">
                         <div className="searchbar-container">
                             {
-                                this.state.renderList ?
-                                <SearchBar onSubmit={this.goToListPage} value={match.params.sidebarState === "list" && match.params.query ? match.params.query : ""} showSettings={true} placeholder={'Search entities in this project'}/>
-                                    :
-                                    null
-                            }
-                            {
                                 this.state.renderSearch ?
                                     <SearchBar onSubmit={this.goToSearchPage} value={match.params.sidebarState === "search" && match.params.query ? match.params.query : ""} showSettings={true} placeholder={"Search Archer\'s OFAC database (e.g. 'Russia', 'Kony', or 'DPRK2')"}/>
                                     :
@@ -150,11 +123,6 @@ class GraphSidebar extends Component {
                             {
                                 this.state.renderEntity ?
                                     this.renderEntity()
-                                    : null
-                            }
-                            {
-                                this.state.renderList ?
-                                    this.renderList()
                                     : null
                             }
                         </div>

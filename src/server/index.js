@@ -1,4 +1,3 @@
-import "whatwg-fetch";
 import {configData} from "../config.js";
 import axios from "axios";
 import * as constants from "./settingsConstants.js";
@@ -37,21 +36,22 @@ export function searchBackendText(searchQuery) {
                 size: 50,
             }
         })
-        .then(function (response) {
-            fulfill(response.data.results);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+            .then(function (response) {
+                fulfill(response.data.results);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     });
 }
 
-export function getNode(neo4j_id, degree=0, useExclude=true) {
+export function getNode(neo4j_id, degree = 0, useExclude = true) {
     let exclude = '';
     constants.EXPANSION_DEFAULT.exclude.forEach((type) => {
         exclude += type + ','
     })
-    exclude = exclude.substring(0, exclude.length - 1);
+
+    exclude = exclude.substring(0, exclude.length);
 
     if (!useExclude) {
         exclude = '*';
@@ -61,12 +61,12 @@ export function getNode(neo4j_id, degree=0, useExclude=true) {
 
     return new Promise(function (fulfill, reject) {
         axios.get(url)
-        .then(function (response) {
-            fulfill(response.data);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+            .then(function (response) {
+                fulfill(response.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     });
 }
 
@@ -97,4 +97,49 @@ export const submitEmail = async (email) => {
         }
     })
     return response
+}
+
+
+/* ============================================= DEPRECATED ================================================= */
+
+export async function getProjects() {
+    const response = await api_inst.get('/projects/all');
+    return response.data;
+}
+
+export async function getProject(id) {
+    const response = await api_inst.get('/projects/get', {
+        params: {
+            projectid: id
+        }
+    });
+    return response.data;
+}
+
+export async function createProject(title, description = null) {
+    const response = await api_inst.post('/projects/create', {
+        name: title,
+        description: description,
+        data: JSON.stringify({nodes: [], links: []})
+    });
+    return response.data;
+}
+
+export async function deleteProject(id) {
+    const response = await api_inst.delete('/projects/delete', {
+        params: {
+            projectid: id
+        }
+    });
+    return response.data;
+}
+
+export async function updateProject(data) {
+    data.d3Data = JSON.stringify(data.d3Data);
+    const response = await api_inst.put('/projects/update', {
+        projectid: data.id,
+        data: data.d3Data,
+        img: data.image
+    });
+    return response.data;
 }
