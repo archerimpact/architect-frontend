@@ -14,7 +14,7 @@ export function brushstart() {
 
 export function brushing() {
     let self = this;
-    if (isRightClick() || this.selectionTool) {
+    if (isRightClick() || this.rectSelect) {
         const extent = this.brush.extent();
         this.svg.selectAll('.node')
             .classed('selected', function (d) {
@@ -41,8 +41,7 @@ export function brushend() {
 export function clicked(d, self, i) {
     if (d3.event.defaultPrevented) return;
     const node = d3.select(self);
-    const fixed = !(node.attr('dragfix') === 'true');
-    node.classed('fixed', d.fixed = fixed);
+    node.classed('fixed', d.fixed = !(node.attr('dragfix') === 'true'));
     this.force.resume();
     d3.event.stopPropagation();
 }
@@ -51,9 +50,11 @@ export function rightclicked(node, d) {
     this.force.resume();
 }
 
-export function dblclicked(d) {
+export function dblclicked(d, self) {
     if (isGroup(d)) { this.toggleGroupView(d.id); }
     if (utils.isExpandable(d)) { this.expandNodeFromData(d); }
+    const node = d3.select(self);
+    node.classed('selected', false);
     d3.event.stopPropagation();
 }
 
@@ -87,9 +88,13 @@ export function dragend(d, self) {
     // if (!parseInt(node.attr('dragdistance')) && isRightClick()) {
     //   this.rightclicked(node, d);
     // }
-
-    if (node.attr('dragdistance')) {
+    if (parseInt(node.attr('dragdistance'), 10)) {
         node.classed('fixed', d.fixed = true);
+        if (!node.classed('selected')) {
+            aesthetics.classNodeSelected.bind(this, node, true)();
+        }
+    } else {
+        aesthetics.classNodeSelected.bind(this, node, !node.classed('selected'))();
     }
 
     this.isDragging = false;
@@ -251,6 +256,27 @@ export function mouseupCanvas(self) {
     this.mousedownNode = null;
 }
 
+export function lassoStart() {
+    this.lasso.items()
+        .classed({ "not_possible": true, "selected": false });
+}
+
+export function lassoDraw() {
+    this.lasso.items().filter(function(d) { return d.possible === true; })
+        .classed({ "not_possible": false, "possible": true });
+
+    this.lasso.items().filter(function(d) { return d.possible === false; })
+        .classed({ "not_possible": true, "possible": false });
+}
+
+export function lassoEnd() {
+    this.lasso.items().filter(function(d) { return d.selected === true; })
+        .classed({ "not_possible": false, "possible": false, "selected": true });
+
+    this.lasso.items().filter(function(d) { return d.selected === false; })
+        .classed({ "not_possible": false, "possible": false });
+};
+
 // Link mouse handlers
 export function mouseoverLink(d) {
     this.displayLinkInfo(d);
@@ -270,7 +296,7 @@ export function zoomstart(d, self) {
 }
 
 export function zooming(d, self) {
-    if (isRightClick() || this.selectionTool) return;
+    if (isRightClick() || this.rectSelect || this.freeSelect) return;
     const e = d3.event;
     this.performZoom(e.translate, e.scale); // Perform the zoom with the translate and scale from the handlers triggered by the graph
 }
@@ -284,7 +310,7 @@ export function performZoom(translate, scale) {
 
 export function zoomend(d, self) {
     this.svg.attr('cursor', 'move');
-    if (isRightClick() || this.selectionTool) {
+    if (isRightClick() || this.rectSelect || this.freeSelect) {
         this.zoom.translate(this.zoomTranslate);
         this.zoom.scale(this.zoomScale);
     }

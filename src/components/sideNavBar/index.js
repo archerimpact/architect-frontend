@@ -15,7 +15,8 @@ class SideNavBar extends Component {
     super(props);
     this.state = { 
       isBetaModalOpen: false,
-      isHelpModalOpen: false 
+      isHelpModalOpen: false,
+      isTermsModalOpen: false 
     };
   }
 
@@ -34,7 +35,7 @@ class SideNavBar extends Component {
   render() {
     return (
       <div className="side-nav unselectable">
-        <ReactTooltip place="right" effect="solid"/>
+        <ReactTooltip className="sidenav-tooltip" place="right" effect="solid"/>
         <Link to='/' onClick={() => { this.props.dispatch(resetGraphDispatch()); }}>
           <div id='top-nav-button' className="side-nav-button">
             <img id="archer-a-icon" src={ archerLogoA }></img>
@@ -43,10 +44,10 @@ class SideNavBar extends Component {
         <div className="side-nav-button" data-tip="Sign up" onClick={ this.toggleBetaModal }>
           <i className="material-icons">person_add</i>
         </div>
-        <div className="side-nav-button" onClick={ this.toggleHelpModal } data-tip="Graph Help">
+        <div className="side-nav-button" onClick={ this.toggleHelpModal } data-tip="Graph help">
           <i className="material-icons">help</i>
         </div>
-        <div className="side-nav-button mt-auto" onClick={ this.toggleTermsModal } data-tip="Terms and Conditions">
+        <div className="side-nav-button mt-auto" onClick={ this.toggleTermsModal } data-tip="Terms and conditions">
           <i className="material-icons">file_copy</i>
         </div>
         {

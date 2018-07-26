@@ -3,11 +3,12 @@ import * as cola from "webcola";
 
 import * as aesthetics from "./helpers/aesthetics.js";
 import * as d3Data from "./helpers/changeD3Data.js";
-import * as keybinding from "./helpers/keybinding.js"
+import * as keybinding from "./plugins/keybinding.js";
+import * as lasso from "./plugins/d3Lasso.js";
 import * as matrix from "./helpers/matrix.js";
 import * as mouseClicks from "./helpers/mouseClicks.js";
 import * as selection from "./helpers/selection.js";
-import * as tt from "./helpers/tooltips.js";
+import * as tooltip from "./plugins/d3Tooltip.js";
 import * as utils from "./helpers/utils.js";
 
 import * as constants from "./helpers/constants.js";
@@ -31,7 +32,8 @@ const icons = {
     [constants.BUTTON_ZOOM_IN_ID]: '',
     [constants.BUTTON_ZOOM_OUT_ID]: '',
     [constants.BUTTON_POINTER_TOOL_ID]: '',
-    [constants.BUTTON_SELECTION_TOOL_ID]: '',
+    [constants.BUTTON_RECT_SELECT_ID]: '',
+    [constants.BUTTON_FREE_SELECT_ID]: '',
     // [constants.BUTTON_EDIT_MODE_ID]: '',
     [constants.BUTTON_EXPAND_NODES_ID]: '',
     [constants.BUTTON_REMOVE_NODES_ID]: '',
@@ -53,6 +55,7 @@ class Graph {
 
         this.menuActions = [];
         this.contextMenu = null;
+        this.tooltip = null;
 
         this.degreeExpanded = 0;
         this.expandingNode = null;
@@ -98,6 +101,7 @@ class Graph {
         this.nodeEnter = null;
         this.zoom = null;
         this.brush = null;
+        this.lasso = null;
         this.svg = null;
         this.svgBrush = null;
         this.container = null;
@@ -137,9 +141,6 @@ class Graph {
         this.zoomButton = this.zoomButton.bind(this);
         this.wrapNodeText = this.wrapNodeText.bind(this);
         this.updateLinkText = this.updateLinkText.bind(this);
-        this.displayTooltip = this.displayTooltip.bind(this);
-        this.displayDebugTooltip = this.displayDebugTooltip.bind(this);
-        this.populateNodeInfoBody = this.populateNodeInfoBody.bind(this);
         this.resetDragLink = this.resetDragLink.bind(this);
 
         this.bindReactActions({}); //no display functions yet
@@ -204,16 +205,29 @@ class Graph {
     // Normally we append a g element right after call(zoom), but in this case we don't
     // want panning to translate the brush off the screen (disabling all mouse events).
     initializeSVGBrush = () => {
-        // Extent invisible on left click
         const svgBrush = this.svg.append('g')
             .attr('class', 'brush')
             .call(this.brush);
 
+        // Extent invisible on left click
         this.svg.on('mousedown', () => {
-            svgBrush.style('opacity', utils.isRightClick() || this.selectionTool ? 1 : 0);
+            svgBrush.style('opacity', utils.isRightClick() || this.rectSelect ? 1 : 0);
         });
 
         return svgBrush;
+    }
+
+    initializeLasso = () => {
+        const self = this;
+        this.lasso = d3.lasso()
+            .closePathDistance(75)
+            .closePathSelect(true)
+            .hoverSelect(false) 
+            .area(this.svg)
+            .on("start", mouseClicks.lassoStart.bind(self))
+            .on("draw", mouseClicks.lassoDraw.bind(self))
+            .on("end", mouseClicks.lassoEnd.bind(self));
+        this.svg.call(this.lasso);
     }
 
     // We need this reference because selectAll and listener calls will refer to svg,
@@ -282,18 +296,18 @@ class Graph {
 
     initializeMenuActions = () => {
         this.menuActions = [
-            {
-                title: 'Group selected nodes',
-                action: (elm, d, i) => {
-                    this.groupSelectedNodes();
-                }
-            },
-            {
-                title: 'Ungroup selected nodes',
-                action: (elm, d, i) => {
-                    this.ungroupSelectedGroups();
-                }
-            },
+            // {
+            //     title: 'Group selected nodes',
+            //     action: (elm, d, i) => {
+            //         this.groupSelectedNodes();
+            //     }
+            // },
+            // {
+            //     title: 'Ungroup selected nodes',
+            //     action: (elm, d, i) => {
+            //         this.ungroupSelectedGroups();
+            //     }
+            // },
             {
                 title: 'Expand 1st degree connections...',
                 action: (elm, d, i) => {
@@ -443,7 +457,16 @@ class Graph {
             .style('visibility', 'hidden');
     }
 
+    initializeTooltip = () => {
+        this.tooltip = d3.tip()
+            .attr('class', 'd3-tip')
+            .offset([11, 0])
+            .html((d) => { return d.code ? `${d.title} <span style='color: #0d77e2;'>[${d.code}]</span>` : d.title; });
+        this.svg.call(this.tooltip);
+    }
+
     initializeToolbarButtons = () => {
+        const self = this;
         const buttonData = this.getToolbarLabels();
 
         this.svg.append('rect')
@@ -461,9 +484,6 @@ class Graph {
             .enter().append('g')
             .attr('class', 'button')
             .attr('pointer-events', 'all');
-
-        button.append('title')
-            .text((d) => { return d.title; });
 
         button.append('text')
             .attr('class', 'toolbar-button-icon')
@@ -487,6 +507,9 @@ class Graph {
                 height: constants.BUTTON_WIDTH,
                 class: 'button'
             })
+            .on('mouseover', self.tooltip.show)
+            .on('mouseout', self.tooltip.hide)
+            .on('mouseleave', self.tooltip.hide)
             .on('dblclick', this.stopPropagation)
             .call(d3.behavior.drag()
                 .on('dragstart', this.stopPropagation)
@@ -497,14 +520,16 @@ class Graph {
 
     getToolbarLabels = () => {
         const labels = [constants.BUTTON_ZOOM_IN_ID, constants.BUTTON_ZOOM_OUT_ID, constants.BUTTON_POINTER_TOOL_ID,
-            constants.BUTTON_SELECTION_TOOL_ID, constants.BUTTON_EXPAND_NODES_ID, constants.BUTTON_REMOVE_NODES_ID, constants.BUTTON_FIX_NODE_ID]; 
+            constants.BUTTON_RECT_SELECT_ID, constants.BUTTON_FREE_SELECT_ID, constants.BUTTON_EXPAND_NODES_ID, constants.BUTTON_REMOVE_NODES_ID, constants.BUTTON_FIX_NODE_ID]; 
             //constants.BUTTON_UNDO_ACTION_ID, constants.BUTTON_REDO_ACTION_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_SAVE_PROJECT_ID
         const titles = [constants.BUTTON_ZOOM_IN_TITLE, constants.BUTTON_ZOOM_OUT_TITLE, constants.BUTTON_POINTER_TOOL_TITLE,
-            constants.BUTTON_SELECTION_TOOL_TITLE, constants.BUTTON_EXPAND_NODES_TITLE, constants.BUTTON_REMOVE_NODES_TITLE, constants.BUTTON_FIX_NODE_TITLE]; 
+            constants.BUTTON_RECT_SELECT_TITLE, constants.BUTTON_FREE_SELECT_TITLE, constants.BUTTON_EXPAND_NODES_TITLE, constants.BUTTON_REMOVE_NODES_TITLE, constants.BUTTON_FIX_NODE_TITLE]; 
             //constants.BUTTON_UNDO_ACTION_TITLE, constants.BUTTON_REDO_ACTION_TITLE, constants.BUTTON_EDIT_MODE_TITLE, constants.BUTTON_TOGGLE_MINIMAP_TITLE, constants.BUTTON_SAVE_PROJECT_TITLE
+        const codes = [constants.BUTTON_ZOOM_IN_CODE, constants.BUTTON_ZOOM_OUT_CODE, constants.BUTTON_POINTER_TOOL_CODE,
+            constants.BUTTON_RECT_SELECT_CODE, constants.BUTTON_FREE_SELECT_CODE, constants.BUTTON_EXPAND_NODES_CODE, constants.BUTTON_REMOVE_NODES_CODE, constants.BUTTON_FIX_NODE_CODE];
         const labelObjects = [];
         for (let i = 0; i < labels.length; i++) {
-            labelObjects.push({label: labels[i], title: titles[i]});
+            labelObjects.push({label: labels[i], title: titles[i], code: codes[i]});
         }
 
         return labelObjects;
@@ -554,6 +579,8 @@ class Graph {
         this.brush = this.initializeBrush();
         this.svg = this.initializeSVG(graphRef);
         this.svgBrush = this.initializeSVGBrush();
+        lasso.setupLasso();
+        this.initializeLasso();
         this.container = this.initializeContainer();
         this.svgGrid = this.initializeSVGgrid();
         this.curve = this.initializeCurve();
@@ -561,25 +588,41 @@ class Graph {
         this.drag = this.initializeDrag();
         this.dragLink = this.initializeDragLink();
         this.defs = this.svg.append('defs');
-        this.initializeMenuActions();
-        this.initializeContextMenu();
         this.initializeMarkers();
 
-        keybinding.initializeKeybinding();
+        this.initializeMenuActions();
+        this.initializeContextMenu();
+        keybinding.setupKeybinding();
         this.initializeKeycodes();
 
+        tooltip.setupTooltip();
+        this.initializeTooltip();
         this.initializeToolbarButtons();
         this.initializeZoomButtons();
         this.initializeButton(constants.BUTTON_POINTER_TOOL_ID, () => {
-            d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', false);
             d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', true);
-            this.selectionTool = false;
-        }, true); // Placeholder method
-        this.initializeButton(constants.BUTTON_SELECTION_TOOL_ID, () => {
+            d3.select('#' + constants.BUTTON_RECT_SELECT_ID).classed('selected', false);
+            d3.select('#' + constants.BUTTON_FREE_SELECT_ID).classed('selected', false);
+            this.freeSelect = false;
+            this.rectSelect = false;
+            this.lasso.disable();
+        }, true);
+        this.initializeButton(constants.BUTTON_RECT_SELECT_ID, () => {
             d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', false);
-            d3.select('#' + constants.BUTTON_SELECTION_TOOL_ID).classed('selected', true);
-            this.selectionTool = true;
-        }); // Placeholder method
+            d3.select('#' + constants.BUTTON_RECT_SELECT_ID).classed('selected', true);
+            d3.select('#' + constants.BUTTON_FREE_SELECT_ID).classed('selected', false);
+            this.freeSelect = false;
+            this.rectSelect = true;
+            this.lasso.disable();
+        });
+        this.initializeButton(constants.BUTTON_FREE_SELECT_ID, () => {
+            d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', false);
+            d3.select('#' + constants.BUTTON_RECT_SELECT_ID).classed('selected', false);
+            d3.select('#' + constants.BUTTON_FREE_SELECT_ID).classed('selected', true);
+            this.freeSelect = true;
+            this.rectSelect = false;
+            this.lasso.enable();
+        });
         // this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => { this.toggleEditMode(); });
         this.initializeButton(constants.BUTTON_EXPAND_NODES_ID, d3Data.expandSelectedNodes.bind(this));
         this.initializeButton(constants.BUTTON_REMOVE_NODES_ID, d3Data.deleteSelectedNodes.bind(this));
@@ -763,6 +806,17 @@ class Graph {
         this.node.call(this.styleNode);
         this.node.exit().remove();
 
+        // Update node glyphs
+        this.node.select('.node-glyph')
+            .classed('hidden', (d) => { return d.group || !utils.isExpandable(d); });
+
+        this.node.select('.glyph-label')
+            .text((d) => { return utils.getNumLinksToExpand(d); })
+            .classed('hidden', (d) => { return d.group || !utils.isExpandable(d); });
+
+        // Update lasso items
+        this.lasso.items(d3.selectAll('.node'));
+
         // Update hulls
         this.hull = this.hull.data(this.hulls);
         this.hull
@@ -900,9 +954,9 @@ class Graph {
         const self = this;
         d3.select('body').call(d3.keybinding()
             // Select all nodes
-            .on('a', aesthetics.classSelectedNodes.bind(self))
+            .on('a', aesthetics.classAllNodesSelected.bind(self))
             // Clear current selection
-            .on('esc', aesthetics.clearSelected.bind(self))
+            .on('esc', aesthetics.unclassAllNodesSelected.bind(self))
             // Expand selected nodes
             .on('e', d3Data.expandSelectedNodes.bind(self))
             // Fix selected nodes, unfix nodes if all were previously fixed
@@ -1113,16 +1167,6 @@ Graph.prototype.createHull = d3Data.createHull;
 Graph.prototype.calculateAllHulls = d3Data.calculateAllHulls;
 Graph.prototype.drawHull = d3Data.drawHull;
 Graph.prototype.addLink = d3Data.addLink;
-
-// From tooltips
-Graph.prototype.initializeTooltip = tt.initializeTooltip;
-Graph.prototype.displayTooltip = tt.displayTooltip;
-Graph.prototype.displayDebugTooltip = tt.displayDebugTooltip;
-Graph.prototype.hideTooltip = tt.hideTooltip;
-Graph.prototype.moveTooltip = tt.moveTooltip;
-Graph.prototype.populateNodeInfoBody = tt.populateNodeInfoBody;
-Graph.prototype.displayData = tt.displayData;
-Graph.prototype.createTitleElement = tt.createTitleElement;
 
 // from matrix
 Graph.prototype.setMatrix = matrix.setMatrix;

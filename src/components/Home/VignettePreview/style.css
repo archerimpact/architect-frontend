@@ -25,6 +25,7 @@
 .preview-box {
 	border: 1px solid #ebebeb;
 	padding: 0;
+  overflow: hidden;
 }
 
 .preview-date, .preview-author {

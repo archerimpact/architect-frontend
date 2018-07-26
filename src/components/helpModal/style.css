@@ -14,6 +14,15 @@ table {
   font-size: 2rem;
 }
 
+.modal-content h2 {
+  font-size: 1.5rem;
+  border-bottom: 1px solid #ddd;
+  padding: 8px 0px;
+  margin-bottom: 0px;
+  margin-top: 5px;
+  text-align: right;
+}
+
 .modal-content tr {
   border-bottom: 1px solid #ddd;
 }

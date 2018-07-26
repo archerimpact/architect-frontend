@@ -1,8 +1,7 @@
 .publish-button {
 	position: absolute;
-	left: 350px;
+	left: 450px;
 	top: 0px;
-	z-index: 1;
 	background-color: #0d77e2;
 	height: 50px;
 	width: 100px;

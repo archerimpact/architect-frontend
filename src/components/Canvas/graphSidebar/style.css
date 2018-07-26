@@ -13,13 +13,13 @@
     top: 0;
     width: 550px;
     height: 100%;
-    z-index: 4;
+    border-right: 1px solid #ebebeb;
+    z-index: 1;
 }
 
 .tab-container {
     display: flex;
     justify-content: center;
-    z-index: 20;
     margin-top: 10px;
 }
 
@@ -40,7 +40,7 @@
     letter-spacing: 2px;
     font-weight: 100;
     outline: none;
-    z-index: 11;
+    z-index: 2;
 }
 
 .tab .tab-icon {
@@ -95,8 +95,7 @@
 }
 
 .searchbar-container {
-    z-index: 10;
-    padding: 10px;
+    padding: 5px;
     width: 100%;
     background-color: #0d77e2;
     /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
@@ -116,7 +115,6 @@
     width: 100% !important;
     height: 100%;
     padding: 0;
-    z-index: 10;
     border: 1px;
     background-color: #FFFFFF;
 }

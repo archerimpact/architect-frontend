@@ -10,26 +10,32 @@ export function classExpandableNodes() {
         .classed('expandable', true);
 }
 
-export function classSelectedNodes() {
-    this.node.classed('selected', true);
+export function classAllNodesSelected() {
+    this.node.classed('selected', (d) => { return this.nodeSelection[d.index] = true; });
+    highlightLinksFromAllNodes.bind(this)();
 }
 
-export function clearSelected() {
-    this.node.classed('selected', false);
-    this.link.classed('selected', false);
+export function classNodeSelected(node, isSelected) {
+    node.classed('selected', (d) => { return this.nodeSelection[d.index] = isSelected; });
+    highlightLinksFromNode.bind(this, node)();
+}
+
+export function unclassAllNodesSelected() {
+    this.node.classed('selected', (d) => { return this.nodeSelection[d.index] = false; });
+    this.link.call(styleLink, false);
 }
 
 // Link highlighting
 export function highlightLinksFromAllNodes() {
     this.link.call(this.styleLink, false);
-    this.link.filter((d) => { return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index] })
+    this.link.filter((l) => { return this.nodeSelection[l.source.index] && this.nodeSelection[l.target.index] })
         .call(this.styleLink, true);
 }
 
-export function highlightLinksFromNode(node) {
-    node = node[0].__data__.index;
-    this.link.filter((d) => { return d.source.index === node || d.target.index === node; })
-        .call(this.styleLink, (d) => { return this.nodeSelection[d.source.index] && this.nodeSelection[d.target.index]; });
+export function highlightLinksFromNode(node) { 
+    node = node[0][0].__data__.index;
+    this.link.filter((l) => { return l.source.index === node || l.target.index === node; })
+        .call(this.styleLink, (l) => { return this.nodeSelection[l.source.index] && this.nodeSelection[l.target.index]; });
 }
 
 export function styleNode(selected, colorBlind=false) {

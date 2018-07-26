@@ -330,11 +330,11 @@ a.real-link {
 }
 
 #find-out-container {
-  padding: 20px 10vw;
+  padding: 10px 10vw 0px 10vw;
 }
 
 .find-out-more-row {
-  margin-top: 30px;
+  margin-top: 25px;
   width: 100%;
   align-items: flex-start;
 }
@@ -351,6 +351,7 @@ a.real-link {
 .beginning-icon {
   font-size: 5rem;
   margin-right: 30px;
+  margin-top: 9px;
   color: #1e1e1e;
 }
 
