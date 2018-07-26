@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router-dom";
 import * as graphActions from "../../../redux/actions/graphActions";
+import { saveD3DataToRedux } from "../../../redux/actions/graphActions";
 import * as homeActions from '../../../redux/actions/homeActions';
 
 import { fetchCurrentEntity } from "../../../redux/actions/graphSidebarActions"
@@ -30,6 +31,10 @@ class Graph extends Component {
         }
     };
 
+    saveD3DataToReduxFunc = (data) => {
+        this.props.dispatch(saveD3DataToRedux(data.nodes, data.links))
+    };
+
     componentDidMount() {
         const { data, graph, width, height, allowKeycodes, displayMinimap } = this.props;
         // this.props.dispatch(initializeCanvas(this.props.graph, this.props.width, this.props.height));
@@ -39,10 +44,10 @@ class Graph extends Component {
         } else {
             graph.setData(0, [], []);
         }
-        graph.bindDisplayFunctions({
+        graph.bindReactActions({
             expand: this.expandNodeFromData,
             node: this.fetchCurrentEntityFunc,
-            save: null
+            save: this.saveD3DataToReduxFunc
         });
 
       if (displayMinimap === false) { graph.hideMinimap(); }

@@ -33,7 +33,6 @@ export function addToVignetteFromId(graph, id, index) {
                 let dataNodes = _.uniqBy(allNodes, (obj) => {return obj.id});
                 let dataLinks = _.uniqBy(allLinks, (obj) => {return obj.id});
                 graph.addData(data.centerid, makeDeepCopy(dataNodes), makeDeepCopy(dataLinks));
-                graph.update();
                 graph.selectNode(id);
                 let newVignetteData = makeDeepCopy(state.home.vignetteGraphData);
                 newVignetteData.splice(index, 1, {nodes: dataNodes, links: dataLinks})
