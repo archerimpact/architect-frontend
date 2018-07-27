@@ -117,6 +117,17 @@ path.link.selected {
     cursor: pointer;
 }
 
+@media screen and (min-color-index:0) and(-webkit-min-device-pixel-ratio:0)
+{ 
+    @media {
+        /* Only Safari */
+        .node-name tspan {
+            stroke: none;
+            stroke-width: 0px;
+        }
+    }
+}
+
 .node text.icon {
     stroke-width: .5px;
     fill: #545454;
@@ -231,6 +242,8 @@ path.link.selected {
     transition-property: stroke-opacity, fill-opacity;
 }
 
+/* Toolbar */
+
 .button {
     fill: transparent;
     cursor: pointer;
@@ -244,6 +257,8 @@ path.link.selected {
     fill: rgba(0, 0, 0, .25);
 }
 
+/* Tooltip */
+
 .d3-tip {
   line-height: 1;
   font-weight: bold;
@@ -253,7 +268,6 @@ path.link.selected {
   border-radius: 2px;
 }
 
-/* Creates a small triangle extender for the tooltip */
 .d3-tip:after {
   box-sizing: border-box;
   display: inline;
@@ -321,6 +335,8 @@ path.link.selected {
     color: #545454;
 }
 
+/* Minimap */
+
 #minimap-frame {
     fill: #fff;
     stroke: #545454;
@@ -351,6 +367,8 @@ path.link.selected {
     opacity: 0.4;
     cursor: move;
 }*/
+
+/* Context menu */
 
 .context-menu {
     position: absolute;
