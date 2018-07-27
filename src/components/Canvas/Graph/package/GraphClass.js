@@ -186,6 +186,7 @@ class Graph {
             .attr('id', 'canvas')
             .attr('pointer-events', 'all')
             .classed('svg-content', true)
+            .on('click', function () { self.clickedCanvas(this); })
             .on('mouseup', function () { self.mouseupCanvas(this); })
             .call(d3.behavior.drag()
                 .on('dragstart', function (d) { self.dragstartCanvas(d, this)})
@@ -1034,7 +1035,6 @@ class Graph {
             if (!this.dragCallback) { this.dragCallback = this.node.property('__onmousedown.drag')['_']; }
             
             this.svg
-                .on('click', function () { self.clickedCanvas(this); })
                 .on('mousemove', function () { self.mousemoveCanvas(this); });
 
             this.node
@@ -1044,7 +1044,6 @@ class Graph {
             this.dragLink.style('visibility', 'visible');
         } else {
             this.svg
-                .on('click', null)
                 .on('mousemove', null);
 
             this.node

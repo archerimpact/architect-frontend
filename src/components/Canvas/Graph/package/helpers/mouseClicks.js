@@ -224,12 +224,15 @@ export function mouseout(d, self) {
 
 // Canvas mouse handlers
 export function clickedCanvas() {
-    resetDragLink(this);
-    if (d3.event.defaultPrevented) return;
-    if (this.dragDistance === 0) {
-        this.addNodeToSelected(d3.event);
-    } else {
-        this.dragDistance = 0;
+    aesthetics.unclassAllNodesSelected.bind(this)();
+    if (this.editMode) {
+        resetDragLink(this);
+        if (d3.event.defaultPrevented) return;
+        if (this.dragDistance === 0) {
+            this.addNodeToSelected(d3.event);
+        } else {
+            this.dragDistance = 0;
+        }
     }
 }
 
