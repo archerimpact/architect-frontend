@@ -4,6 +4,11 @@ import Home from "../components/Home/";
 import Canvas from "../components/Canvas";
 import SideNavbar from '../components/sideNavBar';
 
+import PrivateRoute from './PrivateRoute';
+
+import Login from '../components/Login';
+import CreateAccount from '../components/CreateAccount';
+
 import "./style.css";
 
 export default class App extends Component {
@@ -39,14 +44,13 @@ export default class App extends Component {
 
                         {/* OLD ROUTING */}
                         {/*<PrivateRoute exact path="/" component={Home}/>*/}
-                        {/*<Route path="/login" component={Login}/>*/}
-                        {/*<Route path="/create_account" component={CreateAccount}/>*/}
                         {/*<PrivateRoute path="/explore/:sidebarState?" component={Canvas}/>*/}
                         {/*<PrivateRoute path="/build/:investigationId/:sidebarState?/:query?" component={Canvas}/>*/}
                         {/*<PrivateRoute exact path="/build" component={Investigations}/>*/}
-
-                        <Route exact path="/:id?" component={Home}/>
-                        <Route path="/explore/:sidebarState?/:query?" component={Canvas}/>
+                        <Route exact path="/login" component={Login}/>
+                        <Route exact path="/create_account" component={CreateAccount}/>
+                        <PrivateRoute exact path="/" component={Home}/>
+                        <PrivateRoute path="/explore/:sidebarState?/:query?" component={Canvas}/>
                     </div>
                 </div>
             );

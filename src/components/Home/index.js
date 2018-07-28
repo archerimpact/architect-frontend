@@ -10,8 +10,9 @@ import SearchBar from '../searchBar';
 import SearchBarDatabase from '../searchBarDatabase';
 import SignUpForm from '../signUpForm';
 import { loadLink } from "../../redux/actions/homeActions"
+import { userLogOut } from '../../redux/actions/userActions';
 import { Link, withRouter, Redirect } from "react-router-dom"
-import {connect} from "react-redux"
+import {connect} from "react-redux";
 
 import "./style.css";
 import "../../App/montserrat.css";
@@ -39,6 +40,10 @@ class Home extends Component {
         this.setState({linkPresent: false});
     };
 
+    logOut = () => {
+      this.props.dispatch(userLogOut());
+    }
+
     render() {
         const { linkPresent } = this.state;
 
@@ -58,6 +63,9 @@ class Home extends Component {
               <nav className="primary">
                 <ul id="primary-navigation">
                   <li className="menu-item">
+                    <button onClick={() => { this.logOut() }}>
+                      Log out
+                    </button>
                     {/*
                     <div className="search-holder">
                       <SearchBar isHomePage={true} />
