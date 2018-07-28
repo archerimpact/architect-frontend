@@ -221,7 +221,7 @@ class Graph {
     initializeLasso = () => {
         const self = this;
         this.lasso = d3.lasso()
-            .closePathDistance(75)
+            .closePathDistance(5000)
             .closePathSelect(true)
             .hoverSelect(false) 
             .area(this.svg)
@@ -600,34 +600,13 @@ class Graph {
         this.initializeTooltip();
         this.initializeToolbarButtons();
         this.initializeZoomButtons();
-        this.initializeButton(constants.BUTTON_POINTER_TOOL_ID, () => {
-            d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', true);
-            d3.select('#' + constants.BUTTON_RECT_SELECT_ID).classed('selected', false);
-            d3.select('#' + constants.BUTTON_FREE_SELECT_ID).classed('selected', false);
-            this.freeSelect = false;
-            this.rectSelect = false;
-            this.lasso.disable();
-        }, true);
-        this.initializeButton(constants.BUTTON_RECT_SELECT_ID, () => {
-            d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', false);
-            d3.select('#' + constants.BUTTON_RECT_SELECT_ID).classed('selected', true);
-            d3.select('#' + constants.BUTTON_FREE_SELECT_ID).classed('selected', false);
-            this.freeSelect = false;
-            this.rectSelect = true;
-            this.lasso.disable();
-        });
-        this.initializeButton(constants.BUTTON_FREE_SELECT_ID, () => {
-            d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', false);
-            d3.select('#' + constants.BUTTON_RECT_SELECT_ID).classed('selected', false);
-            d3.select('#' + constants.BUTTON_FREE_SELECT_ID).classed('selected', true);
-            this.freeSelect = true;
-            this.rectSelect = false;
-            this.lasso.enable();
-        });
+        this.initializeButton(constants.BUTTON_POINTER_TOOL_ID, mouseClicks.selectPointerTool.bind(this), true);
+        this.initializeButton(constants.BUTTON_RECT_SELECT_ID, mouseClicks.selectRectSelectTool.bind(this));
+        this.initializeButton(constants.BUTTON_FREE_SELECT_ID, mouseClicks.selectFreeSelectTool.bind(this));
         // this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => { this.toggleEditMode(); });
         this.initializeButton(constants.BUTTON_EXPAND_NODES_ID, d3Data.expandSelectedNodes.bind(this));
         this.initializeButton(constants.BUTTON_REMOVE_NODES_ID, d3Data.deleteSelectedNodes.bind(this));
-        this.initializeButton(constants.BUTTON_FIX_NODE_ID, () => { this.toggleFixedNodes(); });
+        this.initializeButton(constants.BUTTON_FIX_NODE_ID, aesthetics.classAllNodesFixed.bind(this));
         //this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => { this.minimap.toggleMinimapVisibility(); }); // Wrap in unnamed function bc minimap has't been initialized yet
         //this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => { this.saveAllData() }); // Placeholder method
 
@@ -961,7 +940,7 @@ class Graph {
             // Expand selected nodes
             .on('e', d3Data.expandSelectedNodes.bind(self))
             // Fix selected nodes, unfix nodes if all were previously fixed
-            .on('f', aesthetics.toggleFixSelectedNodes.bind(self))
+            .on('f', aesthetics.classAllNodesFixed.bind(this))
             // Group selected nodes
             // .on('g', this.groupSelectedNodes.bind(self))
             // Ungroup groups in selected nodes
@@ -1015,16 +994,6 @@ class Graph {
             //     this.force.resume();
             // });
     };
-
-    toggleFixedNodes = () => {
-        const self = this;
-        this.isGraphFixed = !this.isGraphFixed;
-        d3.selectAll('.node')
-            .each(function (d) {
-                const currNode = d3.select(this);
-                currNode.classed('fixed', d.fixed = self.isGraphFixed)
-            });
-    }
 
     toggleEditMode = () => {
         const self = this;

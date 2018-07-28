@@ -60,6 +60,8 @@ svg line {
     fill: #202020;
 }
 
+/* Links */
+
 .link-text {
     stroke: #fff;
     stroke-width: 3px;
@@ -97,6 +99,8 @@ path.link.same-as {
 path.link.selected {
     stroke: #0d77e2;
 }
+
+/* Nodes */
 
 .node {
     /*fill: #ebebeb;
@@ -160,6 +164,10 @@ path.link.selected {
     fill: #0d77e2 !important;
 }
 
+.node.possible circle {
+    stroke: #0d77e2 !important;
+}
+
 .node .icon {
     fill: #fff !important;
 }
@@ -205,6 +213,8 @@ path.link.selected {
     fill: #0d77e2 !important;
 }
 
+/* Hull */
+
 .hull, path {
     fill: #0d77e2;
     stroke-opacity: 1;
@@ -215,6 +225,8 @@ path.link.selected {
     transition-delay: 0ms;
     transition-duration: 50ms;
 }
+
+/* Faded graph items */
 
 .faded {
     transition-delay: 75ms;

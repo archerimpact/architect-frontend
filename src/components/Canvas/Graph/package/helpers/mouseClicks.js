@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import * as constants from "./constants.js";
 import * as aesthetics from "./aesthetics.js";
 import * as selection from "./selection.js";
 import * as utils from "./utils.js";
@@ -90,9 +91,6 @@ export function dragend(d, self) {
     // }
     if (parseInt(node.attr('dragdistance'), 10)) {
         node.classed('fixed', d.fixed = true);
-        if (!node.classed('selected')) {
-            aesthetics.classNodeSelected.bind(this, node, true)();
-        }
     } else {
         aesthetics.classNodeSelected.bind(this, node, !node.classed('selected'))();
     }
@@ -224,10 +222,14 @@ export function mouseout(d, self) {
 
 // Canvas mouse handlers
 export function clickedCanvas() {
+    // Called at the end of canvas drag actions
+    if (this.rectSelect || this.freeSelect) selectPointerTool.bind(this)();
+
+    // Only execute if click action, not drag
+    if (d3.event.defaultPrevented) return;
     aesthetics.unclassAllNodesSelected.bind(this)();
     if (this.editMode) {
         resetDragLink(this);
-        if (d3.event.defaultPrevented) return;
         if (this.dragDistance === 0) {
             this.addNodeToSelected(d3.event);
         } else {
@@ -238,7 +240,7 @@ export function clickedCanvas() {
 
 export function dragstartCanvas() {
     d3.select('.context-menu').style('display', 'none');
-    if (this.editMode) d3.event.sourceEvent.preventDefault();
+    if (this.editMode || this.rectSelect || this.freeSelect) d3.event.sourceEvent.preventDefault();
 }
 
 export function mousemoveCanvas(self) {
@@ -255,29 +257,22 @@ export function mousemoveCanvas(self) {
     }
 }
 
+// Currently being overwritten in initializeZoomButtons to enable zoom after using zoom buttons
 export function mouseupCanvas(self) {
     this.mousedownNode = null;
 }
 
 export function lassoStart() {
-    this.lasso.items()
-        .classed({ "not_possible": true, "selected": false });
+    this.lasso.items().classed('selected', (d) => { return d.selected = false; });
+    aesthetics.unclassAllNodesSelected.bind(this)();
 }
 
 export function lassoDraw() {
-    this.lasso.items().filter(function(d) { return d.possible === true; })
-        .classed({ "not_possible": false, "possible": true });
-
-    this.lasso.items().filter(function(d) { return d.possible === false; })
-        .classed({ "not_possible": true, "possible": false });
+    aesthetics.classNodesSelected.bind(this)(this.lasso.items().filter((d) => { return d.possible === true; }), true);
 }
 
 export function lassoEnd() {
-    this.lasso.items().filter(function(d) { return d.selected === true; })
-        .classed({ "not_possible": false, "possible": false, "selected": true });
-
-    this.lasso.items().filter(function(d) { return d.selected === false; })
-        .classed({ "not_possible": false, "possible": false });
+    aesthetics.classNodesSelected.bind(this)(this.lasso.items().filter((d) => { return d.selected === true; }), true);
 };
 
 // Link mouse handlers
@@ -448,4 +443,32 @@ export function disableZoom() {
         .on("touchstart.zoom", null)
         .on("touchmove.zoom", null)
         .on("touchend.zoom", null);
+}
+
+// Toolbar selection tools
+export function selectPointerTool() {
+    d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', true);
+    d3.select('#' + constants.BUTTON_RECT_SELECT_ID).classed('selected', false);
+    d3.select('#' + constants.BUTTON_FREE_SELECT_ID).classed('selected', false);
+    this.freeSelect = false;
+    this.rectSelect = false;
+    this.lasso.disable();
+}
+
+export function selectRectSelectTool() {
+    d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', false);
+    d3.select('#' + constants.BUTTON_RECT_SELECT_ID).classed('selected', true);
+    d3.select('#' + constants.BUTTON_FREE_SELECT_ID).classed('selected', false);
+    this.freeSelect = false;
+    this.rectSelect = true;
+    this.lasso.disable();
+}
+
+export function selectFreeSelectTool() {
+    d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', false);
+    d3.select('#' + constants.BUTTON_RECT_SELECT_ID).classed('selected', false);
+    d3.select('#' + constants.BUTTON_FREE_SELECT_ID).classed('selected', true);
+    this.freeSelect = true;
+    this.rectSelect = false;
+    this.lasso.enable();
 }
