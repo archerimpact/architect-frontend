@@ -3,6 +3,7 @@ import { Link, withRouter, Redirect } from "react-router-dom";
 import {connect} from "react-redux";
 import Graph from "../Canvas/Graph";
 import ArcherGraph from "../Canvas/Graph/package/GraphClass";
+import SideNavBar from "../sideNavBar";
 import DocumentDisplay from './documentDisplay';
 
 import './style.css';
@@ -21,6 +22,7 @@ class Ingestor extends Component {
       const data = {nodes: [], links: []}
         return (
             <div className="ingest-container">
+              <SideNavBar />
               <div className="ingest-container-graph">
                 <Graph graph={this.graph} data={data} displayMinimap={false} width={this.state.width} height={this.state.height}/>
               </div>

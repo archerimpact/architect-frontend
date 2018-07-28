@@ -20,6 +20,7 @@ class GraphPreview extends Component {
 
       if (this.props.graph) { this.graph = this.props.graph; } 
       else { this.graph = new ArcherGraph(); }
+      debugger;
     }
 
     componentDidMount() {

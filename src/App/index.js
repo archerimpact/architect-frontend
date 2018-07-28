@@ -4,7 +4,9 @@ import Home from "../components/Home/";
 import Canvas from "../components/Canvas";
 import SideNavbar from '../components/sideNavBar';
 import Ingestor from "../components/Ingestor";
+import Build from "../components/Build";
 
+import PrivateRoute from './PrivateRoute';
 import "./style.css";
 
 export default class App extends Component {
@@ -46,9 +48,10 @@ export default class App extends Component {
                         {/*<PrivateRoute path="/build/:investigationId/:sidebarState?/:query?" component={Canvas}/>*/}
                         {/*<PrivateRoute exact path="/build" component={Investigations}/>*/}
 
-                        <Route exact path="/:id?" component={Home}/>
+                        <Route exact path="/:id(\d+)?" component={Home}/>
                         <Route path="/explore/:sidebarState?/:query?" component={Canvas}/>
-                        <Route path="/ingest/:documentId" component={Ingestor} />
+                        <Route exact path="/build" component={Build}/>
+                        {/*<PrivateRoute exact path="/documentBuilder/:documentId?" component={Ingestor} />*/}
                     </div>
                 </div>
             );
