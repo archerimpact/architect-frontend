@@ -4,6 +4,7 @@ import * as utils from "./utils.js";
 import * as constants from "./constants.js";
 import * as colors from "./colorConstants.js";
 
+// Classing nodes
 export function classExpandableNodes() {
     this.node.classed('expandable', false);
     this.node.filter(d => utils.isExpandable(d))
@@ -20,9 +21,32 @@ export function classNodeSelected(node, isSelected) {
     highlightLinksFromNode.bind(this, node)();
 }
 
+export function classNodesSelected(nodes, isSelected) {
+    nodes.classed('selected', (d) => { return this.nodeSelection[d.index] = isSelected; });
+    highlightLinksFromAllNodes.bind(this)();
+}
+
 export function unclassAllNodesSelected() {
     this.node.classed('selected', (d) => { return this.nodeSelection[d.index] = false; });
-    this.link.call(styleLink, false);
+    this.link.call(styleLink.bind(this), false);
+}
+
+export function classAllNodesFixed() {
+    const self = this;
+    this.isGraphFixed = !this.isGraphFixed;
+    d3.selectAll('.node')
+        .each(function (d) {
+            const currNode = d3.select(this);
+            currNode.classed('fixed', d.fixed = self.isGraphFixed)
+        });
+}
+
+export function toggleSelectedNodesFixed() {
+    const selected = selection.selectSelectedNodes();
+    if (selected.empty()) return;
+    const currFix = selected.classed('fixed');
+    selected.classed('fixed', function (d) { return d.fixed = !currFix; });
+    this.force.start();
 }
 
 // Link highlighting
@@ -38,6 +62,8 @@ export function highlightLinksFromNode(node) {
         .call(this.styleLink, (l) => { return this.nodeSelection[l.source.index] && this.nodeSelection[l.target.index]; });
 }
 
+
+// Styling graph items
 export function styleNode(selected, colorBlind=false) {
     selected.select('circle')
         .attr('r', (d) => { return d.radius = (d.group ? constants.GROUP_NODE_RADIUS : constants.NODE_RADIUS); })
@@ -89,12 +115,14 @@ export function changeLinkDirectionality(selected, newDirection) {
     });
 }
 
-// Fill group nodes blue
+// Style fill of group nodes
 export function fillGroupNodes() {
     this.svg.selectAll('.node')
         .classed('grouped', function (d) { return utils.isGroup(d) || d.type === 'same_as_group'; });
 }
 
+
+// Graph fading on node hover
 export function fadeGraph(d) {
     this.isEmphasized = true;
     this.node
@@ -104,7 +132,6 @@ export function fadeGraph(d) {
     this.hull.classed('faded', true);
 }
 
-// Reset all node/link opacities to 1
 export function resetGraphOpacity() {
     this.isEmphasized = false;
     this.node.classed('faded', false);
@@ -118,13 +145,7 @@ export function resetDragLink(self) {
     self.dragLink.style('visibility', 'hidden');
 }
 
-export function toggleFixSelectedNodes() {
-    const selected = selection.selectSelectedNodes();
-    if (selected.empty()) return;
-    const currFix = selected.classed('fixed');
-    selected.classed('fixed', function (d) { return d.fixed = !currFix; });
-    this.force.start();
-}
+/* Node & link text */
 
 // Normalize node text to same casing conventions and length
 // printFull states - 0: abbrev, 1: none, 2: full
