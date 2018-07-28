@@ -221,7 +221,7 @@ class Graph {
     initializeLasso = () => {
         const self = this;
         this.lasso = d3.lasso()
-            .closePathDistance(5000)
+            .closePathDistance(99999)
             .closePathSelect(true)
             .hoverSelect(false) 
             .area(this.svg)

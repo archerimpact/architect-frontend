@@ -40,11 +40,15 @@ export function brushend() {
 
 // Single-node interactions
 export function clicked(d, self, i) {
-    if (d3.event.defaultPrevented) return;
+    const e = d3.event;
+    e.stopPropagation();
+    if (e.defaultPrevented) return;
+
     const node = d3.select(self);
-    node.classed('fixed', d.fixed = !(node.attr('dragfix') === 'true'));
+    if (!(e.ctrlKey || e.metaKey)) aesthetics.unclassAllNodesSelected.bind(this)();
+    aesthetics.classNodeSelected.bind(this)(node, !(node.attr('dragselect') === 'true'));
+
     this.force.resume();
-    d3.event.stopPropagation();
 }
 
 export function rightclicked(node, d) {
@@ -52,11 +56,11 @@ export function rightclicked(node, d) {
 }
 
 export function dblclicked(d, self) {
+    d3.event.stopPropagation();
     if (isGroup(d)) { this.toggleGroupView(d.id); }
     if (utils.isExpandable(d)) { this.expandNodeFromData(d); }
     const node = d3.select(self);
     node.classed('selected', false);
-    d3.event.stopPropagation();
 }
 
 // Click-drag node interactions
@@ -86,15 +90,14 @@ export function dragging(d, self) {
 
 export function dragend(d, self) {
     const node = d3.select(self);
+    if (parseInt(node.attr('dragdistance'), 10)) {
+        node.classed('fixed', d.fixed = true);
+    }
+
     // if (!parseInt(node.attr('dragdistance')) && isRightClick()) {
     //   this.rightclicked(node, d);
     // }
-    if (parseInt(node.attr('dragdistance'), 10)) {
-        node.classed('fixed', d.fixed = true);
-    } else {
-        aesthetics.classNodeSelected.bind(this, node, !node.classed('selected'))();
-    }
-
+    
     this.isDragging = false;
     this.draggedNode = null;
     this.toRenderMinimap = true;
@@ -268,10 +271,13 @@ export function lassoStart() {
 }
 
 export function lassoDraw() {
+    // TODO: combine these lines for small performance increase by making isSelected a fxn
+    aesthetics.unclassAllNodesSelected.bind(this)();
     aesthetics.classNodesSelected.bind(this)(this.lasso.items().filter((d) => { return d.possible === true; }), true);
 }
 
 export function lassoEnd() {
+    aesthetics.unclassAllNodesSelected.bind(this)();
     aesthetics.classNodesSelected.bind(this)(this.lasso.items().filter((d) => { return d.selected === true; }), true);
 };
 

@@ -22,7 +22,6 @@ export function classNodeSelected(node, isSelected) {
 }
 
 export function classNodesSelected(nodes, isSelected) {
-    this.node.classed('selected', (d) => { return this.nodeSelection[d.index] = false; });
     nodes.classed('selected', (d) => { return this.nodeSelection[d.index] = isSelected; });
     highlightLinksFromAllNodes.bind(this)();
 }

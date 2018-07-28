@@ -164,10 +164,6 @@ path.link.selected {
     fill: #0d77e2 !important;
 }
 
-.node.possible circle {
-    stroke: #0d77e2 !important;
-}
-
 .node .icon {
     fill: #fff !important;
 }
