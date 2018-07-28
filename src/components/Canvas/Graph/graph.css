@@ -132,11 +132,6 @@ path.link.selected {
     }
 }
 
-.node text.icon {
-    stroke-width: .5px;
-    fill: #545454;
-}
-
 .node.grouped circle {
     fill: #7cbdff;
 }
@@ -166,6 +161,7 @@ path.link.selected {
 
 .node .icon {
     fill: #fff !important;
+    cursor: pointer;
 }
 
 .node.fixed .icon {

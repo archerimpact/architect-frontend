@@ -212,7 +212,7 @@ class Graph {
 
         // Extent invisible on left click
         this.svg.on('mousedown', () => {
-            svgBrush.style('opacity', utils.isRightClick() || this.rectSelect ? 1 : 0);
+            svgBrush.style('opacity', (utils.isRightClick() && !this.freeSelect) || this.rectSelect ? 1 : 0);
         });
 
         return svgBrush;

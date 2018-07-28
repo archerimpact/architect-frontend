@@ -44,6 +44,7 @@ export function clicked(d, self, i) {
     e.stopPropagation();
     if (e.defaultPrevented) return;
 
+    this.displayNodeInfo(d);
     const node = d3.select(self);
     if (!(e.ctrlKey || e.metaKey)) aesthetics.unclassAllNodesSelected.bind(this)();
     aesthetics.classNodeSelected.bind(this)(node, !(node.attr('dragselect') === 'true'));
@@ -72,7 +73,6 @@ export function dragstart(d, self) {
 
     this.isDragging = true;
     this.draggedNode = d;
-    this.displayNodeInfo(d);
     const node = d3.select(self);
     node
         .attr('dragfix', node.classed('fixed'))
