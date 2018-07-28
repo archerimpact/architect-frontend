@@ -3,6 +3,7 @@ import {Route} from "react-router-dom";
 import Home from "../components/Home/";
 import Canvas from "../components/Canvas";
 import SideNavbar from '../components/sideNavBar';
+import Ingestor from "../components/Ingestor";
 
 import "./style.css";
 
@@ -47,6 +48,7 @@ export default class App extends Component {
 
                         <Route exact path="/:id?" component={Home}/>
                         <Route path="/explore/:sidebarState?/:query?" component={Canvas}/>
+                        <Route path="/ingest/:documentId" component={Ingestor} />
                     </div>
                 </div>
             );

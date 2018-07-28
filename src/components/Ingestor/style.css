@@ -1,0 +1,22 @@
+.ingest-container {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  overflow: hidden;
+  width: 100%;
+}
+
+.ingest-container-graph {
+  margin-left: -50px;
+}
+
+.ingest-container-document {
+  width: 50%;
+  overflow-y: scroll;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  height: 50%;
+  border-bottom: 1px solid #ebebeb;
+  background-color: white;
+}
