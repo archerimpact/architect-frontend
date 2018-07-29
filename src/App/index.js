@@ -1,12 +1,15 @@
 import React, {Component} from "react";
 import {Route} from "react-router-dom";
+import PrivateRoute from './PrivateRoute';
+
 import Home from "../components/Home/";
 import Canvas from "../components/Canvas";
 import SideNavbar from '../components/sideNavBar';
 import Ingestor from "../components/Ingestor";
 import Build from "../components/Build";
+import Login from '../components/Login';
+import CreateAccount from '../components/CreateAccount';
 
-import PrivateRoute from './PrivateRoute';
 import "./style.css";
 
 export default class App extends Component {
@@ -42,16 +45,18 @@ export default class App extends Component {
 
                         {/* OLD ROUTING */}
                         {/*<PrivateRoute exact path="/" component={Home}/>*/}
-                        {/*<Route path="/login" component={Login}/>*/}
-                        {/*<Route path="/create_account" component={CreateAccount}/>*/}
                         {/*<PrivateRoute path="/explore/:sidebarState?" component={Canvas}/>*/}
                         {/*<PrivateRoute path="/build/:investigationId/:sidebarState?/:query?" component={Canvas}/>*/}
                         {/*<PrivateRoute exact path="/build" component={Investigations}/>*/}
+                        {/*<Route exact path="/:id(\d+)?" component={Home}/>*/}
 
-                        <Route exact path="/:id(\d+)?" component={Home}/>
-                        <Route path="/explore/:sidebarState?/:query?" component={Canvas}/>
-                        <Route exact path="/build" component={Build}/>
-                        {/*<PrivateRoute exact path="/documentBuilder/:documentId?" component={Ingestor} />*/}
+                        <Route exact path="/login" component={Login}/>
+                        <Route exact path="/create_account" component={CreateAccount}/>
+                        <PrivateRoute exact path="/" component={Home}/>
+                        <PrivateRoute exact path="/share/:id" component={Home}/>
+                        <PrivateRoute exact path="/build" component={Build}/>
+                        <PrivateRoute path="/build/:documentId" component={Ingestor} />
+                        <PrivateRoute path="/explore/:sidebarState?/:query?" component={Canvas}/>
                     </div>
                 </div>
             );
