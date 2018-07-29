@@ -140,9 +140,32 @@ export function resetGraphOpacity() {
 }
 
 // Reset edit mode's dynamic drag link
-export function resetDragLink(self) {
-    self.mousedownNode = null;
-    self.dragLink.style('visibility', 'hidden');
+export function updateDragLink() {
+    if (this.editMode && this.mousedownNode) {
+        const x1 = this.mousedownNode.x,
+            y1 = this.mousedownNode.y,
+            x2 = parseInt(this.dragLink.attr('tx2'), 10),
+            y2 = parseInt(this.dragLink.attr('ty2'), 10),
+            dist = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+
+        if (dist > 0) {
+            const baseOffset = 2;
+            const targetX = x2 - (x2 - x1) * (dist - this.mousedownNode.radius) / dist,
+                targetY = y2 - (y2 - y1) * (dist - this.mousedownNode.radius) / dist;
+
+            this.dragLink
+                .attr('x1', targetX)
+                .attr('y1', targetY)
+                .attr('x2', x2)
+                .attr('y2', y2);
+        }
+    }
+}
+
+export function resetDragLink() {
+    this.mousedownNode = null;
+    this.dragLink
+        .style('visibility', 'hidden');
 }
 
 /* Node & link text */

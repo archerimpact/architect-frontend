@@ -141,7 +141,6 @@ class Graph {
         this.zoomButton = this.zoomButton.bind(this);
         this.wrapNodeText = this.wrapNodeText.bind(this);
         this.updateLinkText = this.updateLinkText.bind(this);
-        this.resetDragLink = this.resetDragLink.bind(this);
 
         this.bindReactActions({}); //no display functions yet
     }
@@ -629,7 +628,7 @@ class Graph {
 
         this.minimap = new Minimap()
             .setZoom(this.zoom)
-            .setTarget(this.container) // that's what you're trying to track/the images
+            .setTarget(this.container)
             .setMinimapPositionX(this.minimapPaddingX)
             .setMinimapPositionY(this.minimapPaddingY)
             .setGraph(this);
@@ -640,7 +639,8 @@ class Graph {
     // Completely re-renders the graph, assuming all new nodes and links
     setData = (centerid, nodes, links, byIndex) => {
         this.setMatrix(nodes, links, byIndex);
-        this.initializeDataDicts(); // If we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
+        // If we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
+        this.initializeDataDicts();
         this.update(null, 500);
         // Set global node id to match the nodes getting passed in
         nodes.forEach((node) => {
@@ -903,27 +903,6 @@ class Graph {
                 .attr('transform', aesthetics.rotateLinkText)
             .select('textPath')
                 .each(aesthetics.hideLongLinkText);
-            
-
-        if (this.editMode && this.mousedownNode) {
-            const x1 = this.mousedownNode.x,
-                y1 = this.mousedownNode.y,
-                x2 = parseInt(this.dragLink.attr('tx2'), 10),
-                y2 = parseInt(this.dragLink.attr('ty2'), 10),
-                dist = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
-
-            if (dist > 0) {
-                const baseOffset = 2;
-                const targetX = x2 - (x2 - x1) * (dist - (this.mousedownNode.radius + baseOffset) * this.zoomScale) / dist,
-                    targetY = y2 - (y2 - y1) * (dist - (this.mousedownNode.radius + baseOffset) * this.zoomScale) / dist;
-
-                this.dragLink
-                    .attr('x1', targetX)
-                    .attr('y1', targetY)
-                    .attr('x2', x2)
-                    .attr('y2', y2);
-            }
-        }
     }
 
     // Custom force that takes the parent group position as the centroid to moves all contained nodes toward
@@ -944,7 +923,9 @@ class Graph {
         // const button = d3.select('#' + constants.BUTTON_EDIT_MODE_ID);
         // button.classed('selected', this.editMode);
         if (this.editMode) {
-            if (!this.dragCallback) { this.dragCallback = this.node.property('__onmousedown.drag')['_']; }
+            if (!this.dragCallback && !this.node.empty()) { 
+                this.dragCallback = this.node.property('__onmousedown.drag')['_'];
+            }
             
             this.svg
                 .on('mousemove', function () { self.mousemoveCanvas(this); });
@@ -952,8 +933,6 @@ class Graph {
             this.node
                 .on('mousedown.drag', null)
                 .on('mouseup', function (d) { self.mouseup(d, this); });
-
-            this.dragLink.style('visibility', 'visible');
         } else {
             this.svg
                 .on('mousemove', null);
@@ -1043,7 +1022,6 @@ Graph.prototype.styleLink = aesthetics.styleLink;
 Graph.prototype.fillGroupNodes = aesthetics.fillGroupNodes;
 Graph.prototype.fadeGraph = aesthetics.fadeGraph;
 Graph.prototype.resetGraphOpacity = aesthetics.resetGraphOpacity;
-Graph.prototype.resetDragLink = aesthetics.resetDragLink;
 Graph.prototype.wrapNodeText = aesthetics.wrapNodeText;
 Graph.prototype.updateLinkText = aesthetics.updateLinkText;
 

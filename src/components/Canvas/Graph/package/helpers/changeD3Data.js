@@ -9,12 +9,14 @@ export function getInverseAction(action) {
 }
 
 // Multi-node manipulation methods
-export function addLink(source, target) {
+export function addLink(source, target, linkType=null) {
     // this.reloadIdToIndex();
     const i = this.idToIndex[source.id];
     const j = this.idToIndex[target.id];
+    source.totalLinks = parseInt(source.totalLinks, 10) + 1;
+    target.totalLinks = parseInt(target.totalLinks, 10) + 1;
 
-    this.createLink(i, j);
+    this.createLink(i, j, linkType);
     this.update();
 }
 

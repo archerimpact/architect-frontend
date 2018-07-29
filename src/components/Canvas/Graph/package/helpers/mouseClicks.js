@@ -6,7 +6,6 @@ import * as utils from "./utils.js";
 import { findEntryById, getD3Event, isGroup, isLeftClick, isRightClick, then } from "./utils.js";
 
 import { GRID_LENGTH } from "./constants.js";
-import { resetDragLink } from "./aesthetics.js";
 
 // Click-drag node selection
 export function brushstart() {
@@ -109,7 +108,10 @@ export function mousedown(d, self) {
     d3.event.stopPropagation();
     // Disable drag for right clicks (all drag disabled in edit mode)
     if (!isLeftClick() && !this.editMode) {
-        if (!this.dragCallback) { this.dragCallback = this.node.property('__onmousedown.drag')['_']; }
+        if (!this.dragCallback && !this.node.empty()) { 
+            this.dragCallback = this.node.property('__onmousedown.drag')['_']; 
+        }
+
         this.node.on('mousedown.drag', null);
     }
 
@@ -117,8 +119,6 @@ export function mousedown(d, self) {
     if (this.editMode) {
         this.mousedownNode = d;
         this.dragLink
-            .attr('tx1', d.x)
-            .attr('ty1', d.y)
             .attr('tx2', d.x)
             .attr('ty2', d.y);
     }
@@ -138,7 +138,7 @@ export function mouseup(d, self) {
             bwdLinkId = this.linkedById[target.id + ',' + source.id];
         if (fwdLinkId) {
             // If link already exists, select it
-            selection.selectLink.bind(this, source, target);
+            selection.selectLink.bind(this)(source, target);
         } else if (bwdLinkId) {
             // If link exists in opposite direction, make it bidirectional and select it
             const currLink = findEntryById(this.links, bwdLinkId);
@@ -148,11 +148,11 @@ export function mouseup(d, self) {
         } else {
             // If link doesn't exist, create and select it
             this.addLink(source, target);
-            selection.selectLink.bind(this, source, target);
+            selection.selectLink.bind(this)(source, target);
         }
     }
 
-    resetDragLink(this);
+    aesthetics.resetDragLink.bind(this)();
 }
 
 export function mouseover(d, self) {
@@ -232,7 +232,7 @@ export function clickedCanvas() {
     if (d3.event.defaultPrevented) return;
     aesthetics.unclassAllNodesSelected.bind(this)();
     if (this.editMode) {
-        resetDragLink(this);
+        aesthetics.resetDragLink.bind(this)();
         if (this.dragDistance === 0) {
             this.addNodeToSelected(d3.event);
         } else {
@@ -258,6 +258,7 @@ export function mousemoveCanvas(self) {
             .style('visibility', 'visible')
             .attr('tx2', tx2)
             .attr('ty2', ty2);
+        aesthetics.updateDragLink.bind(this)();
     }
 }
 
