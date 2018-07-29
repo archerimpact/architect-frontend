@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ReactDOM from 'react-dom'
 
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -12,10 +13,11 @@ import { fetchCurrentEntity } from "../../../redux/actions/graphSidebarActions"
 import "./graph.css";
 import "./style.css";
 
-const windowHeight = window.innerHeight;
-const windowWidth = Math.max(window.innerWidth);
-
 class Graph extends Component {
+    constructor(props) {
+      super(props);
+      this.state = { width: window.innerWidth, height: window.innerHeight };
+    }
 
     fetchCurrentEntityFunc = (d) => {
         if (!this.props.index) {
@@ -35,10 +37,18 @@ class Graph extends Component {
         this.props.dispatch(saveD3DataToRedux(data.nodes, data.links))
     };
 
+    updateWindowDimensions = () => {
+      this.setState({ width: this.refs.graphContainer.parentNode.clientWidth, height: this.refs.graphContainer.parentNode.clientHeight });
+    };
+
     componentDidMount() {
-        const { data, graph, width, height, allowKeycodes, displayMinimap } = this.props;
+        const { data, graph, allowKeycodes, displayMinimap } = this.props;
         // this.props.dispatch(initializeCanvas(this.props.graph, this.props.width, this.props.height));
-        graph.generateCanvas(width ? width : windowWidth, height ? height: windowHeight, this.refs.graphContainer, allowKeycodes);
+        
+        this.updateWindowDimensions();
+        window.addEventListener('resize', this.updateWindowDimensions);
+
+        graph.generateCanvas(this.state.width, this.state.height, this.refs.graphContainer, allowKeycodes);
         if (data.nodes.length !== 0) {
             graph.setData(0, this.makeDeepCopy(data.nodes), this.makeDeepCopy(data.links));
         } else {
@@ -50,7 +60,7 @@ class Graph extends Component {
             save: this.saveD3DataToReduxFunc
         });
 
-      if (displayMinimap === false) { graph.hideMinimap(); }
+        if (displayMinimap === false) { graph.hideMinimap(); }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -58,6 +68,10 @@ class Graph extends Component {
             nextProps.graph.setData(0, this.makeDeepCopy(nextProps.data.nodes), this.makeDeepCopy(nextProps.data.links));
             if (nextProps.displayMinimap === false) { nextProps.graph.hideMinimap(); }
         }
+    }
+
+    componentWillUnmount() {
+      window.removeEventListener('resize', this.updateWindowDimensions);
     }
 
     makeDeepCopy(array) {
@@ -69,11 +83,14 @@ class Graph extends Component {
     }
 
     render() {
-        const { height, width, onMouseOver } = this.props;
+        const { onMouseOver } = this.props;
         return (
-            <div>
-                <div id="graph-container" ref="graphContainer" style={{"height": height ? height : windowHeight + "px", "width": width ? width : windowWidth + "px"}} onMouseOver={onMouseOver}></div>
-            </div>
+            <div 
+              id="graph-container" 
+              ref="graphContainer"
+              style={{"height": this.state.height + "px", "width": this.state.width + "px"}} 
+              onMouseOver={onMouseOver}
+            />
         );
     }
 }
