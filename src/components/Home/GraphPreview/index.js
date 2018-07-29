@@ -40,7 +40,6 @@ class GraphPreview extends Component {
         <Graph 
           graph={this.graph} 
           displayMinimap={false} 
-          allowKeycodes={false} 
           data={this.props.vignetteGraphData[this.props.index]} 
           index={this.props.index} 
         />  

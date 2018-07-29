@@ -16,7 +16,7 @@ import "./style.css";
 class Graph extends Component {
     constructor(props) {
       super(props);
-      this.state = { width: Math.max(window.innerWidth), height: window.innerHeight };
+      this.state = { width: window.innerWidth, height: window.innerHeight };
     }
 
     fetchCurrentEntityFunc = (d) => {
