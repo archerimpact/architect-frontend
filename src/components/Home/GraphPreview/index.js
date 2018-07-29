@@ -16,16 +16,11 @@ class GraphPreview extends Component {
 
     constructor(props) {
       super(props);
-      this.state = { width: null, height: null, ref: null };
-
       if (this.props.graph) { this.graph = this.props.graph; } 
       else { this.graph = new ArcherGraph(); }
     }
 
     componentDidMount() {
-      // this.updateWindowDimensions();
-      // this.refs.graphPreviewBox.addEventListener('resize', this.updateWindowDimensions);
-
         if (this.props.startingNode) {
             server.searchBackendText(this.props.startingNode) // hardcoded for now, don't worry too much about it until we decide this way of doing the narratives is conceptually best
                 .then((data) => {
@@ -36,15 +31,6 @@ class GraphPreview extends Component {
         }
     }
 
-    // componentWillUnmount() {
-    //   this.refs.graphPreviewBox.removeEventListener('resize', this.updateWindowDimensions);
-    // }
-
-    // updateWindowDimensions = () => {
-    //   this.setState({ width: this.refs.graphPreviewBox.clientWidth, height: this.refs.graphPreviewBox.clientHeight });
-    // };
-
-
     loadDataToMainGraph = () => {
         this.props.dispatch(loadData(this.props.vignetteGraphData[this.props.index]))
     };
@@ -53,8 +39,6 @@ class GraphPreview extends Component {
       return (
         <Graph 
           graph={this.graph} 
-          height={this.state.height} 
-          width={this.state.width} 
           displayMinimap={false} 
           allowKeycodes={false} 
           data={this.props.vignetteGraphData[this.props.index]} 
