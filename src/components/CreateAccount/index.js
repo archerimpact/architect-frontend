@@ -1,10 +1,12 @@
 import React, {Component} from "react";
-import {registerAccount} from "../../server/auth_routes";
+import {registerAccount, authenticateAccount} from "../../server/auth_routes";
 import {Redirect, withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as actions from "../../redux/actions/userActions";
+import { Link } from "react-router-dom"
 
+import './style.css';
 
 class CreateAccount extends Component {
     constructor(props) {
@@ -37,11 +39,17 @@ class CreateAccount extends Component {
             .then(
                 data => {
                     if (data.success) {
-                        self.setState({redirectToReferrer: true})
+                        this.props.dispatch(actions.userLogIn(this.state.email, this.state.password));
                     } else {
                         self.setState({email: '', password: '', passwordConf: '', error: true, error_message: data.message})
                     }
                 }).catch(err => console.log('Could not create account'))
+    }
+
+    componentWillReceiveProps(nextprops) {
+      if (nextprops.isAuthenticated) {
+        this.setState({redirectToReferrer: true});
+      }
     }
 
     render() {
@@ -51,7 +59,6 @@ class CreateAccount extends Component {
         if (redirectToReferrer) {
             return (<Redirect to={from}/>);
         }
-
         return (
             <div className='rows' style={{textAlign: "center", marginTop: 40}}>
                 <p> Please enter your details below to create a new account. </p>
@@ -93,12 +100,21 @@ class CreateAccount extends Component {
                         name={"password2"}
                     />
                     <br />
-                    <button
+                    <Link to="/login">
+                      <button className="btn"
+                          style={{margin: 15}}
+                          label="Login"
+                          type="submit"
+                      >Login
+                      </button>
+                    </Link>
+                    <button className="btn"
                         style={{margin: 15}}
                         onClick={this.handleSubmit}
                         label="Create account"
                         type="submit"
-                    />
+                    >Create account
+                    </button>
                 </div>
             </div>
         );
@@ -107,7 +123,8 @@ class CreateAccount extends Component {
 
 function mapStateToProps(state) {
     return {
-        random: state
+        random: state,
+        isAuthenticated: state.user.isAuthenticated
     }
 }
 
