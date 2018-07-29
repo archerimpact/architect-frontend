@@ -238,13 +238,6 @@ class Graph {
             .attr('class', 'graph-items');
     }
 
-    // Set up how to draw the hulls
-    initializeCurve = () => {
-        return d3.svg.line()
-            .interpolate('cardinal-closed')
-            .tension(.85);
-    }
-
     initializeSVGgrid = () => {
         const svgGrid = this.container.append('g')
             .attr('class', 'svg-grid');
@@ -274,6 +267,13 @@ class Graph {
         return svgGrid;
     }
 
+    // Set up how to draw the hulls
+    initializeCurve = () => {
+        return d3.svg.line()
+            .interpolate('cardinal-closed')
+            .tension(.85);
+    }
+
     initializeForce = () => {
         if (this.useCola) {
             return cola.d3adaptor()
@@ -293,6 +293,82 @@ class Graph {
             .on('drag', function (d) { self.dragging(d, this) })
             .on('dragend', function (d) { self.dragend(d, this)});
         return drag;
+    }
+
+    initializeDragLink = () => {
+        return this.container.append('line')
+            .attr('class', 'link dynamic')
+            .attr('x1', 0)
+            .attr('y1', 0)
+            .attr('x2', 0)
+            .attr('y2', 0)
+            .attr('marker-end', 'url(#end-big-gray)')
+            .style('visibility', 'hidden');
+    }
+
+    // direction-size-color
+    initializeMarkers = () => {
+        const possibleAttrs = [
+            ['start', 'end'],
+            ['big', 'small'],
+            ['gray', 'blue']
+        ];
+        const markerList = this.deriveMarkerData(this.getMarkerIdPermutations(possibleAttrs));
+        for (let marker of markerList) {
+            this.defs
+                .append('marker')
+                    .attr('id', marker.id)
+                    .attr('viewBox', '5 -5 10 10')
+                    .attr('refX', 10)
+                    .attr('markerWidth', marker.size)
+                    .attr('markerHeight', marker.size)
+                    .attr('orient', marker.direction)
+                .append('path')
+                    .attr('d', 'M 0,-5 L 10,0 L 0,5')
+                    .style('stroke', marker.color)
+                    .style('fill', marker.color)
+                    .style('fill-opacity', 1);
+        }
+    }
+
+    // possibleAttrs is a list of lists that contains the possibilities for each attr
+    // This method should return a list of all possible permutations of the given attrs
+    getMarkerIdPermutations = (possibleAttrs) => {
+        if (!possibleAttrs) { return []; }
+        if (possibleAttrs.length === 1) { return possibleAttrs[0]; }
+
+        let i, j;
+        const markerIds = [];
+        const rest = this.getMarkerIdPermutations(possibleAttrs.slice(1));
+        for (i = 0; i < rest.length; i++) {
+            for (j = 0; j < possibleAttrs[0].length; j++) {
+                markerIds.push(`${possibleAttrs[0][j]}-${rest[i]}`);
+            }
+        }
+
+        return markerIds;
+    }
+
+    deriveMarkerData = (permutationList) => {
+        const markerList = [];
+        for (let markerId of permutationList) {
+            markerList.push({id: markerId});
+        }
+
+        const colorNameToHex = {
+            'gray': colors.HEX_GRAY,
+            'blue': colors.HEX_BLUE
+        };
+
+        let marker, tokens;
+        for (marker of markerList) {
+            tokens = marker.id.split('-');
+            marker.direction = (tokens[0] === 'end') ? 'auto' : 'auto-start-reverse';
+            marker.size = (tokens[1] === 'big') ? constants.MARKER_SIZE_BIG : constants.MARKER_SIZE_SMALL;
+            marker.color = colorNameToHex[tokens[2]];
+        }
+
+        return markerList;
     }
 
     initializeMenuActions = () => {
@@ -362,100 +438,32 @@ class Graph {
         };
     }
 
-    // direction-size-color
-    initializeMarkers = () => {
-        const possibleAttrs = [
-            ['start', 'end'],
-            ['big', 'small'],
-            ['gray', 'blue']
-        ];
-        const markerList = this.deriveMarkerData(this.getMarkerIdPermutations(possibleAttrs));
-        for (let marker of markerList) {
-            this.defs
-                .append('marker')
-                    .attr('id', marker.id)
-                    .attr('viewBox', '5 -5 10 10')
-                    .attr('refX', 10)
-                    .attr('markerWidth', marker.size)
-                    .attr('markerHeight', marker.size)
-                    .attr('orient', marker.direction)
-                .append('path')
-                    .attr('d', 'M 0,-5 L 10,0 L 0,5')
-                    .style('stroke', marker.color)
-                    .style('fill', marker.color)
-                    .style('fill-opacity', 1);
-        }
-    }
-
-    // possibleAttrs is a list of lists that contains the possibilities for each attr
-    // This method should return a list of all possible permutations of the given attrs
-    getMarkerIdPermutations = (possibleAttrs) => {
-        if (!possibleAttrs) { return []; }
-        if (possibleAttrs.length === 1) { return possibleAttrs[0]; }
-
-        let i, j;
-        const markerIds = [];
-        const rest = this.getMarkerIdPermutations(possibleAttrs.slice(1));
-        for (i = 0; i < rest.length; i++) {
-            for (j = 0; j < possibleAttrs[0].length; j++) {
-                markerIds.push(`${possibleAttrs[0][j]}-${rest[i]}`);
-            }
-        }
-
-        return markerIds;
-    }
-
-    deriveMarkerData = (permutationList) => {
-        const markerList = [];
-        for (let markerId of permutationList) {
-            markerList.push({id: markerId});
-        }
-
-        const colorNameToHex = {
-            'gray': colors.HEX_GRAY,
-            'blue': colors.HEX_BLUE
-        };
-
-        let marker, tokens;
-        for (marker of markerList) {
-            tokens = marker.id.split('-');
-            marker.direction = (tokens[0] === 'end') ? 'auto' : 'auto-start-reverse';
-            marker.size = (tokens[1] === 'big') ? constants.MARKER_SIZE_BIG : constants.MARKER_SIZE_SMALL;
-            marker.color = colorNameToHex[tokens[2]];
-        }
-
-        return markerList;
-    }
-
-    useFilterFlood = (colorHex) => {
-        const filterId = `filter-flood-${colorHex}`;
-        if (this.defs.selectAll(`#${filterId}`).empty()) {
-            const filter = this.defs.append('filter')
-                .attr('id', filterId);
-
-            filter.append('feFlood')
-                .attr('flood-color', `#${colorHex}`)
-                .attr('result', 'flood');
-
-            const filterMerge = filter.append('feMerge');
-            filterMerge.append('feMergeNode')
-                .attr('in', 'flood');
-            filterMerge.append('feMergeNode')
-                .attr('in', 'SourceGraphic');
-        }
-
-        return `url(#${filterId})`;
-    }
-
-    initializeDragLink = () => {
-        return this.svg.append('line')
-            .attr('class', 'link dynamic')
-            .attr('x1', 0)
-            .attr('y1', 0)
-            .attr('x2', 0)
-            .attr('y2', 0)
-            .attr('marker-end', 'url(#end-big-gray)')
-            .style('visibility', 'hidden');
+    // Graph manipulation keycodes
+    initializeKeycodes = () => {
+        const self = this;
+        d3.select('body').call(d3.keybinding()
+            // Select all nodes
+            .on('a', aesthetics.classAllNodesSelected.bind(self))
+            // Clear current selection
+            .on('esc', aesthetics.unclassAllNodesSelected.bind(self))
+            // Expand selected nodes
+            .on('e', d3Data.expandSelectedNodes.bind(self))
+            // Fix selected nodes, unfix nodes if all were previously fixed
+            .on('f', aesthetics.classAllNodesFixed.bind(this))
+            // Group selected nodes
+            // .on('g', this.groupSelectedNodes.bind(self))
+            // Ungroup groups in selected nodes
+            // .on('h', this.ungroupSelectedGroups.bind(self))
+            // Remove selected nodes in force layout
+            .on('r', this.deleteSelectedNodes.bind(self))
+            .on('del', this.deleteSelectedNodes.bind(self))
+            // Remove selected links in force layout; TODO: fix this
+            .on('shift+r', this.deleteSelectedLinks.bind(self))
+            // Cycle between node name lengths: abbrev -> none -> full
+            .on('t', aesthetics.toggleNodeNameLength.bind(self))
+            // Toggle edit mode
+            .on('x', this.toggleEditMode.bind(self))
+        );
     }
 
     initializeTooltip = () => {
@@ -517,7 +525,7 @@ class Graph {
                 .on('drag', this.stopPropagation)
                 .on('dragend', this.stopPropagation)
             );
-    };
+    }
 
     getToolbarLabels = () => {
         const labels = [constants.BUTTON_ZOOM_IN_ID, constants.BUTTON_ZOOM_OUT_ID, constants.BUTTON_POINTER_TOOL_ID,
@@ -627,7 +635,7 @@ class Graph {
             .setGraph(this);
 
         this.minimap.initializeMinimap(this.svg, this.width, this.height);
-    };
+    }
 
     // Completely re-renders the graph, assuming all new nodes and links
     setData = (centerid, nodes, links, byIndex) => {
@@ -652,23 +660,23 @@ class Graph {
         this.minimap
             .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
             .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
-    };
+    }
 
     addData = (centerid, nodes, links) => {
         this.addToMatrix(centerid, nodes, links);
-    };
+    }
 
     fetchData = () => {
         return {nodes: this.nodes, links: this.links};
-    };
+    }
 
     hideMinimap = () => {
       this.minimap.hideMinimap();
-    };
+    }
 
     flushData = () => {
       this.setData(0, [], [], true);
-    };
+    }
 
     bindReactActions = (reactActions) => {
         this.displayNodeInfo = reactActions.node ? reactActions.node : function (d) {};
@@ -677,7 +685,7 @@ class Graph {
         this.expandNodeFromData = reactActions.expand ? reactActions.expand : function (d) {};
         this.saveAllData = reactActions.save ? reactActions.save : function (d) {};
         this.initializeMenuActions();
-    };
+    }
 
     // Updates nodes and links according to current data
     update = (event=null, ticks=null, minimap=true) => {
@@ -898,15 +906,16 @@ class Graph {
             
 
         if (this.editMode && this.mousedownNode) {
-            const x1 = this.mousedownNode.x * this.zoomScale + this.zoomTranslate[0],
-                y1 = this.mousedownNode.y * this.zoomScale + this.zoomTranslate[1],
-                x2 = this.dragLink.attr('tx2'),
-                y2 = this.dragLink.attr('ty2'),
+            const x1 = this.mousedownNode.x,
+                y1 = this.mousedownNode.y,
+                x2 = parseInt(this.dragLink.attr('tx2'), 10),
+                y2 = parseInt(this.dragLink.attr('ty2'), 10),
                 dist = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 
             if (dist > 0) {
-                const targetX = x2 - (x2 - x1) * (dist - this.mousedownNode.radius * this.zoomScale) / dist,
-                    targetY = y2 - (y2 - y1) * (dist - this.mousedownNode.radius * this.zoomScale) / dist;
+                const baseOffset = 2;
+                const targetX = x2 - (x2 - x1) * (dist - (this.mousedownNode.radius + baseOffset) * this.zoomScale) / dist,
+                    targetY = y2 - (y2 - y1) * (dist - (this.mousedownNode.radius + baseOffset) * this.zoomScale) / dist;
 
                 this.dragLink
                     .attr('x1', targetX)
@@ -929,77 +938,11 @@ class Graph {
         }
     }
 
-    // Graph manipulation keycodes
-    initializeKeycodes = () => {
-        const self = this;
-        d3.select('body').call(d3.keybinding()
-            // Select all nodes
-            .on('a', aesthetics.classAllNodesSelected.bind(self))
-            // Clear current selection
-            .on('esc', aesthetics.unclassAllNodesSelected.bind(self))
-            // Expand selected nodes
-            .on('e', d3Data.expandSelectedNodes.bind(self))
-            // Fix selected nodes, unfix nodes if all were previously fixed
-            .on('f', aesthetics.classAllNodesFixed.bind(this))
-            // Group selected nodes
-            // .on('g', this.groupSelectedNodes.bind(self))
-            // Ungroup groups in selected nodes
-            // .on('h', this.ungroupSelectedGroups.bind(self))
-            // Remove selected nodes in force layout
-            .on('r', this.deleteSelectedNodes.bind(self))
-            .on('del', this.deleteSelectedNodes.bind(self))
-            // Remove selected links in force layout; TODO: fix this
-            .on('shift+r', this.deleteSelectedLinks.bind(self))
-            // Cycle between node name lengths: abbrev -> none -> full
-            .on('t', aesthetics.toggleNodeNameLength.bind(self))
-        );
-
-            //     // c: Group all of the possibly same as's
-            //     else if (d3.event.keyCode === 67) { this.groupSame(); }
-
-            //     // e: Toggle edit mode
-            //     else if (d3.event.keyCode === 69) { this.toggleEditMode(); }
-
-            //     // l: remove selected links only
-            //     else if (d3.event.keyCode === 76 && this.editMode) { this.deleteSelectedLinks(); }
-
-            //     // a: Add node linked to selected
-            //     else if (d3.event.keyCode === 65 && this.editMode) {
-            //         const selection = this.svg.selectAll('.node.selected');
-            //         this.addNodeToSelected(selection);
-            //     }
-
-            //     // d: Hide document nodes
-            //     else if (d3.event.keyCode === 68) { this.toggleTypeView(DOCUMENT); }
-
-            //     // t: expand by degree
-            //     else if (d3.event.keyCode === 84) {
-            //         if (this.degreeExpanded === 0 && this.nodes.length !== 1) {
-            //             return;
-            //         }
-
-            //         if (this.degreeExpanded === 0 && this.nodes.length === 1) {
-            //             this.expandingNode = this.nodes[0];
-            //         }
-
-            //         this.degreeExpanded += 1;
-
-            //         if (this.degreeExpanded <= 4) {
-            //             d3.json(`/data/well_connected_${this.degreeExpanded}.json`, (json) => {
-            //                 this.addToMatrix(0, json.nodes, json.links);
-            //             });
-            //         }
-            //     }
-
-            //     this.force.resume();
-            // });
-    };
-
     toggleEditMode = () => {
         const self = this;
         this.editMode = !this.editMode;
-        const button = d3.select('#' + constants.BUTTON_EDIT_MODE_ID);
-        button.classed('selected', this.editMode);
+        // const button = d3.select('#' + constants.BUTTON_EDIT_MODE_ID);
+        // button.classed('selected', this.editMode);
         if (this.editMode) {
             if (!this.dragCallback) { this.dragCallback = this.node.property('__onmousedown.drag')['_']; }
             
@@ -1024,9 +967,25 @@ class Graph {
         }
     }
 
-    // =================
-    // SELECTION METHODS
-    // =================
+    useFilterFlood = (colorHex) => {
+        const filterId = `filter-flood-${colorHex}`;
+        if (this.defs.selectAll(`#${filterId}`).empty()) {
+            const filter = this.defs.append('filter')
+                .attr('id', filterId);
+
+            filter.append('feFlood')
+                .attr('flood-color', `#${colorHex}`)
+                .attr('result', 'flood');
+
+            const filterMerge = filter.append('feMerge');
+            filterMerge.append('feMergeNode')
+                .attr('in', 'flood');
+            filterMerge.append('feMergeNode')
+                .attr('in', 'SourceGraphic');
+        }
+
+        return `url(#${filterId})`;
+    }
 
     // Get all node text elements
     selectAllNodeNames = () => {

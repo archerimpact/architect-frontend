@@ -78,6 +78,9 @@ svg line {
 
 .link.dynamic {
     pointer-events: none;
+    stroke: #999;
+    stroke-width: 2.7px;
+    stroke-opacity: 1;
 }
 
 path.link {

@@ -249,14 +249,15 @@ export function dragstartCanvas() {
 export function mousemoveCanvas(self) {
     // const classThis = this;
     const e = d3.event;
-    this.displayDebugTooltip(self);
     if (this.editMode && this.mousedownNode) {
         // const currNode = this.node.filter(function(o) { return classThis.mousedownNode.id === o.id; });
         this.dragDistance++;
+        const tx2 = ((e.x - constants.BUTTON_WIDTH) - this.zoomTranslate[0]) / this.zoomScale;
+        const ty2 = (e.y - this.zoomTranslate[1]) / this.zoomScale;
         this.dragLink
             .style('visibility', 'visible')
-            .attr('tx2', e.x)
-            .attr('ty2', e.y);
+            .attr('tx2', tx2)
+            .attr('ty2', ty2);
     }
 }
 
