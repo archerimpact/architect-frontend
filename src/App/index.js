@@ -50,6 +50,7 @@ export default class App extends Component {
                         <Route exact path="/login" component={Login}/>
                         <Route exact path="/create_account" component={CreateAccount}/>
                         <PrivateRoute exact path="/" component={Home}/>
+                        <PrivateRoute exact path="/share/:id" component={Home}/>
                         <PrivateRoute path="/explore/:sidebarState?/:query?" component={Canvas}/>
                     </div>
                 </div>
