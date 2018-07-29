@@ -23,27 +23,27 @@ class Canvas extends Component {
         }
     }
 
-    updateDimensions = () => {
-        let w = window,
-            d = document,
-            documentElement = d.documentElement,
-            body = d.getElementsByTagName('body')[0],
-            width = w.innerWidth || documentElement.clientWidth || body.clientWidth,
-            height = w.innerHeight|| documentElement.clientHeight|| body.clientHeight;
+    // updateDimensions = () => {
+    //     let w = window,
+    //         d = document,
+    //         documentElement = d.documentElement,
+    //         body = d.getElementsByTagName('body')[0],
+    //         width = w.innerWidth || documentElement.clientWidth || body.clientWidth,
+    //         height = w.innerHeight|| documentElement.clientHeight|| body.clientHeight;
 
-        this.setState({width: width, height: height});
-    };
+    //     this.setState({width: width, height: height});
+    // };
 
-    componentWillMount() {
-        this.updateDimensions();
-    }
+    // componentWillMount() {
+    //     this.updateDimensions();
+    // }
 
     componentDidMount() {
         // if (this.props.currentNode != null) {
         //   debugger;
         //     this.props.history.push(this.baseUrl + '/entity/' + encodeURIComponent(this.props.currentNode.id))
         // }
-        window.addEventListener("resize", this.updateDimensions);
+        // window.addEventListener("resize", this.updateDimensions);
         if (this.props.match.params && this.props.match.params.sidebarState === 'search' && this.props.match.params.query != null) {
             this.props.dispatch(fetchSearchResults(this.props.match.params.query));
         } else if (this.props.match.params && this.props.match.params.sidebarState === 'entity') {
@@ -72,17 +72,19 @@ class Canvas extends Component {
         }
     }
 
-    componentWillUnmount() {
-        window.removeEventListener("resize", this.updateDimensions);
-    }
+    // componentWillUnmount() {
+    //     window.removeEventListener("resize", this.updateDimensions);
+    // }
 
     render() {
         const { data, isCovered, onMouseOver } = this.props;
         const { width, height} = this.state;
         return (
-            <div className="canvas" style={{width, height}}>
+            <div className="canvas">
                 <SideNavBar/>
-                <Graph graph={this.graph} onMouseOver={onMouseOver} data={data} displayMinimap={false} width={width} height={height}/>
+                <div id="graph-canvas">
+                  <Graph graph={this.graph} onMouseOver={onMouseOver} data={data} displayMinimap={false} width={width} height={height}/>
+                </div>
                 <GraphSidebar isCovered={isCovered} graph={this.graph} data={data}/>
                 {/*<BottomBar/>*/}
                 <PublishButton graph={this.graph}/>

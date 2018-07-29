@@ -1,6 +1,14 @@
 .canvas {
   position: absolute;
   overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+#graph-canvas {
+  margin-left: 50px;
+  height: 100%;
+  width: 100%;
 }
 
 ::-webkit-scrollbar { 
