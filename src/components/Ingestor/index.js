@@ -32,7 +32,6 @@ class Ingestor extends Component {
             </div>
         );
     }
-
 }
 
 function mapDispatchToProps(dispatch) {
