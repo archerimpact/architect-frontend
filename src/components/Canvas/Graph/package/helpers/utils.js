@@ -69,6 +69,7 @@ export function removeColumn(matrix, index) {
 
     matrix.splice(index, 1);
 }
+
 // =================
 // D3 UTILS
 // =================
@@ -81,6 +82,11 @@ export function isLeftClick() {
 export function isRightClick() {
     return (d3.event && (d3.event.which === 3 || d3.event.button === 2))
         || (d3.event.sourceEvent && (d3.event.sourceEvent.which === 3 || d3.event.sourceEvent.button === 2));
+}
+
+export function modifierPressed() {
+    const e = getD3Event();
+    return e && (e.shiftKey || e.ctrlKey || e.metaKey);
 }
 
 export function getXYFromTranslate(translateString) {
@@ -140,12 +146,12 @@ export function createSVGString(targetSVG, x1, x2, y1, y2, width = null, height 
                     return a + b.cssText; // just concatenate all our cssRules' text
                 }, "");
             }
-        }
-        catch (e) {
+        } catch (e) {
             // console.info("css stylesheet doesn't exist");
         }
     });
-    // create our svg nodes that will hold all these rules
+
+    // Create our svg nodes that will hold all these rules
     const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
     const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
     style.innerHTML = styleStr;
@@ -174,7 +180,7 @@ export function isObject(input) {
 }
 
 export function printObject(object) {
-    // console.log(JSON.stringify(object, null, 4));
+    console.log(JSON.stringify(object, null, 4));
 }
 
 // ==============
@@ -214,6 +220,11 @@ export function then(transition, callback) {
         .each("end", function () { if (!--n) callback.apply(this, arguments); });
 }
 
+// ==================
+// MATH OPTIMIZATIONS
+// ==================
+
+// Fast arctan approximation
 export function atan2(y, x) {
     const a = Math.min(Math.abs(x), Math.abs(y)) / Math.max(Math.abs(x), Math.abs(y));
     const s = a * a;

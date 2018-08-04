@@ -89,6 +89,7 @@ path.link {
     transition-property: opacity;
     transition-delay: 0ms;
     transition-duration: 50ms;
+    cursor: pointer;
 }
 
 path.link.hidden {
@@ -100,6 +101,10 @@ path.link.same-as {
 }
 
 path.link.selected {
+    stroke: #0d77e2;
+}
+
+path.link.possible {
     stroke: #0d77e2;
 }
 
@@ -157,6 +162,11 @@ path.link.selected {
     fill: #0d77e2 !important;
 }
 
+.node.possible circle {
+    stroke: #0d77e2 !important;
+    fill: #0d77e2 !important;
+}
+
 .node.selected circle.hull-node {
     stroke: #fff !important;
     fill: #0d77e2 !important;
@@ -175,6 +185,10 @@ path.link.selected {
     stroke: #0d77e2 !important;
 }
 
+.node.possible .icon {
+    stroke: #0d77e2 !important;
+}
+
 .node circle.node-glyph {
     /*stroke: #fff !important;*/
     fill: #fff !important;
@@ -186,6 +200,10 @@ path.link.selected {
 }
 
 .node.selected circle.node-glyph {
+    stroke: #0d77e2 !important;
+}
+
+.node.possible circle.node-glyph {
     stroke: #0d77e2 !important;
 }
 
@@ -204,6 +222,11 @@ path.link.selected {
 }
 
 .node.selected text.glyph-label {
+    stroke: #0d77e2 !important;
+    fill: #0d77e2 !important;
+}
+
+.node.possible text.glyph-label {
     stroke: #0d77e2 !important;
     fill: #0d77e2 !important;
 }

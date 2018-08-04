@@ -4,31 +4,19 @@ import * as utils from "./utils.js";
 import * as constants from "./constants.js";
 import * as colors from "./colorConstants.js";
 
-// Classing nodes
+// ==============
+// CLASSING NODES
+// ==============
+
 export function classExpandableNodes() {
     this.node.classed('expandable', false);
     this.node.filter(d => utils.isExpandable(d))
         .classed('expandable', true);
 }
 
-export function classAllNodesSelected() {
-    this.node.classed('selected', (d) => { return this.nodeSelection[d.index] = true; });
-    highlightLinksFromAllNodes.bind(this)();
-}
-
-export function classNodeSelected(node, isSelected) {
-    node.classed('selected', (d) => { return this.nodeSelection[d.index] = isSelected; });
-    highlightLinksFromNode.bind(this, node)();
-}
-
 export function classNodesSelected(nodes, isSelected) {
-    nodes.classed('selected', (d) => { return this.nodeSelection[d.index] = isSelected; });
-    highlightLinksFromAllNodes.bind(this)();
-}
-
-export function unclassAllNodesSelected() {
-    this.node.classed('selected', (d) => { return this.nodeSelection[d.index] = false; });
-    this.link.call(styleLink.bind(this), false);
+    nodes.classed('selected', (d) => { return this.nodeSelection[d.index] = d.selected = isSelected; });
+    applyLinkHighlighting.bind(this)();
 }
 
 export function classAllNodesFixed() {
@@ -49,22 +37,98 @@ export function toggleSelectedNodesFixed() {
     this.force.start();
 }
 
-// Link highlighting
+// =================
+// LINK HIGHLIGHTING
+// =================
+
+// Manually highlight given links
+// Should be used to reset some/all link highlights (thus the refresh flag)
+// Optionally refreshes linkSelection dictionary (eg when user clicks an object/canvas)
+export function highlightLinks(links, isSelected, refresh=false) {
+    links.call(this.styleLink, isSelected);
+    if (refresh) {
+        this.linkSelection = {};
+        return;
+    }
+
+    if (!isSelected) {
+        links.each((l) => { 
+            if (l.id in this.linkSelection) { 
+                this.linkSelection[l.id] = false; 
+            }
+        });
+    }
+}
+
+// Manually highlight given link, identified by source and target nodes
+export function highlightLink(source, target, isSelected=true) {
+    const linkId = this.linkedById[source.id + ',' + target.id] || this.linkedById[target.id + ',' + source.id];
+    highlightLinkById.bind(this)(linkId, isSelected);
+}
+
+// Manually highlight given link, identified by linkId
+export function highlightLinkById(linkId, isSelected=true) {
+    if (isSelected || linkId in this.linkSelection) { this.linkSelection[linkId] = isSelected; }
+    this.link.filter((l) => { return l.id === linkId; })
+        .call(this.styleLink, isSelected);
+}
+
+// Automatic link selection between all selected nodes
 export function highlightLinksFromAllNodes() {
-    this.link.call(this.styleLink, false);
-    this.link.filter((l) => { return this.nodeSelection[l.source.index] && this.nodeSelection[l.target.index] })
+    this.link.filter((l) => { return this.nodeSelection[l.source.index] && this.nodeSelection[l.target.index]; })
         .call(this.styleLink, true);
 }
 
-export function highlightLinksFromNode(node) { 
+// Automatic link selection between all possible nodes
+// Used for rectangular and free select tools
+export function highlightPossibleLinksFromAllNodes() {
+    this.link
+        .classed('possible', (l) => { 
+            return (l.source.possible || l.source.selected) 
+                && (l.target.possible || l.target.selected); 
+        })
+        .call(styleLinkMarkers, (l) => { 
+            return ((l.source.possible || l.source.selected) 
+                && (l.target.possible || l.target.selected)) 
+                || l.selected; 
+        });
+}
+
+// Automatic link selection of links from given node
+// Use for granular updates to user selection
+export function highlightLinksFromNode(node) {
     node = node[0][0].__data__.index;
     this.link.filter((l) => { return l.source.index === node || l.target.index === node; })
         .call(this.styleLink, (l) => { return this.nodeSelection[l.source.index] && this.nodeSelection[l.target.index]; });
 }
 
+// Apply both user-selected and automatic highlighting
+export function applyLinkHighlighting() {
+    this.link.call(this.styleLink, false);
+    highlightLinksFromAllNodes.bind(this)();
+    for (let linkId in this.linkSelection) {
+        highlightLinkById.bind(this)(linkId, this.linkSelection[linkId]);
+    }
+}
 
-// Styling graph items
-export function styleNode(selected, colorBlind=false) {
+// Clear all node/link highlights
+export function clearObjectHighlighting() {
+    // classNodesSelected.bind(this)(this.node, false);
+    this.node.classed('selected', (d) => { return this.nodeSelection[d.index] = d.selected = false; });
+    this.link.call(this.styleLink, false);
+}
+
+// Clear all highlights and reset saved user selections
+export function resetObjectHighlighting() {
+    classNodesSelected.bind(this)(this.node, false);
+    highlightLinks.bind(this)(this.link, false, true);
+}
+
+// ==============
+// OBJECT STYLING
+// ==============
+
+export function styleNode(selected) {
     selected.select('circle')
         .attr('r', (d) => { return d.radius = (d.group ? constants.GROUP_NODE_RADIUS : constants.NODE_RADIUS); })
         .classed('hull-node', (d) => { return d.group; })
@@ -90,9 +154,25 @@ export function getNodeColor(d) {
 }
 
 export function styleLink(selected, isSelected) {
-    selected.classed('selected', isSelected);
     selected
-        .style('stroke-width', (l) => { return (l.source.group && l.target.group ? constants.GROUP_STROKE_WIDTH : constants.STROKE_WIDTH) + 'px'; })
+        .each((l) => { 
+            // TODO: clicking on a node triggers styleLink 3x for each link
+            // TODO: find out why node index is only being set after the first time styleLink is called
+            if (l.source.index 
+                    && l.id in this.linkSelection
+                    && this.nodeSelection[l.source.index]
+                    && this.nodeSelection[l.target.index]) { 
+                delete this.linkSelection[l.id];
+            }
+        })
+        .classed('selected', (l) => { return l.selected = isSelected; });
+
+    selected.style('stroke-width', (l) => { return (l.source.group && l.target.group ? constants.GROUP_STROKE_WIDTH : constants.STROKE_WIDTH) + 'px'; });
+    styleLinkMarkers(selected, isSelected);
+}
+
+export function styleLinkMarkers(selected, isSelected) {
+    selected
         .style('marker-start', (l) => {
             if (!l.bidirectional) { return ''; }
             const size = l.target.group ? 'small' : 'big';
@@ -106,14 +186,9 @@ export function styleLink(selected, isSelected) {
         });
 }
 
-// Directions: forward, reverse, both
-export function changeLinkDirectionality(selected, newDirection) {
-    selected.each((d) => {
-        if (d.bidirectional) {
-            // Implement after matrix adjacency done
-        }
-    });
-}
+// ===========
+// GROUP NODES
+// ===========
 
 // Style fill of group nodes
 export function fillGroupNodes() {
@@ -121,6 +196,9 @@ export function fillGroupNodes() {
         .classed('grouped', function (d) { return utils.isGroup(d) || d.type === 'same_as_group'; });
 }
 
+// ============
+// GRAPH FADING
+// ============
 
 // Graph fading on node hover
 export function fadeGraph(d) {
@@ -138,6 +216,10 @@ export function resetGraphOpacity() {
     this.link.classed('faded', false);
     this.hull.classed('faded', false);
 }
+
+// =========
+// EDIT MODE
+// =========
 
 // Reset edit mode's dynamic drag link
 export function updateDragLink() {
@@ -168,17 +250,28 @@ export function resetDragLink() {
         .style('visibility', 'hidden');
 }
 
-/* Node & link text */
+// Directions: forward, reverse, both
+export function changeLinkDirectionality(selected, newDirection) {
+    selected.each((d) => {
+        if (d.bidirectional) {
+            // Implement after matrix adjacency done
+        }
+    });
+}
+
+// =========
+// NODE TEXT
+// =========
 
 // Normalize node text to same casing conventions and length
-// printFull states - 0: abbrev, 1: none, 2: full
+// printFull states => 0: abbrev, 1: none, 2: full
 export function processNodeName(str, printFull) {
     if (!str) { return 'Document'; }
     if (printFull === 1) { return ''; }
-    const delims = [' ', '.', '('];
-    for (let i = 0; i < delims.length; i++) {
-        str = splitAndCapitalize(str, delims[i]);
-    }
+    // const delims = [' ', '.', '('];
+    // for (let i = 0; i < delims.length; i++) {
+    //     str = splitAndCapitalize(str, delims[i]);
+    // }
 
     return str;
 }
@@ -246,6 +339,10 @@ export function wrapNodeText(textSelection, printFull, width=100) {
         tspan.text(finalLine);
     });
 }
+
+// =========
+// LINK TEXT
+// =========
 
 // Assumes link relationships are all uppercase, separated by undescores
 export function processLinkText(str) {

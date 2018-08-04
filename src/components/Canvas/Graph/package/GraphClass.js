@@ -6,7 +6,7 @@ import * as d3Data from "./helpers/changeD3Data.js";
 import * as keybinding from "./plugins/keybinding.js";
 import * as lasso from "./plugins/d3Lasso.js";
 import * as matrix from "./helpers/matrix.js";
-import * as mouseClicks from "./helpers/mouseClicks.js";
+import * as events from "./helpers/events.js";
 import * as selection from "./helpers/selection.js";
 import * as tooltip from "./plugins/d3Tooltip.js";
 import * as utils from "./helpers/utils.js";
@@ -132,7 +132,7 @@ class Graph {
         this.dragstartCanvas = this.dragstartCanvas.bind(this);
         this.mouseupCanvas = this.mouseupCanvas.bind(this);
         this.mousemoveCanvas = this.mousemoveCanvas.bind(this);
-        this.mouseoverLink = this.mouseoverLink.bind(this);
+        this.clickedLink = this.clickedLink.bind(this);
         this.zoomstart = this.zoomstart.bind(this);
         this.zooming = this.zooming.bind(this);
         this.zoomend = this.zoomend.bind(this);
@@ -141,6 +141,7 @@ class Graph {
         this.zoomButton = this.zoomButton.bind(this);
         this.wrapNodeText = this.wrapNodeText.bind(this);
         this.updateLinkText = this.updateLinkText.bind(this);
+        this.styleLink = this.styleLink.bind(this);
 
         this.bindReactActions({}); //no display functions yet
     }
@@ -150,6 +151,7 @@ class Graph {
         this.expandedGroups = {}; // Store groupNodeId --> expansion state
         this.hidden = {links: [], nodes: []}; // Store all links and nodes that are hidden
         this.nodeSelection = {}; // Store node.index --> selection state
+        this.linkSelection = {}; // Store link.id --> user selection, doesn't track selected links between selected nodes
         this.linkedById = {}; // Store each pair of neighboring nodes
 
         this.globallinkid = -1;
@@ -224,9 +226,9 @@ class Graph {
             .closePathSelect(true)
             .hoverSelect(false) 
             .area(this.svg)
-            .on("start", mouseClicks.lassoStart.bind(self))
-            .on("draw", mouseClicks.lassoDraw.bind(self))
-            .on("end", mouseClicks.lassoEnd.bind(self));
+            .on("start", events.lassoStart.bind(self))
+            .on("draw", events.lassoDraw.bind(self))
+            .on("end", events.lassoEnd.bind(self));
         this.svg.call(this.lasso);
     }
 
@@ -442,9 +444,9 @@ class Graph {
         const self = this;
         d3.select('body').call(d3.keybinding()
             // Select all nodes
-            .on('a', aesthetics.classAllNodesSelected.bind(self))
+            .on('a', function() { aesthetics.classNodesSelected.bind(self)(self.node, true); })
             // Clear current selection
-            .on('esc', aesthetics.unclassAllNodesSelected.bind(self))
+            .on('esc', aesthetics.resetObjectHighlighting.bind(self))
             // Expand selected nodes
             .on('e', d3Data.expandSelectedNodes.bind(self))
             // Fix selected nodes, unfix nodes if all were previously fixed
@@ -607,9 +609,9 @@ class Graph {
         this.initializeTooltip();
         this.initializeToolbarButtons();
         this.initializeZoomButtons();
-        this.initializeButton(constants.BUTTON_POINTER_TOOL_ID, mouseClicks.selectPointerTool.bind(this), true);
-        this.initializeButton(constants.BUTTON_RECT_SELECT_ID, mouseClicks.selectRectSelectTool.bind(this));
-        this.initializeButton(constants.BUTTON_FREE_SELECT_ID, mouseClicks.selectFreeSelectTool.bind(this));
+        this.initializeButton(constants.BUTTON_POINTER_TOOL_ID, events.selectPointerTool.bind(this), true);
+        this.initializeButton(constants.BUTTON_RECT_SELECT_ID, events.selectRectSelectTool.bind(this));
+        this.initializeButton(constants.BUTTON_FREE_SELECT_ID, events.selectFreeSelectTool.bind(this));
         // this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => { this.toggleEditMode(); });
         this.initializeButton(constants.BUTTON_EXPAND_NODES_ID, d3Data.expandSelectedNodes.bind(this));
         this.initializeButton(constants.BUTTON_REMOVE_NODES_ID, d3Data.deleteSelectedNodes.bind(this));
@@ -708,8 +710,8 @@ class Graph {
         } else {
             this.force
                 .gravity(.33)
-                .charge((d) => { return d.group ? -7500 : -20000 })
-                .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
+                .charge((d) => { return d.group ? -7500 : -20000; })
+                .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE; })
                 .alpha(.8)
                 .nodes(this.nodes)
                 .links(this.links);
@@ -723,7 +725,8 @@ class Graph {
             .attr('id', (l) => { return `link-${utils.hash(l.id)}`; })
             .classed('same-as', (l) => { return utils.isPossibleLink(l.type); })
             .classed('faded', (l) => { return this.hoveredNode && !(l.source === this.hoveredNode || l.target === this.hoveredNode); })
-            .on('mouseover', this.mouseoverLink);
+            .on('click', function (l) { self.clickedLink(l, this); })
+            .on('dblclick', this.stopPropagation);
         this.link.call(this.styleLink, false);
         this.link.exit().remove();
 
@@ -1016,7 +1019,6 @@ class Graph {
 // From aesthetics.js
 Graph.prototype.classExpandableNodes = aesthetics.classExpandableNodes;
 Graph.prototype.highlightLinksFromAllNodes = aesthetics.highlightLinksFromAllNodes;
-Graph.prototype.highlightLinksFromNode = aesthetics.highlightLinksFromNode;
 Graph.prototype.styleNode = aesthetics.styleNode;
 Graph.prototype.styleLink = aesthetics.styleLink;
 Graph.prototype.fillGroupNodes = aesthetics.fillGroupNodes;
@@ -1025,36 +1027,36 @@ Graph.prototype.resetGraphOpacity = aesthetics.resetGraphOpacity;
 Graph.prototype.wrapNodeText = aesthetics.wrapNodeText;
 Graph.prototype.updateLinkText = aesthetics.updateLinkText;
 
-// From mouseClicks.js
-Graph.prototype.brushstart = mouseClicks.brushstart;
-Graph.prototype.brushing = mouseClicks.brushing;
-Graph.prototype.brushend = mouseClicks.brushend;
-Graph.prototype.clicked = mouseClicks.clicked;
-Graph.prototype.rightclicked = mouseClicks.rightclicked;
-Graph.prototype.dblclicked = mouseClicks.dblclicked;
-Graph.prototype.dragstart = mouseClicks.dragstart;
-Graph.prototype.dragging = mouseClicks.dragging;
-Graph.prototype.dragend = mouseClicks.dragend;
-Graph.prototype.mousedown = mouseClicks.mousedown;
-Graph.prototype.mouseup = mouseClicks.mouseup;
-Graph.prototype.mouseover = mouseClicks.mouseover;
-Graph.prototype.mouseout = mouseClicks.mouseout;
-Graph.prototype.clickedCanvas = mouseClicks.clickedCanvas;
-Graph.prototype.dragstartCanvas = mouseClicks.dragstartCanvas;
-Graph.prototype.mouseupCanvas = mouseClicks.mouseupCanvas;
-Graph.prototype.mousemoveCanvas = mouseClicks.mousemoveCanvas;
-Graph.prototype.mouseoverLink = mouseClicks.mouseoverLink;
-Graph.prototype.stopPropagation = mouseClicks.stopPropagation;
+// From events.js
+Graph.prototype.brushstart = events.brushstart;
+Graph.prototype.brushing = events.brushing;
+Graph.prototype.brushend = events.brushend;
+Graph.prototype.clicked = events.clicked;
+Graph.prototype.rightclicked = events.rightclicked;
+Graph.prototype.dblclicked = events.dblclicked;
+Graph.prototype.dragstart = events.dragstart;
+Graph.prototype.dragging = events.dragging;
+Graph.prototype.dragend = events.dragend;
+Graph.prototype.mousedown = events.mousedown;
+Graph.prototype.mouseup = events.mouseup;
+Graph.prototype.mouseover = events.mouseover;
+Graph.prototype.mouseout = events.mouseout;
+Graph.prototype.clickedCanvas = events.clickedCanvas;
+Graph.prototype.dragstartCanvas = events.dragstartCanvas;
+Graph.prototype.mouseupCanvas = events.mouseupCanvas;
+Graph.prototype.mousemoveCanvas = events.mousemoveCanvas;
+Graph.prototype.clickedLink = events.clickedLink;
+Graph.prototype.stopPropagation = events.stopPropagation;
 
-Graph.prototype.zoomstart = mouseClicks.zoomstart;
-Graph.prototype.zooming = mouseClicks.zooming;
-Graph.prototype.performZoom = mouseClicks.performZoom;
-Graph.prototype.zoomend = mouseClicks.zoomend;
-Graph.prototype.zoomButton = mouseClicks.zoomButton;
-Graph.prototype.translateGraphAroundNode = mouseClicks.translateGraphAroundNode;
-Graph.prototype.translateGraphAroundId = mouseClicks.translateGraphAroundId;
-Graph.prototype.disableZoom = mouseClicks.disableZoom;
-Graph.prototype.manualZoom = mouseClicks.manualZoom;
+Graph.prototype.zoomstart = events.zoomstart;
+Graph.prototype.zooming = events.zooming;
+Graph.prototype.performZoom = events.performZoom;
+Graph.prototype.zoomend = events.zoomend;
+Graph.prototype.zoomButton = events.zoomButton;
+Graph.prototype.translateGraphAroundNode = events.translateGraphAroundNode;
+Graph.prototype.translateGraphAroundId = events.translateGraphAroundId;
+Graph.prototype.disableZoom = events.disableZoom;
+Graph.prototype.manualZoom = events.manualZoom;
 
 // From changeD3Data.js
 Graph.prototype.deleteSelectedNodes = d3Data.deleteSelectedNodes;

@@ -9,6 +9,7 @@ import { GRID_LENGTH } from "./constants.js";
 
 // Click-drag node selection
 export function brushstart() {
+    if (!utils.modifierPressed()) aesthetics.resetObjectHighlighting.bind(this)();
     this.isBrushing = true;
 }
 
@@ -17,17 +18,15 @@ export function brushing() {
     if (isRightClick() || this.rectSelect) {
         const extent = this.brush.extent();
         this.svg.selectAll('.node')
-            .classed('selected', function (d) {
-                const xPos = self.brushX.invert(d.x * self.zoomScale + self.zoomTranslate[0]);
-                const yPos = self.brushY.invert(d.y * self.zoomScale + self.zoomTranslate[1]);
+            .classed('possible', (d) => {
+                const xPos = this.brushX.invert(d.x * this.zoomScale + this.zoomTranslate[0]);
+                const yPos = this.brushY.invert(d.y * this.zoomScale + this.zoomTranslate[1]);
                 const selected = (extent[0][0] <= xPos && xPos <= extent[1][0]
-                    && extent[0][1] <= yPos && yPos <= extent[1][1])
-                    || (this.classList.contains('selected') && d3.event.sourceEvent.ctrlKey);
-                self.nodeSelection[d.index] = selected;
-                return selected;
+                               && extent[0][1] <= yPos && yPos <= extent[1][1]);
+                return this.nodeSelection[d.index] = d.possible = selected;
             });
 
-        this.highlightLinksFromAllNodes();
+        aesthetics.highlightPossibleLinksFromAllNodes.bind(this)();
     }
 }
 
@@ -35,6 +34,11 @@ export function brushend() {
     this.brush.clear();
     this.svg.selectAll('.brush').call(this.brush);
     this.isBrushing = false;
+
+    const toSelect = this.node.filter('.possible');
+    this.node.classed('possible', (d) => { return d.possible = false; });
+    this.link.classed('possible', (l) => { return l.possible = false; });
+    aesthetics.classNodesSelected.bind(this)(toSelect, true);
 }
 
 // Single-node interactions
@@ -45,8 +49,8 @@ export function clicked(d, self, i) {
 
     this.displayNodeInfo(d);
     const node = d3.select(self);
-    if (!(e.ctrlKey || e.metaKey)) aesthetics.unclassAllNodesSelected.bind(this)();
-    aesthetics.classNodeSelected.bind(this)(node, !(node.attr('dragselect') === 'true'));
+    if (!utils.modifierPressed()) aesthetics.resetObjectHighlighting.bind(this)();
+    aesthetics.classNodesSelected.bind(this)(node, !node.classed('selected'));
 
     this.force.resume();
 }
@@ -73,10 +77,7 @@ export function dragstart(d, self) {
     this.isDragging = true;
     this.draggedNode = d;
     const node = d3.select(self);
-    node
-        .attr('dragfix', node.classed('fixed'))
-        .attr('dragselect', node.classed('selected'))
-        .attr('dragdistance', 0);
+    node.attr('dragdistance', 0);
 }
 
 export function dragging(d, self) {
@@ -88,11 +89,6 @@ export function dragging(d, self) {
 }
 
 export function dragend(d, self) {
-    const node = d3.select(self);
-    if (parseInt(node.attr('dragdistance'), 10)) {
-        node.classed('fixed', d.fixed = true);
-    }
-
     // if (!parseInt(node.attr('dragdistance')) && isRightClick()) {
     //   this.rightclicked(node, d);
     // }
@@ -101,7 +97,12 @@ export function dragend(d, self) {
     this.draggedNode = null;
     this.toRenderMinimap = true;
     this.tickCount = 0;
-    this.force.resume();
+
+    const node = d3.select(self);
+    if (parseInt(node.attr('dragdistance'), 10)) {
+        node.classed('fixed', d.fixed = true);
+        this.force.resume();
+    }
 }
 
 export function mousedown(d, self) {
@@ -136,20 +137,19 @@ export function mouseup(d, self) {
             target = this.mousedownNode,
             fwdLinkId = this.linkedById[source.id + ',' + target.id],
             bwdLinkId = this.linkedById[target.id + ',' + source.id];
-        if (fwdLinkId) {
-            // If link already exists, select it
-            selection.selectLink.bind(this)(source, target);
-        } else if (bwdLinkId) {
-            // If link exists in opposite direction, make it bidirectional and select it
+
+        if (bwdLinkId) {
+            // If link exists in opposite direction, make it bidirectional
             const currLink = findEntryById(this.links, bwdLinkId);
             currLink.bidirectional = true;
-            this.link.filter((o) => { return o.id === bwdLinkId; })
-                .call(this.styleLink, true);
         } else {
-            // If link doesn't exist, create and select it
+            // If link doesn't exist, create it
             this.addLink(source, target);
-            selection.selectLink.bind(this)(source, target);
         }
+
+        // Select link regardless of whether or not it existed
+        aesthetics.resetObjectHighlighting.bind(this)();
+        aesthetics.highlightLink.bind(this)(source, target);
     }
 
     aesthetics.resetDragLink.bind(this)();
@@ -223,6 +223,14 @@ export function mouseout(d, self) {
     }
 }
 
+// Link mouse handlers
+export function clickedLink(l, self) {
+    d3.event.stopPropagation();
+    this.displayLinkInfo(l);
+    if (!utils.modifierPressed()) { aesthetics.resetObjectHighlighting.bind(this)(); }
+    aesthetics.highlightLinkById.bind(this)(l.id, !d3.select(self).classed('selected'));
+}
+
 // Canvas mouse handlers
 export function clickedCanvas() {
     // Called at the end of canvas drag actions
@@ -230,18 +238,22 @@ export function clickedCanvas() {
 
     // Only execute if click action, not drag
     if (d3.event.defaultPrevented) return;
-    aesthetics.unclassAllNodesSelected.bind(this)();
     if (this.editMode) {
         aesthetics.resetDragLink.bind(this)();
-        if (this.dragDistance === 0) {
-            this.addNodeToSelected(d3.event);
-        } else {
-            this.dragDistance = 0;
-        }
+        // if (this.dragDistance === 0) {
+        //     this.addNodeToSelected(d3.event);
+        // }
+    }
+
+    if (this.dragDistance === 0) {
+        console.log('hi')
+        aesthetics.resetObjectHighlighting.bind(this)();
     }
 }
 
 export function dragstartCanvas() {
+    debugger;
+    this.dragDistance = 0;
     d3.select('.context-menu').style('display', 'none');
     if (this.editMode || this.rectSelect || this.freeSelect) d3.event.sourceEvent.preventDefault();
 }
@@ -268,24 +280,19 @@ export function mouseupCanvas(self) {
 }
 
 export function lassoStart() {
-    this.lasso.items().classed('selected', (d) => { return d.selected = false; });
-    aesthetics.unclassAllNodesSelected.bind(this)();
+    if (!utils.modifierPressed()) aesthetics.resetObjectHighlighting.bind(this)();
 }
 
 export function lassoDraw() {
-    // TODO: combine these lines for small performance increase by making isSelected a fxn
-    aesthetics.unclassAllNodesSelected.bind(this)();
-    aesthetics.classNodesSelected.bind(this)(this.lasso.items().filter((d) => { return d.possible === true; }), true);
+    this.lasso.items().classed('possible', (d) => { return d.possible; });
+    aesthetics.highlightPossibleLinksFromAllNodes.bind(this)();
 }
 
 export function lassoEnd() {
-    aesthetics.unclassAllNodesSelected.bind(this)();
-    aesthetics.classNodesSelected.bind(this)(this.lasso.items().filter((d) => { return d.selected === true; }), true);
-};
-
-// Link mouse handlers
-export function mouseoverLink(d) {
-    this.displayLinkInfo(d);
+    this.node.classed('possible', (d) => { return d.possible = false; });
+    this.link.classed('possible', (l) => { return l.possible = false; });
+    const toSelect = this.lasso.items().filter((d) => { return d.selected === true; });
+    aesthetics.classNodesSelected.bind(this)(toSelect, true);
 }
 
 // Node text handlers
