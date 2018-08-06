@@ -572,7 +572,7 @@ class Graph {
             .classed('selected', isSelected);
     }
 
-    generateCanvas = (width, height, graphRef, allowKeycodes=true) => {
+    generateCanvas = (width, height, graphRef) => {
         this.width = width;
         this.height = height;
         this.center = [this.width / 2, this.height / 2];
