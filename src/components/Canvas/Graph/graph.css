@@ -52,6 +52,10 @@ path.drawn {
     fill-opacity: 0.2;
 }
 
+path.loop_close {
+    stroke-dasharray: 5, 3;
+}
+
 /* Grid lines */
 
 svg line {

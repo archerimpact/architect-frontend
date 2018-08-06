@@ -94,7 +94,7 @@ export function setupLasso() {
                 origin_node
                     .attr('cx', tx)
                     .attr('cy', ty)
-                    .attr('r', 7)
+                    .attr('r', 5)
                     .attr('display', null);
             } else {
                 path = `${path} L ${x} ${y}`;

@@ -2,7 +2,7 @@ import * as d3 from "d3";
 import * as cola from "webcola";
 
 import * as aesthetics from "./helpers/aesthetics.js";
-import * as d3Data from "./helpers/changeD3Data.js";
+import * as data from "./helpers/data.js";
 import * as keybinding from "./plugins/keybinding.js";
 import * as lasso from "./plugins/d3Lasso.js";
 import * as matrix from "./helpers/matrix.js";
@@ -36,7 +36,7 @@ const icons = {
     [constants.BUTTON_FREE_SELECT_ID]: '',
     // [constants.BUTTON_EDIT_MODE_ID]: '',
     [constants.BUTTON_EXPAND_NODES_ID]: '',
-    [constants.BUTTON_REMOVE_NODES_ID]: '',
+    [constants.BUTTON_REMOVE_OBJECTS_ID]: '',
     [constants.BUTTON_FIX_NODE_ID]: '',
     // [constants.BUTTON_TOGGLE_MINIMAP_ID]: '',
     // [constants.BUTTON_UNDO_ACTION_ID]: '',
@@ -447,7 +447,7 @@ class Graph {
             // Clear current selection
             .on('esc', aesthetics.resetObjectHighlighting.bind(self))
             // Expand selected nodes
-            .on('e', d3Data.expandSelectedNodes.bind(self))
+            .on('e', data.expandSelectedNodes.bind(self))
             // Fix selected nodes, unfix nodes if all were previously fixed
             .on('f', aesthetics.classAllNodesFixed.bind(this))
             // Group selected nodes
@@ -455,10 +455,8 @@ class Graph {
             // Ungroup groups in selected nodes
             // .on('h', this.ungroupSelectedGroups.bind(self))
             // Remove selected nodes in force layout
-            .on('r', this.deleteSelectedNodes.bind(self))
-            .on('del', this.deleteSelectedNodes.bind(self))
-            // Remove selected links in force layout; TODO: fix this
-            .on('shift+r', this.deleteSelectedLinks.bind(self))
+            .on('r', data.deleteSelectedObjects.bind(self))
+            .on('del', data.deleteSelectedObjects.bind(self))
             // Cycle between node name lengths: abbrev -> none -> full
             .on('t', aesthetics.toggleNodeNameLength.bind(self))
             // Toggle edit mode
@@ -529,13 +527,13 @@ class Graph {
 
     getToolbarLabels = () => {
         const labels = [constants.BUTTON_ZOOM_IN_ID, constants.BUTTON_ZOOM_OUT_ID, constants.BUTTON_POINTER_TOOL_ID,
-            constants.BUTTON_RECT_SELECT_ID, constants.BUTTON_FREE_SELECT_ID, constants.BUTTON_EXPAND_NODES_ID, constants.BUTTON_REMOVE_NODES_ID, constants.BUTTON_FIX_NODE_ID]; 
+            constants.BUTTON_RECT_SELECT_ID, constants.BUTTON_FREE_SELECT_ID, constants.BUTTON_EXPAND_NODES_ID, constants.BUTTON_REMOVE_OBJECTS_ID, constants.BUTTON_FIX_NODE_ID]; 
             //constants.BUTTON_UNDO_ACTION_ID, constants.BUTTON_REDO_ACTION_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_SAVE_PROJECT_ID
         const titles = [constants.BUTTON_ZOOM_IN_TITLE, constants.BUTTON_ZOOM_OUT_TITLE, constants.BUTTON_POINTER_TOOL_TITLE,
-            constants.BUTTON_RECT_SELECT_TITLE, constants.BUTTON_FREE_SELECT_TITLE, constants.BUTTON_EXPAND_NODES_TITLE, constants.BUTTON_REMOVE_NODES_TITLE, constants.BUTTON_FIX_NODE_TITLE]; 
+            constants.BUTTON_RECT_SELECT_TITLE, constants.BUTTON_FREE_SELECT_TITLE, constants.BUTTON_EXPAND_NODES_TITLE, constants.BUTTON_REMOVE_OBJECTS_TITLE, constants.BUTTON_FIX_NODE_TITLE]; 
             //constants.BUTTON_UNDO_ACTION_TITLE, constants.BUTTON_REDO_ACTION_TITLE, constants.BUTTON_EDIT_MODE_TITLE, constants.BUTTON_TOGGLE_MINIMAP_TITLE, constants.BUTTON_SAVE_PROJECT_TITLE
         const codes = [constants.BUTTON_ZOOM_IN_CODE, constants.BUTTON_ZOOM_OUT_CODE, constants.BUTTON_POINTER_TOOL_CODE,
-            constants.BUTTON_RECT_SELECT_CODE, constants.BUTTON_FREE_SELECT_CODE, constants.BUTTON_EXPAND_NODES_CODE, constants.BUTTON_REMOVE_NODES_CODE, constants.BUTTON_FIX_NODE_CODE];
+            constants.BUTTON_RECT_SELECT_CODE, constants.BUTTON_FREE_SELECT_CODE, constants.BUTTON_EXPAND_NODES_CODE, constants.BUTTON_REMOVE_OBJECTS_CODE, constants.BUTTON_FIX_NODE_CODE];
         const labelObjects = [];
         for (let i = 0; i < labels.length; i++) {
             labelObjects.push({label: labels[i], title: titles[i], code: codes[i]});
@@ -612,8 +610,8 @@ class Graph {
         this.initializeButton(constants.BUTTON_RECT_SELECT_ID, events.selectRectSelectTool.bind(this));
         this.initializeButton(constants.BUTTON_FREE_SELECT_ID, events.selectFreeSelectTool.bind(this));
         // this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => { this.toggleEditMode(); });
-        this.initializeButton(constants.BUTTON_EXPAND_NODES_ID, d3Data.expandSelectedNodes.bind(this));
-        this.initializeButton(constants.BUTTON_REMOVE_NODES_ID, d3Data.deleteSelectedNodes.bind(this));
+        this.initializeButton(constants.BUTTON_EXPAND_NODES_ID, data.expandSelectedNodes.bind(this));
+        this.initializeButton(constants.BUTTON_REMOVE_OBJECTS_ID, data.deleteSelectedObjects.bind(this));
         this.initializeButton(constants.BUTTON_FIX_NODE_ID, aesthetics.classAllNodesFixed.bind(this));
         //this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => { this.minimap.toggleMinimapVisibility(); }); // Wrap in unnamed function bc minimap has't been initialized yet
         //this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => { this.saveAllData() }); // Placeholder method
@@ -1051,22 +1049,20 @@ Graph.prototype.translateGraphAroundId = events.translateGraphAroundId;
 Graph.prototype.disableZoom = events.disableZoom;
 Graph.prototype.manualZoom = events.manualZoom;
 
-// From changeD3Data.js
-Graph.prototype.deleteSelectedNodes = d3Data.deleteSelectedNodes;
-Graph.prototype.deleteSelectedLinks = d3Data.deleteSelectedLinks;
-Graph.prototype.addNodeToSelected = d3Data.addNodeToSelected;
-Graph.prototype.toggleTypeView = d3Data.toggleTypeView;
-Graph.prototype.hideTypeNodes = d3Data.hideTypeNodes;
-Graph.prototype.showHiddenType = d3Data.showHiddenType;
-Graph.prototype.groupSame = d3Data.groupSame;
-Graph.prototype.groupSelectedNodes = d3Data.groupSelectedNodes;
-Graph.prototype.ungroupSelectedGroups = d3Data.ungroupSelectedGroups;
-Graph.prototype.expandGroups = d3Data.expandGroups;
-Graph.prototype.toggleGroupView = d3Data.toggleGroupView;
-Graph.prototype.createHull = d3Data.createHull;
-Graph.prototype.calculateAllHulls = d3Data.calculateAllHulls;
-Graph.prototype.drawHull = d3Data.drawHull;
-Graph.prototype.addLink = d3Data.addLink;
+// From data
+Graph.prototype.addNodeToSelected = data.addNodeToSelected;
+Graph.prototype.toggleTypeView = data.toggleTypeView;
+Graph.prototype.hideTypeNodes = data.hideTypeNodes;
+Graph.prototype.showHiddenType = data.showHiddenType;
+Graph.prototype.groupSame = data.groupSame;
+Graph.prototype.groupSelectedNodes = data.groupSelectedNodes;
+Graph.prototype.ungroupSelectedGroups = data.ungroupSelectedGroups;
+Graph.prototype.expandGroups = data.expandGroups;
+Graph.prototype.toggleGroupView = data.toggleGroupView;
+Graph.prototype.createHull = data.createHull;
+Graph.prototype.calculateAllHulls = data.calculateAllHulls;
+Graph.prototype.drawHull = data.drawHull;
+Graph.prototype.addLink = data.addLink;
 
 // from matrix
 Graph.prototype.setMatrix = matrix.setMatrix;

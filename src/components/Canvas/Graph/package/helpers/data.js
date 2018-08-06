@@ -9,6 +9,17 @@ export function getInverseAction(action) {
     // Implement for undo
 }
 
+// ================
+// UPDATING OBJECTS
+// ================
+
+export function deleteSelectedObjects() {
+    deleteSelectedNodes.bind(this)();
+    deleteSelectedLinks.bind(this)();
+    aesthetics.resetObjectHighlighting.bind(this)();
+    this.update();
+}
+
 // ==============
 // UPDATING LINKS
 // ==============
@@ -31,9 +42,6 @@ export function deleteSelectedLinks() {
         let j = this.idToIndex[l.target.id];
         this.deleteLink(i, j);
     })
-
-    aesthetics.resetObjectHighlighting.bind(this)();
-    this.update();
 }
 
 // ==============
@@ -68,9 +76,6 @@ export function deleteSelectedNodes() {
             }
         }
     });
-
-    aesthetics.resetObjectHighlighting.bind(this)();
-    this.update();
 }
 
 export function expandSelectedNodes() {
