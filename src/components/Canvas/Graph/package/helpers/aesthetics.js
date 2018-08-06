@@ -15,7 +15,7 @@ export function classExpandableNodes() {
 }
 
 export function classNodesSelected(nodes, isSelected) {
-    nodes.classed('selected', (d) => { return this.nodeSelection[d.index] = d.selected = isSelected; });
+    nodes.classed('selected', (d) => { return d.selected = isSelected; });
     applyLinkHighlighting.bind(this)();
 }
 
@@ -45,7 +45,7 @@ export function toggleSelectedNodesFixed() {
 // Should be used to reset some/all link highlights (thus the refresh flag)
 // Optionally refreshes linkSelection dictionary (eg when user clicks an object/canvas)
 export function highlightLinks(links, isSelected, refresh=false) {
-    links.call(this.styleLink, isSelected);
+    links.call(this.styleLink, (l) => { return l.selected = isSelected; });
     if (refresh) {
         this.linkSelection = {};
         return;
@@ -70,12 +70,17 @@ export function highlightLink(source, target, isSelected=true) {
 export function highlightLinkById(linkId, isSelected=true) {
     if (isSelected || linkId in this.linkSelection) { this.linkSelection[linkId] = isSelected; }
     this.link.filter((l) => { return l.id === linkId; })
-        .call(this.styleLink, isSelected);
+        .call(this.styleLink, (l) => { return l.selected = isSelected; });
 }
 
 // Automatic link selection between all selected nodes
 export function highlightLinksFromAllNodes() {
-    this.link.filter((l) => { return this.nodeSelection[l.source.index] && this.nodeSelection[l.target.index]; })
+    this.link
+        .filter((l) => { 
+            return ((l.source.possible || l.source.selected) 
+                && (l.target.possible || l.target.selected)) 
+                || l.selected; 
+        })
         .call(this.styleLink, true);
 }
 
@@ -99,7 +104,11 @@ export function highlightPossibleLinksFromAllNodes() {
 export function highlightLinksFromNode(node) {
     node = node[0][0].__data__.index;
     this.link.filter((l) => { return l.source.index === node || l.target.index === node; })
-        .call(this.styleLink, (l) => { return this.nodeSelection[l.source.index] && this.nodeSelection[l.target.index]; });
+        .call(this.styleLink, (l) => { 
+            return ((l.source.possible || l.source.selected) 
+                && (l.target.possible || l.target.selected)) 
+                || l.selected;
+         });
 }
 
 // Apply both user-selected and automatic highlighting
@@ -114,7 +123,7 @@ export function applyLinkHighlighting() {
 // Clear all node/link highlights
 export function clearObjectHighlighting() {
     // classNodesSelected.bind(this)(this.node, false);
-    this.node.classed('selected', (d) => { return this.nodeSelection[d.index] = d.selected = false; });
+    this.node.classed('selected', (d) => { return d.selected = false; });
     this.link.call(this.styleLink, false);
 }
 
@@ -155,19 +164,8 @@ export function getNodeColor(d) {
 
 export function styleLink(selected, isSelected) {
     selected
-        .each((l) => { 
-            // TODO: clicking on a node triggers styleLink 3x for each link
-            // TODO: find out why node index is only being set after the first time styleLink is called
-            if (l.source.index 
-                    && l.id in this.linkSelection
-                    && this.nodeSelection[l.source.index]
-                    && this.nodeSelection[l.target.index]) { 
-                delete this.linkSelection[l.id];
-            }
-        })
-        .classed('selected', (l) => { return l.selected = isSelected; });
-
-    selected.style('stroke-width', (l) => { return (l.source.group && l.target.group ? constants.GROUP_STROKE_WIDTH : constants.STROKE_WIDTH) + 'px'; });
+        .classed('selected', (l) => { return l.selected = isSelected; })
+        .style('stroke-width', (l) => { return (l.source.group && l.target.group ? constants.GROUP_STROKE_WIDTH : constants.STROKE_WIDTH) + 'px'; });
     styleLinkMarkers(selected, isSelected);
 }
 

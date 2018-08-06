@@ -23,7 +23,7 @@ export function brushing() {
                 const yPos = this.brushY.invert(d.y * this.zoomScale + this.zoomTranslate[1]);
                 const selected = (extent[0][0] <= xPos && xPos <= extent[1][0]
                                && extent[0][1] <= yPos && yPos <= extent[1][1]);
-                return this.nodeSelection[d.index] = d.possible = selected;
+                return d.possible = selected;
             });
 
         aesthetics.highlightPossibleLinksFromAllNodes.bind(this)();
@@ -64,7 +64,7 @@ export function dblclicked(d, self) {
     if (isGroup(d)) { this.toggleGroupView(d.id); }
     if (utils.isExpandable(d)) { this.expandNodeFromData(d); }
     const node = d3.select(self);
-    node.classed('selected', false);
+    aesthetics.classNodesSelected.bind(this)(node, false);
 }
 
 // Click-drag node interactions
@@ -228,7 +228,7 @@ export function clickedLink(l, self) {
     d3.event.stopPropagation();
     this.displayLinkInfo(l);
     if (!utils.modifierPressed()) { aesthetics.resetObjectHighlighting.bind(this)(); }
-    aesthetics.highlightLinkById.bind(this)(l.id, !d3.select(self).classed('selected'));
+    aesthetics.highlightLinkById.bind(this)(l.id, !l.selected);
 }
 
 // Canvas mouse handlers
@@ -252,7 +252,6 @@ export function clickedCanvas() {
 }
 
 export function dragstartCanvas() {
-    debugger;
     this.dragDistance = 0;
     d3.select('.context-menu').style('display', 'none');
     if (this.editMode || this.rectSelect || this.freeSelect) d3.event.sourceEvent.preventDefault();
@@ -407,22 +406,23 @@ export function translateGraphAroundNode(d) {
 
 export function translateGraphAroundId(id) {
     // Center each vector, stretch, then put back
-    let d;
-    this.node.classed("selected", false)
-        .filter(node => { if (node.id === id) { d = node; return node; }})
-        .classed("selected", true);
-    if (d === null) { return; }
+    let centerNode;
+    aesthetics.resetObjectHighlighting.bind(this)();
+    aesthetics.classNodesSelected.bind(this)(
+        this.node.filter((d) => { 
+            const isCenter = (id === d.id);
+            if (isCenter) { centerNode = d; }
+            return isCenter; 
+        }), true);
+    if (!centerNode) return;
 
+    let x = centerNode.x;
+    let y = centerNode.y;
     const centerX = this.center[0];
     const centerY = this.center[1];
-
-    let x = d.x;
-    let y = d.y;
-
     x = centerX > x ? (centerX - x) : (x - centerX);
     y = centerY > y ? (centerY - y) : (y - centerY);
 
-    //console.log("this is where x is after: ", x, " and where y is after: ", y)
     this.isZooming = true;
     const translate = this.zoom.translate();
     const self = this;

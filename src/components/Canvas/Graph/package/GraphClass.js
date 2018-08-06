@@ -150,7 +150,6 @@ class Graph {
         this.groups = {}; // Store groupNodeId --> {links: [], nodes: [], groupid: int}
         this.expandedGroups = {}; // Store groupNodeId --> expansion state
         this.hidden = {links: [], nodes: []}; // Store all links and nodes that are hidden
-        this.nodeSelection = {}; // Store node.index --> selection state
         this.linkSelection = {}; // Store link.id --> user selection, doesn't track selected links between selected nodes
         this.linkedById = {}; // Store each pair of neighboring nodes
 
@@ -734,8 +733,6 @@ class Graph {
         this.node = this.node.data(this.nodes, (d) => { return d.id; });
         this.nodeEnter = this.node.enter().append('g')
             .attr('class', 'node')
-            .attr('dragfix', false)
-            .attr('dragselect', false)
             .on('click', function (d) { self.clicked(d, this); })
             .on('dblclick', function (d) { self.dblclicked(d, this); })
             .on('mousedown', function (d) { self.mousedown(d, this); })
@@ -840,7 +837,7 @@ class Graph {
             this.tickCount = 0;
         }
 
-        this.node.each(function (d) {
+        this.node.each((d) => {
             if (d.fixedTransition) {
                 d.fixed = d.fixedTransition = false;
             }
@@ -1007,12 +1004,8 @@ class Graph {
     }
 
     selectNode(id) {
-      this.node
-        .classed('selected', false);
-
-      this.node
-        .filter(d => { if (id === d.id) return d})
-        .classed("selected", true)
+        aesthetics.resetObjectHighlighting.bind(this)();
+        aesthetics.classNodesSelected.bind(this)(this.node.filter((d) => { return id === d.id; }), true);
     }
 }
 
