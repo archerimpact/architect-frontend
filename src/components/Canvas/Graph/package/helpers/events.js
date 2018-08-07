@@ -9,12 +9,13 @@ import { GRID_LENGTH } from "./constants.js";
 
 // Click-drag node selection
 export function brushstart() {
-    if (!utils.modifierPressed()) aesthetics.resetObjectHighlighting.bind(this)();
-    this.isBrushing = true;
+    if (isRightClick() || this.rectSelect) {
+        if (!utils.modifierPressed()) aesthetics.resetObjectHighlighting.bind(this)();
+        this.isBrushing = true;
+    }
 }
 
 export function brushing() {
-    let self = this;
     if (isRightClick() || this.rectSelect) {
         const extent = this.brush.extent();
         this.svg.selectAll('.node')
@@ -31,14 +32,16 @@ export function brushing() {
 }
 
 export function brushend() {
-    this.brush.clear();
-    this.svg.selectAll('.brush').call(this.brush);
-    this.isBrushing = false;
+    if (isRightClick() || this.rectSelect) {
+        this.brush.clear();
+        this.svg.selectAll('.brush').call(this.brush);
+        this.isBrushing = false;
 
-    const toSelect = this.node.filter('.possible');
-    this.node.classed('possible', (d) => { return d.possible = false; });
-    this.link.classed('possible', (l) => { return l.possible = false; });
-    aesthetics.classNodesSelected.bind(this)(toSelect, true);
+        const toSelect = this.node.filter('.possible');
+        this.node.classed('possible', (d) => { return d.possible = false; });
+        this.link.classed('possible', (l) => { return l.possible = false; });
+        aesthetics.classNodesSelected.bind(this)(toSelect, true);
+    }
 }
 
 // Single-node interactions
@@ -246,7 +249,6 @@ export function clickedCanvas() {
     }
 
     if (this.dragDistance === 0) {
-        console.log('hi')
         aesthetics.resetObjectHighlighting.bind(this)();
     }
 }
@@ -288,9 +290,9 @@ export function lassoDraw() {
 }
 
 export function lassoEnd() {
-    this.node.classed('possible', (d) => { return d.possible = false; });
+    const toSelect = this.lasso.items().filter((d) => { return d.selected; });
+    this.lasso.items().classed('possible', (d) => { return d.possible = false; });
     this.link.classed('possible', (l) => { return l.possible = false; });
-    const toSelect = this.lasso.items().filter((d) => { return d.selected === true; });
     aesthetics.classNodesSelected.bind(this)(toSelect, true);
 }
 

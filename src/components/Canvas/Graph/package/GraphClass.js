@@ -114,6 +114,7 @@ class Graph {
         this.adjacencyMatrix = [];
         this.globalLinks = {};
         this.globalNodes = [];
+        this.userSelectedLinks = {}; // Store link.id --> user selection, doesn't track selected links between selected nodes
 
         this.brushstart = this.brushstart.bind(this);
         this.brushing = this.brushing.bind(this);
@@ -150,7 +151,6 @@ class Graph {
         this.groups = {}; // Store groupNodeId --> {links: [], nodes: [], groupid: int}
         this.expandedGroups = {}; // Store groupNodeId --> expansion state
         this.hidden = {links: [], nodes: []}; // Store all links and nodes that are hidden
-        this.linkSelection = {}; // Store link.id --> user selection, doesn't track selected links between selected nodes
         this.linkedById = {}; // Store each pair of neighboring nodes
 
         this.globallinkid = -1;

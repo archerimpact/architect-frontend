@@ -246,6 +246,7 @@ export function setupLasso() {
 
         function dragend() {
             if (!enable) return;
+            
             // Remove mouseover tagging function
             items.on('mouseover.lasso', null);
 
@@ -314,7 +315,7 @@ export function setupLasso() {
             items[0].forEach((d) => {
                 var item = d3.select(d);
                 if(typeof item.datum() === 'undefined') {
-                    item.datum({ possible:false, selected:false });
+                    item.datum({ possible: false, selected: false });
                 }
                 else {
                     //item.attr('d',function(e) {e.possible = false; e.selected = false; return e;});

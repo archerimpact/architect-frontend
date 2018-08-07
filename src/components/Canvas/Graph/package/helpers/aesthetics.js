@@ -43,18 +43,18 @@ export function toggleSelectedNodesFixed() {
 
 // Manually highlight given links
 // Should be used to reset some/all link highlights (thus the refresh flag)
-// Optionally refreshes linkSelection dictionary (eg when user clicks an object/canvas)
+// Optionally refreshes userSelectedLinks dictionary (eg when user clicks an object/canvas)
 export function highlightLinks(links, isSelected, refresh=false) {
     links.call(this.styleLink, (l) => { return l.selected = isSelected; });
     if (refresh) {
-        this.linkSelection = {};
+        this.userSelectedLinks = {};
         return;
     }
 
     if (!isSelected) {
         links.each((l) => { 
-            if (l.id in this.linkSelection) { 
-                this.linkSelection[l.id] = false; 
+            if (l.id in this.userSelectedLinks) { 
+                this.userSelectedLinks[l.id] = false; 
             }
         });
     }
@@ -68,7 +68,7 @@ export function highlightLink(source, target, isSelected=true) {
 
 // Manually highlight given link, identified by linkId
 export function highlightLinkById(linkId, isSelected=true) {
-    if (isSelected || linkId in this.linkSelection) { this.linkSelection[linkId] = isSelected; }
+    if (isSelected || linkId in this.userSelectedLinks) { this.userSelectedLinks[linkId] = isSelected; }
     this.link.filter((l) => { return l.id === linkId; })
         .call(this.styleLink, (l) => { return l.selected = isSelected; });
 }
@@ -115,8 +115,8 @@ export function highlightLinksFromNode(node) {
 export function applyLinkHighlighting() {
     this.link.call(this.styleLink, false);
     highlightLinksFromAllNodes.bind(this)();
-    for (let linkId in this.linkSelection) {
-        highlightLinkById.bind(this)(linkId, this.linkSelection[linkId]);
+    for (let linkId in this.userSelectedLinks) {
+        highlightLinkById.bind(this)(linkId, this.userSelectedLinks[linkId]);
     }
 }
 
@@ -164,7 +164,7 @@ export function getNodeColor(d) {
 
 export function styleLink(selected, isSelected) {
     selected
-        .classed('selected', (l) => { return l.selected = isSelected; })
+        .classed('selected', isSelected)
         .style('stroke-width', (l) => { return (l.source.group && l.target.group ? constants.GROUP_STROKE_WIDTH : constants.STROKE_WIDTH) + 'px'; });
     styleLinkMarkers(selected, isSelected);
 }

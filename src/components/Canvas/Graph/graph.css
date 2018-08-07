@@ -32,6 +32,12 @@ svg {
     z-index: -3;
 }
 
+path {
+    stroke: #999;
+    stroke-opacity: 1;
+    stroke-width: 2px;
+}
+
 /* Extent */
 
 svg rect.extent {
@@ -53,7 +59,12 @@ path.drawn {
 }
 
 path.loop_close {
-    stroke-dasharray: 5, 3;
+    stroke: #7cbdff;
+    stroke-opacity: 1;
+    stroke-width: 2px;
+    stroke-dasharray: 6, 4;
+    fill: #0d77e2;
+    fill-opacity: 0.2;
 }
 
 /* Grid lines */
