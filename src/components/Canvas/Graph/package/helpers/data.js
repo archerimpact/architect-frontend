@@ -14,8 +14,8 @@ export function getInverseAction(action) {
 // ================
 
 export function deleteSelectedObjects() {
-    deleteSelectedNodes.bind(this)();
     deleteSelectedLinks.bind(this)();
+    deleteSelectedNodes.bind(this)();
     aesthetics.resetObjectHighlighting.bind(this)();
     this.update();
 }

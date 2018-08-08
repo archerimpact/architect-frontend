@@ -166,6 +166,7 @@ export function deleteNode(i) {
 }
 
 export function deleteLink(i, j) {
+    if (this.adjacencyMatrix.length <= i || this.adjacencyMatrix[i].length <= j) return;
     if (this.adjacencyMatrix[i][j].state === DISPLAYED) {
         this.adjacencyMatrix[i][j].data = null;
         this.adjacencyMatrix[i][j].state = NONEXISTENT;
