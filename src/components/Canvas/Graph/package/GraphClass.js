@@ -83,7 +83,6 @@ class Graph {
         this.hoveredNode = null; // Store reference to currently hovered/emphasized node, null otherwise
         this.deletingHoveredNode = false; // Store whether you are deleting a hovered node, if so you reset graph opacity
         this.printFull = 0; // Allow user to toggle node text length
-        this.isGraphFixed = false; // Track whether or not all nodes should be fixed
         this.isZooming = false; // Track if graph is actively being transformed
         this.zoomTranslate = [0, 0]; // Keep track of original zoom state to restore after right-drag
         this.zoomScale = 1;

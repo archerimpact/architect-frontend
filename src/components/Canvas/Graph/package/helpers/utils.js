@@ -170,6 +170,16 @@ export function getData(selection) {
 // DEBUGGING METHODS
 // =================
 
+// Use for reminders and messages to come back to
+console.todo = function(msg) {
+    console.log(' % c % s % s % s', 'color: yellow; background - color: black;', '–', msg, '–');
+}
+ 
+// Use for important console messages
+console.important = function(msg) {
+    console.log(' % c % s % s % s', 'color: brown; font - weight: bold; text - decoration: underline;', '–', msg, '–');
+}
+
 // Sleep for duration ms
 export function sleep(duration) {
     return new Promise((resolve) => setTimeout(resolve, duration));

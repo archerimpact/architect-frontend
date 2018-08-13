@@ -10,7 +10,7 @@ import * as colors from "./colorConstants.js";
 
 export function classExpandableNodes() {
     this.node.classed('expandable', false);
-    this.node.filter(d => utils.isExpandable(d))
+    this.node.filter((d) => { return utils.isExpandable(d); })
         .classed('expandable', true);
 }
 
@@ -20,21 +20,12 @@ export function classNodesSelected(nodes, isSelected) {
 }
 
 export function classAllNodesFixed() {
-    const self = this;
-    this.isGraphFixed = !this.isGraphFixed;
-    d3.selectAll('.node')
+    let fixGraph = this.container.selectAll('.node:not(.fixed)')[0].length > 0;
+    this.node
         .each(function (d) {
             const currNode = d3.select(this);
-            currNode.classed('fixed', d.fixed = self.isGraphFixed)
+            currNode.classed('fixed', d.fixed = fixGraph);
         });
-}
-
-export function toggleSelectedNodesFixed() {
-    const selected = selection.selectSelectedNodes();
-    if (selected.empty()) return;
-    const currFix = selected.classed('fixed');
-    selected.classed('fixed', function (d) { return d.fixed = !currFix; });
-    this.force.start();
 }
 
 // =================

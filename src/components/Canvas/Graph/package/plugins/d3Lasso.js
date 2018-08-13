@@ -58,7 +58,7 @@ export function setupLasso() {
                 d.lassoPoint = {
                     cx: Math.round(box.left + box.width/2),
                     cy: Math.round(box.top + box.height/2),
-                    edges: { top:0, right:0, bottom:0, left:0 },
+                    edges: { top: 0, right: 0, bottom: 0, left: 0 },
                     close_edges: { left: 0, right: 0 }
                 };
             });
@@ -103,7 +103,7 @@ export function setupLasso() {
 
             // Reset closed edges counter
             items[0].forEach((d) => {
-                d.lassoPoint.close_edges = { left:0, right:0 };
+                d.lassoPoint.close_edges = { left: 0, right: 0 };
             });
 
             // Calculate the current distance from the lasso origin
@@ -118,7 +118,7 @@ export function setupLasso() {
             // Draw the lines
             dyn_path.attr('d', tpath);
 
-            // path for calcs
+            // Path for calcs
             calc_path.attr('d', path);
 
             calc_close_path.attr('d', calc_close_draw_path);
@@ -128,7 +128,6 @@ export function setupLasso() {
 
             // If within the closed path distance parameter, show the closed path. otherwise, hide it
             close_path.attr('display', isPathClosed ? null : 'none');
-
 
             // Get path length
             var path_node = calc_path.node();
@@ -141,14 +140,14 @@ export function setupLasso() {
                 // Get the current coordinates on the path
                 var cur_pos = path_node.getPointAtLength(i);
                 var cur_pos_obj = {
-                    x:Math.round(cur_pos.x*100)/100,
-                    y:Math.round(cur_pos.y*100)/100,
+                    x: Math.round(cur_pos.x*100)/100,
+                    y: Math.round(cur_pos.y*100)/100,
                 };
                 // Get the prior coordinates on the path
                 var prior_pos = path_node.getPointAtLength(i-1);
                 var prior_pos_obj = {
-                    x:Math.round(prior_pos.x*100)/100,
-                    y:Math.round(prior_pos.y*100)/100,
+                    x: Math.round(prior_pos.x*100)/100,
+                    y: Math.round(prior_pos.y*100)/100,
                 };
 
                 // Iterate through each item
@@ -202,7 +201,7 @@ export function setupLasso() {
                 close_path.attr('d', close_draw_path);
                 let close_path_node = calc_close_path.node();
                 var close_path_length = close_path_node.getTotalLength();
-                var close_path_edges = { left:0, right:0 };
+                var close_path_edges = { left: 0, right: 0 };
                 for (let i = 0; i <= close_path_length; i++) {
                     const cur_pos = close_path_node.getPointAtLength(i);
                     const prior_pos = close_path_node.getPointAtLength(i-1);
@@ -253,13 +252,6 @@ export function setupLasso() {
             // Tag selected items
             items.filter((d) => { return d.possible === true; })
                 .each((d) => { d.selected = true; });
-
-            items.filter((d) => { return d.possible === false; })
-                .each((d) => { d.selected = false; });
-
-            // Reset possible items
-            items
-                .each((d) => { d.possible = false; });
 
             // Clear lasso
             dyn_path.attr('d', null);
