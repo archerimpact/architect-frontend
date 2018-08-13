@@ -32,13 +32,39 @@ svg {
     z-index: -3;
 }
 
+path {
+    stroke: #999;
+    stroke-opacity: 1;
+    stroke-width: 2px;
+}
+
 /* Extent */
 
 svg rect.extent {
-    stroke: rgb(120, 120, 120);
-    stroke-opacity: .3;
+    stroke: #7cbdff;
+    stroke-opacity: 1;
     stroke-width: 2px;
-    fill: rgb(190, 219, 243, .2);
+    fill: #0d77e2;
+    fill-opacity: 0.2;
+}
+
+/* Lasso */
+
+path.drawn {
+    stroke: #7cbdff;
+    stroke-opacity: 1;
+    stroke-width: 2px;
+    fill: #0d77e2;
+    fill-opacity: 0.2;
+}
+
+path.loop_close {
+    stroke: #7cbdff;
+    stroke-opacity: 1;
+    stroke-width: 2px;
+    stroke-dasharray: 6, 4;
+    fill: #0d77e2;
+    fill-opacity: 0.2;
 }
 
 /* Grid lines */
@@ -47,17 +73,6 @@ svg line {
     stroke: rgb(191, 191, 191);
     stroke-opacity: .3;
     stroke-width: 1.5px;
-}
-
-/* Toolbar */
-
-.toolbar-background {
-    stroke: #d3d3d3;
-    fill: #fafafa;
-}
-
-.toolbar-button-icon {
-    fill: #202020;
 }
 
 /* Links */
@@ -78,6 +93,9 @@ svg line {
 
 .link.dynamic {
     pointer-events: none;
+    stroke: #999;
+    stroke-width: 2.7px;
+    stroke-opacity: 1;
 }
 
 path.link {
@@ -86,6 +104,7 @@ path.link {
     transition-property: opacity;
     transition-delay: 0ms;
     transition-duration: 50ms;
+    cursor: pointer;
 }
 
 path.link.hidden {
@@ -97,6 +116,10 @@ path.link.same-as {
 }
 
 path.link.selected {
+    stroke: #0d77e2;
+}
+
+path.link.possible {
     stroke: #0d77e2;
 }
 
@@ -154,6 +177,11 @@ path.link.selected {
     fill: #0d77e2 !important;
 }
 
+.node.possible circle {
+    stroke: #0d77e2 !important;
+    fill: #0d77e2 !important;
+}
+
 .node.selected circle.hull-node {
     stroke: #fff !important;
     fill: #0d77e2 !important;
@@ -172,6 +200,10 @@ path.link.selected {
     stroke: #0d77e2 !important;
 }
 
+.node.possible .icon {
+    stroke: #0d77e2 !important;
+}
+
 .node circle.node-glyph {
     /*stroke: #fff !important;*/
     fill: #fff !important;
@@ -183,6 +215,10 @@ path.link.selected {
 }
 
 .node.selected circle.node-glyph {
+    stroke: #0d77e2 !important;
+}
+
+.node.possible circle.node-glyph {
     stroke: #0d77e2 !important;
 }
 
@@ -205,9 +241,14 @@ path.link.selected {
     fill: #0d77e2 !important;
 }
 
+.node.possible text.glyph-label {
+    stroke: #0d77e2 !important;
+    fill: #0d77e2 !important;
+}
+
 /* Hull */
 
-.hull, path {
+.hull path {
     fill: #0d77e2;
     stroke-opacity: 1;
     fill-opacity: 0.2;
@@ -247,6 +288,15 @@ path.link.selected {
 }
 
 /* Toolbar */
+
+.toolbar-background {
+    stroke: #d3d3d3;
+    fill: #fafafa;
+}
+
+.toolbar-button-icon {
+    fill: #202020;
+}
 
 .button {
     fill: transparent;

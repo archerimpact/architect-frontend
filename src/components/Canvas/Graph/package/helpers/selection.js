@@ -5,11 +5,5 @@ export function selectSelectedNodes() {
 }
 
 export function selectSelectedLinks() {
-  return d3.selectAll('.links.selected');
-}
-
-export function selectLink(source, target) {
-  const linkId = this.linkedById[source.id + ',' + target.id] || this.linkedById[target.id + ',' + source.id];
-  this.link.filter((d) => { return d.id === linkId; })
-    .call(this.styleLink, true);
+  return d3.selectAll('.link.selected');
 }
