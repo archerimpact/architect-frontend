@@ -2,11 +2,11 @@ import * as d3 from "d3";
 import * as cola from "webcola";
 
 import * as aesthetics from "./helpers/aesthetics.js";
-import * as d3Data from "./helpers/changeD3Data.js";
+import * as data from "./helpers/data.js";
 import * as keybinding from "./plugins/keybinding.js";
 import * as lasso from "./plugins/d3Lasso.js";
 import * as matrix from "./helpers/matrix.js";
-import * as mouseClicks from "./helpers/mouseClicks.js";
+import * as events from "./helpers/events.js";
 import * as selection from "./helpers/selection.js";
 import * as tooltip from "./plugins/d3Tooltip.js";
 import * as utils from "./helpers/utils.js";
@@ -36,7 +36,7 @@ const icons = {
     [constants.BUTTON_FREE_SELECT_ID]: '',
     // [constants.BUTTON_EDIT_MODE_ID]: '',
     [constants.BUTTON_EXPAND_NODES_ID]: '',
-    [constants.BUTTON_REMOVE_NODES_ID]: '',
+    [constants.BUTTON_REMOVE_OBJECTS_ID]: '',
     [constants.BUTTON_FIX_NODE_ID]: '',
     // [constants.BUTTON_TOGGLE_MINIMAP_ID]: '',
     // [constants.BUTTON_UNDO_ACTION_ID]: '',
@@ -83,7 +83,6 @@ class Graph {
         this.hoveredNode = null; // Store reference to currently hovered/emphasized node, null otherwise
         this.deletingHoveredNode = false; // Store whether you are deleting a hovered node, if so you reset graph opacity
         this.printFull = 0; // Allow user to toggle node text length
-        this.isGraphFixed = false; // Track whether or not all nodes should be fixed
         this.isZooming = false; // Track if graph is actively being transformed
         this.zoomTranslate = [0, 0]; // Keep track of original zoom state to restore after right-drag
         this.zoomScale = 1;
@@ -114,6 +113,7 @@ class Graph {
         this.adjacencyMatrix = [];
         this.globalLinks = {};
         this.globalNodes = [];
+        this.userSelectedLinks = {}; // Store link.id --> user selection, doesn't track selected links between selected nodes
 
         this.brushstart = this.brushstart.bind(this);
         this.brushing = this.brushing.bind(this);
@@ -132,7 +132,7 @@ class Graph {
         this.dragstartCanvas = this.dragstartCanvas.bind(this);
         this.mouseupCanvas = this.mouseupCanvas.bind(this);
         this.mousemoveCanvas = this.mousemoveCanvas.bind(this);
-        this.mouseoverLink = this.mouseoverLink.bind(this);
+        this.clickedLink = this.clickedLink.bind(this);
         this.zoomstart = this.zoomstart.bind(this);
         this.zooming = this.zooming.bind(this);
         this.zoomend = this.zoomend.bind(this);
@@ -141,7 +141,7 @@ class Graph {
         this.zoomButton = this.zoomButton.bind(this);
         this.wrapNodeText = this.wrapNodeText.bind(this);
         this.updateLinkText = this.updateLinkText.bind(this);
-        this.resetDragLink = this.resetDragLink.bind(this);
+        this.styleLink = this.styleLink.bind(this);
 
         this.bindReactActions({}); //no display functions yet
     }
@@ -150,7 +150,6 @@ class Graph {
         this.groups = {}; // Store groupNodeId --> {links: [], nodes: [], groupid: int}
         this.expandedGroups = {}; // Store groupNodeId --> expansion state
         this.hidden = {links: [], nodes: []}; // Store all links and nodes that are hidden
-        this.nodeSelection = {}; // Store node.index --> selection state
         this.linkedById = {}; // Store each pair of neighboring nodes
 
         this.globallinkid = -1;
@@ -186,6 +185,7 @@ class Graph {
             .attr('id', 'canvas')
             .attr('pointer-events', 'all')
             .classed('svg-content', true)
+            .on('click', function () { self.clickedCanvas(this); })
             .on('mouseup', function () { self.mouseupCanvas(this); })
             .call(d3.behavior.drag()
                 .on('dragstart', function (d) { self.dragstartCanvas(d, this)})
@@ -211,7 +211,7 @@ class Graph {
 
         // Extent invisible on left click
         this.svg.on('mousedown', () => {
-            svgBrush.style('opacity', utils.isRightClick() || this.rectSelect ? 1 : 0);
+            svgBrush.style('opacity', (utils.isRightClick() && !this.freeSelect) || this.rectSelect ? 1 : 0);
         });
 
         return svgBrush;
@@ -220,13 +220,13 @@ class Graph {
     initializeLasso = () => {
         const self = this;
         this.lasso = d3.lasso()
-            .closePathDistance(75)
+            .closePathDistance(99999)
             .closePathSelect(true)
             .hoverSelect(false) 
             .area(this.svg)
-            .on("start", mouseClicks.lassoStart.bind(self))
-            .on("draw", mouseClicks.lassoDraw.bind(self))
-            .on("end", mouseClicks.lassoEnd.bind(self));
+            .on("start", events.lassoStart.bind(self))
+            .on("draw", events.lassoDraw.bind(self))
+            .on("end", events.lassoEnd.bind(self));
         this.svg.call(this.lasso);
     }
 
@@ -235,13 +235,6 @@ class Graph {
     initializeContainer = () => {
         return this.svg.append('g')
             .attr('class', 'graph-items');
-    }
-
-    // Set up how to draw the hulls
-    initializeCurve = () => {
-        return d3.svg.line()
-            .interpolate('cardinal-closed')
-            .tension(.85);
     }
 
     initializeSVGgrid = () => {
@@ -273,6 +266,13 @@ class Graph {
         return svgGrid;
     }
 
+    // Set up how to draw the hulls
+    initializeCurve = () => {
+        return d3.svg.line()
+            .interpolate('cardinal-closed')
+            .tension(.85);
+    }
+
     initializeForce = () => {
         if (this.useCola) {
             return cola.d3adaptor()
@@ -292,6 +292,82 @@ class Graph {
             .on('drag', function (d) { self.dragging(d, this) })
             .on('dragend', function (d) { self.dragend(d, this)});
         return drag;
+    }
+
+    initializeDragLink = () => {
+        return this.container.append('line')
+            .attr('class', 'link dynamic')
+            .attr('x1', 0)
+            .attr('y1', 0)
+            .attr('x2', 0)
+            .attr('y2', 0)
+            .attr('marker-end', 'url(#end-big-gray)')
+            .style('visibility', 'hidden');
+    }
+
+    // direction-size-color
+    initializeMarkers = () => {
+        const possibleAttrs = [
+            ['start', 'end'],
+            ['big', 'small'],
+            ['gray', 'blue']
+        ];
+        const markerList = this.deriveMarkerData(this.getMarkerIdPermutations(possibleAttrs));
+        for (let marker of markerList) {
+            this.defs
+                .append('marker')
+                    .attr('id', marker.id)
+                    .attr('viewBox', '5 -5 10 10')
+                    .attr('refX', 10)
+                    .attr('markerWidth', marker.size)
+                    .attr('markerHeight', marker.size)
+                    .attr('orient', marker.direction)
+                .append('path')
+                    .attr('d', 'M 0,-5 L 10,0 L 0,5')
+                    .style('stroke', marker.color)
+                    .style('fill', marker.color)
+                    .style('fill-opacity', 1);
+        }
+    }
+
+    // possibleAttrs is a list of lists that contains the possibilities for each attr
+    // This method should return a list of all possible permutations of the given attrs
+    getMarkerIdPermutations = (possibleAttrs) => {
+        if (!possibleAttrs) { return []; }
+        if (possibleAttrs.length === 1) { return possibleAttrs[0]; }
+
+        let i, j;
+        const markerIds = [];
+        const rest = this.getMarkerIdPermutations(possibleAttrs.slice(1));
+        for (i = 0; i < rest.length; i++) {
+            for (j = 0; j < possibleAttrs[0].length; j++) {
+                markerIds.push(`${possibleAttrs[0][j]}-${rest[i]}`);
+            }
+        }
+
+        return markerIds;
+    }
+
+    deriveMarkerData = (permutationList) => {
+        const markerList = [];
+        for (let markerId of permutationList) {
+            markerList.push({id: markerId});
+        }
+
+        const colorNameToHex = {
+            'gray': colors.HEX_GRAY,
+            'blue': colors.HEX_BLUE
+        };
+
+        let marker, tokens;
+        for (marker of markerList) {
+            tokens = marker.id.split('-');
+            marker.direction = (tokens[0] === 'end') ? 'auto' : 'auto-start-reverse';
+            marker.size = (tokens[1] === 'big') ? constants.MARKER_SIZE_BIG : constants.MARKER_SIZE_SMALL;
+            marker.color = colorNameToHex[tokens[2]];
+        }
+
+        return markerList;
     }
 
     initializeMenuActions = () => {
@@ -361,100 +437,30 @@ class Graph {
         };
     }
 
-    // direction-size-color
-    initializeMarkers = () => {
-        const possibleAttrs = [
-            ['start', 'end'],
-            ['big', 'small'],
-            ['gray', 'blue']
-        ];
-        const markerList = this.deriveMarkerData(this.getMarkerIdPermutations(possibleAttrs));
-        for (let marker of markerList) {
-            this.defs
-                .append('marker')
-                    .attr('id', marker.id)
-                    .attr('viewBox', '5 -5 10 10')
-                    .attr('refX', 10)
-                    .attr('markerWidth', marker.size)
-                    .attr('markerHeight', marker.size)
-                    .attr('orient', marker.direction)
-                .append('path')
-                    .attr('d', 'M 0,-5 L 10,0 L 0,5')
-                    .style('stroke', marker.color)
-                    .style('fill', marker.color)
-                    .style('fill-opacity', 1);
-        }
-    }
-
-    // possibleAttrs is a list of lists that contains the possibilities for each attr
-    // This method should return a list of all possible permutations of the given attrs
-    getMarkerIdPermutations = (possibleAttrs) => {
-        if (!possibleAttrs) { return []; }
-        if (possibleAttrs.length === 1) { return possibleAttrs[0]; }
-
-        let i, j;
-        const markerIds = [];
-        const rest = this.getMarkerIdPermutations(possibleAttrs.slice(1));
-        for (i = 0; i < rest.length; i++) {
-            for (j = 0; j < possibleAttrs[0].length; j++) {
-                markerIds.push(`${possibleAttrs[0][j]}-${rest[i]}`);
-            }
-        }
-
-        return markerIds;
-    }
-
-    deriveMarkerData = (permutationList) => {
-        const markerList = [];
-        for (let markerId of permutationList) {
-            markerList.push({id: markerId});
-        }
-
-        const colorNameToHex = {
-            'gray': colors.HEX_GRAY,
-            'blue': colors.HEX_BLUE
-        };
-
-        let marker, tokens;
-        for (marker of markerList) {
-            tokens = marker.id.split('-');
-            marker.direction = (tokens[0] === 'end') ? 'auto' : 'auto-start-reverse';
-            marker.size = (tokens[1] === 'big') ? constants.MARKER_SIZE_BIG : constants.MARKER_SIZE_SMALL;
-            marker.color = colorNameToHex[tokens[2]];
-        }
-
-        return markerList;
-    }
-
-    useFilterFlood = (colorHex) => {
-        const filterId = `filter-flood-${colorHex}`;
-        if (this.defs.selectAll(`#${filterId}`).empty()) {
-            const filter = this.defs.append('filter')
-                .attr('id', filterId);
-
-            filter.append('feFlood')
-                .attr('flood-color', `#${colorHex}`)
-                .attr('result', 'flood');
-
-            const filterMerge = filter.append('feMerge');
-            filterMerge.append('feMergeNode')
-                .attr('in', 'flood');
-            filterMerge.append('feMergeNode')
-                .attr('in', 'SourceGraphic');
-        }
-
-        return `url(#${filterId})`;
-    }
-
-    initializeDragLink = () => {
-        return this.svg.append('line')
-            .attr('class', 'link dynamic')
-            .attr('x1', 0)
-            .attr('y1', 0)
-            .attr('x2', 0)
-            .attr('y2', 0)
-            .attr('marker-end', 'url(#end-big-gray)')
-            .style('visibility', 'hidden');
+    // Graph manipulation keycodes
+    initializeKeycodes = () => {
+        const self = this;
+        d3.select('body').call(d3.keybinding()
+            // Select all nodes
+            .on('a', function() { aesthetics.classNodesSelected.bind(self)(self.node, true); })
+            // Clear current selection
+            .on('esc', aesthetics.resetObjectHighlighting.bind(self))
+            // Expand selected nodes
+            .on('e', data.expandSelectedNodes.bind(self))
+            // Fix selected nodes, unfix nodes if all were previously fixed
+            .on('f', aesthetics.classAllNodesFixed.bind(this))
+            // Group selected nodes
+            // .on('g', this.groupSelectedNodes.bind(self))
+            // Ungroup groups in selected nodes
+            // .on('h', this.ungroupSelectedGroups.bind(self))
+            // Remove selected nodes in force layout
+            .on('r', data.deleteSelectedObjects.bind(self))
+            .on('del', data.deleteSelectedObjects.bind(self))
+            // Cycle between node name lengths: abbrev -> none -> full
+            .on('t', aesthetics.toggleNodeNameLength.bind(self))
+            // Toggle edit mode
+            .on('x', this.toggleEditMode.bind(self))
+        );
     }
 
     initializeTooltip = () => {
@@ -516,17 +522,17 @@ class Graph {
                 .on('drag', this.stopPropagation)
                 .on('dragend', this.stopPropagation)
             );
-    };
+    }
 
     getToolbarLabels = () => {
         const labels = [constants.BUTTON_ZOOM_IN_ID, constants.BUTTON_ZOOM_OUT_ID, constants.BUTTON_POINTER_TOOL_ID,
-            constants.BUTTON_RECT_SELECT_ID, constants.BUTTON_FREE_SELECT_ID, constants.BUTTON_EXPAND_NODES_ID, constants.BUTTON_REMOVE_NODES_ID, constants.BUTTON_FIX_NODE_ID]; 
+            constants.BUTTON_RECT_SELECT_ID, constants.BUTTON_FREE_SELECT_ID, constants.BUTTON_EXPAND_NODES_ID, constants.BUTTON_REMOVE_OBJECTS_ID, constants.BUTTON_FIX_NODE_ID]; 
             //constants.BUTTON_UNDO_ACTION_ID, constants.BUTTON_REDO_ACTION_ID, constants.BUTTON_EDIT_MODE_ID, constants.BUTTON_TOGGLE_MINIMAP_ID, constants.BUTTON_SAVE_PROJECT_ID
         const titles = [constants.BUTTON_ZOOM_IN_TITLE, constants.BUTTON_ZOOM_OUT_TITLE, constants.BUTTON_POINTER_TOOL_TITLE,
-            constants.BUTTON_RECT_SELECT_TITLE, constants.BUTTON_FREE_SELECT_TITLE, constants.BUTTON_EXPAND_NODES_TITLE, constants.BUTTON_REMOVE_NODES_TITLE, constants.BUTTON_FIX_NODE_TITLE]; 
+            constants.BUTTON_RECT_SELECT_TITLE, constants.BUTTON_FREE_SELECT_TITLE, constants.BUTTON_EXPAND_NODES_TITLE, constants.BUTTON_REMOVE_OBJECTS_TITLE, constants.BUTTON_FIX_NODE_TITLE]; 
             //constants.BUTTON_UNDO_ACTION_TITLE, constants.BUTTON_REDO_ACTION_TITLE, constants.BUTTON_EDIT_MODE_TITLE, constants.BUTTON_TOGGLE_MINIMAP_TITLE, constants.BUTTON_SAVE_PROJECT_TITLE
         const codes = [constants.BUTTON_ZOOM_IN_CODE, constants.BUTTON_ZOOM_OUT_CODE, constants.BUTTON_POINTER_TOOL_CODE,
-            constants.BUTTON_RECT_SELECT_CODE, constants.BUTTON_FREE_SELECT_CODE, constants.BUTTON_EXPAND_NODES_CODE, constants.BUTTON_REMOVE_NODES_CODE, constants.BUTTON_FIX_NODE_CODE];
+            constants.BUTTON_RECT_SELECT_CODE, constants.BUTTON_FREE_SELECT_CODE, constants.BUTTON_EXPAND_NODES_CODE, constants.BUTTON_REMOVE_OBJECTS_CODE, constants.BUTTON_FIX_NODE_CODE];
         const labelObjects = [];
         for (let i = 0; i < labels.length; i++) {
             labelObjects.push({label: labels[i], title: titles[i], code: codes[i]});
@@ -563,7 +569,7 @@ class Graph {
             .classed('selected', isSelected);
     }
 
-    generateCanvas = (width, height, graphRef, allowKeycodes=true) => {
+    generateCanvas = (width, height, graphRef) => {
         this.width = width;
         this.height = height;
         this.center = [this.width / 2, this.height / 2];
@@ -599,34 +605,13 @@ class Graph {
         this.initializeTooltip();
         this.initializeToolbarButtons();
         this.initializeZoomButtons();
-        this.initializeButton(constants.BUTTON_POINTER_TOOL_ID, () => {
-            d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', true);
-            d3.select('#' + constants.BUTTON_RECT_SELECT_ID).classed('selected', false);
-            d3.select('#' + constants.BUTTON_FREE_SELECT_ID).classed('selected', false);
-            this.freeSelect = false;
-            this.rectSelect = false;
-            this.lasso.disable();
-        }, true);
-        this.initializeButton(constants.BUTTON_RECT_SELECT_ID, () => {
-            d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', false);
-            d3.select('#' + constants.BUTTON_RECT_SELECT_ID).classed('selected', true);
-            d3.select('#' + constants.BUTTON_FREE_SELECT_ID).classed('selected', false);
-            this.freeSelect = false;
-            this.rectSelect = true;
-            this.lasso.disable();
-        });
-        this.initializeButton(constants.BUTTON_FREE_SELECT_ID, () => {
-            d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', false);
-            d3.select('#' + constants.BUTTON_RECT_SELECT_ID).classed('selected', false);
-            d3.select('#' + constants.BUTTON_FREE_SELECT_ID).classed('selected', true);
-            this.freeSelect = true;
-            this.rectSelect = false;
-            this.lasso.enable();
-        });
+        this.initializeButton(constants.BUTTON_POINTER_TOOL_ID, events.selectPointerTool.bind(this), true);
+        this.initializeButton(constants.BUTTON_RECT_SELECT_ID, events.selectRectSelectTool.bind(this));
+        this.initializeButton(constants.BUTTON_FREE_SELECT_ID, events.selectFreeSelectTool.bind(this));
         // this.initializeButton(constants.BUTTON_EDIT_MODE_ID, () => { this.toggleEditMode(); });
-        this.initializeButton(constants.BUTTON_EXPAND_NODES_ID, d3Data.expandSelectedNodes.bind(this));
-        this.initializeButton(constants.BUTTON_REMOVE_NODES_ID, d3Data.deleteSelectedNodes.bind(this));
-        this.initializeButton(constants.BUTTON_FIX_NODE_ID, () => { this.toggleFixedNodes(); });
+        this.initializeButton(constants.BUTTON_EXPAND_NODES_ID, data.expandSelectedNodes.bind(this));
+        this.initializeButton(constants.BUTTON_REMOVE_OBJECTS_ID, data.deleteSelectedObjects.bind(this));
+        this.initializeButton(constants.BUTTON_FIX_NODE_ID, aesthetics.classAllNodesFixed.bind(this));
         //this.initializeButton(constants.BUTTON_TOGGLE_MINIMAP_ID, () => { this.minimap.toggleMinimapVisibility(); }); // Wrap in unnamed function bc minimap has't been initialized yet
         //this.initializeButton(constants.BUTTON_SAVE_PROJECT_ID, () => { this.saveAllData() }); // Placeholder method
 
@@ -641,18 +626,19 @@ class Graph {
 
         this.minimap = new Minimap()
             .setZoom(this.zoom)
-            .setTarget(this.container) // that's what you're trying to track/the images
+            .setTarget(this.container)
             .setMinimapPositionX(this.minimapPaddingX)
             .setMinimapPositionY(this.minimapPaddingY)
             .setGraph(this);
 
         this.minimap.initializeMinimap(this.svg, this.width, this.height);
-    };
+    }
 
     // Completely re-renders the graph, assuming all new nodes and links
     setData = (centerid, nodes, links, byIndex) => {
         this.setMatrix(nodes, links, byIndex);
-        this.initializeDataDicts(); // If we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
+        // If we're setting new data, reset to fresh settings for hidden, nodes, isDragging, etc.
+        this.initializeDataDicts();
         this.update(null, 500);
         // Set global node id to match the nodes getting passed in
         nodes.forEach((node) => {
@@ -672,23 +658,23 @@ class Graph {
         this.minimap
             .setBounds(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1])
             .initializeBoxToCenter(document.querySelector('svg'), this.xbound[0], this.xbound[1], this.ybound[0], this.ybound[1]);
-    };
+    }
 
     addData = (centerid, nodes, links) => {
         this.addToMatrix(centerid, nodes, links);
-    };
+    }
 
     fetchData = () => {
         return {nodes: this.nodes, links: this.links};
-    };
+    }
 
     hideMinimap = () => {
       this.minimap.hideMinimap();
-    };
+    }
 
     flushData = () => {
       this.setData(0, [], [], true);
-    };
+    }
 
     bindReactActions = (reactActions) => {
         this.displayNodeInfo = reactActions.node ? reactActions.node : function (d) {};
@@ -697,7 +683,7 @@ class Graph {
         this.expandNodeFromData = reactActions.expand ? reactActions.expand : function (d) {};
         this.saveAllData = reactActions.save ? reactActions.save : function (d) {};
         this.initializeMenuActions();
-    };
+    }
 
     // Updates nodes and links according to current data
     update = (event=null, ticks=null, minimap=true) => {
@@ -720,8 +706,8 @@ class Graph {
         } else {
             this.force
                 .gravity(.33)
-                .charge((d) => { return d.group ? -7500 : -20000 })
-                .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE })
+                .charge((d) => { return d.group ? -7500 : -20000; })
+                .linkDistance((l) => { return (l.source.group && l.source.group === l.target.group) ? constants.GROUP_LINK_DISTANCE : constants.LINK_DISTANCE; })
                 .alpha(.8)
                 .nodes(this.nodes)
                 .links(this.links);
@@ -735,7 +721,8 @@ class Graph {
             .attr('id', (l) => { return `link-${utils.hash(l.id)}`; })
             .classed('same-as', (l) => { return utils.isPossibleLink(l.type); })
             .classed('faded', (l) => { return this.hoveredNode && !(l.source === this.hoveredNode || l.target === this.hoveredNode); })
-            .on('mouseover', this.mouseoverLink);
+            .on('click', function (l) { self.clickedLink(l, this); })
+            .on('dblclick', this.stopPropagation);
         this.link.call(this.styleLink, false);
         this.link.exit().remove();
 
@@ -743,8 +730,6 @@ class Graph {
         this.node = this.node.data(this.nodes, (d) => { return d.id; });
         this.nodeEnter = this.node.enter().append('g')
             .attr('class', 'node')
-            .attr('dragfix', false)
-            .attr('dragselect', false)
             .on('click', function (d) { self.clicked(d, this); })
             .on('dblclick', function (d) { self.dblclicked(d, this); })
             .on('mousedown', function (d) { self.mousedown(d, this); })
@@ -849,7 +834,7 @@ class Graph {
             this.tickCount = 0;
         }
 
-        this.node.each(function (d) {
+        this.node.each((d) => {
             if (d.fixedTransition) {
                 d.fixed = d.fixedTransition = false;
             }
@@ -915,26 +900,6 @@ class Graph {
                 .attr('transform', aesthetics.rotateLinkText)
             .select('textPath')
                 .each(aesthetics.hideLongLinkText);
-            
-
-        if (this.editMode && this.mousedownNode) {
-            const x1 = this.mousedownNode.x * this.zoomScale + this.zoomTranslate[0],
-                y1 = this.mousedownNode.y * this.zoomScale + this.zoomTranslate[1],
-                x2 = this.dragLink.attr('tx2'),
-                y2 = this.dragLink.attr('ty2'),
-                dist = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
-
-            if (dist > 0) {
-                const targetX = x2 - (x2 - x1) * (dist - this.mousedownNode.radius * this.zoomScale) / dist,
-                    targetY = y2 - (y2 - y1) * (dist - this.mousedownNode.radius * this.zoomScale) / dist;
-
-                this.dragLink
-                    .attr('x1', targetX)
-                    .attr('y1', targetY)
-                    .attr('x2', x2)
-                    .attr('y2', y2);
-            }
-        }
     }
 
     // Custom force that takes the parent group position as the centroid to moves all contained nodes toward
@@ -949,102 +914,24 @@ class Graph {
         }
     }
 
-    // Graph manipulation keycodes
-    initializeKeycodes = () => {
-        const self = this;
-        d3.select('body').call(d3.keybinding()
-            // Select all nodes
-            .on('a', aesthetics.classAllNodesSelected.bind(self))
-            // Clear current selection
-            .on('esc', aesthetics.unclassAllNodesSelected.bind(self))
-            // Expand selected nodes
-            .on('e', d3Data.expandSelectedNodes.bind(self))
-            // Fix selected nodes, unfix nodes if all were previously fixed
-            .on('f', aesthetics.toggleFixSelectedNodes.bind(self))
-            // Group selected nodes
-            // .on('g', this.groupSelectedNodes.bind(self))
-            // Ungroup groups in selected nodes
-            // .on('h', this.ungroupSelectedGroups.bind(self))
-            // Remove selected nodes in force layout
-            .on('r', this.deleteSelectedNodes.bind(self))
-            .on('del', this.deleteSelectedNodes.bind(self))
-            // Remove selected links in force layout; TODO: fix this
-            .on('shift+r', this.deleteSelectedLinks.bind(self))
-            // Cycle between node name lengths: abbrev -> none -> full
-            .on('t', aesthetics.toggleNodeNameLength.bind(self))
-        );
-
-            //     // c: Group all of the possibly same as's
-            //     else if (d3.event.keyCode === 67) { this.groupSame(); }
-
-            //     // e: Toggle edit mode
-            //     else if (d3.event.keyCode === 69) { this.toggleEditMode(); }
-
-            //     // l: remove selected links only
-            //     else if (d3.event.keyCode === 76 && this.editMode) { this.deleteSelectedLinks(); }
-
-            //     // a: Add node linked to selected
-            //     else if (d3.event.keyCode === 65 && this.editMode) {
-            //         const selection = this.svg.selectAll('.node.selected');
-            //         this.addNodeToSelected(selection);
-            //     }
-
-            //     // d: Hide document nodes
-            //     else if (d3.event.keyCode === 68) { this.toggleTypeView(DOCUMENT); }
-
-            //     // t: expand by degree
-            //     else if (d3.event.keyCode === 84) {
-            //         if (this.degreeExpanded === 0 && this.nodes.length !== 1) {
-            //             return;
-            //         }
-
-            //         if (this.degreeExpanded === 0 && this.nodes.length === 1) {
-            //             this.expandingNode = this.nodes[0];
-            //         }
-
-            //         this.degreeExpanded += 1;
-
-            //         if (this.degreeExpanded <= 4) {
-            //             d3.json(`/data/well_connected_${this.degreeExpanded}.json`, (json) => {
-            //                 this.addToMatrix(0, json.nodes, json.links);
-            //             });
-            //         }
-            //     }
-
-            //     this.force.resume();
-            // });
-    };
-
-    toggleFixedNodes = () => {
-        const self = this;
-        this.isGraphFixed = !this.isGraphFixed;
-        d3.selectAll('.node')
-            .each(function (d) {
-                const currNode = d3.select(this);
-                currNode.classed('fixed', d.fixed = self.isGraphFixed)
-            });
-    }
-
     toggleEditMode = () => {
         const self = this;
         this.editMode = !this.editMode;
-        const button = d3.select('#' + constants.BUTTON_EDIT_MODE_ID);
-        button.classed('selected', this.editMode);
+        // const button = d3.select('#' + constants.BUTTON_EDIT_MODE_ID);
+        // button.classed('selected', this.editMode);
         if (this.editMode) {
-            if (!this.dragCallback) { this.dragCallback = this.node.property('__onmousedown.drag')['_']; }
+            if (!this.dragCallback && !this.node.empty()) { 
+                this.dragCallback = this.node.property('__onmousedown.drag')['_'];
+            }
             
             this.svg
-                .on('click', function () { self.clickedCanvas(this); })
                 .on('mousemove', function () { self.mousemoveCanvas(this); });
 
             this.node
                 .on('mousedown.drag', null)
                 .on('mouseup', function (d) { self.mouseup(d, this); });
-
-            this.dragLink.style('visibility', 'visible');
         } else {
             this.svg
-                .on('click', null)
                 .on('mousemove', null);
 
             this.node
@@ -1056,9 +943,25 @@ class Graph {
         }
     }
 
-    // =================
-    // SELECTION METHODS
-    // =================
+    useFilterFlood = (colorHex) => {
+        const filterId = `filter-flood-${colorHex}`;
+        if (this.defs.selectAll(`#${filterId}`).empty()) {
+            const filter = this.defs.append('filter')
+                .attr('id', filterId);
+
+            filter.append('feFlood')
+                .attr('flood-color', `#${colorHex}`)
+                .attr('result', 'flood');
+
+            const filterMerge = filter.append('feMerge');
+            filterMerge.append('feMergeNode')
+                .attr('in', 'flood');
+            filterMerge.append('feMergeNode')
+                .attr('in', 'SourceGraphic');
+        }
+
+        return `url(#${filterId})`;
+    }
 
     // Get all node text elements
     selectAllNodeNames = () => {
@@ -1098,75 +1001,67 @@ class Graph {
     }
 
     selectNode(id) {
-      this.node
-        .classed('selected', false);
-
-      this.node
-        .filter(d => { if (id === d.id) return d})
-        .classed("selected", true)
+        aesthetics.resetObjectHighlighting.bind(this)();
+        aesthetics.classNodesSelected.bind(this)(this.node.filter((d) => { return id === d.id; }), true);
     }
 }
 
 // From aesthetics.js
 Graph.prototype.classExpandableNodes = aesthetics.classExpandableNodes;
 Graph.prototype.highlightLinksFromAllNodes = aesthetics.highlightLinksFromAllNodes;
-Graph.prototype.highlightLinksFromNode = aesthetics.highlightLinksFromNode;
 Graph.prototype.styleNode = aesthetics.styleNode;
 Graph.prototype.styleLink = aesthetics.styleLink;
 Graph.prototype.fillGroupNodes = aesthetics.fillGroupNodes;
 Graph.prototype.fadeGraph = aesthetics.fadeGraph;
 Graph.prototype.resetGraphOpacity = aesthetics.resetGraphOpacity;
-Graph.prototype.resetDragLink = aesthetics.resetDragLink;
 Graph.prototype.wrapNodeText = aesthetics.wrapNodeText;
 Graph.prototype.updateLinkText = aesthetics.updateLinkText;
 
-// From mouseClicks.js
-Graph.prototype.brushstart = mouseClicks.brushstart;
-Graph.prototype.brushing = mouseClicks.brushing;
-Graph.prototype.brushend = mouseClicks.brushend;
-Graph.prototype.clicked = mouseClicks.clicked;
-Graph.prototype.rightclicked = mouseClicks.rightclicked;
-Graph.prototype.dblclicked = mouseClicks.dblclicked;
-Graph.prototype.dragstart = mouseClicks.dragstart;
-Graph.prototype.dragging = mouseClicks.dragging;
-Graph.prototype.dragend = mouseClicks.dragend;
-Graph.prototype.mousedown = mouseClicks.mousedown;
-Graph.prototype.mouseup = mouseClicks.mouseup;
-Graph.prototype.mouseover = mouseClicks.mouseover;
-Graph.prototype.mouseout = mouseClicks.mouseout;
-Graph.prototype.clickedCanvas = mouseClicks.clickedCanvas;
-Graph.prototype.dragstartCanvas = mouseClicks.dragstartCanvas;
-Graph.prototype.mouseupCanvas = mouseClicks.mouseupCanvas;
-Graph.prototype.mousemoveCanvas = mouseClicks.mousemoveCanvas;
-Graph.prototype.mouseoverLink = mouseClicks.mouseoverLink;
-Graph.prototype.stopPropagation = mouseClicks.stopPropagation;
+// From events.js
+Graph.prototype.brushstart = events.brushstart;
+Graph.prototype.brushing = events.brushing;
+Graph.prototype.brushend = events.brushend;
+Graph.prototype.clicked = events.clicked;
+Graph.prototype.rightclicked = events.rightclicked;
+Graph.prototype.dblclicked = events.dblclicked;
+Graph.prototype.dragstart = events.dragstart;
+Graph.prototype.dragging = events.dragging;
+Graph.prototype.dragend = events.dragend;
+Graph.prototype.mousedown = events.mousedown;
+Graph.prototype.mouseup = events.mouseup;
+Graph.prototype.mouseover = events.mouseover;
+Graph.prototype.mouseout = events.mouseout;
+Graph.prototype.clickedCanvas = events.clickedCanvas;
+Graph.prototype.dragstartCanvas = events.dragstartCanvas;
+Graph.prototype.mouseupCanvas = events.mouseupCanvas;
+Graph.prototype.mousemoveCanvas = events.mousemoveCanvas;
+Graph.prototype.clickedLink = events.clickedLink;
+Graph.prototype.stopPropagation = events.stopPropagation;
 
-Graph.prototype.zoomstart = mouseClicks.zoomstart;
-Graph.prototype.zooming = mouseClicks.zooming;
-Graph.prototype.performZoom = mouseClicks.performZoom;
-Graph.prototype.zoomend = mouseClicks.zoomend;
-Graph.prototype.zoomButton = mouseClicks.zoomButton;
-Graph.prototype.translateGraphAroundNode = mouseClicks.translateGraphAroundNode;
-Graph.prototype.translateGraphAroundId = mouseClicks.translateGraphAroundId;
-Graph.prototype.disableZoom = mouseClicks.disableZoom;
-Graph.prototype.manualZoom = mouseClicks.manualZoom;
+Graph.prototype.zoomstart = events.zoomstart;
+Graph.prototype.zooming = events.zooming;
+Graph.prototype.performZoom = events.performZoom;
+Graph.prototype.zoomend = events.zoomend;
+Graph.prototype.zoomButton = events.zoomButton;
+Graph.prototype.translateGraphAroundNode = events.translateGraphAroundNode;
+Graph.prototype.translateGraphAroundId = events.translateGraphAroundId;
+Graph.prototype.disableZoom = events.disableZoom;
+Graph.prototype.manualZoom = events.manualZoom;
 
-// From changeD3Data.js
-Graph.prototype.deleteSelectedNodes = d3Data.deleteSelectedNodes;
-Graph.prototype.deleteSelectedLinks = d3Data.deleteSelectedLinks;
-Graph.prototype.addNodeToSelected = d3Data.addNodeToSelected;
-Graph.prototype.toggleTypeView = d3Data.toggleTypeView;
-Graph.prototype.hideTypeNodes = d3Data.hideTypeNodes;
-Graph.prototype.showHiddenType = d3Data.showHiddenType;
-Graph.prototype.groupSame = d3Data.groupSame;
-Graph.prototype.groupSelectedNodes = d3Data.groupSelectedNodes;
-Graph.prototype.ungroupSelectedGroups = d3Data.ungroupSelectedGroups;
-Graph.prototype.expandGroups = d3Data.expandGroups;
-Graph.prototype.toggleGroupView = d3Data.toggleGroupView;
-Graph.prototype.createHull = d3Data.createHull;
-Graph.prototype.calculateAllHulls = d3Data.calculateAllHulls;
-Graph.prototype.drawHull = d3Data.drawHull;
-Graph.prototype.addLink = d3Data.addLink;
+// From data
+Graph.prototype.addNodeToSelected = data.addNodeToSelected;
+Graph.prototype.toggleTypeView = data.toggleTypeView;
+Graph.prototype.hideTypeNodes = data.hideTypeNodes;
+Graph.prototype.showHiddenType = data.showHiddenType;
+Graph.prototype.groupSame = data.groupSame;
+Graph.prototype.groupSelectedNodes = data.groupSelectedNodes;
+Graph.prototype.ungroupSelectedGroups = data.ungroupSelectedGroups;
+Graph.prototype.expandGroups = data.expandGroups;
+Graph.prototype.toggleGroupView = data.toggleGroupView;
+Graph.prototype.createHull = data.createHull;
+Graph.prototype.calculateAllHulls = data.calculateAllHulls;
+Graph.prototype.drawHull = data.drawHull;
+Graph.prototype.addLink = data.addLink;
 
 // from matrix
 Graph.prototype.setMatrix = matrix.setMatrix;

@@ -76,7 +76,7 @@ class GraphSidebar extends Component {
         const activeState = this.props.match.params.sidebarState;
 
         return (
-            <div className="tabs" key="tabs">
+            <div className="tabs unselectable" key="tabs">
                 <div className={"mt-auto tab " + (activeState === 'search' ? 'active-tab' : '')} onClick={() => this.toggleSidebarFunc("search")}>
                     <Link to={baseUrl + '/search'}>
                         <div>

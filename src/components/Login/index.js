@@ -5,7 +5,7 @@ import * as actions from "../../redux/actions/userActions";
 import {userLogIn} from "../../redux/actions/userActions";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
-import ArcherLogo from "../../../public/Archerlogobig.png";
+import ArcherLogo from "../../images/archer-logo.png";
 import "./style.css";
 
 
@@ -104,6 +104,14 @@ class Login extends Component {
                                         onClick={this.handleSubmit}
                                     >Login
                                     </button>
+                                </div>
+                                <div className="button-login">
+                                  <Link to="/create_account">
+                                    <button
+                                        className="btn btn-primary"
+                                    >Create Account
+                                    </button>
+                                  </Link>
                                 </div>
                             </div>
                         </form>
