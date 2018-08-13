@@ -149,12 +149,10 @@ export function displayLink(i, j) {
     }
 }
 
-export function createLink(i, j) {
-    // let source = this.adjacencyMatrix[i][i].data;
-    // let target = this.adjacencyMatrix[j][j].data;
+export function createLink(i, j, linkType=null) {
     let link = {
         id: this.globallinkid--,
-        type: "Custom",
+        type: linkType ? linkType : "is_related_to",
         source: this.adjacencyMatrix[i][i].data,
         target: this.adjacencyMatrix[j][j].data
     }
@@ -168,6 +166,7 @@ export function deleteNode(i) {
 }
 
 export function deleteLink(i, j) {
+    if (this.adjacencyMatrix.length <= i || this.adjacencyMatrix[i].length <= j) return;
     if (this.adjacencyMatrix[i][j].state === DISPLAYED) {
         this.adjacencyMatrix[i][j].data = null;
         this.adjacencyMatrix[i][j].state = NONEXISTENT;

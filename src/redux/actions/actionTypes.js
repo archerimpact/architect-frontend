@@ -5,7 +5,7 @@ export const USER_LOGOUT = 'USER_LOGOUT';
 
 /* ============================ PROJECT ACTIONS ============================ */
         
-            export const GET_PROJECTS = "GET_PROJECTS";
+export const GET_PROJECTS = "GET_PROJECTS";
 export const LOAD_PROJECT = "LOAD_PROJECT"; // Also triggers graph actions
 
 /* ============================ GRAPH ACTIONS ============================ */

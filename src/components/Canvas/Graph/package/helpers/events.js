@@ -1,81 +1,108 @@
 import * as d3 from "d3";
+import * as constants from "./constants.js";
 import * as aesthetics from "./aesthetics.js";
 import * as selection from "./selection.js";
 import * as utils from "./utils.js";
-import { findEntryById, getD3Event, isGroup, isLeftClick, isRightClick, then } from "./utils.js";
 
-import { GRID_LENGTH } from "./constants.js";
-import { resetDragLink } from "./aesthetics.js";
+// =======
+// GENERAL
+// =======
 
-// Click-drag node selection
+export function stopPropagation() {
+    const e = utils.getD3Event();
+    if (e.stopPropagation) e.stopPropagation();
+}
+
+// ============
+// BRUSH EVENTS
+// ============
+
 export function brushstart() {
-    this.isBrushing = true;
+    if ((utils.isRightClick() && !this.freeSelect) || this.rectSelect) {
+        console.info('brushstart');
+        if (!utils.modifierPressed()) aesthetics.resetObjectHighlighting.bind(this)();
+        this.isBrushing = true;
+    }
 }
 
 export function brushing() {
-    let self = this;
-    if (isRightClick() || this.rectSelect) {
+    if ((utils.isRightClick() && !this.freeSelect) || this.rectSelect) {
+        console.info('brushing');
         const extent = this.brush.extent();
         this.svg.selectAll('.node')
-            .classed('selected', function (d) {
-                const xPos = self.brushX.invert(d.x * self.zoomScale + self.zoomTranslate[0]);
-                const yPos = self.brushY.invert(d.y * self.zoomScale + self.zoomTranslate[1]);
+            .classed('possible', (d) => {
+                const xPos = this.brushX.invert(d.x * this.zoomScale + this.zoomTranslate[0]);
+                const yPos = this.brushY.invert(d.y * this.zoomScale + this.zoomTranslate[1]);
                 const selected = (extent[0][0] <= xPos && xPos <= extent[1][0]
-                    && extent[0][1] <= yPos && yPos <= extent[1][1])
-                    || (this.classList.contains('selected') && d3.event.sourceEvent.ctrlKey);
-                self.nodeSelection[d.index] = selected;
-                return selected;
+                               && extent[0][1] <= yPos && yPos <= extent[1][1]);
+                return d.possible = selected;
             });
 
-        this.highlightLinksFromAllNodes();
+        aesthetics.highlightPossibleLinksFromAllNodes.bind(this)();
     }
 }
 
 export function brushend() {
-    this.brush.clear();
-    this.svg.selectAll('.brush').call(this.brush);
-    this.isBrushing = false;
+    if ((utils.isRightClick() && !this.freeSelect) || this.rectSelect) {
+        console.info('brushend');
+        this.brush.clear();
+        this.svg.selectAll('.brush').call(this.brush);
+        this.isBrushing = false;
+
+        const toSelect = this.node.filter('.possible');
+        this.node.classed('possible', (d) => { return d.possible = false; });
+        this.link.classed('possible', (l) => { return l.possible = false; });
+        aesthetics.classNodesSelected.bind(this)(toSelect, true);
+    }
 }
 
-// Single-node interactions
+// ===========
+// NODE EVENTS
+// ===========
+
 export function clicked(d, self, i) {
-    if (d3.event.defaultPrevented) return;
+    const e = d3.event;
+    e.stopPropagation();
+    if (e.defaultPrevented) return;
+
+    console.info('clicked');
+    this.displayNodeInfo(d);
     const node = d3.select(self);
-    node.classed('fixed', d.fixed = !(node.attr('dragfix') === 'true'));
+    if (!utils.modifierPressed()) aesthetics.resetObjectHighlighting.bind(this)();
+    aesthetics.classNodesSelected.bind(this)(node, !node.classed('selected'));
+
     this.force.resume();
-    d3.event.stopPropagation();
 }
 
 export function rightclicked(node, d) {
+    console.info('rightclicked');
     this.force.resume();
 }
 
 export function dblclicked(d, self) {
-    if (isGroup(d)) { this.toggleGroupView(d.id); }
+    d3.event.stopPropagation();
+    console.info('dblclicked');
+    if (utils.isGroup(d)) { this.toggleGroupView(d.id); }
     if (utils.isExpandable(d)) { this.expandNodeFromData(d); }
     const node = d3.select(self);
-    node.classed('selected', false);
-    d3.event.stopPropagation();
+    aesthetics.classNodesSelected.bind(this)(node, false);
 }
 
-// Click-drag node interactions
 export function dragstart(d, self) {
     d3.event.sourceEvent.preventDefault();
     d3.event.sourceEvent.stopPropagation();
+    console.info('dragstart');
     d3.select('.context-menu').style('display', 'none');
     if (this.isEmphasized) this.resetGraphOpacity();
 
     this.isDragging = true;
     this.draggedNode = d;
-    this.displayNodeInfo(d);
     const node = d3.select(self);
-    node
-        .attr('dragfix', node.classed('fixed'))
-        .attr('dragselect', node.classed('selected'))
-        .attr('dragdistance', 0);
+    node.attr('dragdistance', 0);
 }
 
 export function dragging(d, self) {
+    console.info('dragging');
     const node = d3.select(self);
     node
         .attr('cx', d.px = d.x = d3.event.x)
@@ -84,31 +111,32 @@ export function dragging(d, self) {
 }
 
 export function dragend(d, self) {
-    const node = d3.select(self);
-    // if (!parseInt(node.attr('dragdistance')) && isRightClick()) {
+    console.info('dragend');
+    // if (!parseInt(node.attr('dragdistance')) && utils.isRightClick()) {
     //   this.rightclicked(node, d);
     // }
-    if (parseInt(node.attr('dragdistance'), 10)) {
-        node.classed('fixed', d.fixed = true);
-        if (!node.classed('selected')) {
-            aesthetics.classNodeSelected.bind(this, node, true)();
-        }
-    } else {
-        aesthetics.classNodeSelected.bind(this, node, !node.classed('selected'))();
-    }
-
+    
     this.isDragging = false;
     this.draggedNode = null;
     this.toRenderMinimap = true;
     this.tickCount = 0;
-    this.force.resume();
+
+    const node = d3.select(self);
+    if (parseInt(node.attr('dragdistance'), 10)) {
+        node.classed('fixed', d.fixed = true);
+        this.force.resume();
+    }
 }
 
 export function mousedown(d, self) {
     d3.event.stopPropagation();
+    console.info('mousedown');
     // Disable drag for right clicks (all drag disabled in edit mode)
-    if (!isLeftClick() && !this.editMode) {
-        if (!this.dragCallback) { this.dragCallback = this.node.property('__onmousedown.drag')['_']; }
+    if (!utils.isLeftClick() && !this.editMode) {
+        if (!this.dragCallback && !this.node.empty()) { 
+            this.dragCallback = this.node.property('__onmousedown.drag')['_']; 
+        }
+
         this.node.on('mousedown.drag', null);
     }
 
@@ -116,8 +144,6 @@ export function mousedown(d, self) {
     if (this.editMode) {
         this.mousedownNode = d;
         this.dragLink
-            .attr('tx1', d.x)
-            .attr('ty1', d.y)
             .attr('tx2', d.x)
             .attr('ty2', d.y);
     }
@@ -125,6 +151,7 @@ export function mousedown(d, self) {
 
 export function mouseup(d, self) {
     d3.event.stopPropagation();
+    console.info('mouseup');
     // Reduce size of drag link focused node
     if (this.editMode && this.mousedownNode && d !== this.mousedownNode) {
         const currNode = d3.select(self);
@@ -135,26 +162,26 @@ export function mouseup(d, self) {
             target = this.mousedownNode,
             fwdLinkId = this.linkedById[source.id + ',' + target.id],
             bwdLinkId = this.linkedById[target.id + ',' + source.id];
-        if (fwdLinkId) {
-            // If link already exists, select it
-            selection.selectLink.bind(this, source, target);
-        } else if (bwdLinkId) {
-            // If link exists in opposite direction, make it bidirectional and select it
-            const currLink = findEntryById(this.links, bwdLinkId);
+
+        if (bwdLinkId) {
+            // If link exists in opposite direction, make it bidirectional
+            const currLink = utils.findEntryById(this.links, bwdLinkId);
             currLink.bidirectional = true;
-            this.link.filter((o) => { return o.id === bwdLinkId; })
-                .call(this.styleLink, true);
         } else {
-            // If link doesn't exist, create and select it
+            // If link doesn't exist, create it
             this.addLink(source, target);
-            selection.selectLink.bind(this, source, target);
         }
+
+        // Select link regardless of whether or not it existed
+        aesthetics.resetObjectHighlighting.bind(this)();
+        aesthetics.highlightLink.bind(this)(source, target);
     }
 
-    resetDragLink(this);
+    aesthetics.resetDragLink.bind(this)();
 }
 
 export function mouseover(d, self) {
+    console.info('mouseover');
     // Drag link node emphasis
     if (this.editMode && this.mousedownNode) {
         if (d !== this.mousedownNode) {
@@ -183,11 +210,10 @@ export function mouseover(d, self) {
                 .call(this.wrapNodeText, 2);
         }
     }
-
-    // this.displayNodeInfo(d);
 }
 
 export function mouseout(d, self) {
+    console.info('mouseout');
     // Reset node emphasis
     this.hoveredNode = null;
     this.resetGraphOpacity();
@@ -216,101 +242,128 @@ export function mouseout(d, self) {
     }
 
     // Restore node drag functionality for future left clicks
-    if (!this.editMode && !isLeftClick() && this.dragCallback) {
+    if (!this.editMode && !utils.isLeftClick() && this.dragCallback) {
         this.node.on('mousedown.drag', this.dragCallback);
         this.dragCallback = null;
     }
 }
 
-// Canvas mouse handlers
+// ===========
+// LINK EVENTS
+// ===========
+
+export function clickedLink(l, self) {
+    d3.event.stopPropagation();
+    console.info('clickedlink');
+    this.displayLinkInfo(l);
+    if (!utils.modifierPressed()) { aesthetics.resetObjectHighlighting.bind(this)(); }
+    aesthetics.highlightLinkById.bind(this)(l.id, !l.selected);
+}
+
+// =============
+// CANVAS EVENTS
+// =============
+
 export function clickedCanvas() {
-    resetDragLink(this);
+    console.info('clickedcanvas')
+    // Called at the end of canvas drag actions
+    if (this.rectSelect || this.freeSelect) selectPointerTool.bind(this)();
+
+    // Only execute if click action, not drag
     if (d3.event.defaultPrevented) return;
+    if (this.editMode) {
+        aesthetics.resetDragLink.bind(this)();
+        // if (this.dragDistance === 0) {
+        //     this.addNodeToSelected(d3.event);
+        // }
+    }
+
     if (this.dragDistance === 0) {
-        this.addNodeToSelected(d3.event);
-    } else {
-        this.dragDistance = 0;
+        console.info('reset selection: ', this.dragDistance);
+        aesthetics.resetObjectHighlighting.bind(this)();
     }
 }
 
 export function dragstartCanvas() {
+    console.info('dragstartcanvas');
+    this.dragDistance = 0;
     d3.select('.context-menu').style('display', 'none');
-    if (this.editMode) d3.event.sourceEvent.preventDefault();
+    if (this.editMode || this.rectSelect || this.freeSelect) d3.event.sourceEvent.preventDefault();
 }
 
 export function mousemoveCanvas(self) {
-    // const classThis = this;
-    const e = d3.event;
-    this.displayDebugTooltip(self);
     if (this.editMode && this.mousedownNode) {
-        // const currNode = this.node.filter(function(o) { return classThis.mousedownNode.id === o.id; });
+        console.info('mousemovecanvas');
         this.dragDistance++;
+        const e = d3.event;
+        const tx2 = ((e.x - constants.BUTTON_WIDTH) - this.zoomTranslate[0]) / this.zoomScale;
+        const ty2 = (e.y - this.zoomTranslate[1]) / this.zoomScale;
         this.dragLink
             .style('visibility', 'visible')
-            .attr('tx2', e.x)
-            .attr('ty2', e.y);
+            .attr('tx2', tx2)
+            .attr('ty2', ty2);
+        aesthetics.updateDragLink.bind(this)();
     }
 }
 
+// Currently being overwritten in initializeZoomButtons to enable zoom after using zoom buttons
 export function mouseupCanvas(self) {
+    console.info('mouseupcanvas');
     this.mousedownNode = null;
 }
 
+// ============
+// LASSO EVENTS
+// ============
+
 export function lassoStart() {
-    this.lasso.items()
-        .classed({ "not_possible": true, "selected": false });
+    console.info('lassostart');
+    if (!utils.modifierPressed()) aesthetics.resetObjectHighlighting.bind(this)();
 }
 
 export function lassoDraw() {
-    this.lasso.items().filter(function(d) { return d.possible === true; })
-        .classed({ "not_possible": false, "possible": true });
-
-    this.lasso.items().filter(function(d) { return d.possible === false; })
-        .classed({ "not_possible": true, "possible": false });
+    console.info('lassodraw');
+    this.lasso.items().classed('possible', (d) => { return d.possible; });
+    aesthetics.highlightPossibleLinksFromAllNodes.bind(this)();
 }
 
 export function lassoEnd() {
-    this.lasso.items().filter(function(d) { return d.selected === true; })
-        .classed({ "not_possible": false, "possible": false, "selected": true });
-
-    this.lasso.items().filter(function(d) { return d.selected === false; })
-        .classed({ "not_possible": false, "possible": false });
-};
-
-// Link mouse handlers
-export function mouseoverLink(d) {
-    this.displayLinkInfo(d);
+    console.info('lassoend');
+    const toSelect = this.lasso.items().filter((d) => { return d.selected; });
+    this.lasso.items().classed('possible', (d) => { return d.possible = false; });
+    this.link.classed('possible', (l) => { return l.possible = false; });
+    aesthetics.classNodesSelected.bind(this)(toSelect, true);
 }
 
-// Node text handlers
-export function stopPropagation() {
-    const e = getD3Event();
-    if (e.stopPropagation) e.stopPropagation();
-}
+// ===========
+// ZOOM EVENTS
+// ===========
 
-// SVG zoom & pan
 export function zoomstart(d, self) {
+    console.info('zoomstart');
     this.isZooming = true;
     this.zoomTranslate = this.zoom.translate();
     this.zoomScale = this.zoom.scale();
 }
 
 export function zooming(d, self) {
-    if (isRightClick() || this.rectSelect || this.freeSelect) return;
+    if (utils.isRightClick() || this.rectSelect || this.freeSelect) return;
+    console.info('zooming');
     const e = d3.event;
     this.performZoom(e.translate, e.scale); // Perform the zoom with the translate and scale from the handlers triggered by the graph
 }
 
 export function performZoom(translate, scale) {
-    const transform = 'translate(' + (((translate[0] / scale) % GRID_LENGTH) - translate[0] / scale)
-        + ',' + (((translate[1] / scale) % GRID_LENGTH) - translate[1] / scale) + ')scale(' + 1 + ')';
+    const transform = 'translate(' + (((translate[0] / scale) % constants.GRID_LENGTH) - translate[0] / scale)
+        + ',' + (((translate[1] / scale) % constants.GRID_LENGTH) - translate[1] / scale) + ')scale(' + 1 + ')';
     this.svgGrid.attr('transform', transform);
     this.container.attr('transform', `translate(${translate})scale(${scale})`);
 }
 
 export function zoomend(d, self) {
+    console.info('zoomend');
     this.svg.attr('cursor', 'move');
-    if (isRightClick() || this.rectSelect || this.freeSelect) {
+    if (utils.isRightClick() || this.rectSelect || this.freeSelect) {
         this.zoom.translate(this.zoomTranslate);
         this.zoom.scale(this.zoomScale);
     }
@@ -387,29 +440,30 @@ export function translateGraphAroundNode(d) {
             self.zoomScale = self.zoom.scale();
             self.manualZoom();
         };
-    }).call(then, () => {
+    }).call(utils.then, () => {
         this.isZooming = false;
     });
 }
 
 export function translateGraphAroundId(id) {
     // Center each vector, stretch, then put back
-    let d;
-    this.node.classed("selected", false)
-        .filter(node => { if (node.id === id) { d = node; return node; }})
-        .classed("selected", true);
-    if (d === null) { return; }
+    let centerNode;
+    aesthetics.resetObjectHighlighting.bind(this)();
+    aesthetics.classNodesSelected.bind(this)(
+        this.node.filter((d) => { 
+            const isCenter = (id === d.id);
+            if (isCenter) { centerNode = d; }
+            return isCenter; 
+        }), true);
+    if (!centerNode) return;
 
+    let x = centerNode.x;
+    let y = centerNode.y;
     const centerX = this.center[0];
     const centerY = this.center[1];
-
-    let x = d.x;
-    let y = d.y;
-
     x = centerX > x ? (centerX - x) : (x - centerX);
     y = centerY > y ? (centerY - y) : (y - centerY);
 
-    //console.log("this is where x is after: ", x, " and where y is after: ", y)
     this.isZooming = true;
     const translate = this.zoom.translate();
     const self = this;
@@ -428,15 +482,15 @@ export function translateGraphAroundId(id) {
             self.zoomScale = self.zoom.scale();
             self.manualZoom();
         };
-    }).call(then, () => {
+    }).call(utils.then, () => {
         this.isZooming = false;
     });
 }
 
 export function manualZoom() {
     this.container.attr('transform', 'translate(' + this.zoom.translate() + ')scale(' + this.zoom.scale() + ')');
-    const transform = 'translate(' + (((this.zoom.translate()[0] / this.zoom.scale()) % GRID_LENGTH) - this.zoom.translate()[0] / this.zoom.scale())
-        + ',' + (((this.zoom.translate()[1] / this.zoom.scale()) % GRID_LENGTH) - this.zoom.translate()[1] / this.zoom.scale()) + ')scale(1)';
+    const transform = 'translate(' + (((this.zoom.translate()[0] / this.zoom.scale()) % constants.GRID_LENGTH) - this.zoom.translate()[0] / this.zoom.scale())
+        + ',' + (((this.zoom.translate()[1] / this.zoom.scale()) % constants.GRID_LENGTH) - this.zoom.translate()[1] / this.zoom.scale()) + ')scale(1)';
     this.svgGrid.attr('transform', transform);
 }
 
@@ -445,4 +499,35 @@ export function disableZoom() {
         .on("touchstart.zoom", null)
         .on("touchmove.zoom", null)
         .on("touchend.zoom", null);
+}
+
+// ==============
+// TOOLBAR EVENTS
+// ==============
+
+export function selectPointerTool() {
+    d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', true);
+    d3.select('#' + constants.BUTTON_RECT_SELECT_ID).classed('selected', false);
+    d3.select('#' + constants.BUTTON_FREE_SELECT_ID).classed('selected', false);
+    this.freeSelect = false;
+    this.rectSelect = false;
+    this.lasso.disable();
+}
+
+export function selectRectSelectTool() {
+    d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', false);
+    d3.select('#' + constants.BUTTON_RECT_SELECT_ID).classed('selected', true);
+    d3.select('#' + constants.BUTTON_FREE_SELECT_ID).classed('selected', false);
+    this.freeSelect = false;
+    this.rectSelect = true;
+    this.lasso.disable();
+}
+
+export function selectFreeSelectTool() {
+    d3.select('#' + constants.BUTTON_POINTER_TOOL_ID).classed('selected', false);
+    d3.select('#' + constants.BUTTON_RECT_SELECT_ID).classed('selected', false);
+    d3.select('#' + constants.BUTTON_FREE_SELECT_ID).classed('selected', true);
+    this.freeSelect = true;
+    this.rectSelect = false;
+    this.lasso.enable();
 }
