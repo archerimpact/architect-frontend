@@ -189,8 +189,7 @@ class Graph {
             .on('mouseup', function () { self.mouseupCanvas(this); })
             .call(d3.behavior.drag()
                 .on('dragstart', function (d) { self.dragstartCanvas(d, this)})
-            )
-            .call(this.zoom);
+            );
 
         // Disable context menu from popping up on right click
         if (this.useCustomContextMenu) {
@@ -549,14 +548,12 @@ class Graph {
         d3.selectAll(`#${constants.BUTTON_ZOOM_IN_ID}, #${constants.BUTTON_ZOOM_OUT_ID}`)
             .on('mousedown', function () {
                 self.zoomPressed = true;
-                self.disableZoom();
+                events.modifyZoom.bind(self)();
                 self.zoomButton(this.id === constants.BUTTON_ZOOM_IN_ID);
                 d3.select('.context-menu').style('display', 'none');
             })
             .on('mouseup', () => { this.zoomPressed = false; })
             .on('mouseout', () => { this.zoomPressed = false; });
-
-        this.svg.on('mouseup', () => { this.svg.call(this.zoom) });
     }
 
     initializeButton = (id, onclick, isSelected=false) => {
@@ -584,6 +581,7 @@ class Graph {
         this.zoom = this.initializeZoom();
         this.brush = this.initializeBrush();
         this.svg = this.initializeSVG(graphRef);
+        events.modifyZoom.bind(this)();
         this.svgBrush = this.initializeSVGBrush();
         lasso.setupLasso();
         this.initializeLasso();
@@ -917,6 +915,7 @@ class Graph {
     toggleEditMode = () => {
         const self = this;
         this.editMode = !this.editMode;
+        events.modifyZoom.bind(this)();
         // const button = d3.select('#' + constants.BUTTON_EDIT_MODE_ID);
         // button.classed('selected', this.editMode);
         if (this.editMode) {
@@ -1045,7 +1044,6 @@ Graph.prototype.zoomend = events.zoomend;
 Graph.prototype.zoomButton = events.zoomButton;
 Graph.prototype.translateGraphAroundNode = events.translateGraphAroundNode;
 Graph.prototype.translateGraphAroundId = events.translateGraphAroundId;
-Graph.prototype.disableZoom = events.disableZoom;
 Graph.prototype.manualZoom = events.manualZoom;
 
 // From data

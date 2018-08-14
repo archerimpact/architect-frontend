@@ -113,7 +113,6 @@ export function applyLinkHighlighting() {
 
 // Clear all node/link highlights
 export function clearObjectHighlighting() {
-    // classNodesSelected.bind(this)(this.node, false);
     this.node.classed('selected', (d) => { return d.selected = false; });
     this.link.call(this.styleLink, false);
 }

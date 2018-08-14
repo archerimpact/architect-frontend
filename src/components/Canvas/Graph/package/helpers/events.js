@@ -413,12 +413,34 @@ export function zoomButton(zoom_in) {
             self.manualZoom();
         };
     }).each("end", () => {
-        if (this.zoomPressed) this.zoomButton(zoom_in);
-        else this.isZooming = false;
-        if (this.minimap) {
-            this.minimap.zooming(this.zoomTranslate);
+        if (this.zoomPressed) { 
+            this.zoomButton(zoom_in);
+        } else {
+            this.isZooming = false;
+            modifyZoom.bind(this)();
         }
+
+        if (this.minimap) this.minimap.zooming(this.zoomTranslate);
     });
+}
+
+export function manualZoom() {
+    this.container.attr('transform', 'translate(' + this.zoom.translate() + ')scale(' + this.zoom.scale() + ')');
+    const transform = 'translate(' + (((this.zoom.translate()[0] / this.zoom.scale()) % constants.GRID_LENGTH) - this.zoom.translate()[0] / this.zoom.scale())
+        + ',' + (((this.zoom.translate()[1] / this.zoom.scale()) % constants.GRID_LENGTH) - this.zoom.translate()[1] / this.zoom.scale()) + ')scale(1)';
+    this.svgGrid.attr('transform', transform);
+}
+
+export function modifyZoom() {
+    this.svg.call(this.zoom);
+    if (this.editMode) this.svg.on('dblclick.zoom', null);
+    if (this.isZooming) {
+        this.svg
+            .on('mousedown.zoom', null)
+            .on('touchstart.zoom', null)
+            .on('touchmove.zoom', null)
+            .on('touchend.zoom', null);
+    }
 }
 
 export function translateGraphAroundNode(d) {
@@ -485,20 +507,6 @@ export function translateGraphAroundId(id) {
     }).call(utils.then, () => {
         this.isZooming = false;
     });
-}
-
-export function manualZoom() {
-    this.container.attr('transform', 'translate(' + this.zoom.translate() + ')scale(' + this.zoom.scale() + ')');
-    const transform = 'translate(' + (((this.zoom.translate()[0] / this.zoom.scale()) % constants.GRID_LENGTH) - this.zoom.translate()[0] / this.zoom.scale())
-        + ',' + (((this.zoom.translate()[1] / this.zoom.scale()) % constants.GRID_LENGTH) - this.zoom.translate()[1] / this.zoom.scale()) + ')scale(1)';
-    this.svgGrid.attr('transform', transform);
-}
-
-export function disableZoom() {
-    this.svg.on("mousedown.zoom", null)
-        .on("touchstart.zoom", null)
-        .on("touchmove.zoom", null)
-        .on("touchend.zoom", null);
 }
 
 // ==============

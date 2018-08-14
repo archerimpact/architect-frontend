@@ -172,12 +172,12 @@ export function getData(selection) {
 
 // Use for reminders and messages to come back to
 console.todo = function(msg) {
-    console.log(' % c % s % s % s', 'color: yellow; background - color: black;', '–', msg, '–');
+    console.log('%c %s %s %s', 'color: yellow; background-color: black;', '–', msg, '–');
 }
  
 // Use for important console messages
 console.important = function(msg) {
-    console.log(' % c % s % s % s', 'color: brown; font - weight: bold; text - decoration: underline;', '–', msg, '–');
+    console.log('%c %s %s %s', 'color: brown; background-color: yellow; font-weight: bold; text-decoration: underline;', '–', msg, '–');
 }
 
 // Sleep for duration ms
